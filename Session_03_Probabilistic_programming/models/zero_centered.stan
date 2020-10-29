@@ -8,7 +8,7 @@ functions {
 }
 
 data {
-  int<lower=0> n; // total number of data points
+  int<lower=1> n; // total number of data points
   vector[n] y;    // data points
 }
 
@@ -17,9 +17,10 @@ parameters {
 }
 
 model {
-  // custom lpdf
+  // custom lpdf - zero_centered
   for (i in 1:n) {
     target += zero_centered_lpdf(y[i] | sigma);
-    //y[i] ~ custom(sigma);
+    // OR
+    //y[i] ~ zero_centered(sigma);
   }
 }

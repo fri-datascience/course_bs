@@ -1,5 +1,5 @@
 data {
-  int<lower=0> n; // total number of data points
+  int<lower=1> n; // total number of data points
   vector[n] y;    // data points
 }
 

@@ -1,7 +1,7 @@
 data {
-  int<lower=0> n; // first group
-  vector[n] y;    // data points
-  vector[n] g;    // group identifier
+  int<lower=1> n;               // number of data points
+  vector<lower=0>[n] y;         // data points
+  vector<lower=1,upper=2>[n] g; // group identifier
 }
 
 parameters {
@@ -11,7 +11,9 @@ parameters {
 }
 
 model {
-  // priors
+  // priors, here they are redundant
+  // Stan's default prior is flat/uniform
+  // because of parameter constraints we already have such a prior here
   mu1 ~ uniform(50, 300);
   mu2 ~ uniform(50, 300);
   sigma ~ uniform(0, 100);

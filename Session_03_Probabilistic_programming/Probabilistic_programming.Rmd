@@ -662,11 +662,13 @@ Just like with other things the easiest solution is usually not the best, it is 
 
 # Homework
 
-## Prerequisistes
+## Prerequisites
 
 * If you did not do this already, install a Stan interface. Our examples and lectures will be based on CmdStanR (https://mc-stan.org/cmdstanr/), if you wish, you can use a different one though (CmdStanPy, RStan, PyStan ...). To verify the installation run the corresponding example (e.g. https://mc-stan.org/cmdstanr/articles/cmdstanr.html for CmdStanR).
 * Download the `50_startups.csv` dataset from course's repository (https://github.com/fri-datascience/course_bs).
 
 ## The problem
 
-The `50_startups.csv` dataset contains information about how many resources a startup company used for research, administration or marketing along with the location of the company. Upgrade the linear regression model we developed during lectures into a multiple linear regression model and present the results in a single graph. The purpose of this task is to install Stan and get familiar with its basics, so do not bother with "more advanced" (G)LM modelling techniques, such as predictor interactions.
+We are owners of a startup in the USA and we have to decide how to distribute our resources and where to open our offices. The `50_startups.csv` dataset contains information about how many resources a startup company used for research, administration or marketing along with the location of the company and their profit. Upgrade the linear regression model we developed during lectures into a multiple linear regression model and use it to gain insight into how we should distribute our resources and where we should open our offices to maximize our profit.
+
+The purpose of this task is to install Stan and all the supporting libraries required for executing a Bayesian analysis. Right now our goal is to get familiar with modelling basics, so do not bother with "more advanced" (G)LM modelling techniques, such as predictor interactions. Submit the solution over e-classroom in the form of a single page A4 PDF.
