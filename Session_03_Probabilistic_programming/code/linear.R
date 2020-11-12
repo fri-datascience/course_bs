@@ -1,4 +1,4 @@
-# libraries
+# libraries --------------------------------------------------------------------
 library(cmdstanr)  # for interfacing Stan
 library(ggplot2)   # for visualizations
 library(posterior) # for extracting samples
@@ -6,6 +6,7 @@ library(bayesplot) # for some quick MCMC visualizations
 library(mcmcse)    # for comparing samples and calculating MCSE
 library(tidyverse) # for data manipulations
 
+# modelling and data prep ------------------------------------------------------
 # compile the model
 model <- cmdstan_model("../models/linear.stan")
 
@@ -20,12 +21,14 @@ fit <- model$sample(
   data = stan_data
 )
 
+# diagnostics ------------------------------------------------------------------
 # traceplot
 mcmc_trace(fit$draws())
 
 # summary
 fit$summary()
 
+# analysis ---------------------------------------------------------------------
 # lines and confidence in lines
 df <- as_draws_df(fit$draws())
 
@@ -41,10 +44,10 @@ ggplot() +
   geom_point(data = data,
              aes(x = x, y = y),
              shape = 16,
-             color = "#67a9cf") +
+             color = "skyblue") +
   geom_abline(data = df_100,
               aes(slope = b, intercept = a),
               alpha=0.05,
               size=1,
-              color="#67a9cf") +
+              color="skyblue") +
   theme_minimal()

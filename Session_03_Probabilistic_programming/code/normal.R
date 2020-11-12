@@ -1,4 +1,4 @@
-# libraries
+# libraries --------------------------------------------------------------------
 library(cmdstanr)  # for interfacing Stan
 library(ggplot2)   # for visualizations
 library(ggdist)    # for distribution visualizations
@@ -6,6 +6,8 @@ library(posterior) # for extracting samples
 library(bayesplot) # for some quick MCMC visualizations
 library(mcmcse)    # for comparing samples and calculating MCSE
 
+
+# modelling and data prep ------------------------------------------------------
 # compile the model
 model <- cmdstan_model("../models/normal.stan")
 
@@ -33,12 +35,16 @@ fit <- model$sample(
   data = stan_data
 )
 
+
+# diagnostics ------------------------------------------------------------------
 # traceplot
 mcmc_trace(fit$draws())
 
 # summary
 fit$summary()
 
+
+# analysis ---------------------------------------------------------------------
 # convert samples to data frame
 df <- as_draws_df(fit$draws())
 
@@ -59,6 +65,6 @@ q95 <- quantile(df$diff, 0.95)
 
 # plot diff
 ggplot(data = df) +
-  geom_density(aes(x=diff), color=NA, fill="skyblue", alpha=0.5) +
+  geom_density(aes(x=diff), color=NA, fill="skyblue", alpha=0.75) +
   xlab("difference") +
   geom_vline(xintercept = q95, linetype="dashed", color = "grey75", size=1.5)

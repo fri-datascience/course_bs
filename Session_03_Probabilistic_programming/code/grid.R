@@ -1,6 +1,8 @@
-# libraries
+# libraries --------------------------------------------------------------------
 library(ggplot2)
 
+
+# grid based Bayesian inference ------------------------------------------------
 # set grid resolution
 resolution <- 100
 
@@ -23,16 +25,18 @@ posterior <- likelihood * prior
 # normalize the posterior so it sums to 1
 posterior <- posterior / sum(posterior)
 
-# fairness
+
+# fairness calculation ---------------------------------------------------------
 bottom_cut <- 0.3 * resolution
 top_cut <- 0.7 * resolution
 fairness <- sum(posterior[bottom_cut:top_cut])
 cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
 
-# visualize
+
+# fairness visualization -------------------------------------------------------
 df <- data.frame(x = grid, y = posterior)
 ggplot(data = df, aes(x = x, y = y)) +
-  geom_bar(stat="identity", color="#67a9cf", fill="#67a9cf", alpha = 0.5) +
+  geom_bar(stat="identity", color="skyblue", fill="skyblue", alpha = 0.75) +
   xlim(0, 1) +
   xlab("") +
   ylab("density") +

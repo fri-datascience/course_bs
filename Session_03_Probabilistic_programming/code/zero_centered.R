@@ -1,7 +1,9 @@
+# libraries --------------------------------------------------------------------
 library(cmdstanr)  # for interfacing Stan
 library(mcmcse)
 library(posterior)
 
+# modelling and data prep ------------------------------------------------------
 # prepare the data
 # number of measurements
 n <- 20
@@ -20,8 +22,17 @@ fit <- model$sample(
   data = stan_data
 )
 
+# diagnostics ------------------------------------------------------------------
+# traceplot
+mcmc_trace(fit$draws())
+
+# summary
+fit$summary()
+
+
+# analysis ---------------------------------------------------------------------
 # convert samples to data frame
 df <- as_draws_df(fit$draws())
 
-# recover mu
+# sigma
 mcse(df$sigma)
