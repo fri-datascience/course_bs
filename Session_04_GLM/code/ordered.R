@@ -70,7 +70,7 @@ df_cutpoints <- df_cutpoints %>% select(-.chain, -.iteration, -.draw)
 # plot betas -------------------------------------------------------------------
 # rename for ease of addressing
 colnames(df_beta) <- c("Religion", "Degree", "USA", "Male")
-install.packages(c("coda","mvtnorm","devtools","loo","dagitty"))
+
 # to long format
 df_beta_long <- df_beta %>% gather(Beta, Value)
 
