@@ -463,14 +463,14 @@ Gamma regression is useful when our dependent variable resides on the positive s
 
 $$y \: | \: \nu, \lambda \sim \text{gamma}(\nu, \lambda)),$$
 $$E[y] = \mu = \frac{\nu}{\lambda},$$
-$$\text{Var}(y) = \frac{\nu}{\lambda^2}.$$
+$$\text{Var}(y) = \phi = \frac{\nu}{\lambda^2}.$$
 As you can see we cannot directly map the linear predictor to a gamma parameter. Fear not, we can fix this with some simple calculus. We can reparametrize the gamma distribution to fit our needs:
 
 $$\mu = \frac{\nu}{\lambda},$$
 
-$$\text{Var}(y) = \phi = \frac{\nu}{\lambda^2},$$
-$$\nu = \frac{\mu^2}{\phi},$$
-$$\lambda = \frac{\mu}{\phi}.$$
+$$\phi = \frac{\nu}{\lambda^2} = \frac{\nu}{\lambda} \frac{1}{\lambda} = \frac{\mu}{\lambda},$$
+$$\lambda = \frac{\mu}{\phi},$$
+$$\nu = \mu \lambda = \mu \frac{\mu}{\phi} = \frac{\mu^2}{\phi}.$$
 Now we have an expected value parameter $\mu$ and a variance parameter $\phi$. Since gamma distribution resides on the positive real scale we can use a log link linear predictor and put everything together:
 
 $$y \: | \: \mu, \phi \sim \text{gamma}(\frac{\mu^2}{\phi}, \frac{\mu}{\phi}),$$
