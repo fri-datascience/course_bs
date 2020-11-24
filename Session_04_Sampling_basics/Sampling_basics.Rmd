@@ -212,13 +212,12 @@ The average over all estimates is `r round(mean(mus), 2)` and their standard dev
 ml     <- readLines("./stratified2.Stan")
 model2 <- stan_model(model_code = ml)
 
-
 weights <- round(table(df$BestPosition) / nrow(df) * n)
 weights[12] <- weights[12] + 2 # a bit of a hack to get exact n
 set.seed(0)
 res <- NULL
 
-for (i in 1:100) {
+for (i in 1:10) {
   obs <- NULL
     w_mus <- 0
   for (j in 1:length(weights)) {
@@ -254,23 +253,78 @@ Unfortunately, cluster sampling comes at a cost in efficiency. In stratified sam
 
 TODO: Proof.
 
-Let us simulate the process of cluster sampling our $n =$ `r n` samples `r m` times to check if that is indeed the case. We will sample 5 clusters based on Best Position with `r n / 5` simple random samples per cluster:
+Let us simulate the process of two-stage cluster sampling our $n =$ `r n` samples `r m` times to check if that is indeed the case. We will sample 5 clusters based on Best Position with `r n / 5` simple random samples per cluster:
 
 ```{r echo=FALSE, warning=FALSE, fig.width=2, fig.height=2}
+h_bootstrap <- function(x, group, w, m = 100) {
+
+  k       <- length(w)
+  mus <- c()
+  for (i in 1:m) {    # bootstrap iteration
+    
+    tot_w <- 0
+    tot_x <- 0
+    for (j in 1:k) {  # resample clusters
+      idx <- sample(1:k, 1)
+      tmp <- x[group == idx]
+      tot_w <- tot_w + w[idx]
+      tmp <- sample(tmp, length(tmp), rep = T) # resample withing cluster
+      tot_x <- tot_x + mean(tmp) * w[idx]
+      
+    }
+    
+    mus <- c(mus, tot_x / tot_w)
+  }
+  return (list(mu = mean(mus), SE = sd(mus)))
+}
+
+
+library(rstan)
+ml     <- readLines("./clustered.Stan")
+model2 <- stan_model(model_code = ml)
+
+  
+  
 # cluster sampling
 mus <- c()
 
+weights <- table(df$BestPosition) / nrow(df) 
+
 bp <- unique(df$BestPosition)
 
+
+res <- NULL
 for (i in 1:m) {
   x_total <- 0
+  w_total <- 0
+  all_y   <- c()
+  all_g   <- c()
+  all_w   <- c()
   for (j in 1:5) {
-    idx <- sample(1:length(bp), 1)
-    tmp <- df$PenaltyTaking[df$BestPosition == bp[idx]]
+    idw <- sample(1:length(bp), 1)
+    tmp <- df$PenaltyTaking[df$BestPosition == bp[idw]]
     idx <- sample(1:length(tmp), n / 5, rep = T)
-    x_total <- x_total + sum(tmp[idx])
+    all_y <- c(all_y, tmp[idx])
+    all_g <- c(all_g, rep(j, length(idx)))
+    all_w <- c(all_w, weights[idw])
+    x_total <- x_total + weights[idw] * mean(tmp[idx])
+    w_total <- w_total + weights[idw]
   }
-  mus <- c(mus, x_total / n)
+
+  mus <- c(mus, x_total / w_total)
+  bts <- h_bootstrap(all_y, all_g, all_w)
+  
+  stan_data <- list(y = all_y, id = all_g, n = length(all_y), k = length(all_w), w = all_w / sum(all_w))
+  samples   <- sampling(model2, stan_data, chains = 1, iter = 2000)
+
+  
+  res <- rbind(res, data.frame(mu = x_total / w_total,
+                               mu_simple = mean(all_y),
+                               se_simple = sd(all_y) / sqrt(n),
+                               mu_boot = bts$mu,
+                               se_boot = bts$SE,
+                               mu_bayes = mean(extract(samples)$mu_est),
+                               se_bayes = sd((extract(samples)$mu_est))))
 }
 
 ggplot(data.frame(mu = mus), aes(x = mu)) + geom_histogram(bins = 30) + 
@@ -279,32 +333,6 @@ ggplot(data.frame(mu = mus), aes(x = mu)) + geom_histogram(bins = 30) +
 ```
 
 The average over all estimates is `r round(mean(mus), 2)` and their standard deviation is `r round(sd(mus), 3)`. This is worse than simple random sampling.
-
-Let us simulate what we get if we base the clustering on Nation instead of Best Position:
-
-```{r echo=FALSE, warning=FALSE, fig.width=2, fig.height=2}
-# cluster sampling - country
-mus <- c()
-
-bp <- unique(df$NationID)
-
-for (i in 1:m) {
-  x_total <- 0
-  for (j in 1:5) {
-    idx <- sample(1:length(bp), 1)
-    tmp <- df$PenaltyTaking[df$NationID == bp[idx]]
-    idx <- sample(1:length(tmp), n / 5, rep = T)
-    x_total <- x_total + sum(tmp[idx])
-  }
-  mus <- c(mus, x_total / n)
-}
-
-ggplot(data.frame(mu = mus), aes(x = mu)) + geom_histogram(bins = 30) + 
-  ylab("freq") + xlab("estimate")
-
-```
-
-The average over all estimates is `r round(mean(mus), 2)` and their standard deviation is `r round(sd(mus), 3)`. This is worse than simple random sampling and cluster sampling based on Best Position.
 
 # Non-probability sampling schemes 
 
