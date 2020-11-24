@@ -1,19 +1,21 @@
 ---
 title: "Survey sampling basics"
+author: Jure Demšar and Erik Štrumbelj, University of Ljubljana
 output:
-  #pdf_document: default
-  html_document: default
+    prettydoc::html_pretty:
+      highlight: github
+      theme: architect
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 ```
 
-### Summary
+# Summary
 
-In this chapter we focus on the basics of sampling in the context of survey sampling. We cover three of the most common probability sampling approaches: simple random sampling, stratified sampling, and cluster sampling. We also briefly discuss non-probability sampling methods: convenience sampling, judgement sampling, quota sampling, and snowball sampling.
+In this chapter we focus on the basics of sampling in the context of survey sampling. We cover three of the most common probability sampling approaches: simple random sampling, stratified sampling, and cluster sampling. We also briefly discuss non-probability sampling methods: convenience sampling, judgment sampling, quota sampling, and snowball sampling.
 
-### Introduction
+# Introduction
 
 Sampling consists of selecting a subset of units from our study population (or data generating process) for the purpose of generalizing the results obtained on this subset to the entire study population. 
 
@@ -33,7 +35,7 @@ In practice, if resources permit, probability sampling is always preferred over 
 
 Both coverage and non-response introduce bias into our results. In general, dealing with these issues requires careful consideration and the gathering of additional information. We will discuss non-response bias it in more detail in a later chapter. In this chapter we will, unless noted otherwise, assume that there are no coverage or non-response issues. In other words, the only source of uncertainty will be the sampling itself.
 
-### Probability sampling schemes
+# Probability sampling schemes
 
 Probability sampling approaches can be further subdivided into fixed-size/random-sized sample approaches and equal-probability/unequal-probability approaches. Equal-probability approaches are those where every unit has the same probability of being selected (simple random sampling) as opposed to having different inclusion probabilities (stratified sampling, cluster sampling). A fixed-size sample approach is, as the name suggests, one where the sample size is fixed and known. In this chapter we will only discuss fixed-size sample approaches. A prototypical random-sized sample approach is Poisson sampling, where each unit has a non-zero and potentially different probability of being selected. Poisson sampling is not common in practice, with the exception of surveys where there is a need to coordinate between samples - for example, where we want less or more overlap between two samples drawn from the same population. Poisson sampling is also introduced indirectly by non-response.
 
@@ -63,7 +65,7 @@ print(head(df, 10))
 
 We will pretend that these footballers are our entire study population. Hence, the true mean $\mu_0 =$ `r round(true_mean, 2)` and true standard deviation $\sigma_0 =$ `r round(true_sd, 2)` of Penalty Taking are known. We will try to estimate this true mean via samples of fixed size $n =$ `r n`.
 
-#### Simple random sampling
+## Simple random sampling
 
 Simple random sampling is a fixed-sized sample probability sampling scheme with equal inclusion probabilities. In other words, we sample $n$ samples uniformly at random.
 
@@ -90,9 +92,9 @@ The estimate of course varies from sample to sample. The average over all estima
 
 Simple random sampling is indeed simple but also very effective. The main reason why we would not use simple random sampling is that we do not have a sampling frame or we cannot execute it due to resource constraints. Also, if we have additional information about our units, other sampling schemes, such as stratified sampling, will be more effective.
 
-##### Bayesian estimation
+### Bayesian estimation
 
-```{r echo=FALSE, warning=FALSE}
+```{r echo=FALSE, warning=FALSE, message=FALSE, results = 'hide'}
 library(rstan)
 ml     <- readLines("./simple.Stan")
 model1 <- stan_model(model_code = ml)
@@ -110,7 +112,7 @@ for (i in 1:20) {
 ```
 
 
-#### Stratified sampling
+## Stratified sampling
 
 Stratification is a very simple idea and one that we might have already encountered in approaches such as stratified cross-validation, which is itself an example of stratified sampling. We partition the population into non-overlapping partitions called strata. We proceed by probability sampling each stratum independently of other strata. The final sample is a union of all samples. Note that any sampling scheme can be used to sample from each stratum, even stratified sampling, but in our analyses we will assume that simple random sampling is used.
 
@@ -118,7 +120,7 @@ When using stratified sampling, we have to allocate our total number of samples 
 
 Let $k$ be the number of strata and $N_i$, $n_i$ be the size of and the number of samples allocated to the $i-$th strata, respectively. Let $w_i = \frac{n_i}{n}$ be the weights of allocation. We must have $\sum_{i=1}^k n_i = n$, which implies that the weights sum to 1.
 
-In **proportional allocation** we assign $n_i$ so that $w_i = \frac{N_i}{\sum_{i=1}^k N_i}$. That is, that each strata is allocated samples proportional to its size. We can show that proportional allocation stratified sampling will be better than simple random sampling in terms of error when the quantity of interest is very homogeneous within each strata.
+In *proportional allocation* we assign $n_i$ so that $w_i = \frac{N_i}{\sum_{i=1}^k N_i}$. That is, that each strata is allocated samples proportional to its size. We can show that proportional allocation stratified sampling will be better than simple random sampling in terms of error when the quantity of interest is very homogeneous within each strata.
 
 In the case of stratified sampling, the sample average $\overline{x} \approx \mu_o$ is replaced by the weighted average $\overline{x}_\text{strat} = \sum_{i=1}^k w_i\overline{x}_i$, where $\overline{x}_i$ are strata sample averages. We know that the sample average is an unbiased estimator and by linearity of expectation, so is $\overline{x}_\text{strat}$.
 
@@ -163,7 +165,7 @@ ggplot(data.frame(mu = mus), aes(x = mu)) + geom_histogram(bins = 30) +
 
 The average over all estimates is `r round(mean(mus), 2)` and their standard deviation is `r round(sd(mus), 3)`. This is better than simple random sampling.
 
-**Optimal allocation*, also known as Neyman allocation is the solution to the optimization problem of finding $n_i$ that minimize the variance of the estimator $\overline{x}_\text{strat}$ estimator:
+*Optimal allocation*, also known as Neyman allocation is the solution to the optimization problem of finding $n_i$ that minimize the variance of the estimator $\overline{x}_\text{strat}$ estimator:
 
 $$w_i = \frac{n_i}{n} = \frac{N_i\sigma_i}{\sum_{i=1}^k N_i\sigma_i}.$$
 We can see that the optimal allocation takes into account strata size and strata homogeneity. The larger the strata and the less homogeneous it is, the more samples we allocate it. The more similar the strata are to the population in terms of variance, the smaller the difference between proportional and optimal allocation:
@@ -204,9 +206,9 @@ ggplot(data.frame(mu = mus), aes(x = mu)) + geom_histogram(bins = 30) +
 
 The average over all estimates is `r round(mean(mus), 2)` and their standard deviation is `r round(sd(mus), 3)`. This is better than simple random sampling and proportional stratified sampling.
 
-##### Bayesian estimation
+### Bayesian estimation
 
-```{r echo=FALSE, warning=FALSE}
+```{r echo=FALSE, warning=FALSE, message=FALSE, results = 'hide'}
 ml     <- readLines("./stratified2.Stan")
 model2 <- stan_model(model_code = ml)
 
@@ -242,7 +244,7 @@ for (i in 1:100) {
 
 ```
 
-#### Cluster sampling
+## Cluster sampling
 
 The cluster sampling scheme is similar to the stratified sampling scheme in that we partition the data into non-overlapping partitions, this time called clusters. However, instead of sampling from all clusters, like we do in stratified sampling, we select at random only a subset of the clusters and then measure all units in the selected clusters. This is called one-stage clustering. Instead of measuring all units in a cluster, we can again estimate the quantity of interest for a cluster using only simple random sample from that cluster. This is called two-stage clustering. The approach can be extend to an arbitrary number of levels and it is called multi-stage clustering.
 
@@ -304,15 +306,15 @@ ggplot(data.frame(mu = mus), aes(x = mu)) + geom_histogram(bins = 30) +
 
 The average over all estimates is `r round(mean(mus), 2)` and their standard deviation is `r round(sd(mus), 3)`. This is worse than simple random sampling and cluster sampling based on Best Position.
 
-### Non-probability sampling schemes 
+# Non-probability sampling schemes 
 
 We have already defined non-probability sampling as a sampling approach where some elements of the population have no chance of selection or where we cannot determine the probability of selection. Another way of looking at non-probability sampling is as the sampling approach that we use when no probability sampling approach is feasible. This is typically due to not being able to create a sampling frame. For example, it is impossible to create a sampling frame for all dung beetles and some subpopulations, such as drug additcs are difficult to reach. Instead of random sampling, we select elements based on other criteria and assumptions regarding the study population. This gives rise to exclusion bias, placing limits on the representativeness of the sample. While the results of non-probability sample might be useful in some cases, it is in most cases impossible to make any scientifically sound generalizations to the study population.
 
-#### Convenience sampling
+## Convenience sampling
 
 Convenience sampling is also known as opportunity sampling or accidental sampling. It is a type of non-probability sampling where the main criterion for selection is that the units are close at hand. An example of convenience sampling would be if we did a statistical enquiry of University of Ljubljana students and only include students from this Bayesian statistics class.
 
-#### Judgement sampling
+## Judgement sampling
 
 Judgement sampling is also known as purposive sampling or authoritative sampling. It is a type of non-probability sampling where the researchers choose the sample based on their expert knowledge of what would be a representative sample. The criteria we use depend on the context:
 
@@ -322,13 +324,13 @@ Judgement sampling is also known as purposive sampling or authoritative sampling
 
 * If the goal is to investigate what is typical or atypical, we will select a sample of units that are most or least similar to what is considered typical. This is also known as typical/atypical case sampling. For example, if we are investigating how a typical Faculty of computer information student rates the study program, we would immediately exclude exchange students, female students, students from joint study programs with other Faculties, etc.
 
-#### Quota sampling
+## Quota sampling
 
 Quota sampling is similar to stratified sampling in that we first partition the study population into non-overlapping partitions based on characteristics we believe are good at explaining the variability in the variates of interest. For each strata we then determine the number of samples we require for that strata -- that is, the quota. This might be based on known or approximate proportions of those strata in the study population. The difference between quota and stratified sampling is that in quota sampling we then proceed by meeting the quota of samples by non-probability approaches such as convenience or judgement sampling.
 
 For example, if we were interested in some characteristic of University of Ljubljana students, we might stratify the students based on Faculty, sex, and year of study and then try to find at least 3 students from each strata.
 
-#### Snowball sampling
+## Snowball sampling
 
 Snowball sampling is a non-probability sampling scheme that is based on peoples social networks. In its most basic form snowball sampling starts with an initial set of eligible subjects and then each subject is asked to suggest all eligible subjects from their social network (friends, family members, acquaintances). This process is stopped when we have a large enough sample or when no new eligible subjects are found.
 
@@ -336,18 +338,14 @@ Snowball sampling has many sources of bias, including the selection of initial s
 
 Snowball sampling is one of the few non-probability sampling methods for which some rigorous results are available. A variant of snowball sampling called respondent-driven sampling will, under certain assumptions on the properties of the social network and the recruitement proces, provide unbiased estimates.
 
-### Recommended readings
+# Recommended readings
 
 * Thompson, S. K. (2012) Sampling, Third Edition. (Chapters 1, 11, 12)
 
-### Additional readings
+# Additional readings
 
 * Salganik, M. J., & Heckathorn, D. D. (2004). Sampling and estimation in hidden populations using respondent-driven sampling. Sociological methodology, 34(1), 193-240.
 
-### Homework
+# Homework
 
-a. Write down three questions from your everyday live that you often reply to with an uncertain answer. Answer those questions uncertainly with natural language. Then answer those questions using probabilistic answers that roughly correspond to the natural language questions. At least one of the questions must have uncountably many answers (truths) and at least one of the questions must have infinitely but countably many answers.
-
-b. Install Stan and run the bernoulli toy example from the installation instructions. You may use CmdRStan (recommended), RStan, PyStan, or any other interface.
-
-Submit a A5 report that contains (a) and the histogram of the posterior of the parameter from (b).
+TODO?
