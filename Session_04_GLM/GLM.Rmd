@@ -688,21 +688,21 @@ The figure below compares absolute values of $\beta$ coefficients between all of
 
 * **Regression Models** in Stan User's Guide (https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html). 
 
-* **Chapter 15 (Overview of the Generalized Linear Model)** in Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
-
 * **Chapter 6 (Overfitting, Regularization and Information Criteria) and 10 (Counting and Classification)** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
+
+* **Chapter 15 (Overview of the Generalized Linear Model)** in Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
 
 # Additional readings
 
-* Wiki page on Linear regression (https://en.wikipedia.org/wiki/Linear_regression).
+* van Erp S., Oberski D. L., & Mulder J. (2019). Shrinkage priors for Bayesian penalized regression, Journal of Mathematical Psychology, 89, 31--50.
 
-* Wiki page on Generalized linear model (https://en.wikipedia.org/wiki/Generalized_linear_model).
-
-* van Erp, S., Oberski, D. L., & Mulder, J. (2019). Shrinkage priors for Bayesian penalized regression, 89, 31-50.
+* **Chapters 4, 7 and 9** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
 
 * **Part III** of Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
 
-* **Chapters 4, 7 and 9** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
+* Wiki page about the generalized linear model (https://en.wikipedia.org/wiki/Generalized_linear_model).
+
+* Wiki page about the linear regression (https://en.wikipedia.org/wiki/Linear_regression).
 
 # Homework
 

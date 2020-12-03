@@ -648,17 +648,17 @@ Just like with other things the easiest solution is usually not the best, it is 
 
 # Additional readings
 
-* Wiki page on statistical models (https://en.wikipedia.org/wiki/Statistical_model).
+* **Chapters 3 (Sampling the Imaginary) and 8 (Markov Chain Monte carlo)** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
 
-* Wiki page on probabilistic programming (https://en.wikipedia.org/wiki/Probabilistic_programming).
+* **Chapter 7 (Markov Chain Monte Carlo)** in Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
 
 * A visualization of MCMC methods (https://chi-feng.github.io/mcmc-demo/).
 
 * Stan's documentation (https://mc-stan.org/users/documentation/index.html).
 
-* **Chapter 7 (Markov Chain Monte Carlo)** in Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
+* Wiki page about probabilistic programming (https://en.wikipedia.org/wiki/Probabilistic_programming).
 
-* **Chapters 3 (Sampling the Imaginary) and 8 (Markov Chain Monte carlo)** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
+* Wiki page about statistical models (https://en.wikipedia.org/wiki/Statistical_model).
 
 # Homework
 
