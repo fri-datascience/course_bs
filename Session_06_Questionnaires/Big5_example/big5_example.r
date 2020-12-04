@@ -80,15 +80,16 @@ cor(x1, x2)
 # - 0.819 is relatively good and similar to numbers reported in research of the
 #   Big 5 personality traits questionnaire.
 # - We should deal with 2 issues, however:
-#    * negate the arbitrary split; we'll do via Monte Carlo instead of exhaustvie
+#    * negate the arbitrary split; we'll do via Monte Carlo instead of exhaustive
 #      computation of all possible splits into two equal-sized halves,
 #    * correct for the fact that we use one half of the items instead of all
 #      to compute the mean (if we "used all 10", we would have less noise in the
 #      means and therefore better correlation); we do this using the Spearman-Brown
-#      correction 2 * rho / (1 + rho). This formula can also be used to estimate
-#      how reliability will change if we increase/decrease the length of a 
-#      questionnaire.
+#      correction n * rho / (1 + (n - 1) * rho). This formula can also be used to 
+#      estimate how reliability will change if we increase/decrease the length of a 
+#      questionnaire. The case n = 2 is when we double the number of questions.
 
+m <- 1000
 cors <- c()
 set.seed(0)
 for (i in 1:m) {
@@ -98,7 +99,8 @@ for (i in 1:m) {
   rho  <- cor(x1, x2)
   cors <- c(cors, 2 * rho / (1 + rho))
 }
-summary(cors)
+mean(cors)
+sd(cors) / sqrt(m)
 
 # - Split-half has been superseded by Cronbach's alpha, which is now more or less
 #   the gold standard for reporting internal consistency (reliability). However,
