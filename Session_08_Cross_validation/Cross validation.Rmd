@@ -123,7 +123,7 @@ ggplot(data=df, aes(x=q, y=D_KL)) +
 
 The problem in practice is that we do not know the truth $p$, we only have the model $q$. It turns out that we do not need the truth part in the $D_KL$ since it is in its essence merely an additive term. We can get a relative difference from the truth without knowing the truth. In other words, we do not know what the truth is, but we do know how far away from it we are with a particular model. What comes in handy for us Bayesians is the fact that we can estimate divergence with log-score (sum of log likelihoods of each observation):
 
-$$S(q) = -2 \sum_{i=1}^n log(p(y_i \; | \; \theta)).$$
+$$\text{LS} = -2 \sum_{i=1}^n log(p(y_i \; | \; \theta)).$$
 
 Note here, that due to historical reasons to get deviance we usually multiply the log score by -2. In the following example we will use log-score to evaluate various models. To gain some additional insight into evaluation methods we will use a toy (simulated) dataset. As we know by now, toy datasets are great since we know what the data generating process is. In our case we will use:
 
@@ -151,7 +151,7 @@ Findings of this toy example will play an important role in the cross-validation
 
 Akaike information criterion (AIC) is the simplest estimator of the out-of-sample deviance. To estimate out-of-sample deviance from in-sample deviance we need to take into account the trends uncovered by our toy example. AIC does this in a very simple way:
 
-$$\text{AIC} = D_{is} + 2p = S(q) + 2p,$$
+$$\text{AIC} = D_{is} + 2p = \text{LS} + 2p,$$
 where $D_{is}$ is the in-sample deviance which we estimate with log-score ($S(q)$) and $p$ is the number of model's parameters. So AIC approximates out-of-sample deviance by calculating the in-sample deviance and penalizing it for the number of parameters. It is very simple to understand and calculate but it has several downsides:
 
 * priors have to be flat or overwhelmed by the data,
