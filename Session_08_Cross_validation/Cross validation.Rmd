@@ -197,13 +197,13 @@ where $m$ is the number of models we are evaluating and $\Delta \text{WAIC}_i$ i
 
 Leave one out information criterion (LOOIC) is currently considered as the state-of-the-art Bayesian cross validation approximation technique. In the literature the method is sometimes called PSIS LOO, since at its core lies Pareto smoothed importance sampling (PSIS).
 
-LOOIC uses a method called importance sampling to reweigh posterior samples as though the sample $y_i$ had not been yet observed. We want to give weights to each posterior draw in a way that would adjust the posterior to what it would have been if $y_i$ was not yet observed. So what should the weighting for the unobserved sample be? The sample weight is the inverse of the probability that a particular posterior draw gave to that particular observations:
+LOOIC uses a method called importance sampling to reweigh posterior samples as though the sample $y_i$ had not been yet observed. We want to give weights to each posterior draw in a way that would adjust the posterior to what it would have been if $y_i$ was not yet observed. So what should the weighting for the unobserved sample be? The sample weight is the inverse of the probability that a particular posterior draw gave to that observations:
 
 $$\frac{1}{p(y_i \; | \; \theta_j)}.$$
 
-Importance sampling is very noisy, the sampling weights are very heavy tailed and it often happens that a single posterior sample is assigned a very low probability and as a result dominates the importance sample adjusted posterior. This is where Pareto smoothing comes in. Since it turns out that the importance weights fit a Pareto distribution nicely this algorithm uses it to smooth out the tails. Putting it all together, we get:
+Importance sampling is very noisy, the sampling weights are very heavy tailed and it often happens that a single posterior sample is assigned a very low probability and as a result dominates the importance sample adjusted posterior. This is where Pareto smoothing comes in. Since it turns out that the importance weights fit a Pareto distribution nicely this algorithm uses it to smooth out the tails. As we saw, the core element of WAIC is lppd (log-pointwise-predictive-density), with LOOIC the core element is elpd (expected-log-pointwise-predictive-density):
 
-$$\text{LOOIC} = -2 \sum_{i=1}^N log \left( \frac{1}{\frac{1}{s} \sum_{j=1}^s \frac{1}{p(y_i \; | \; \theta_j)}} \right).$$
+$$\text{elpd} = -2 \sum_{i=1}^N log \left( \frac{1}{\frac{1}{s} \sum_{j=1}^s \frac{1}{p(y_i \; | \; \theta_j)}} \right).$$
 
 Just like in the case of WAIC, LOOIC is readily implemented in the loo R library which, as you can see in the code examples (`./code/deviance.R`), is quite easy to use. In the figure below we used LOOIC (mean and SE) to compare our models from the toy example.
 
