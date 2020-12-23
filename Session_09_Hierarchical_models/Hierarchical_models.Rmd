@@ -23,7 +23,7 @@ We will build our first hierarchical (multilevel) model from the ground up by us
 
 The simplest model we can build is the traditional normal model (`./models/normal.stan`):
 
-$$y_i \; | \; \mu, \sigma \sim N(\mu, \sigma)$$,
+$$y_i \; | \; \mu, \sigma \sim N(\mu, \sigma),$$
 
 where $y_i$ denotes the birth weight of piglet $i$. Visually this model can be represented as:
 
@@ -39,7 +39,7 @@ This model discards the information about mama pigs and fits a normal distributi
 
 If our goal is not to perform general comparisons but the comparison of piglet birth weights between different mama pigs, then we need a different model. We can simply model the mean of each group separately:
 
-$$y_{g,i} \; | \; \mu_g, \sigma \sim N(\mu_g, \sigma)$$,
+$$y_{g,i} \; | \; \mu_g, \sigma \sim N(\mu_g, \sigma),$$
 
 where $y_{g,i}$ represents the weight of piglet $i$ that was born to mama pig $g$, meaning that $\mu_g$ is the mean parameter for group (mama pig) $g$. Note here, that we are assuming equal variance (or standard deviation) in weights between all groups, if we assumed that each group has its own variance then we could just use the traditional normal model multiple times, once for each mama pig. Below is a visual representation of the group normal model:
 
@@ -53,7 +53,7 @@ Based on this figure, one could argue that the assumption that the variance betw
 
 In Bayesian statistics we can easily have the best of both worlds through hierarchical modeling. Actually, one could easily argue that in our case such a model is the only reasonable approach since we have a very clear hierarchical structure in our data generating process. By linking group means in a hierarchical fashion, our model becomes:
 
-$$y_{g,i} \; | \; \mu_g, \sigma \sim N(\mu_g, \sigma)$$,
+$$y_{g,i} \; | \; \mu_g, \sigma \sim N(\mu_g, \sigma),$$
 
 $$\mu_g \; | \; \mu_\mu, \sigma_\mu \sim N(\mu_\mu, \sigma_\mu).$$
 
@@ -93,7 +93,7 @@ The experimenter sequentially placed weights in the palm of the participant and 
 
 We will use the a hierarchical linear model (`./models/hierarchical_linear.stan`) to show that the two groups provide different assessment of the weights in the second part of the experiment even though both groups are responding to weights from the same (medium) set. The difference is very pronounced at first but then fades away with subsequent assessments of medium weights. This is congruent with the hypothesis that each group formed a different adaptation level during the initial phase of the task, the formed adaptation level then determined the perceptual experience of the same set of weights at the beginning of the second part of the task. In the formal definition and in the figure below, $y_{s,i}$ denotes the response of subject $s$ for round $i$, while $x_{s,i}$ denotes the actual weight used in that particular case:
 
-$$y_{s,i} \; | \; \alpha_s, \beta_s, \sigma_s \sim N(\alpha_s + \beta_s x_{s,i}, \sigma_s)$$,
+$$y_{s,i} \; | \; \alpha_s, \beta_s, \sigma_s \sim N(\alpha_s + \beta_s x_{s,i}, \sigma_s),$$
 
 $$\alpha_s \; | \; \mu_a, \sigma_a \sim N(\mu_a, \sigma_a),$$
 
