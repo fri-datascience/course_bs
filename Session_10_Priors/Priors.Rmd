@@ -1,0 +1,180 @@
+---
+title: "Priors"
+author: Jure Demšar and Erik Štrumbelj, University of Ljubljana
+output:
+    prettydoc::html_pretty:
+      highlight: github
+      theme: architect
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+```
+
+# Summary
+
+Defining priors is an integral part in Bayesian statistics. The main purpose of priors is to introduce prior expert knowledge about the domain into our models. As we know by now, this is not the only usage of priors, they are also useful for regularization and can be of help during the sampling process which can lead to stabilization of inferences in certain models. Based on the amount of information priors provide they are commonly categorized into three groups: non-informative priors, weakly informative priors and informative priors. This document briefly explains the differences between these groups and provides some guidance about when to use certain priors. Since one of the main advantages of Bayesian statistics is its ability to facilitate existing knowledge to empower our models the second part of this document talks about approaches for eliciting relevant information from experts.
+
+# Types of priors
+
+Depending on the amount of information priors carry, we typically categorize them into three groups (from the least informative to the most informative):
+
+* non-informative priors,
+* weakly informative priors,
+* informative priors.
+
+What qualifies as informative or weakly informative depends on the data (the likelihood). For example, N(0,1) is traditionally considered a weakly informative prior for beta coefficients of standardized predictors in GLMs, however N(0,1) is definitely not a weakly informative prior if we are modeling mean human height on a centimeter scale. When following guidelines about prior choices from the literature it is important to pay attention to the scale of the data, most often the guidelines are provided for standardized data.
+
+The figure below visualizes the three types of priors, the black line represents a U(-10, 10) non-informative prior. Blue lines are examples of weakly informative priors, the light blue represents a Cauchy(0, 2.5) prior, while the dark blue line represents a N(0, 2.5) prior. The red line represents an informative N(0, 0.5) prior.
+
+<center>
+![](./figs/priors.png)
+</center>
+
+## Non-informative priors
+
+Non-informative priors carry almost no information, most commonly these are flat, improper priors (uniform over the whole real interval) or bounded uniform priors (uniform on a defined interval). There are two reasons that scientist use non-informative prior, as you will se neither of them is particularly good.
+
+First, non-informative (flat) priors are the default in many probabilistic programming languages for Bayesian statistics (including Stan) and researchers often go with defaults. In this sense, flat priors are commonly used as a placeholder to get the analysis started. In this scenario, flat priors are later replaced with more appropriate ones (or not if the model works fine) based on some exploratory analysis.
+
+The second reason is more philosophical. Since non-informative priors carry no information they are often also called objective priors. Several researchers argue that statistics should be objective and using non-informative priors reduces the level of subjectivity in our models. A strong and valid counter argument is that statistical analyses are inherently subjective -- researches are the ones that design the model or pick the analysis method in the first place and this is a subjective choice. As a result, objectivity in statistics is more or less merely an illusion.
+
+Putting philosophical reasons aside, in practice non-informative priors are not recommended. As we already saw a couple of times now, priors are not only useful because we can use them to empower our models with prior domain knowledge, but they can also stabilize inferences (this is usually not an an issue in simple model but can be in more complex, multidimensional ones) and prevent overfitting through regularization.
+
+When we define a uniform prior we have to be aware that we are setting hard constraints/bounds for a parameter. The two Stan code snippets below will give you the same result. In the first one we put hard constraints on a parameter and leave the prior undefined.
+
+```
+parameters {
+  real<lower=0,upper=1> theta;
+}
+
+```
+
+Since Stan defaults to flat priors this is the same as having an unconstrained parameter with an uniform prior on it.
+
+```
+parameters {
+  real theta;
+}
+
+model {
+  // prior on theta
+  theta ~ uniform(0, 1);
+}
+```
+
+So unless we are 100% sure that our parameter has hard constraints or boundaries (e.g. height is strictly positive, minimum possible temperature is -273.15 °C ...) we should probably use priors that do not set these hard constraints. For example, instead of U(0,1), we could use N(0.5, 0.5).
+
+A distribution that deserves a special mention in the section of non-informative priors is the beta distribution. Beta is our go-to distribution whenever we are working with probabilities. Beta distribution has two parameters $\alpha$ (number of successes) and $\beta$ (number of fails). Since higher values of both parameters mean that we have more information (e.g. we observed more cases of a binary experiment) it is intuitive that non-informative priors should have low values of both parameters. The first and probably the most commonly used option is Beta(1, 1), also called the Bayes-Laplace prior, which results in a uniform distribution between 0 and 1:
+
+<center>
+![](./figs/beta11.png)
+</center>
+
+The second commonly used option is the Jeffrey's prior Beta(0.5, 0.5). As values of both parameters are lower than 1 things get a bit abstract, Beta(0.5, 0.5) can be interpreted that our experiment resulted in half of a successful trial and half of an unsuccessful trial. The figure below visualizes this prior distribution:
+
+<center>
+![](./figs/beta0505.png)
+</center>
+
+Other popular choices have even lower values of both parameters, the "neutral" prior has both parameters set to 1/3 ($\alpha = \beta = 1/3$). The most abstract and theoretical of them all is the Haldane's prior which sets both parameters of the beta distribution to 0 ($\alpha = \beta = 0$). As you might imagine, this is hard to interpret or represent in a real world scenario and is usually not suitable for a prior choice in practice since it represents an improper distribution. Beta(0,0) is an "improper prior" because its integration (from 0 to 1) fails to strictly converge to 1 due to the singularities at each end (the PDF has an infinitely high "spike" at values 0 and 1). Because of this an alternative is to use an approximation of Haldane's prior which sets both parameters to a very small value ($\alpha = \beta = \epsilon, \epsilon > 0$).
+
+Some classifications of prior types also define a group of super vague, but proper priors, for example N(0, 100000). In practice, these carry almost no information and can be treated as non-informative. The only advantage they have is that they are represented by a proper distribution and can in some cases alleviate some of the sampling issues encountered with non-informative (improper, flat) priors. However, just like with non-informative priors usage of super vague priors is not recommended and we should put some additional effort and define weakly informative priors.
+
+## Weakly informative priors
+
+As the name suggests weakly informative priors provide a little of information. As a result, if we have reasonably large amounts of data, weakly informative priors will have little influence on inferences and the data will prevail. If there are little data then weakly informative priors have a significant influence on the posterior inference. Weakly informative priors are usually our go-to choice and there are very little scenarios when we are unable to construct weakly informative priors. We often do not have much knowledge about the exact values of parameters, but we are almost always aware of the scale of these parameters and we can use this information to construct weakly informative priors. When defining priors it is a good practice to perform prior predictive checking, this is by far the best way to examine how informative the priors are in the scale of the outcome, which is what we are interested about in the end.
+
+As shown in recent research (Sarma and Kay 2020) the term weakly informative priors is quite vague and the definition is not strict. Authors of this study asked statisticians to put weakly informative priors on parameters in a hypothetical study and the answered varied significantly. However, there are some general guidelines we can follow when going with weakly informative priors.
+
+Cauchy distribution is probably the most frequent distribution for putting priors on parameters in a plethora of different models, including GLMs. As shown in Gelman et al. 2008 a Cauchy(0, 2.5) distribution is a good weakly informative prior for beta coefficients in regression models. The assumption here is that numeric predictors are standardized while binary predictors have the mean 0 and standard deviation 0.5. For example, if we have a binary predictor which has the value 0 in 20% of cases and the value 1 in 80% then we would assign the value of -0.2 to cases with previous value 0 and 0.8 to others. The Cauchy(0, 2.5) in the simplest setting is a longer-tailed version of the distribution attained by assuming one-half additional success and one-half additional failure in a logistic regression. And as shown in a number of practical examples works surprisingly well in most cases.
+
+In terms of priors, the main advantage of Cauchy distribution over the more widely used normal distribution is the fact that it was wider tails and is as such less restrictive -- if we were to restrictive with our prior choice, the mistake will be much less penalized in the case of Cauchy distribution than in the case of a normal distribution. In other words, the normal distribution is not robust enough. However, in some cases (for example, the data are not informative enough) sampling from the posterior distribution can be challenging because of thick tails. A possible solution here is to use a Student's t distribution, with Student's t we can use the degrees of freedom parameter ($\nu$) to tune the thickness of distribution's tails, some recent studies (Ghost et al. 2018) propose $3 < \nu < 7$. To be fair we are being quite pedantic here, for example the most popular library for Bayesian regressions `rstanarm` uses N(0, 2.5) priors as a default and it works perfectly fine in the vast majority of cases. Obviously, the library also allows users to set their own priors for the cases where the defaults are failing. In the literature, you will also commonly encounter a N(0, 1) prior on beta coefficients and more often than not this one also works fine. It is important though to be aware of the weaknesses of each choice so you are able to overcome them when they do appear.
+
+Weakly informative priors also play an important role in regularization, here it is key that our priors contain enough information for regularization. The key idea here is that weakly informative priors should provide enough information to rule out unreasonable parameter values but not too much information which could rule out values that might make sense. As shown in our GLMs lecture and the ozone example Bayesian L1 (lasso) or L2 (ridge) regression can make wonders. In both cases we put a hierarchical hyper-prior on beta coefficients, in the case of L2 (ridge) regression we use a normal prior on beta coefficients with a hierarchical Cauchy hyper-prior:
+
+```
+parameters {
+  real alpha;               // intercept
+  vector[k] beta;           // beta coefficients
+  real<lower=0> sigma;      // sd
+  real<lower=0> sigma_beta; // hierarchical sd across betas
+}
+
+model {
+  // penalized regression - Bayesian L2
+  // per Erp et al. 2019 - Shrinkage priors for Bayesian penalized regression
+  sigma_beta ~ cauchy(0, 1);
+  beta ~ normal(0, sigma_beta);
+  
+  y ~ normal(X * beta + alpha, sigma);
+}
+```
+
+In the case of L1 (lasso) regression we use a double-exponential (Laplace) prior on beta coefficients with a hierarchical Cauchy hyper-prior:
+
+```
+parameters {
+  real alpha;               // intercept
+  vector[k] beta;           // beta coefficients
+  real<lower=0> sigma;      // sd
+  real<lower=0> sigma_beta; // hierarchical sd across betas
+}
+
+model {
+  // penalized regression - Bayesian L1
+  // per Erp et al. 2019 - Shrinkage priors for Bayesian penalized regression
+  sigma_beta ~ cauchy(0, 1);
+  beta ~ double_exponential(0, sigma_beta); 
+  
+  y ~ normal(X * beta + alpha, sigma);
+}
+```
+
+## Informative priors
+
+Informative priors represent the available relevant information about the problem, known before seeing the data. As such, they are usually based either on previous research or on expert knowledge. When documenting analyses that use informative priors, it is extremely important to clearly argument each of your choices, be explicit -- write a sentence or two about each parameter's prior choice in the model. 
+
+There is no clearly defined way for checking how informative our priors are. As usual prior predictive checking are a good starting point. Another practical way to informative priors from weakly informative ones is to compare posterior standard deviation and prior standard deviation for each parameter. If the posterior standard deviation is more than 0.1 times the prior standard deviation the prior for that particular parameter can be considered informative. Based on this information we can then revisit our prior choices and possibly reduce the amount of information they carry. Remember that Bayesian modeling is an iterative process and we usually do a couple of passes over all aspects of our model before we are satisfied.
+
+A lot of researchers tend to lean towards priors that carry less information. This introduces some skepticism about results of prior studies, about expert knowledge or about the process of extracting (eliciting) knowledge from experts. The idea here is that the loss of information by making priors weaker is less penalizing then using informative priors that are not completely representative of the problem at hand.
+
+# Expert knowledge elicitation
+
+A common way to define informative priors is by eliciting knowledge from experts. As you already know the language we use for every day communication is not suitable for precise specifications of distributions and uncertainty. The only suitable language for eliciting prior information are concise definitions of probability distributions (the name of the distribution and exact values of its parameters). Since experts from several domains do not speak this language, researchers had to come up with a better solution than forcing experts to write distributions and parameter values on a piece of paper. As you might imagine this might be problematic even for experts in probability -- most of us find it hard to imagine the layout of a particular distribution just from its parameters (with the exception of the most basic distributions maybe). Like in most cases when we have to envision something, visualizations can be of tremendous assistance here.
+
+Luckily researchers developed tools that solve both issues outlined above at the same time -- they implement easy to understand techniques for eliciting prior knowledge from experts that are not familiar with distributions and they visualize resulting distributions so expert can check if what they described matches their knowledge. We will use the MATCH tool developed by Morris et al. (http://optics.eee.nottingham.ac.uk/match/uncertainty.php) to elicit knowledge about parameter $\theta$ that lies on an [x, y] interval. The MATCH tool supports elicitation of expert knowledge through five techniques:
+
+* Roulette -- experts are provided a grid of equally sized bins which cover the range of possible values (from x to y) of the parameter in question. Next, the expert is asked to place chips into these bins, the more chips the expert places in a particular bin the more likely the true value of the parameter lies in that bin. This methods got its name because expert is asked to place a certain amount of chips into equally spaced bins -- in a way this is similar to betting in roulette. In a way, we are forcing the expert to draw the histogram of the parameter in question.
+
+* Quartile -- this method uses bisection to elicit knowledge from the expert. The expert is first asked to determine the median value of $\theta$. Once the median is set, the expert is asked to define the lower (first, Q1) and the higher (upper, Q3) quartiles. 
+
+* Tertile -- this method is similar to the quartile method, except that this time around the expert has to set the median, followed by the 33^rd^ and 66^th^ percentiles (both tertiles).
+
+* Probability -- the expert is asked to provide three probabilities $P_1$, $P_2$ and $P_3$. If $x$ is the maximum value of $\theta$ then by default $P_1 = Pr(x < \theta < x + \frac{y-x}{4})$, $P_2 = Pr(x + \frac{3 (y-x)}{4} < \theta < y)$ and $P_3 = Pr(0 < \theta < x + \frac{y-x}{2})$. If desired, the thresholds in terms containg $x$ and $y$ can be set manually by the expert.
+
+* Hybrid -- this method combines the quartile/tertile method with the probability method. In the first step the expert is asked to provide the median, which is followed by providing two probabilities $P_1 = Pr(x < \theta < x + \frac{y-x}{3})$ and $P_2 = Pr(x + \frac{2 (y-x)}{3} < \theta < y)$.
+
+Once expert provide their judgment, MATCH uses the least squares procedure to fit various parametric distributions numerically. It fits 6 different distributions (normal, Student's t, scaled beta, gamma, log normal and log Student's t) and automatically denotes which one fits expert's judgment the best. For Student's t the degrees of freedom parameter is set to 3, to give a more heavy tailed alternative to the normal distribution (to get the Cauchy distribution, degrees of freedom need to equal 1). Below is a snapshot of the MATCH tool developed by Morris et al. at the University of Nottingham.
+
+<center>
+![](./figs/MATCH.png)
+</center>
+
+# Recommended readings
+
+* Gelman A., Jakulin A., Pittau M. G., Yu-Sung Su. (2008). A weakly informative default prior distribution for logistic and other regression models. https://projecteuclid.org/download/pdfview_1/euclid.aoas/1231424214
+
+* Gelman A. et al. (2020). Prior Choice Recommendations. https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations
+
+* Morris D. E., Oakley J. E., Crowe J. A., (2014). A web-based tool for eliciting probability distributions from experts. http://dx.doi.org/10.1016/j.envsoft.2013.10.010
+
+* Morris et al. (2014). MATCH Uncertainty Elicitation Tool. http://optics.eee.nottingham.ac.uk/match/uncertainty.php
+
+* Gabry J., Simpson D., Vehtari A., Betancourt M., Gelman A. (2019). Visualization in Bayesian workflow. https://rss.onlinelibrary.wiley.com/doi/full/10.1111/rssa.12378
+
+* Sarma A., Kay M. (2020). Prior Setting in Practice: Strategies and Rationales Used in Choosing Prior Distributions for Bayesian Analysis. https://dl.acm.org/doi/abs/10.1145/3313831.3376377
+
+* Ghosh J., Li Y., Mitra R. (2018). On the Use of Cauchy Prior Distributions for Bayesian Logistic Regression. https://projecteuclid.org/euclid.ba/1488855634
+
+* Wikipedia. (2020). Uninformative beta priors. https://en.wikipedia.org/wiki/Beta_distribution#Bayesian_inference
