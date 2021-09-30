@@ -1,12 +1,14 @@
 ---
 title: "Probabilistic thinking"
+author: Erik Štrumbelj and Jure Demšar, University of Ljubljana
 output:
-  pdf_document: default
-  html_document: default
+    prettydoc::html_pretty:
+      highlight: github
+      theme: architect
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 ```
 
 ### In preparation for this lecture

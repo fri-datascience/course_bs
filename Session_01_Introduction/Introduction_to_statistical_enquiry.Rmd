@@ -1,12 +1,14 @@
 ---
 title: "Introduction to statistical enquiry"
+author: Erik Štrumbelj and Jure Demšar, University of Ljubljana
 output:
-  pdf_document: default
-  html_document: default
+    prettydoc::html_pretty:
+      highlight: github
+      theme: architect
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 ```
 
 > *Statistical thinking is the statistical incarnation of common sense.* ~ Wild & Pfannkuch
@@ -17,7 +19,7 @@ Read *Novais, S., Evangelista, L. A., Reis-Júnior, R., & Neves, F. S. (2016). H
 
 ### Summary
 
-The main goal of this handout is to provide an introduction to the process of statistical enquiry. What is statistical enquiry, why is it important, and how do we approach it in a systematic way. We base our introduction on Wild and Pfannkuch's 4 dimensions of statistical enquiry, with special focus on the 1st dimension, the PPDAC investigative cycle (Problem, Plan, Data, Analysis, Conclusions).
+The main goal of this handout is to provide an introduction to the process of statistical enquiry. What is statistical enquiry, why is it important, and how do we approach it in a systematic way? We base our introduction on Wild and Pfannkuch's 4 dimensions of statistical enquiry, with special focus on the 1st dimension, the PPDAC investigative cycle (Problem, Plan, Data, Analysis, Conclusions).
 
 ### From practical questions to practical decisions
 

@@ -31,6 +31,45 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+<style type="text/css">
+a.anchor-section {margin-left: 10px; visibility: hidden; color: inherit;}
+a.anchor-section::before {content: '#';}
+.hasAnchor:hover a.anchor-section {visibility: visible;}
+</style>
+<script>// Anchor sections v1.0 written by Atsushi Yasumoto on Oct 3rd, 2020.
+document.addEventListener('DOMContentLoaded', function() {
+  // Do nothing if AnchorJS is used
+  if (typeof window.anchors === 'object' && anchors.hasOwnProperty('hasAnchorJSLink')) {
+    return;
+  }
+
+  const h = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+  // Do nothing if sections are already anchored
+  if (Array.from(h).some(x => x.classList.contains('hasAnchor'))) {
+    return null;
+  }
+
+  // Use section id when pandoc runs with --section-divs
+  const section_id = function(x) {
+    return ((x.classList.contains('section') || (x.tagName === 'SECTION'))
+            ? x.id : '');
+  };
+
+  // Add anchors
+  h.forEach(function(x) {
+    const id = x.id || section_id(x.parentElement);
+    if (id === '') {
+      return null;
+    }
+    let anchor = document.createElement('a');
+    anchor.href = '#' + id;
+    anchor.classList = ['anchor-section'];
+    x.classList.add('hasAnchor');
+    x.appendChild(anchor);
+  });
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -170,18 +209,18 @@ code span.ot { color: #007020; }
 <li>When modeling the relationship between independent and dependent variables, simple linear regression often gives suboptimal results. We need a more powerful tool, especially so in cases where the dependent variable is not metric.</li>
 <li>Generalized linear model (GLM) is a powerful tool capable of working with dependent variables of various scale types (metric, ordinal, nominal and count) and error distributions other than normal.</li>
 <li>The simple linear model is actually the simplest of all GLMs.</li>
-<li>In the GLM beta coefficients are usually not as easy to interpret as in the case of simple linear regression. Fortunately, we require only some relatively easy math to make them understandable!</li>
+<li>In the GLM, beta coefficients are usually not as easy to interpret as in the case of simple linear regression. Fortunately, we only need some relatively easy math to make them understandable!</li>
 </ul>
 </div>
 <div id="parameters-of-linear-regression-models" class="section level1">
 <h1>Parameters of linear regression models</h1>
 <p>Typically linear regression models have several parameters, the number of parameters depends on the number of independent variables and their interactions. For the purpose of this explanation let us return to the 50 startups datasets that we used for our last homework. In this example we will investigate the relationship between resources invested in research, administration and marketing and the company’s profit. For simplicity sake, we will discard the location variable.</p>
 <p>The gist of our problem was to figure out how we should distribute our resources if we just opened a startup company, in other words we are interested it the ratio between funds spent for research, administration and marketing that is expected go generate the most profit. We will use Bayesian multiple linear regression (we use the term simple linear regression when there is only one independent variable and the term multiple linear regression if we have more than one independent variable):</p>
-<p><span class="math display">\[y_i \: | \: x_i, \alpha, \beta_r, \beta_a, \beta_m, \sigma \sim N(\alpha + \beta_r x_{r,i} + \beta_a x_{a,i} + \beta_m x_{m,i}, \sigma),\]</span> <span class="math display">\[\beta_r, \beta_a, \beta_n \sim N(0, 1).\]</span></p>
+<p><span class="math display">\[y_i \; | \; x_i, \alpha, \beta_r, \beta_a, \beta_m, \sigma \sim N(\alpha + \beta_r x_{r,i} + \beta_a x_{a,i} + \beta_m x_{m,i}, \sigma),\]</span> <span class="math display">\[\beta_r, \beta_a, \beta_n \sim N(0, 1).\]</span></p>
 <div id="the-intercept" class="section level2">
 <h2>The intercept</h2>
 <p><span class="math inline">\(\alpha\)</span> (or often <span class="math inline">\(\beta_0\)</span>) represents the intercept, the value of the dependent variable (<span class="math inline">\(y\)</span>) when all independent variables (<span class="math inline">\(x\)</span>) are set to zero. There are cases where removing the <span class="math inline">\(\alpha\)</span> parameter might make sense, with this we would make the model less flexible by fixing the value of the dependent variable to 0 when all independent variables are 0. There is a strong argument to do this in our case since without any investments there should probably be no profit:</p>
-<p><span class="math display">\[y_i \: | \: x_i, \beta_r, \beta_a, \beta_m, \sigma \sim N(\beta_r x_{r,i} + \beta_a x_{a,i} + \beta_n x_{m,i}, \sigma).\]</span></p>
+<p><span class="math display">\[y_i \; | \; x_i, \beta_r, \beta_a, \beta_m, \sigma \sim N(\beta_r x_{r,i} + \beta_a x_{a,i} + \beta_n x_{m,i}, \sigma).\]</span></p>
 <p>Note though, that the intercept often does make a lot of sense. For example if we were interested in explaining relationship between salaries and work experience (e.g. years of employment) then the intercept would denote the average salary for a person without any work experience (0 years of work experience).</p>
 </div>
 <div id="the-beta-coefficients" class="section level2">
@@ -257,13 +296,13 @@ code span.ot { color: #007020; }
 <div id="polynomial-regression" class="section level2">
 <h2>Polynomial regression</h2>
 <p>As you can image, we have a lot of freedom when designing our regression models. We could model our data whit this model:</p>
-<p><span class="math display">\[y_i \: | \: x_i, \beta_3, \beta_2, \beta_1, \sigma \sim N(\beta_3 x_{r,i}^3 + \beta_2 x_{r,i}^2 + \beta_1 x_{r,i}, \sigma).\]</span></p>
+<p><span class="math display">\[y_i \; | \; x_i, \beta_3, \beta_2, \beta_1, \sigma \sim N(\beta_3 x_{r,i}^3 + \beta_2 x_{r,i}^2 + \beta_1 x_{r,i}, \sigma).\]</span></p>
 <p>This is called polynomial regression and still falls in the category of linear models, we achieved non-linearity by transforming independent variables (something we will do a lot). This could be a completely valid model and might even fit our input data better than the one we used previously. However, making sense of this model’s outputs would be very hard since the <span class="math inline">\(\beta\)</span> coefficients are now much harder to interpret. It is important to always have in mind that in Bayesian analysis we are (usually) trying to devise models that provide us with useful insights about the data generating processes in question! While complex models might fit the data extremely well they are often too hard to understand and do not provide any new insights into the data generating process. In fact, in several sensible scientific fields (such as clinical medicine and trials …) regulative agencies enforce the use of interpretable models only.</p>
 </div>
 <div id="non-additive-interactions-between-independent-variables" class="section level2">
 <h2>Non-additive interactions between independent variables</h2>
 <p>When designing models it is also important to consider possible interactions between independent variables. So far, we used only additive interactions but we are often faced with data where more complex interactions are useful too. Consider, for example, a study where we are trying to model a person’s happiness by using her or his health and annual income. If a person has no income then she or he is most likely unhappy, regardless of its health status. Vice versa, if a person is of extremely poor health, wealth most likely will not cheer her or him up. In such examples, consider adding a multiplicative interaction between independent variables:</p>
-<p><span class="math display">\[y_i \: | \: x_i, \alpha, \beta_h, \beta_w, \beta_{hw}, \sigma \sim N(\alpha + \beta_h x_{h,i} + \beta_w x_{w,i} + \beta_{hw} x_{h,i} x_{w,i}, \sigma).\]</span></p>
+<p><span class="math display">\[y_i \; | \; x_i, \alpha, \beta_h, \beta_w, \beta_{hw}, \sigma \sim N(\alpha + \beta_h x_{h,i} + \beta_w x_{w,i} + \beta_{hw} x_{h,i} x_{w,i}, \sigma).\]</span></p>
 </div>
 <div id="heavily-correlated-independent-variables" class="section level2">
 <h2>Heavily correlated independent variables</h2>
@@ -332,7 +371,7 @@ pairs.panels(X,
 <h2>A formal expression of the GLM</h2>
 <p>We can formally define the GLM as:</p>
 <p><span class="math display">\[E[y] = \mu = f^{-1}(l(x), \theta),\]</span></p>
-<p><span class="math display">\[y \: | \: \mu, \theta \sim \text{p}(y \: | \: \mu, \theta),\]</span></p>
+<p><span class="math display">\[y \; | \; \mu, \theta \sim \text{p}(y \; | \; \mu, \theta),\]</span></p>
 <p>where <span class="math inline">\(x\)</span> are independent variables combined in the linear function <span class="math inline">\(l(x)\)</span>, <span class="math inline">\(f(\cdot)\)</span> is the link function and <span class="math inline">\(f^{-1}(\cdot)\)</span> its inverse. The data <span class="math inline">\(y\)</span> are distributed around the central tendency <span class="math inline">\(\mu\)</span> and possible other parameters <span class="math inline">\(\theta\)</span> in accordance to some probability density function <span class="math inline">\(\text{p}(\cdot)\)</span>.</p>
 <p>The link function (<span class="math inline">\(f(\cdot)\)</span>) and its inverse (<span class="math inline">\(f^-1(\cdot)\)</span>) provide the relationship between the mean of the distribution function and the linear combination of independent variables. The link function should be smooth and injective. It is nice if it is also bijective, but this is not mandatory. The fact that many functions fit these limitations makes the GLM a very flexible tool. However, in practice some functions are more convenient then others. The table below lists some commonly used link functions and their inverses.</p>
 <center>
@@ -342,10 +381,10 @@ pairs.panels(X,
 <div id="logistic-regression" class="section level2">
 <h2>Logistic regression</h2>
 <p>Let us start our venture into GLMs by building on our previous attempt of modeling relationship between person’s height and gender. In our case gender is a binary variable so it would make sense to use a suitable pdf. Bernoulli’s distribution was a good fit when we modeled coin tosses so let us try bulding a linear model with it:</p>
-<p><span class="math display">\[y \: | \: \theta \sim \text{Bernoulli}(\theta),\]</span> <span class="math display">\[f(\theta) = \alpha + x \beta,\]</span> <span class="math display">\[\theta = f^{-1}(\alpha + x \beta),\]</span></p>
-<p><span class="math display">\[y \: | \: x, \alpha, \beta \sim \text{Bernoulli}(f^{-1}(\alpha + x \beta)).\]</span></p>
+<p><span class="math display">\[y \; | \; \theta \sim \text{Bernoulli}(\theta),\]</span> <span class="math display">\[f(\theta) = \alpha + x \beta,\]</span> <span class="math display">\[\theta = f^{-1}(\alpha + x \beta),\]</span></p>
+<p><span class="math display">\[y \; | \; x, \alpha, \beta \sim \text{Bernoulli}(f^{-1}(\alpha + x \beta)).\]</span></p>
 <p>So, the last missing piece of our puzzle is an appropriate link function (<span class="math inline">\(\f^{-1}(\cdot)\)</span>). Our independent variable (<span class="math inline">\(x\)</span>) resides on the real scale, while the <span class="math inline">\(\theta\)</span> parameter of Bernoulli’s distribution has to be on a [0, 1] interval. If we take a look at the common link functions table above we can see several suitable candidates. By far the most popular one is the logit function which gives the name to the method we are constructing – the logistic regression. Thus our model becomes:</p>
-<p><span class="math display">\[\text{logit}(\theta) = \alpha + x \beta,\]</span> <span class="math display">\[\theta = \text{inv_logit}(\alpha + x \beta),\]</span> <span class="math display">\[y \: | \: x, \alpha, \beta \sim \text{Bernoulli}(\text{inv_logit}(\alpha + x \beta)),\]</span></p>
+<p><span class="math display">\[\text{logit}(\theta) = \alpha + x \beta,\]</span> <span class="math display">\[\theta = \text{inv_logit}(\alpha + x \beta),\]</span> <span class="math display">\[y \; | \; x, \alpha, \beta \sim \text{Bernoulli}(\text{inv_logit}(\alpha + x \beta)),\]</span></p>
 <p><span class="math display">\[y \sim \text{Bernoulli}(\frac{1}{1 + e^{-(\alpha + x  \beta)}}).\]</span></p>
 <p>Below is model’s code in Stan, as you can see the Bernoulli logit regression is so common that Stan already has it implemented. Using already implemented distributions in Stan is heavily advisable as they are optimized in many ways.</p>
 <pre><code>data {
@@ -414,7 +453,7 @@ model {
 <div id="poisson-regression" class="section level2">
 <h2>Poisson regression</h2>
 <p>Our next GLM will be the Poisson regression which assumes that the dependent variable is composed of Poisson distributed integers. We will use the logarithm as the link function which means that the inverse link function is the exponent:</p>
-<p><span class="math display">\[y \: | \: x, \alpha, \beta \sim \text{Poisson}(e^{\alpha + X \beta}),\]</span></p>
+<p><span class="math display">\[y \; | \; x, \alpha, \beta \sim \text{Poisson}(e^{\alpha + X \beta}),\]</span></p>
 <p>Below is Stan code for the Poisson regression, note that we use the <code>generated quantitites</code> block to calculate the values of <span class="math inline">\(\lambda\)</span> and predictions on the fly:</p>
 <pre><code>data {
   int&lt;lower=1&gt; n;    // number of data points
@@ -476,7 +515,7 @@ generated quantities {
 <div id="categorical-regression-multinomial-logistic-regression" class="section level2">
 <h2>Categorical regression (multinomial logistic regression)</h2>
 <p>Categorical (or multinomial logistic) regression is the first choice model for nominal independent variables. It can be used for unordered and ordered nominal variables, although ordinal regression is more suitable in the latter case. The formulation of binary logistic regression as a log-linear model can be directly extended to categorical regression. In categorical regression the categorical distribution generalizes the Bernoulli and the softmax function generalizes the inverse logit:</p>
-<p><span class="math display">\[y \: | \: X, \beta \sim \text{categorical}(\text{softmax}(X \beta)),\]</span> <span class="math display">\[\text{softmax}(k, x_1, x_2, \ldots, x_n) = \frac{e^{x_k}}{\sum_{i=1}^{n} e^{x_i}}.\]</span></p>
+<p><span class="math display">\[y \; | \; X, \beta \sim \text{categorical}(\text{softmax}(X \beta)),\]</span> <span class="math display">\[\text{softmax}(k, x_1, x_2, \ldots, x_n) = \frac{e^{x_k}}{\sum_{i=1}^{n} e^{x_i}}.\]</span></p>
 <p>Note here that <span class="math inline">\(\beta\)</span> is not a vector (or a scalar) but a matrix. If we have <span class="math inline">\(k\)</span> outcomes of our dependent variable <span class="math inline">\(y\)</span> and <span class="math inline">\(n\)</span> observations of <span class="math inline">\(m\)</span> independent variables, then <span class="math inline">\(\beta\)</span> will be a matrix with <span class="math inline">\(k\)</span> rows and <span class="math inline">\(m\)</span> columns.</p>
 <p>The classical categorical regression can have problems with identifiability (two or more parametrizations are observationally equivalent). Identifiablity problems arise because softmax is invariant under adding a constant to each component of its input, thus the model is typically only identified if there is a suitable prior on the coefficients. To overcome this we can use a reference category, we implicitly did a similar thing in logistic regression. There we do not have <span class="math inline">\(\beta\)</span> coefficients for both categories, <span class="math inline">\(\beta\)</span> coefficients there are related only to one category (<span class="math inline">\(y = 1\)</span>) while the other is set as a reference (<span class="math inline">\(y = 0\)</span>). In Stan the categorical regression model thus looks like this:</p>
 <pre><code>data {
@@ -584,10 +623,10 @@ c_probs</code></pre>
 <div id="gamma-regression" class="section level2">
 <h2>Gamma regression</h2>
 <p>Gamma regression is useful when our dependent variable resides on the positive side of real numbers. However, using the gamma distribution in a GLM is a bit trickier because it’s two default parameters <span class="math inline">\(\nu\)</span> (shape) and <span class="math inline">\(\lambda\)</span> (rate) do not directly represent the mean and variance. The two parameters of the gamma distribution are traditionally called <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>, here we are using <span class="math inline">\(\nu\)</span> and <span class="math inline">\(\lambda\)</span> to distinguish them from the intercept and <span class="math inline">\(\beta\)</span> coefficients that will come into play later on:</p>
-<p><span class="math display">\[y \: | \: \nu, \lambda \sim \text{gamma}(\nu, \lambda)),\]</span> <span class="math display">\[E[y] = \mu = \frac{\nu}{\lambda},\]</span> <span class="math display">\[\text{Var}(y) = \frac{\nu}{\lambda^2}.\]</span> As you can see we cannot directly map the linear predictor to a gamma parameter. Fear not, we can fix this with some simple calculus. We can reparametrize the gamma distribution to fit our needs:</p>
+<p><span class="math display">\[y \; | \; \nu, \lambda \sim \text{gamma}(\nu, \lambda)),\]</span> <span class="math display">\[E[y] = \mu = \frac{\nu}{\lambda},\]</span> <span class="math display">\[\text{Var}(y) = \phi = \frac{\nu}{\lambda^2}.\]</span> As you can see we cannot directly map the linear predictor to a gamma parameter. Fear not, we can fix this with some simple calculus. We can reparametrize the gamma distribution to fit our needs:</p>
 <p><span class="math display">\[\mu = \frac{\nu}{\lambda},\]</span></p>
-<p><span class="math display">\[\text{Var}(y) = \phi = \frac{\nu}{\lambda^2},\]</span> <span class="math display">\[\nu = \frac{\mu^2}{\phi},\]</span> <span class="math display">\[\lambda = \frac{\mu}{\phi}.\]</span> Now we have an expected value parameter <span class="math inline">\(\mu\)</span> and a variance parameter <span class="math inline">\(\phi\)</span>. Since gamma distribution resides on the positive real scale we can use a log link linear predictor and put everything together:</p>
-<p><span class="math display">\[y \: | \: \mu, \phi \sim \text{gamma}(\frac{\mu^2}{\phi}, \frac{\mu}{\phi}),\]</span> <span class="math display">\[\text{log}(\mu) = \alpha + \beta_1 x_1 + \ldots + \beta_k x_k,\]</span> <span class="math display">\[\mu = e^{\alpha + \beta_1 x_1 + \ldots + \beta_k x_k}.\]</span></p>
+<p><span class="math display">\[\phi = \frac{\nu}{\lambda^2} = \frac{\nu}{\lambda} \frac{1}{\lambda} = \frac{\mu}{\lambda},\]</span> <span class="math display">\[\lambda = \frac{\mu}{\phi},\]</span> <span class="math display">\[\nu = \mu \lambda = \mu \frac{\mu}{\phi} = \frac{\mu^2}{\phi}.\]</span> Now we have an expected value parameter <span class="math inline">\(\mu\)</span> and a variance parameter <span class="math inline">\(\phi\)</span>. Since gamma distribution resides on the positive real scale we can use a log link linear predictor and put everything together:</p>
+<p><span class="math display">\[y \; | \; \mu, \phi \sim \text{gamma}(\frac{\mu^2}{\phi}, \frac{\mu}{\phi}),\]</span> <span class="math display">\[\text{log}(\mu) = \alpha + \beta_1 x_1 + \ldots + \beta_k x_k,\]</span> <span class="math display">\[\mu = e^{\alpha + \beta_1 x_1 + \ldots + \beta_k x_k}.\]</span></p>
 <p>Below is the Stan code for gamma regression, we use the <code>transformed parameters</code> block for the purposes of reparametrization:</p>
 <pre><code>data {
   int n;         // number of observations
@@ -759,18 +798,18 @@ model {
 <h1>Recommended readings</h1>
 <ul>
 <li><p><strong>Regression Models</strong> in Stan User’s Guide (<a href="https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html" class="uri">https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html</a>).</p></li>
-<li><p><strong>Chapter 15 (Overview of the Generalized Linear Model)</strong> in Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.</p></li>
 <li><p><strong>Chapter 6 (Overfitting, Regularization and Information Criteria) and 10 (Counting and Classification)</strong> in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.</p></li>
+<li><p><strong>Chapter 15 (Overview of the Generalized Linear Model)</strong> in Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.</p></li>
 </ul>
 </div>
 <div id="additional-readings" class="section level1">
 <h1>Additional readings</h1>
 <ul>
-<li><p>Wiki page on Linear regression (<a href="https://en.wikipedia.org/wiki/Linear_regression" class="uri">https://en.wikipedia.org/wiki/Linear_regression</a>).</p></li>
-<li><p>Wiki page on Generalized linear model (<a href="https://en.wikipedia.org/wiki/Generalized_linear_model" class="uri">https://en.wikipedia.org/wiki/Generalized_linear_model</a>).</p></li>
-<li><p>van Erp, S., Oberski, D. L., &amp; Mulder, J. (2019). Shrinkage priors for Bayesian penalized regression, 89, 31-50.</p></li>
-<li><p><strong>Part III</strong> of Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.</p></li>
+<li><p>van Erp S., Oberski D. L., &amp; Mulder J. (2019). Shrinkage priors for Bayesian penalized regression, Journal of Mathematical Psychology, 89, 31–50.</p></li>
 <li><p><strong>Chapters 4, 7 and 9</strong> in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.</p></li>
+<li><p><strong>Part III</strong> of Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.</p></li>
+<li><p>Wiki page about the generalized linear model (<a href="https://en.wikipedia.org/wiki/Generalized_linear_model" class="uri">https://en.wikipedia.org/wiki/Generalized_linear_model</a>).</p></li>
+<li><p>Wiki page about the linear regression (<a href="https://en.wikipedia.org/wiki/Linear_regression" class="uri">https://en.wikipedia.org/wiki/Linear_regression</a>).</p></li>
 </ul>
 </div>
 <div id="homework" class="section level1">

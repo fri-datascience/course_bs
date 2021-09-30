@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 * When modeling the relationship between independent and dependent variables, simple linear regression often gives suboptimal results. We need a more powerful tool, especially so in cases where the dependent variable is not metric.
 * Generalized linear model (GLM) is a powerful tool capable of working with dependent variables of various scale types (metric, ordinal, nominal and count) and error distributions other than normal.
 * The simple linear model is actually the simplest of all GLMs.
-* In the GLM beta coefficients are usually not as easy to interpret as in the case of simple linear regression. Fortunately, we require only some relatively easy math to make them understandable!
+* In the GLM, beta coefficients are usually not as easy to interpret as in the case of simple linear regression. Fortunately, we only need some relatively easy math to make them understandable!
 
 # Parameters of linear regression models
 
