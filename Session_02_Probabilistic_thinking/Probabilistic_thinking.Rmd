@@ -126,11 +126,3 @@ This is a relatively simple example, but from this example to the most complicat
 ### Additional readings
 
 * *If you are interested in learning more about the peculiarities of peoples' reasoning with uncertainty, this paper from the nobel laureates Tversky and Kahneman is a great starting point:* Tversky, A., & Kahneman, D. (1974). Judgment under uncertainty: Heuristics and biases. Science, 185(4157), 1124-1131.
-
-### Homework
-
-a. Write down three questions from your everyday live that you often reply to with an uncertain answer. Answer those questions uncertainly with natural language. Then answer those questions using probabilistic answers that roughly correspond to the natural language questions. At least one of the questions must have uncountably many answers (truths) and at least one of the questions must have infinitely but countably many answers.
-
-b. Install Stan and run the bernoulli toy example from the installation instructions. You may use CmdRStan (recommended), RStan, PyStan, or any other interface.
-
-Submit a A5 report that contains (a) and the histogram of the posterior of the parameter from (b).

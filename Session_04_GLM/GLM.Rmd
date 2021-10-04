@@ -703,9 +703,3 @@ The figure below compares absolute values of $\beta$ coefficients between all of
 * Wiki page about the generalized linear model (https://en.wikipedia.org/wiki/Generalized_linear_model).
 
 * Wiki page about the linear regression (https://en.wikipedia.org/wiki/Linear_regression).
-
-# Homework
-
-We want to develop a successful video game. Based on personal preferences, we narrowed down the choice to two genres (shooters and role-playing games) and three platforms (PC, PlayStation/PS and Xbox). For the sake of this homework, assume that there are no tools that allow us simultaneous development for all three platforms. Use the video game sales dataset (`data/videogame_sales.csv`) and a gamma regression model to research how genre and platform influence the game's sales. Submit a 1-page A4 PDF report.
-
-Note: you will probably see some warnings at the beginning of the fitting process. Since those warnings will most likely only appear at the beginning of the warmup phase we can just ignore them here. If the diagnostics we perform on our fit give us no reasons for concern, we can usually just ignore these kind of warnings.

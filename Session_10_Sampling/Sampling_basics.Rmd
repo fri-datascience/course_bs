@@ -255,7 +255,7 @@ TODO: Proof.
 
 Let us simulate the process of two-stage cluster sampling our $n =$ `r n` samples `r m` times to check if that is indeed the case. We will sample 5 clusters based on Best Position with `r n / 5` simple random samples per cluster:
 
-```{r echo=FALSE, warning=FALSE, fig.width=2, fig.height=2}
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="hide", fig.width=2, fig.height=2}
 h_bootstrap <- function(x, group, w, m = 100) {
 
   k       <- length(w)
@@ -283,7 +283,6 @@ library(rstan)
 ml     <- readLines("./clustered.Stan")
 model2 <- stan_model(model_code = ml)
 
-  
   
 # cluster sampling
 mus <- c()
@@ -364,7 +363,7 @@ Snowball sampling is a non-probability sampling scheme that is based on peoples 
 
 Snowball sampling has many sources of bias, including the selection of initial set of subjects and biases from how people suggest new eligible subjects. However, in some cases snowball sampling is the only option we have. For example, when dealing with sensitive topics and hidden populations, such as drug addicts, prostitutes, or experts in narrow scientific fields. In such cases there is no readily available sampling frame but if we find a few eligible subjects, it is very likely that they know several other eligible subjects.
 
-Snowball sampling is one of the few non-probability sampling methods for which some rigorous results are available. A variant of snowball sampling called respondent-driven sampling will, under certain assumptions on the properties of the social network and the recruitement proces, provide unbiased estimates.
+Snowball sampling is one of the few non-probability sampling methods for which some rigorous results are available. A variant of snowball sampling called respondent-driven sampling will, under certain assumptions on the properties of the social network and the recruitment process, provide unbiased estimates.
 
 # Recommended readings
 
@@ -373,7 +372,3 @@ Snowball sampling is one of the few non-probability sampling methods for which s
 # Additional readings
 
 * Salganik, M. J., & Heckathorn, D. D. (2004). Sampling and estimation in hidden populations using respondent-driven sampling. Sociological methodology, 34(1), 193-240.
-
-# Homework
-
-TODO?

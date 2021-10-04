@@ -27,7 +27,7 @@ generated quantities {
     
      tot_w += w[idx];
      mu_est += w[idx] * mu[idx];
-    #  print(idx, " ", tot_w, " ", mu_est, " ", w[idx], " ", mu[idx], " ", mu);
+     // print(idx, " ", tot_w, " ", mu_est, " ", w[idx], " ", mu[idx], " ", mu);
   }
   
   mu_est /= tot_w;

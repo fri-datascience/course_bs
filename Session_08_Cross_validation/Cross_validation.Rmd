@@ -224,9 +224,3 @@ There are several other methods for estimating out-of-sample deviance, for examp
 * Vehtari A., Gelman A., Gnabry J. (2015). Practical Bayesian model evaluation using leave-one-out cross-validation and WAIC, https://arxiv.org/abs/1507.04544.
 
 * Gelman A., Jessica H., Vehtari A. (2014). Understanding predictive information criteria for Bayesian models, Statistics and computing, 24, 997--1016.
-
-# Homework
-
-The `./data/happiness.csv` dataset includes data of the World Happiness Report from 2017--2019. The `score` column is the happiness score (the higher it is more happy the populants of a country are), the `economy` column is GPD per capita and column `perceived_coruption` denotes how populants of a country think of corruption in it (0 means no corruption, 1 is maximum corruption). The goal of this homework is to build three models (if you wish you can build more) that estimate how GDP and/or perceived corruption influence the happiness score. In the first step of your evaluation use LOOIC to determine the quality of your models. In the second step use Akaike weights and LOOIC to gain additional insight into how your models compare against each other. Submit a 1-page A4 PDF report.
-
-Note: the other two columns (`country` and `year`) are in there just to satisfy your curiosity. They are not required for the purpose of this homework.

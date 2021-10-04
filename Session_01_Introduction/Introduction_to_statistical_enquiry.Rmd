@@ -217,11 +217,3 @@ Clearly these dispositions are important not only to statistical enquiry but to 
 * Wild, C. J., & Pfannkuch, M. (1999). Statistical thinking in empirical enquiry. International statistical review, 67(3), 223-248.
 
 * MacKay, R. J., & Oldford, R. W. (2000). Scientific method, statistical method and the speed of light. Statistical Science, 15(3), 254-278.
-
-### Homework
-
-Analyze the statistical enquiry in this paper through the PPDAC model: 
-
-*Ruppanner, L., Brandén, M., & Turunen, J. (2018). Does unequal housework lead to divorce? Evidence from Sweden. Sociology, 52(1), 75-94.*
-
-Focus on the Problem and Plan stages only. Do your best to identify sources of error and provide a critical view. Submit a 1-page A4 report.

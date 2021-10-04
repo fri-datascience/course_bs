@@ -154,7 +154,7 @@ ggplot(df_plot, aes(x=x, y=y)) +
   stat_halfeye(fill="skyblue", alpha=0.75)
 ```
 
-As you can see from the figure above our priors can generate many different prior predictive distributions, they are pretty vague and as such relatively nonrestrictive after all. Because several of generated predictive distributions are plausible for describing human height we should be good to go here. Once we empower the model with our data it should produce a reasonable fit. Now let us try setting the intercept prior to something more restrictive, for example $\text{Cauchy}(0, 2.5)$, which was something that often appeared in your last homework. As you see none of the generated predictive distributions make sense for human height:
+As you can see from the figure above our priors can generate many different prior predictive distributions, they are pretty vague and as such relatively nonrestrictive after all. Because several of generated predictive distributions are plausible for describing human height we should be good to go here. Once we empower the model with our data it should produce a reasonable fit. Now let us try setting the intercept prior to something more restrictive, for example $\text{Cauchy}(0, 2.5)$, which was something that often appeared in our previous lectures. As you see none of the generated predictive distributions make sense for human height:
 
 ![](./figs/prior_predictive_cauchy.png)
 
