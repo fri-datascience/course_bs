@@ -76,7 +76,7 @@ The previous example is as simple as they come: it is a one-dimensional, single 
 
 One of the options at our disposal is grid approximation. We can approximate the posterior distribution by considering a finite grid of parameter values. We can easily calculate the posterior and any particular value of the parameter $p$, we just have to multiply the prior probability of $p$ by the likelihood at $p$. 
 
-```{r}
+```{r, warning = FALSE}
 # libraries
 library(ggplot2)
 
@@ -112,7 +112,7 @@ ggplot(data = df, aes(x = x, y = y)) +
   theme_minimal()
 ```
 
-Even though this solution looks good on paper it is rarely useful in practice. It's main issue is that, as the number of parameters increases, it scales really poorly. In real world example models are often multi dimensional, include several parameters and used distributions are usually not conjugate. As a result, we cannot solve the model analytically or infer from it by using the grid approximation method.
+Even though this solution looks good on paper it is rarely useful in practice. It's main issue is that, as the number of parameters increases, it scales really poorly. In real world models are often multi-dimensional, include several parameters and use distributions that are usually not conjugate. As a result, we cannot solve the model analytically or infer from it by using the grid approximation method.
 
 As it turns out, we can use Markov Chain Monte Carlo (MCMC) to solve this problem in an efficient manner. Indeed, variants of MCMC are the core of all probabilistic programming languages for Bayesian inference. These algorithms require only two things, prior distribution has to be specified by a function that can be easily evaluated and the likelihood function ($p(D|\theta)$) can be computed for any specified values of $D$ and $\theta$. Actually, these methods only demand that the prior and the likelihood can be easily calculated up to a multiplicative constant.
 

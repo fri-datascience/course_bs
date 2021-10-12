@@ -95,7 +95,7 @@ And distributions are nothing but high level compact representations of probabil
 
 * In the count case we might assign the uncertain quantity of the number of customers $N$ a geometric distribution $N \sim \text{Geom(0.1)}$. As long as we agree on the parametrization of the geometric distribution, this is an unambiguous statement that we assign these probabilities:
 
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, out.width = "50%", echo = FALSE, warning = FALSE, fig.align="center"}
 x <- seq(1, 50, 1) - 1
 y <- dgeom(x, 0.1)
 library(ggplot2)
