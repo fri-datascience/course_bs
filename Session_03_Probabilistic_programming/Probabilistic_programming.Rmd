@@ -654,6 +654,9 @@ Just like with other things the easiest solution is usually not the best, it is 
 
 * A visualization of MCMC methods (https://chi-feng.github.io/mcmc-demo/).
 
+* Getting started with CmdStanR
+ (https://mc-stan.org/cmdstanr/articles/cmdstanr.html).
+
 * Stan's documentation (https://mc-stan.org/users/documentation/index.html).
 
 * Wiki page about probabilistic programming (https://en.wikipedia.org/wiki/Probabilistic_programming).
