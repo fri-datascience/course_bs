@@ -32,7 +32,8 @@ stan_data <- list(n=nrow(group1_part1),
 
 fit11 <- model$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 # group1_part2
@@ -45,7 +46,8 @@ stan_data <- list(n=nrow(group1_part2),
 # fit
 fit12 <- model$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 # group2_part1
@@ -58,7 +60,8 @@ stan_data <- list(n=nrow(group2_part1),
 # fit
 fit21 <- model$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 # group2_part2
@@ -71,7 +74,8 @@ stan_data <- list(n=nrow(group2_part2),
 # fit
 fit22 <- model$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 # trace plots of top level parameters

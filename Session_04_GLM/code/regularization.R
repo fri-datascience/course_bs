@@ -96,7 +96,8 @@ fit <- model$sample(
   data = stan_data,
   parallel_chains = 4,
   iter_warmup = 250,
-  iter_sampling = 250
+  iter_sampling = 250,
+  seed = 1
 )
 
 pred <- as_draws_df(fit$draws("pred"))
@@ -130,7 +131,8 @@ fit <- model$sample(
   data = stan_data,
   parallel_chains = 4,
   iter_warmup = 250,
-  iter_sampling = 250
+  iter_sampling = 250,
+  seed = 1
 )
 
 pred <- as_draws_df(fit$draws("pred"))
@@ -164,7 +166,8 @@ fit <- model$sample(
   data = stan_data,
   parallel_chains = 4,
   iter_warmup = 250,
-  iter_sampling = 250
+  iter_sampling = 250,
+  seed = 1
 )
 
 pred <- as_draws_df(fit$draws("pred"))
@@ -198,7 +201,8 @@ fit <- model$sample(
   data = stan_data,
   parallel_chains = 4,
   iter_warmup = 250,
-  iter_sampling = 250
+  iter_sampling = 250,
+  seed = 1
 )
 
 pred <- as_draws_df(fit$draws("pred"))
@@ -232,7 +236,8 @@ fit <- model$sample(
   data = stan_data,
   parallel_chains = 4,
   iter_warmup = 250,
-  iter_sampling = 250
+  iter_sampling = 250,
+  seed = 1
 )
 
 pred <- as_draws_df(fit$draws("pred"))

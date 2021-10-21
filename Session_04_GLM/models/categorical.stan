@@ -24,5 +24,5 @@ model {
   // fit
   for (i in 1:n)
     y[i] ~ categorical_logit(beta * x[i]);
-    // or y[i] ~ categorical(softmax(X[i] * beta));
+    // or y[i] ~ categorical(softmax(beta * x[i]));
 }

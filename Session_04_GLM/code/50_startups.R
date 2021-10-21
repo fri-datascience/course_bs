@@ -32,7 +32,8 @@ stan_data <- list(n = length(y), k = ncol(X), y = y, X = X)
 # fit
 fit <- model$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 # fit with normalization
@@ -43,7 +44,8 @@ stan_data <- list(n = length(y), k = ncol(X), y = y, X = X)
 # fit normalized
 fit_normalized <- model$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 

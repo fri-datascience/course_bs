@@ -25,7 +25,8 @@ stan_data <- list(n=nrow(data),
 
 fit_n <- model_n$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 # group model
@@ -36,7 +37,8 @@ stan_data <- list(n=nrow(data),
 
 fit_g <- model_g$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 # hierarchical model
@@ -47,7 +49,8 @@ stan_data <- list(n=nrow(data),
 
 fit_h <- model_h$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 

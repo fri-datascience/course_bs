@@ -60,7 +60,8 @@ for (m in 0:m_max) {
     data = stan_data,
     parallel_chains = 4,
     iter_warmup = 500,
-    iter_sampling = 500
+    iter_sampling = 500,
+  seed = 1
   )
   
   # uncomment lines below for diagnostic purposes

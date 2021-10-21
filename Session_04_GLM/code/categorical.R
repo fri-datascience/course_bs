@@ -8,10 +8,10 @@ library(tidyverse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/categorical.stan")
+model <- cmdstan_model("./models/categorical2.stan")
 
 # load data
-data <- read.csv("../data/shot_types.csv", stringsAsFactors=TRUE)
+data <- read.csv("./data/shot_types.csv", stringsAsFactors=TRUE)
 
 # contrasts
 contrasts(data$PlayerType) <- contr.treatment(n_distinct(data$PlayerType))
@@ -37,7 +37,8 @@ stan_data <- list(n=nrow(data), m=ncol(X), k=nlevels(y), x=X, y=y)
 # fit
 fit <- model$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 

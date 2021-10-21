@@ -31,7 +31,8 @@ stan_data <- list(n=n, y=y)
 # fit
 fit_normal <- model_normal$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 
@@ -84,7 +85,8 @@ model_exp <- cmdstan_model("../models/exp_normal.stan")
 # fit exponentially modified normal model with incongruent dataset
 fit_exp_i <- model_exp$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 
@@ -197,7 +199,8 @@ stan_data <- list(n=n, y=y)
 
 fit_exp_c <- model_exp$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 # traceplot

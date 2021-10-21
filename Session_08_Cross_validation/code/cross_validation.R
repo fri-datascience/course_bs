@@ -81,7 +81,8 @@ for (p in 0:max_order) {
   # fit
   fit <- model$sample(
     data = stan_data,
-    parallel_chains = 4
+    parallel_chains = 4,
+  seed = 1
   )
   
   # uncomment lines below for diagnostic purposes
@@ -141,7 +142,7 @@ ggplot() +
             alpha=0.3) +
   facet_grid(. ~ order) +
   xlab("Year") +
-  ylab("T [°C]") +
+  ylab("T [ï¿½C]") +
   ylim(6, 14)
 
   

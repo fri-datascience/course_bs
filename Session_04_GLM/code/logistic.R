@@ -26,7 +26,8 @@ stan_data <- list(n=n, x=x, y=y)
 # fit
 fit <- model$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 

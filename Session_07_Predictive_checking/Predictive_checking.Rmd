@@ -135,7 +135,8 @@ stan_data <- list(n=n, x=weights)
 fit <- model$sample(
   data = stan_data,
   fixed_param = TRUE,
-  iter_sampling = 10
+  iter_sampling = 10,
+  seed = 1
 )
 
 # analysis ---------------------------------------------------------------------
@@ -201,7 +202,8 @@ model <- cmdstan_model("./models/normal.stan")
 # fit
 fit <- model$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 # traceplot

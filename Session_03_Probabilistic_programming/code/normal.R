@@ -32,7 +32,8 @@ stan_data <- list(n = 2*n, y = y, g=g)
 
 # fit
 fit <- model$sample(
-  data = stan_data
+  data = stan_data,
+  seed = 1
 )
 
 

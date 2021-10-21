@@ -43,7 +43,8 @@ stan_data <- list(n=nrow(data), m=ncol(X), X=X, y=y)
 # fit
 fit <- model$sample(
   data = stan_data,
-  parallel_chains = 4
+  parallel_chains = 4,
+  seed = 1
 )
 
 

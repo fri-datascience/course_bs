@@ -223,20 +223,20 @@ We can see that this model is much better then the previous one -- it fits the u
 
 | Variable  | Mean              | q5%   | q95% |
 |-----------|-------------------|-------|-------|
-| $\alpha$  | -35.4 $\pm$ 0.132 | -40.6 | -30.4 |
+| $\alpha$  | -34.9 $\pm$ 0.132 | -40.6 | -30.4 |
 | $\beta$   | 0.21 $\pm$ 0.001  | 0.180 | 0.241 |
 
 Does the above $\beta$ value mean that with a 1 cm increase in height the probability of being male increases for 0.21?
 
-$$p(\text{male}|\text{height}=183\,\text{cm}) = p_{183} = \frac{1}{1 + e^{-(-34.9 + 183 \cdot 0.207)}} = 0.954$$
-$$p(\text{male}|\text{height}=184\,\text{cm}) = p_{184} = \frac{1}{1 + e^{-(-34.9 + 184 \cdot 0.207)}} = 0.962$$
+$$p(\text{male}|\text{height}=183\,\text{cm}) = p_{183} = \frac{1}{1 + e^{-(-34.9 + 183 \cdot 0.21)}} = 0.972$$
+$$p(\text{male}|\text{height}=184\,\text{cm}) = p_{184} = \frac{1}{1 + e^{-(-34.9 + 184 \cdot 0.21)}} = 0.978$$
 
-The difference between the two probabilities is 0.08, which is not equal to our $\beta$. But what does $\beta$ tell us then? Things should become clear if we write down the formula for $\theta$:
+The difference between the two probabilities is 0.006, which is not equal to our $\beta$. But what does $\beta$ tell us then? Things should become clear if we write down the formula for $\theta$:
 
 $$\theta = \text{inv_logit}(\alpha + x \beta),$$
 
 $$\text{logit}(\theta) = \alpha + x \beta.$$
-The formula implies that if height ($x$) increases by 1 cm, then $\text{logit}(\theta)$ goes up by $\beta$. So, tu understand $\beta$ coefficients we need to understand the logit function. In our case $\theta$ represents the probability that the person is male ($y = 1$), therefore we can write:
+The formula implies that if height ($x$) increases by 1 cm, then $\text{logit}(\theta)$ goes up by $\beta$. So, to understand $\beta$ coefficients we need to understand the logit function. In our case $\theta$ represents the probability that the person is male ($y = 1$), therefore we can write:
 
 $$\text{logit}(\theta) = \text{logit}(p(y=1)) = log\left(\frac{p(y=1)}{1 - p(y=1)}\right) = log\left(\frac{p(y=1)}{p(y=0)}\right).$$
 
@@ -244,7 +244,7 @@ Since the ratio $\frac{p(y=1)}{p(y=0)}$ represents the odds of outcome 1 to outc
 
 Indeed, if we take a look at the difference between log odds of $p_{183}$ and $p_{184}$:
 
-$$log\left(\frac{p_{184}}{1 - p_{184}}\right) - log\left(\frac{p_{183}}{1 - p_{183}}\right) = 0.207$$
+$$log\left(\frac{p_{184}}{1 - p_{184}}\right) - log\left(\frac{p_{183}}{1 - p_{183}}\right) = 0.21$$
 we get the value of $\beta$.
 
 ## Poisson regression
@@ -291,7 +291,7 @@ generated quantities {
 }
 ```
 
-We will use this for predicting the amount of goals scored on a football match (`data/football.csv`). The dataset contains names of the home and away team, the date of the match, name of the league, home and away goals scored and parameters that describe properties of the two clashing teams. We will the parameters that describe the play-style of the two teams to predict the number of goals scored by the home team. Complete and commented code for this example can be found in `code/poisson.R`, in this document we will touch only the most interesting parts of this analysis.
+We will use this for predicting the amount of goals scored on a football match (`data/football.csv`). The dataset contains names of the home and away team, the date of the match, name of the league, home and away goals scored and parameters that describe properties of the two clashing teams. We will use the parameters that describe the play-style of the two teams to predict the number of goals scored by the home team. Complete and commented code for this example can be found in `code/poisson.R`, in this document we will touch only the most interesting parts of this analysis.
 
 When preparing the input data we decided to standardize the input data. This often results in a better fitting experience and results that are easier to interpret. To do this, we used R's `scale` function. The left graph shows original independent variables while the ones on the right are standardized.
 
@@ -305,7 +305,7 @@ Once we standardize our independent variables we can check their distributions a
   ![](./figs/correlations.png)
 </center>
 
-There were no issues in the fitting process and basic diagnostics show no reasons for concern. A quick inspection of $\beta$ coefficients (see the figure below) suggests that the results make sense -- independent variables associated with the amount of goals scored by the away team (e.g. `X_ScoringAccA` and `X_CornerRatioA`) have less influence on predictions as the variables directly associated with the amount of goals scored by the home team (e.g. `X_ScoringAccH` and `X_CornerRatioH`). In a Bayesian setting we usually determine whether an independent variable has an influence (either positive or negative) on the dependent variable by checking whether the whole 95% CI of its $\beta$ coefficients posterior lies above or below 0.
+There were no issues in the fitting process and basic diagnostics show no reasons for concern. A quick inspection of $\beta$ coefficients (see the figure below) suggests that the results make sense -- independent variables associated with the amount of goals scored by the away team (e.g. `X_ScoringRateA` and `X_CornerRatioA`) have less influence on predictions as the variables directly associated with the amount of goals scored by the home team (e.g. `X_ScoringRateH` and `X_CornerRatioH`). In a Bayesian setting we usually determine whether an independent variable has an influence (either positive or negative) on the dependent variable by checking whether the whole 95% CI of its $\beta$ coefficients posterior lies above or below 0.
 
 <center>
   ![](./figs/poisson_betas.png)
@@ -341,37 +341,32 @@ The classical categorical regression can have problems with identifiability (two
 
 ```
 data {
-  int n;          // number of observations
-  int m;          // number of independent variables
-  matrix[n, m] X; // independent variables
-  int k;          // number of outcomes
-  int y[n];       // dependent variables
+  int<lower=0> n;            // number of observations
+  int<lower=0> m;            // number of independent variables
+  vector[m] x[n];            // independent variables
+  int<lower=0> k;            // number of outcomes
+  int<lower=1,upper=k> y[n]; // dependent variables
 }
 
 transformed data {
-  row_vector[m] zeros = rep_row_vector(0, m);
+  vector[m] zeros;
+  zeros = rep_vector(0, m);
 }
 
 parameters {
-  matrix[k - 1, m] beta_raw; // k - 1, since one category is our reference
+  matrix[k-1, m] beta_raw; // k - 1, since one category is our reference
 }
 
 transformed parameters {
-  matrix[m, k] beta;
-  beta = append_row(beta_raw, zeros); // last category is our reference
+  matrix[k, m] beta;
+  beta = append_row(beta_raw, zeros'); // last category is our reference
 }
 
 model {
-  // multiply here for efficiency since categorical_logit is not vectorized
-  matrix[n, m] X_beta = X * beta;
-
-  // prior on beta - to_vector because we cannot put prior on the whole matrix
-  to_vector(beta) ~ cauchy(0, 2.5);
-
   // fit
   for (i in 1:n)
-    y[i] ~ categorical_logit(X_beta[i]');
-    // or y[i] ~ categorical(softmax(X[i] * beta));
+    y[i] ~ categorical_logit(beta * x[i]);
+    // or y[i] ~ categorical(softmax(beta * x[i]));
 }
 ```
 
@@ -387,7 +382,7 @@ data <- read.csv("./data/shot_types.csv", stringsAsFactors=TRUE)
 Once our variable types are properly set, we can easily prepare matrices with independent and dependent variables. The `model.matrix()` function can be used to create the so called model matrix (https://en.wikipedia.org/wiki/Design_matrix). In model matrices (or design matrices) each row represents an observation of our data, with the successive columns corresponding to the variables and their specific values for that object. To encode nominal variables model matrices use something called contrasts, you can think of contrasts as encoding of variables.
 
 
-```{R}
+```{R, warning=FALSE, message=FALSE}
 # library needed for distinct_n
 library(dplyr)
 
@@ -436,7 +431,7 @@ betas <- matrix(colMeans(df_betas), nrow = 4, ncol = 3)
 ## [3,]  0.000000 0.000000  0.000000  0.000000
 ```
 
-The matrix above represents mean $\beta$ coefficient values. Four columns arise from arise from our input variables ($m=4$) while three rows arise from our outcomes ($k=3$). So, the first column represents intercepts, the second column is associated with distance, the third with players playing at the forward position and the fourth with players playing at the guard position. The first row is associated with the above head shots, the second with hook shots and the third with layouts. For example, the $\beta$ value in the second row, and the third column denotes how probability of a hook shot changes if the player is a forward. Just like with other regressions $\beta$ coefficients are all we need for our analysis. The code snippet below calculates probabilities for each shot type when a center shoots from 0.5 m distance:
+The matrix above represents mean $\beta$ coefficient values. Four columns arise from our input variables ($m=4$), while three rows arise from our outcomes ($k=3$). So, the first column represents intercepts, the second column is associated with distance, the third with players playing at the forward position and the fourth with players playing at the guard position. The first row is associated with the above head shots, the second with hook shots and the third with layups. For example, the $\beta$ value in the second row, and the third column denotes how probability of a hook shot changes if the player is a forward. Just like with other regressions, $\beta$ coefficients are all we need for our analysis. The code snippet below calculates probabilities for each shot type when a center shoots from 0.5 m distance:
 
 ```
 # x <- c(intercept, distance, forward, guard)
@@ -455,11 +450,11 @@ When a center is shooting from 0.5 m there is a 0.2 probability of an above head
   ![](./figs/shot_selection.png)
 </center>
 
-An alternative, and possibly a more elegant way of calculating shot type probabilities would be to use the `generated quantities` block.
+An alternative, and arguably more elegant way of calculating shot type probabilities would be to use the `generated quantities` block.
 
 ## Gamma regression
 
-Gamma regression is useful when our dependent variable resides on the positive side of real numbers. However, using the gamma distribution in a GLM is a bit trickier because it's two default parameters $\nu$ (shape) and $\lambda$ (rate) do not directly represent the mean and variance. The two parameters of the gamma distribution are traditionally called $\alpha$ and $\beta$, here we are using $\nu$ and $\lambda$ to distinguish them from the intercept and $\beta$ coefficients that will come into play later on:
+Gamma regression is useful when our dependent variable resides on the positive side of real numbers. However, using the gamma distribution in a GLM is a bit trickier because it's two default parameters $\nu$ (shape) and $\lambda$ (rate) do not directly represent the mean and the variance. The two parameters of the gamma distribution are traditionally called $\alpha$ and $\beta$, here we are using $\nu$ and $\lambda$ to distinguish them from the intercept and $\beta$ coefficients that will come into play later on:
 
 $$y \; | \; \nu, \lambda \sim \text{gamma}(\nu, \lambda)),$$
 $$E[y] = \mu = \frac{\nu}{\lambda},$$
@@ -474,45 +469,10 @@ $$\nu = \mu \lambda = \mu \frac{\mu}{\phi} = \frac{\mu^2}{\phi}.$$
 Now we have an expected value parameter $\mu$ and a variance parameter $\phi$. Since gamma distribution resides on the positive real scale we can use a log link linear predictor and put everything together:
 
 $$y \; | \; \mu, \phi \sim \text{gamma}(\frac{\mu^2}{\phi}, \frac{\mu}{\phi}),$$
-$$\text{log}(\mu) = \alpha + \beta_1 x_1 + \ldots + \beta_k x_k,$$
-$$\mu = e^{\alpha + \beta_1 x_1 + \ldots + \beta_k x_k}.$$
+$$\text{log}(\mu) = \beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k,$$
+$$\mu = e^{\beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k}.$$
 
-Below is the Stan code for gamma regression, we use the `transformed parameters` block for the purposes of reparametrization:
-
-```
-data {
-  int n;         // number of observations
-  int k;         // number of independent variables
-  matrix[n,k] X; // input variables, model matrix
-  real y[n];     // the dependent variable
-}
-
-parameters {
-  vector[k] beta;    // regression coefficients
-  real<lower=0> phi; // the variance parameter
-}
-
-model {
-  real mu;
-  real nu;
-  real lambda;
-  
-  // slope priors, beta[1] is intercept
-  for(i in 2:k)
-    beta[i] ~ cauchy(0, 2.5);
-  
-  // distribution
-  for (i in 1:n) {
-    // reparametrization
-    mu = exp(X[i] * beta);
-    nu = square(mu) / phi;
-    lambda = mu / phi;
-    
-    y[i] ~ gamma(nu, lambda);
-  }
-}
-
-```
+Based on the above, you should be able to develop a gamma regression model in Stan. We will not provide the model code here, since this is a part of your next homework.
 
 ## Ordered logistic regression
 
@@ -528,9 +488,9 @@ Suppose we have $n$ observations of $m$ independent variables stored in matrix $
 $$\text{logit}(\text{Pr}(y \leq j)) = \text{log}\left(\frac{\text{Pr}(y \leq j)}{1 - \text{Pr}(y \leq j)}\right) = \alpha_j - \beta x,$$
 $$\text{Pr}(y \leq j)) = \frac{1}{1 + e^{-(\alpha_j - \beta x)}},$$
 
-where $\alpha_j$ is a cutpoint (threshold, "intercept") unique to each possible outcome value $j$. Since outcomes are ordered $\alpha_1 < \alpha_2 < \ldots < \alpha_{k-1}$ and the cumulative log odds of the largest variable are always infinity $(\text{log}(1 / (1 - 1)))$ we do not need a parameter for it, which is why me need only $k-1$ cutpoints. In the above equation $\beta x$ is a traditional linear model.
+where $\alpha_j$ is a cutpoint (threshold, "intercept") unique to each possible outcome value $j$. Since outcomes are ordered $\alpha_1 < \alpha_2 < \ldots < \alpha_{k-1}$ and the cumulative log odds of the largest variable are always infinity $(\text{log}(1 / (1 - 1)))$ we do not need a parameter for it, which is why we need only $k-1$ cutpoints. In the above equation $\beta x$ is a traditional linear model.
 
-Notice that we are subtracting the linear model from each cutpoint, the reason being that when we decrease the log cumulative odds of every outcome value $j$ below the maximum ($k$) this shifts probability mass upwards towards higher outcome variables, which is the desired outcome if $\beta$ coefficients are positive. Finally, the probability that the outcome of $y$ equals $j$ is calculated as:
+Notice that we are subtracting the linear model from each cutpoint, the reason being that when we decrease the log cumulative odds of every outcome value $j$ below the maximum ($k$), this shifts probability mass upwards towards higher outcome variables, which is the desired outcome if $\beta$ coefficients are positive. Finally, the probability that the outcome of $y$ equals $j$ is calculated as:
 
 $$\text{Pr}(y = j) = F_y(j) - F_y(j-1) = \text{Pr}(y \leq j) - \text{Pr}(y \leq j - 1).$$
 
@@ -559,7 +519,7 @@ model {
 }
 ```
 
-In the practical example for ordered logistic regression we will analyze how religion (yes/no), gender, college degree (yes/no) and country of residence (USA/Sweden) influence people's beliefs whether their country does enough to fight poverty
+In the practical example for ordered logistic regression we will analyze how religion (yes/no), gender, college degree (yes/no) and country of residence (USA/Sweden) influence people's beliefs whether their country does enough to fight poverty.
 
 
 ## And many more

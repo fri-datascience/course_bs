@@ -56,9 +56,9 @@ and we will use a beta distribution as our prior. The first reason for picking t
 $$p(\theta) = \frac{\theta^{\alpha-1}(1-\theta)^{\beta-1}}{B(\alpha, \beta)} \propto \theta^{\alpha-1}(1-\theta)^{\beta-1}.$$
 If we insert the above Bernolli likelihood and beta prior into the Bayes' rule we get:
 
-$$p(\theta|n,z) \propto \theta^z(1-\theta)^{n-z} \theta^{\alpha-1}(1-\theta)^{\beta-1}$$
+$$p(\theta|n,z) \propto \theta^z(1-\theta)^{n-z} \theta^{\alpha-1}(1-\theta)^{\beta-1},$$
 
-$$p(\theta|n,z) \propto \theta^{(z+\alpha)-1}(1-\theta)^{(n-z+\beta)-1}$$
+$$p(\theta|n,z) \propto \theta^{(z+\alpha)-1}(1-\theta)^{(n-z+\beta)-1},$$
 
 $$p(\theta|n,z) \propto \beta(z+\alpha, n-z+\beta).$$
 The only remaining thing we have to do is to plug our data ($n = 30, z = 20$) and our prior beliefs ($\alpha = 1, \beta = 1$, a uniform prior on the [0, 1] interval) in the equation above:
@@ -484,11 +484,13 @@ stan_data_special <- list(n = nrow(player1_special), y = player1_special$Made)
 
 # fit
 fit_default <- model$sample(
-  data = stan_data_default
+  data = stan_data_default,
+  seed = 1
 )
 
 fit_special <- model$sample(
-  data = stan_data_special
+  data = stan_data_special,
+  seed = 1
 )
 ```
 
@@ -533,7 +535,7 @@ mcse(df_default$theta > df_special$theta)
 
 Now we can compare how this basketball player fares when shooting on a default sized rim in comparison to a smaller rim (the special rim). To do this we just have to compare the model's $\texttt{theta}$ parameter between both cases. Here we are using the $\texttt{mcse}$ library because it conveniently also calculates the Monte Carlo standard error. It is important to always estimate uncertainty in our conclusions!
 
-The first comparison calculates the difference in success between the default and the special rims. We can see that the player has a 30% ($\pm$ 0.2%) higher success rate when shooting on the default rim. The second comparison calculates the probability with which we can claim that player's success is indeed higher when shooting on the default rim. As you can see we can claim this with 99.97% ($\pm$ 0.02%) probability. So we are extremely confident that shooting on a larger rim will yield better success. The code snippet below visualizes this finding.
+The first comparison calculates the difference in success between the default and the special rims. We can see that the player has a 30.78% ($\pm$ 0.2%) higher success rate when shooting on the default rim. The second comparison calculates the probability with which we can claim that player's success is indeed higher when shooting on the default rim. As you can see we can claim this with ~100% ($\pm$ 0%) probability. So we are extremely confident (as confident as we can be) that shooting on a larger rim will yield better success. The code snippet below visualizes this finding.
 
 ```{R message=FALSE}
 # label each dataframe and bind together
@@ -603,7 +605,8 @@ stan_data <- list(n = nrow(data), x = data$x, y = data$y)
 
 # fit
 fit <- model$sample(
-  data = stan_data
+  data = stan_data,
+  seed = 1
 )
 
 # traceplot

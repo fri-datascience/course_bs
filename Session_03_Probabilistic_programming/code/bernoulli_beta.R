@@ -22,7 +22,8 @@ stan_data <- list(n = n, y = y)
 
 # fit
 fit <- model$sample(
-  data = stan_data
+  data = stan_data,
+  seed = 1
 )
 
 
