@@ -14,10 +14,10 @@ model {
   sigma ~ cauchy(0, 10);
   
   // model
-  //y ~ normal(mu, sigma);
+  y ~ normal(mu, sigma);
   
   // or
-  for (i in 1:n) {
-    target += normal_lpdf(y[i] | mu, sigma);
-  }
+  //for (i in 1:n) {
+  //  target += normal_lpdf(y[i] | mu, sigma);
+  //}
 }
