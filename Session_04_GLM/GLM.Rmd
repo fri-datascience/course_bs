@@ -110,7 +110,7 @@ pairs.panels(X,
 )
 ```
 
-The above code snippets create the dummy independent variable and plots the correlation between $x$ and $x2$. We can see that they are heavily correlated (anything else would be most surprising at this point).
+The above code snippet create the dummy independent variable and plots the correlation between $x$ and $x2$. We can see that they are heavily correlated (anything else would be most surprising at this point).
 
 <center>
   ![](./figs/correlation.png)
@@ -519,8 +519,7 @@ model {
 }
 ```
 
-In the practical example for ordered logistic regression we will analyze how religion (yes/no), gender, college degree (yes/no) and country of residence (USA/Sweden) influence people's beliefs whether their country does enough to fight poverty.
-
+See `code/ordered.R` for a practical example of the ordered logistic regression. There we analyze how religion (yes/no), gender, college degree (yes/no) and country of residence (USA/Sweden) influence people's beliefs whether their country does enough to fight poverty.
 
 ## And many more
 

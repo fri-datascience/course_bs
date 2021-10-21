@@ -89,7 +89,7 @@ mean_c <- colMeans(df_cutpoints)
 # a non religious educated female from Sweden
 x <- c(0, 1, 0, 0)
 
-# Get all three cumulative probabilities ones
+# Get all three cumulative probabilities
 f_1 <- 1 / (1 + exp(-(mean_c[1] - as.numeric(mean_beta %*% x))))
 f_2 <- 1 / (1 + exp(-(mean_c[2] - as.numeric(mean_beta %*% x))))
 f_3 <- 1
