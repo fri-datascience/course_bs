@@ -41,7 +41,7 @@ To get some feel about what statistical models really are, let us develop a simp
 ```
 , as you can see the flipping resulted in 20 heads (ones) and 10 tails (zeros). We will solve this problem analytically by using the Bayes' rule:
 
-$$p(\theta|y) = \frac{p(y | \theta) \ p(\theta)}{p(y)} \propto p(y | \theta) \ p(\theta)$$
+$$p(\theta|y) = \frac{p(y | \theta) \ p(\theta)}{p(y)} \propto p(y | \theta) \ p(\theta).$$
 Or in our case:
 
 $$p(\theta|n,z) \propto p(n,z|\theta)p(\theta),$$
@@ -53,17 +53,17 @@ $$p(n,z|\theta) = \theta^z(1-\theta)^{n-z}$$
 
 and we will use a beta distribution as our prior. The first reason for picking the beta distribution is that it forms a conjugate pair with the Bernoulli distribution, meaning that we can solve the problem at hand analytically. The second reason is that the beta distribution's support is [0, 1] which makes it handy for asserting any prior knowledge of parameters that are associated with probability. Our prior will be thus based on beta distribution's PDF:
 
-$$p(\theta) = \frac{\theta^{\alpha-1}(1-\theta)^{\beta-1}}{B(\alpha, \beta)} \propto \theta^{\alpha-1}(1-\theta)^{\beta-1}$$
+$$p(\theta) = \frac{\theta^{\alpha-1}(1-\theta)^{\beta-1}}{B(\alpha, \beta)} \propto \theta^{\alpha-1}(1-\theta)^{\beta-1}.$$
 If we insert the above Bernolli likelihood and beta prior into the Bayes' rule we get:
 
 $$p(\theta|n,z) \propto \theta^z(1-\theta)^{n-z} \theta^{\alpha-1}(1-\theta)^{\beta-1}$$
 
 $$p(\theta|n,z) \propto \theta^{(z+\alpha)-1}(1-\theta)^{(n-z+\beta)-1}$$
 
-$$p(\theta|n,z) \propto \beta(z+\alpha, n-z+\beta)$$
+$$p(\theta|n,z) \propto \beta(z+\alpha, n-z+\beta).$$
 The only remaining thing we have to do is to plug our data ($n = 30, z = 20$) and our prior beliefs ($\alpha = 1, \beta = 1$, a uniform prior on the [0, 1] interval) in the equation above:
 
-$$p(\theta|30,20) \propto \beta(20+1, 30-20+1) \propto \beta(21, 11)$$
+$$p(\theta|30,20) \propto \beta(20+1, 30-20+1) \propto \beta(21, 11).$$
 The figure below visualizes how we updated our prior knowledge about the coin ($\beta(1,1)$, the blue line) after we saw the sequence of tosses listed above ($\beta(21,11)$, the black line).
 
 <center>
@@ -362,8 +362,9 @@ Stan is programmed in c++, as a result traditional coding techniques (such as co
 
 ```
 // conditional statements
-if (condition1)
-  statement1
+if (condition1) {
+  statements
+}
 else if (condition2)
   statement2
 // a comment
@@ -372,8 +373,9 @@ else if (conditionN-1)
 /*
 a comment block
 */
-else
-  statementN
+else {
+  statements
+}
 
 // this is a for loop
 for (n in 1:N) {
@@ -648,11 +650,16 @@ Just like with other things the easiest solution is usually not the best, it is 
 
 # Additional readings
 
+* van de Meent J-W., Paige B., Yang H., Wood F. (2021). An Introduction to Probabilistic Programming (https://arxiv.org/pdf/1809.10756.pdf).
+
 * **Chapters 3 (Sampling the Imaginary) and 8 (Markov Chain Monte carlo)** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
 
 * **Chapter 7 (Markov Chain Monte Carlo)** in Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
 
 * A visualization of MCMC methods (https://chi-feng.github.io/mcmc-demo/).
+
+* Getting started with CmdStanR
+ (https://mc-stan.org/cmdstanr/articles/cmdstanr.html).
 
 * Stan's documentation (https://mc-stan.org/users/documentation/index.html).
 

@@ -82,7 +82,7 @@ This is called polynomial regression and still falls in the category of linear m
 
 ## Non-additive interactions between independent variables
 
-When designing models it is also important to consider possible interactions between independent variables. So far, we used only additive interactions but we are often faced with data where more complex interactions are useful too. Consider, for example, a study where we are trying to model a person's happiness by using her or his health and annual income. If a person has no income then she or he is most likely unhappy, regardless of its health status. Vice versa, if a person is of extremely poor health, wealth most likely will not cheer her or him up. In such examples, consider adding a multiplicative interaction between independent variables:
+When designing models it is also important to consider possible interactions between independent variables. So far, we used only additive interactions but we are often faced with data where more complex interactions are useful too. Consider, for example, a study where we are trying to model people's hapiness by using their health and annual income. If someone has no income then they are most likely unhappy, regardless of their health status. Vice versa, if they are of extremely poor health, wealth most likely will not cheer them up. In such examples, consider adding a multiplicative interaction between independent variables:
 
 $$y_i \; | \; x_i, \alpha, \beta_h, \beta_w, \beta_{hw}, \sigma \sim N(\alpha + \beta_h x_{h,i} + \beta_w x_{w,i} + \beta_{hw} x_{h,i} x_{w,i}, \sigma).$$
 
@@ -133,7 +133,7 @@ If we observe the values for each run more carefully we can see that the sum of 
 
 The generalized linear models (GLM) is an extremely powerful and flexible tool for modeling the relationship between independent variables (also called predictors or explanatory variables) and dependent variables (also called predicted variables or response variables). The GLM generalizes linear regression by allowing the linear model to be related to the response variable via a link function and by allowing the magnitude of the variance of each measurement to be a function of its predicted value.
 
-So far, we already got familiar with the simple linear regression, there we used the value of one metric variable to increase our understanding of another metric variable under the assumption that residuals (errors) are normally distributed. Now, let us try and use the same model for cracking a different nut. Say that we want to use height (in centimetres) of a human being to predict her or his gender. See `models/simple_linear.stan` for Stan code of the model and `code/linear_binary.R` for R code behind this experiment. Since linear regression works with numbers, we had to label the female gender as 0 and the male gender as 1. The visualization below depicts 100 regression lines based on the posterior distributions of intercept and slope in our Bayesian analysis.
+So far, we already got familiar with the simple linear regression, there we used the value of one metric variable to increase our understanding of another metric variable under the assumption that residuals (errors) are normally distributed. Now, let us try and use the same model for cracking a different nut. Say that we want to use height (in centimetres) of humans to predict their gender. See `models/simple_linear.stan` for Stan code of the model and `code/linear_binary.R` for R code behind this experiment. Since linear regression works with numbers, we had to label the female gender as 0 and the male gender as 1. The visualization below depicts 100 regression lines based on the posterior distributions of intercept and slope in our Bayesian analysis.
 
 <center>
   ![](./figs/linear_binary.png)
@@ -167,7 +167,7 @@ $$\theta = f^{-1}(\alpha + x \beta),$$
 
 $$y \; | \; x, \alpha, \beta \sim \text{Bernoulli}(f^{-1}(\alpha + x \beta)).$$
 
-So, the last missing piece of our puzzle is an appropriate link function ($\f^{-1}(\cdot)$). Our independent variable ($x$) resides on the real scale, while the $\theta$ parameter of Bernoulli's distribution has to be on a [0, 1] interval. If we take a look at the common link functions table above we can see several suitable candidates. By far the most popular one is the logit function which gives the name to the method we are constructing -- the logistic regression. Thus our model becomes:
+So, the last missing piece of our puzzle is an appropriate link function ($f^{-1}(\cdot)$). Our independent variable ($x$) resides on the real scale, while the $\theta$ parameter of Bernoulli's distribution has to be on a [0, 1] interval. If we take a look at the common link functions table above we can see several suitable candidates. By far the most popular one is the logit function which gives the name to the method we are constructing -- the logistic regression. Thus our model becomes:
 
 $$\text{logit}(\theta) = \alpha + x \beta,$$
 $$\theta = \text{inv_logit}(\alpha + x \beta),$$

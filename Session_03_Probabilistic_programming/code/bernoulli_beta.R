@@ -59,4 +59,4 @@ ggplot(data = df, aes(x = theta)) +
   ylim(0, 3) +
   ylab("density") +
   theme_minimal() +
-  scale_fill_manual(values = c("skyblue", "grey80"))
+  scale_fill_manual(values = c("skyblue", "grey90"))
