@@ -8,7 +8,7 @@ library(posterior)
 # number of measurements
 n <- 20
 
-# tall
+# data points
 y <- rnorm(20, 0, 20)
 
 # compile the model
