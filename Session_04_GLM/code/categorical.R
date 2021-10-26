@@ -8,12 +8,12 @@ library(tidyverse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("./models/categorical2.stan")
+model <- cmdstan_model("../models/categorical.stan")
 
 # load data
-data <- read.csv("./data/shot_types.csv", stringsAsFactors=TRUE)
+data <- read.csv("../data/shot_types.csv", stringsAsFactors=TRUE)
 
-# contrasts
+# contrasts (one hot encoding)
 contrasts(data$PlayerType) <- contr.treatment(n_distinct(data$PlayerType))
 
 # display contrasts
@@ -56,7 +56,10 @@ df_betas <- as_draws_df(fit$draws("beta"))
 df_betas <- df_betas %>% select(-.chain, -.iteration, -.draw)
 
 # beta matrix composed of sample means
+# working with means from here one for brevity and simplicity purposes
+# the true bayesian way would be to work with samples all the way
 betas <- matrix(colMeans(df_betas), nrow = 3, ncol = 4)
+
 
 # helper softmax function ------------------------------------------------------
 softmax <- function(x){
@@ -64,17 +67,19 @@ softmax <- function(x){
 }
 
 
-# plot probabilities for guards ------------------------------------------------
-precision <- 100
-distance <- seq(0, 10, length.out=precision)
-
-# probabilities for each shot type for a center shooting from 2m
+# calculate example probabilities ----------------------------------------------
+# probabilities for each shot type for a guard shooting from 1.5m
 # x <- c(intercept, distance, forward, guard)
-x <- c(1, 0.5, 0, 0)
+x <- c(1, 1.5, 0, 1)
 
 # calculate probabilities
 c_probs <- softmax(betas %*% x)
 c_probs
+
+
+# plot probabilities for guards ------------------------------------------------
+precision <- 100
+distance <- seq(0, 10, length.out=precision)
 
 # calculate thetas from distance
 df_thetas <- data.frame(Distance=numeric(),

@@ -1,13 +1,13 @@
 data {
   int<lower=1> n; // total number of data points
-  int<lower=1> k; // number of predictors
-  matrix[n, k] X; // independent variables
+  int<lower=1> m; // number of predictors
+  matrix[n, m] X; // independent variables
   vector[n] y;    // dependent variable
 }
 
 parameters {
   real a;              // intercept
-  vector[k] b;         // slope
+  vector[m] b;         // slope
   real<lower=0> sigma; // stdev
 }
 

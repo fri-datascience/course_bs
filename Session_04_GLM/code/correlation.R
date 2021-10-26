@@ -31,12 +31,11 @@ pairs.panels(X,
 )
 
 # prepare data for stan
-stan_data <- list(n = nrow(data), k = ncol(X), X = X, y = data$y)
+stan_data <- list(n = nrow(data), m = ncol(X), X = X, y = data$y)
 
 # fit
 fit <- model$sample(
-  data = stan_data,
-  seed = 1
+  data = stan_data
 )
 
 # diagnostics ------------------------------------------------------------------
@@ -77,11 +76,10 @@ for (i in 1:n_lines) {
 
 # visualize data points with regression lines in the background
 ggplot() + 
-  geom_point(data = data,
-             aes(x = x, y = y),
-             shape = 16,
-             color = "skyblue") +
   geom_line(data=lines,
             aes(x=x, y=y, group=line),
             color="skyblue", alpha=0.2, size=1) +
+  geom_point(data = data,
+             aes(x = x, y = y),
+             shape = 16) +
   theme_minimal()
