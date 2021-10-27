@@ -269,7 +269,7 @@ code span.ot { color: #007020; }
 <h2>Heavily correlated independent variables</h2>
 <p>We will use the multiple linear regression model (<code>models/linear.stan</code>) and a toy dataset (<code>data/toy.csv</code>) to illustrate the behaviour of linear regression when independent variables are heavliy correlated. The <code>toy.csv</code> dataset has a single independent variable <span class="math inline">\(x\)</span>. For this demonstration we will artificially create another one that is heavily correlated with <span class="math inline">\(x\)</span>:</p>
 <pre><code># load the data
-data &lt;- read.csv(&quot;../data/toy.csv&quot;)
+data &lt;- read.csv(&quot;./data/toy.csv&quot;)
 
 # create dummy x2
 data$x2 &lt;- data$x + rnorm(nrow(data), 0, 2)
@@ -402,14 +402,14 @@ model {
 </tbody>
 </table>
 <p>Does the above <span class="math inline">\(\beta\)</span> value mean that with a 1 cm increase in height the probability of being male increases for 0.21?</p>
-<p><span class="math display">\[p(\text{male}|\text{height}=183\,\text{cm}) = p_{183} = \frac{1}{1 + e^{-(-34.9 + 183 \cdot 0.21)}} = 0.972\]</span> <span class="math display">\[p(\text{male}|\text{height}=184\,\text{cm}) = p_{184} = \frac{1}{1 + e^{-(-34.9 + 184 \cdot 0.21)}} = 0.978\]</span></p>
+<p><span class="math display">\[\text{Pr}(\text{male}|\text{height}=183\,\text{cm}) = \text{Pr}_{183} = \frac{1}{1 + e^{-(-34.9 + 183 \cdot 0.21)}} = 0.972\]</span> <span class="math display">\[\text{Pr}(\text{male}|\text{height}=184\,\text{cm}) = \text{Pr}_{184} = \frac{1}{1 + e^{-(-34.9 + 184 \cdot 0.21)}} = 0.978\]</span></p>
 <p>The difference between the two probabilities is 0.006, which is not equal to our <span class="math inline">\(\beta\)</span>. But what does <span class="math inline">\(\beta\)</span> tell us then? Things should become clear if we write down the formula for <span class="math inline">\(\theta\)</span>:</p>
 <p><span class="math display">\[\theta = \text{inv_logit}(\alpha + x \beta),\]</span></p>
 <p><span class="math display">\[\text{logit}(\theta) = \alpha + x \beta.\]</span> The formula implies that if height (<span class="math inline">\(x\)</span>) increases by 1 cm, then <span class="math inline">\(\text{logit}(\theta)\)</span> goes up by <span class="math inline">\(\beta\)</span>. So, to understand <span class="math inline">\(\beta\)</span> coefficients we need to understand the logit function. In our case <span class="math inline">\(\theta\)</span> represents the probability that the person is male (<span class="math inline">\(y = 1\)</span>), therefore we can write:</p>
-<p><span class="math display">\[\text{logit}(\theta) = \text{logit}(p(y=1)) = log\left(\frac{p(y=1)}{1 - p(y=1)}\right) = log\left(\frac{p(y=1)}{p(y=0)}\right).\]</span></p>
-<p>Since the ratio <span class="math inline">\(\frac{p(y=1)}{p(y=0)}\)</span> represents the odds of outcome 1 to outcome 0, then <span class="math inline">\(\text{logit}(\theta)\)</span> represents the log odds of outcome 1 to outcome 0. In other words, <span class="math inline">\(\beta\)</span> denotes the change in log odds if <span class="math inline">\(x\)</span> changes by 1! Note here, that a constant increase in log odds does not denote a constant increase in probability.</p>
-<p>Indeed, if we take a look at the difference between log odds of <span class="math inline">\(p_{183}\)</span> and <span class="math inline">\(p_{184}\)</span>:</p>
-<p><span class="math display">\[log\left(\frac{p_{184}}{1 - p_{184}}\right) - log\left(\frac{p_{183}}{1 - p_{183}}\right) = 0.21\]</span> we get the value of <span class="math inline">\(\beta\)</span>.</p>
+<p><span class="math display">\[\text{logit}(\theta) = \text{logit}(\text{Pr}(y=1)) = log\left(\frac{\text{Pr}(y=1)}{1 - \text{Pr}(y=1)}\right) = log\left(\frac{\text{Pr}(y=1)}{\text{Pr}(y=0)}\right).\]</span></p>
+<p>Since the ratio <span class="math inline">\(\frac{\text{Pr}(y=1)}{\text{Pr}(y=0)}\)</span> represents the odds of outcome 1 to outcome 0, then <span class="math inline">\(\text{logit}(\theta)\)</span> represents the log odds of outcome 1 to outcome 0. In other words, <span class="math inline">\(\beta\)</span> denotes the change in log odds if <span class="math inline">\(x\)</span> changes by 1! Note here, that a constant increase in log odds does not denote a constant increase in probability.</p>
+<p>Indeed, if we take a look at the difference between log odds of <span class="math inline">\(\text{Pr}_{183}\)</span> and <span class="math inline">\(\text{Pr}_{184}\)</span>:</p>
+<p><span class="math display">\[log\left(\frac{\text{Pr}_{184}}{1 - \text{Pr}_{184}}\right) - log\left(\frac{\text{Pr}_{183}}{1 - \text{Pr}_{183}}\right) = 0.21\]</span> we get the value of <span class="math inline">\(\beta\)</span>.</p>
 </div>
 <div id="poisson-regression" class="section level2">
 <h2>Poisson regression</h2>

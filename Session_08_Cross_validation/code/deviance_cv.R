@@ -9,7 +9,7 @@ library(HDInterval)
 
 # model ------------------------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/linear_deviance_cv.stan")
+model <- cmdstan_model("./models/linear_deviance_cv.stan")
 
 
 # modeling ---------------------------------------------------------------------

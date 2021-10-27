@@ -11,10 +11,10 @@ library(psych) # for independent variables correlation plot
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/poisson.stan")
+model <- cmdstan_model("./models/poisson.stan")
 
 # load data
-data <- read.csv("../data/football.csv", sep=";")
+data <- read.csv("./data/football.csv", sep=";")
 
 # drop missing data
 data <- drop_na(data)

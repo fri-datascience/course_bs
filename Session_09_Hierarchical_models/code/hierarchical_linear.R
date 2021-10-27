@@ -10,7 +10,7 @@ library(cowplot)
 
 # data prep and model compilation ----------------------------------------------
 # load data
-data <- read.csv("../data/adaptation_level.csv")
+data <- read.csv("./data/adaptation_level.csv")
 
 # separate groups and parts
 group1_part1 <- data %>% filter(group == 1 & part == 1)
@@ -19,7 +19,7 @@ group2_part1 <- data %>% filter(group == 2 & part == 1)
 group2_part2 <- data %>% filter(group == 2 & part == 2)
 
 # model 
-model <- cmdstan_model("../models/hierarchical_linear.stan")
+model <- cmdstan_model("./models/hierarchical_linear.stan")
 
 
 # fit all four models ----------------------------------------------------------

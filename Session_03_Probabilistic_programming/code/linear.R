@@ -8,10 +8,10 @@ library(tidyverse) # for data manipulations
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/linear.stan")
+model <- cmdstan_model("./models/linear.stan")
 
 # prepare the data
-data <- read.csv("../data/toy.csv")
+data <- read.csv("./data/toy.csv")
 
 # prepare input for Stan
 stan_data <- list(n = nrow(data), x = data$x, y = data$y)
