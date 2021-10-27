@@ -90,11 +90,14 @@ mean_c <- colMeans(df_cutpoints)
 x <- c(0, 1, 0, 0)
 
 # Get all three cumulative probabilities
-f_1 <- 1 / (1 + exp(-(mean_c[1] - as.numeric(mean_beta %*% x))))
-f_2 <- 1 / (1 + exp(-(mean_c[2] - as.numeric(mean_beta %*% x))))
-f_3 <- 1
+F_1 <- 1 / (1 + exp(-(mean_c[1] - as.numeric(mean_beta %*% x))))
+F_2 <- 1 / (1 + exp(-(mean_c[2] - as.numeric(mean_beta %*% x))))
+F_3 <- 1
 
 # Pr(y = j) = Pr(y <= j) - Pr(y <= j - 1)
-Pr_1 = f_1
-Pr_2 = f_2 - f_1
-Pr_3 = f_3 - f_2
+Pr_1 = F_1
+Pr_1
+Pr_2 = F_2 - F_1
+Pr_2
+Pr_3 = F_3 - F_2
+Pr_3

@@ -4,9 +4,9 @@ library(ggplot2)
 library(bayesplot)
 library(posterior)
 library(ggdist)
-library(tidyverse)
 library(cowplot) # for plotting grids of small plots
 library(psych) # for independent variables correlation plot
+library(tidyverse)
 
 
 # modelling and data prep ------------------------------------------------------
@@ -19,11 +19,11 @@ data <- read.csv("./data/football.csv", sep=";")
 # drop missing data
 data <- drop_na(data)
 
-# add ID column
-data$ID <- seq.int(nrow(data))
-
 # prep data
 df_X <- data %>% select(-INFO_Date, -INFO_Competition, -INFO_TeamH, -INFO_TeamA, -Y_FTHG, -Y_FTAG)
+
+# add ID column, we will need it later
+data$ID <- seq.int(nrow(data))
 
 # center and standardize
 X <- scale(df_X)
@@ -95,7 +95,7 @@ ggplot(data = df_lambda_goals, aes(x = Goals, y = Lambda)) +
 # compare predictions vs home goals for Atletico Madrid ------------------------
 df_pred <- df_pred %>% select(-.chain, -.iteration, -.draw)
 
-# compare last 9 games in dataset
+# compare last 9 games in the dataset
 df_am <- data %>% filter(INFO_TeamH == "Ath Madrid")
 df_am <- tail(df_am, 9)
 
