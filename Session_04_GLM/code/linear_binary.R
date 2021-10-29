@@ -8,10 +8,10 @@ library(tidyverse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/simple_linear.stan")
+model <- cmdstan_model("./models/simple_linear.stan")
 
 # load the data
-data <- read.csv("../data/weight_height_gender.csv")
+data <- read.csv("./data/weight_height_gender.csv")
 
 # cast gender to 0..1
 data$Gender <- as.factor(data$Gender)

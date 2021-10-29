@@ -12,7 +12,7 @@ n <- 20
 y <- rnorm(20, 0, 20)
 
 # compile the model
-model <- cmdstan_model("../models/zero_centered.stan")
+model <- cmdstan_model("./models/zero_centered.stan")
 
 # prepare input data
 stan_data <- list(n = n, y = y)

@@ -11,7 +11,7 @@ library(HDInterval) # for HDI intervals
 
 # data prep --------------------------------------------------------------------
 # load the data
-data <- read.csv("../data/flanker.csv")
+data <- read.csv("./data/flanker.csv")
 
 # split
 df_incongruent <- data %>% filter(congruency == "incongruent")
@@ -20,7 +20,7 @@ df_congruent <- data %>% filter(congruency == "congruent")
 
 # the normal model -------------------------------------------------------------
 # compile the model
-model_normal <- cmdstan_model("../models/normal.stan")
+model_normal <- cmdstan_model("./models/normal.stan")
 
 # fit incongruent --------------------------------------------------------------
 # prep the data for Stan
@@ -80,7 +80,7 @@ ggplot() +
 # mean <- mu + 1/lambda
 # var <- sigma^2 + 1\lambda^2
 # compile the model
-model_exp <- cmdstan_model("../models/exp_normal.stan")
+model_exp <- cmdstan_model("./models/exp_normal.stan")
 
 # fit exponentially modified normal model with incongruent dataset
 fit_exp_i <- model_exp$sample(

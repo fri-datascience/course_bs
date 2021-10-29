@@ -10,12 +10,12 @@ library(cowplot)
 
 # data prep and model compilation ----------------------------------------------
 # load data
-data <- read.csv("../data/piglets.csv")
+data <- read.csv("./data/piglets.csv")
 
 # model
-model_n <- cmdstan_model("../models/normal.stan")
-model_g <- cmdstan_model("../models/groups_normal.stan")
-model_h <- cmdstan_model("../models/hierarhical_normal.stan")
+model_n <- cmdstan_model("./models/normal.stan")
+model_g <- cmdstan_model("./models/groups_normal.stan")
+model_h <- cmdstan_model("./models/hierarhical_normal.stan")
 
 
 # fit --------------------------------------------------------------------------

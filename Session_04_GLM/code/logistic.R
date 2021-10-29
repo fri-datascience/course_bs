@@ -9,10 +9,10 @@ library(tidyverse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/logistic.stan")
+model <- cmdstan_model("./models/logistic.stan")
 
 # load data
-data <- read.csv("../data/weight_height_gender.csv", stringsAsFactors=TRUE)
+data <- read.csv("./data/weight_height_gender.csv", stringsAsFactors=TRUE)
 
 # cast gender to 0..1
 data$GenderNumeric <- as.numeric(data$Gender) - 1
