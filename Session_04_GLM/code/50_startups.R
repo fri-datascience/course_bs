@@ -9,7 +9,7 @@ library(ggdist)
 
 # modelling and data prep ------------------------------------------------------
 # model
-model <- cmdstan_model("./models/linear_nointercept.stan")
+model <- cmdstan_model("../models/linear_nointercept.stan")
 
 # data
 data <- read.csv("./data/50_startups.csv")

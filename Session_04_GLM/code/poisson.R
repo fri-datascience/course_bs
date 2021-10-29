@@ -11,7 +11,7 @@ library(tidyverse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("./models/poisson.stan")
+model <- cmdstan_model("../models/poisson.stan")
 
 # load data
 data <- read.csv("./data/football.csv", sep=";")

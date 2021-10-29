@@ -83,7 +83,7 @@ res_te <- rbind(res_te, data.frame(Method = "L1",
 cvfit_L1 <- cvfit
 
 # Bayesian lm no regularization ------------------------------------------------
-model <- cmdstan_model("./models/regularization_none.stan")
+model <- cmdstan_model("../models/regularization_none.stan")
 
 y <- dat_train[, 1]
 X <- dat_train[,-1]
@@ -118,7 +118,7 @@ res_te <- rbind(res_te, data.frame(Method = "lmBayes",
 
 
 # Bayesian lm sceptic prior = 1 ------------------------------------------------
-model <- cmdstan_model("./models/regularization_parameter.stan")
+model <- cmdstan_model("../models/regularization_parameter.stan")
 
 y <- dat_train[, 1]
 X <- dat_train[,-1]
@@ -153,7 +153,7 @@ res_te <- rbind(res_te, data.frame(Method = "lmBayes[1]",
 
 
 # Bayesian lm sceptic prior = 0.1 ----------------------------------------------
-model <- cmdstan_model("./models/regularization_parameter.stan")
+model <- cmdstan_model("../models/regularization_parameter.stan")
 
 y <- dat_train[, 1]
 X <- dat_train[,-1]
@@ -188,7 +188,7 @@ res_te <- rbind(res_te, data.frame(Method = "lmBayes[0.1]",
 
 
 # L1 regularized Bayesian (with hyperprior) ------------------------------------
-model <- cmdstan_model("./models/regularization_hyperprior_l1.stan")
+model <- cmdstan_model("../models/regularization_hyperprior_l1.stan")
 
 y <- dat_train[, 1]
 X <- dat_train[,-1]
@@ -223,7 +223,7 @@ res_te <- rbind(res_te, data.frame(Method = "L1Bayes",
 
 
 # L2 regularized Bayesian (with hyperprior) ------------------------------------
-model <- cmdstan_model("./models/regularization_hyperprior_l2.stan")
+model <- cmdstan_model("../models/regularization_hyperprior_l2.stan")
 
 y <- dat_train[, 1]
 X <- dat_train[,-1]

@@ -11,7 +11,7 @@ library(ggdist)    # for distribution visualizations
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("./models/bernoulli_beta.stan")
+model <- cmdstan_model("../models/bernoulli_beta.stan")
 
 # prepare the data
 n <- 12

@@ -9,7 +9,7 @@ library(tidyverse) # for data manipulations
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("./models/linear.stan")
+model <- cmdstan_model("../models/linear.stan")
 
 # load the data
 data <- read.csv("./data/toy.csv")

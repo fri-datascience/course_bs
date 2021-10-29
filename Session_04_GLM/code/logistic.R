@@ -9,7 +9,7 @@ library(tidyverse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("./models/logistic.stan")
+model <- cmdstan_model("../models/logistic.stan")
 
 # load data
 data <- read.csv("./data/weight_height_gender.csv", stringsAsFactors=TRUE)

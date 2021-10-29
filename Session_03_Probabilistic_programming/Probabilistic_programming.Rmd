@@ -469,7 +469,7 @@ library(bayesplot) # for some quick MCMC visualizations
 library(mcmcse)    # for comparing samples and calculating MCSE
 
 # compile the model
-model <- cmdstan_model("./models/bernoulli_beta.stan")
+model <- cmdstan_model("../models/bernoulli_beta.stan")
 
 # prepare the data
 data <- read.csv("./data/basketball_shots.csv", sep=";")
@@ -595,7 +595,7 @@ The $\texttt{data}$ block contains three variables, `n` stores the total number 
 
 ```{R message=FALSE, results="hide", fig.show="hide"}
 # compile the model
-model <- cmdstan_model("./models/linear.stan")
+model <- cmdstan_model("../models/linear.stan")
 
 # prepare the data
 data <- read.csv("./data/toy.csv")

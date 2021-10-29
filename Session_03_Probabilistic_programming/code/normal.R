@@ -9,7 +9,7 @@ library(mcmcse)    # for comparing samples and calculating MCSE
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("./models/normal.stan")
+model <- cmdstan_model("../models/normal.stan")
 
 # prepare the data
 # number of measurements

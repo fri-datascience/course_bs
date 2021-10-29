@@ -118,10 +118,10 @@ library(ggdist)
 
 # modeling ---------------------------------------------------------------------
 # compile the model
-model <- cmdstan_model("./models/prior_predictive.stan")
+model <- cmdstan_model("../models/prior_predictive.stan")
 
 # for Cauchy(0, 2.5) prior on the intercept use the model below
-#model <- cmdstan_model("./models/prior_predictive_cauchy.stan")
+#model <- cmdstan_model("../models/prior_predictive_cauchy.stan")
 
 # generate data
 n = 100
@@ -197,7 +197,7 @@ stan_data <- list(
 
 # modeling ------- -------------------------------------------------------------
 # compile
-model <- cmdstan_model("./models/normal.stan")
+model <- cmdstan_model("../models/normal.stan")
 
 # fit
 fit <- model$sample(

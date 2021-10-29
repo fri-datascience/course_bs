@@ -9,7 +9,7 @@ library(loo) # for WAIC calculation
 
 # model ------------------------------------------------------------------------
 # compile the model
-model <- cmdstan_model("./models/linear_deviance.stan")
+model <- cmdstan_model("../models/linear_deviance.stan")
 
 
 # modeling ---------------------------------------------------------------------

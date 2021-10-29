@@ -46,7 +46,7 @@ stan_data <- list(n_train=n_train,
 
 # model ------------------------------------------------------------------------
 # compile the model
-model <- cmdstan_model("./models/polynomial.stan")
+model <- cmdstan_model("../models/polynomial.stan")
 
 
 # polynomial modeling ----------------------------------------------------------
