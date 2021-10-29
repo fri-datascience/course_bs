@@ -145,11 +145,11 @@ We can immediately spot a couple of issues here, the most prominent one being th
 
 We can formally define the GLM as:
 
-$$E[y] = \mu = f^{-1}(l(x), \theta),$$
+$$y \; | \; \mu, \theta \sim \text{p}(y \; | \; \mu, \; \theta),$$
 
-$$y \; | \; \mu, \theta \sim \text{p}(y \; | \; \mu, \theta),$$
-
-where $x$ are independent variables combined in the linear function $l(x)$, $f(\cdot)$ is the link function and $f^{-1}(\cdot)$ its inverse. The data $y$ are distributed around the central tendency $\mu$ and possible other parameters $\theta$ in accordance to some probability density function $\text{p}(\cdot)$.
+$$E[y] = \mu = f^{-1}(l(X, \alpha, \beta)),$$
+$$f(\mu) = l(X, \alpha, \beta),$$
+where $X$ are independent variables combined in the linear function $l(\cdot)$ (for example $l(X, \alpha, \beta) = \alpha + X \beta$), $f(\cdot)$ is the link function and $f^{-1}(\cdot)$ its inverse. The data $y$ are distributed around the central tendency $\mu$ and possible other parameters $\theta$ in accordance to some probability density function $\text{p}(\cdot)$.
 
 The link function ($f(\cdot)$) and its inverse ($f^-1(\cdot)$) provide the relationship between the mean of the distribution function and the linear combination of independent variables. The link function should be smooth and injective. It is nice if it is also bijective, but this is not mandatory. The fact that many functions fit these limitations makes the GLM a very flexible tool. However, in practice some functions are more convenient then others. The table below lists some commonly used link functions and their inverses.
 
