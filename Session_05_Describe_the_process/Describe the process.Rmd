@@ -1,0 +1,22 @@
+---
+title: "Describe the process"
+author: Jure Demšar and Erik Štrumbelj, University of Ljubljana
+output:
+    prettydoc::html_pretty:
+      highlight: github
+      theme: architect
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+```
+
+
+# Summary
+
+# Parameters of linear regression models
+
+# Recommended readings
+
+* Andrew Gelman. (2019). Model building and expansion for golf putting (https://mc-stan.org/users/documentation/case-studies/golf.html)
+
