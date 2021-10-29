@@ -14,7 +14,7 @@ library(tidyverse)
 model <- cmdstan_model("../models/poisson.stan")
 
 # load data
-data <- read.csv("./data/football.csv", sep=";")
+data <- read.csv("../data/football.csv", sep=";")
 
 # drop missing data
 data <- drop_na(data)

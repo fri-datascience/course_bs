@@ -8,7 +8,7 @@ library(glmnet)       # for L2 (ridge) and L1 (lasso) regressions
 
 
 # load and prepare data --------------------------------------------------------
-data <- read.csv("./data/ozone.csv")
+data <- read.csv("../data/ozone.csv")
 
 # use 500 to train the rest to test
 idx <- sample(1:nrow(data), 500, rep = F)

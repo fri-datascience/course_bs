@@ -11,7 +11,7 @@ library(HDInterval) # for HDI intervals
 
 # data prep --------------------------------------------------------------------
 # load the data
-data <- read.csv("./data/flanker.csv")
+data <- read.csv("../data/flanker.csv")
 
 # split
 df_incongruent <- data %>% filter(congruency == "incongruent")

@@ -10,7 +10,7 @@ library(cowplot)
 
 # data prep and model compilation ----------------------------------------------
 # load data
-data <- read.csv("./data/piglets.csv")
+data <- read.csv("../data/piglets.csv")
 
 # model
 model_n <- cmdstan_model("../models/normal.stan")

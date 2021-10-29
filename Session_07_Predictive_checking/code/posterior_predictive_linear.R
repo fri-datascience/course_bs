@@ -12,7 +12,7 @@ library(mcmcse)
 model <- cmdstan_model("../models/simple_linear.stan")
 
 # load the data
-data <- read.csv("./data/temperature.csv", sep=";")
+data <- read.csv("../data/temperature.csv", sep=";")
 
 # remove month
 data <- data %>% select(-month)

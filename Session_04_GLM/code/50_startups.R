@@ -12,7 +12,7 @@ library(ggdist)
 model <- cmdstan_model("../models/linear_nointercept.stan")
 
 # data
-data <- read.csv("./data/50_startups.csv")
+data <- read.csv("../data/50_startups.csv")
 
 # let us focus only on research, administration, marketing => profit
 data <- data %>% select(research, administration, marketing, profit)
