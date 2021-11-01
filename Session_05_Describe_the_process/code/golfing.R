@@ -140,6 +140,13 @@ mcmc_trace(fit_angle$draws())
 # summary
 fit_angle$summary()
 
+# extract samples
+df_angle_samples <- as_draws_df(fit_angle$draws())
+
+# print key parameters
+mcse(df_angle_samples$sigma)
+mcse(df_angle_samples$sigma_degrees)
+
 # extract probabilities
 X <- as_draws_matrix(fit_angle$draws())
 X <- X[,4:(4+nrow(data)-1)]
@@ -199,6 +206,14 @@ mcmc_trace(fit_distance$draws())
 
 # summary
 fit_distance$summary()
+
+# extract samples
+df_distance_samples <- as_draws_df(fit_distance$draws())
+
+# print key parameters
+mcse(df_distance_samples$sigma_a)
+mcse(df_distance_samples$sigma_a_degrees)
+mcse(df_distance_samples$sigma_d)
 
 # extract probabilities
 X <- as_draws_matrix(fit_distance$draws())

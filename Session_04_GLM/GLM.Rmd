@@ -629,7 +629,7 @@ On the Bayesian side our comparison implements five different Bayesian linear re
 * Bayesian regression with a regularizing prior ($\sigma_\beta = 0.1$, `models/regularization_none.stan`),
 * Bayesian regression with a regularizing prior ($\sigma_\beta = 1$, `models/regularization_none.stan`),
 * Bayesian lasso regression (regularization through a hyper-prior, `models/regularization_hyperprior_l1.stan`),
-* Bayesianridge regression (regularization through a hyper-prior, `models/regularization_hyperprior_l2.stan`).
+* Bayesian ridge regression (regularization through a hyper-prior, `models/regularization_hyperprior_l2.stan`).
 
 The figure below visualizes results of the comparison.
 
