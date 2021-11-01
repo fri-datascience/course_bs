@@ -65,12 +65,12 @@ If we compare findings between the two methods we can spot significant differenc
 |                | Default           | Normalized        |
 |----------------|-------------------|-------------------|
 | Research       | 0.632 $\pm$ 0.001 | 0.608 $\pm$ 0.001 |
-| Administration | 0.293 $\pm$ 0.001 | 0.184 $\pm$ 0.001 |
-| Marketing      | 0.075 $\pm$ 0.001 | 0.208 $\pm$ 0.001 |
+| Marketing      | 0.293 $\pm$ 0.001 | 0.184 $\pm$ 0.001 |
+| Administration | 0.075 $\pm$ 0.001 | 0.208 $\pm$ 0.001 |
 
 What happened here? When normalizing the data we changed the ratio between research, administration and marketing investments in the input data. The reason for that lies in the fact that maximum and minimum values in columns are different! Since in the normalized case the input data does not reflect the proper ratio between spending of startup companies this input data cannot be used to get the answer we are interested in.
 
-On the other hand, if we are interested in developing a model that is capable of estimating profits of new companies given their spending then normalization or standardization of input variables is a perfectly viable path to take. In this case we no longer care what the ratio between $\beta$ coefficients is, instead we are probably interested only in getting an estimator that is as accurate as possible. The point of this example was to emphasize that we have to be careful when performing various transformation on input data since these transformations might change the results of our analysis. Like previously mentioned, we will often regularize or standardize our input data, but as illustrated in some cases we have to be extra careful when doing this. Before we move onto GLMs let us briefly touch three additional subjects.
+On the other hand, if we are interested in developing a model that is capable of estimating profits of new companies given their spending then normalization or standardization of input variables is a perfectly viable path to take. In this case we no longer care what the ratio between $\beta$ coefficients is, instead we are probably interested only in getting an estimator that is as accurate as possible. The point of this example was to emphasize that we have to be careful when performing various transformation on input data since these transformations might change the results of our analysis. Like previously mentioned, we will often regularize or standardize our input data, but as illustrated in some cases we have to be extra carefule when doing this. Before we move onto GLMs let us briefly touch three additional subjects.
 
 ## Polynomial regression
 
@@ -536,9 +536,9 @@ A Bayesian approach can also overfit the training data, altough it is less likel
 
 ## Using a regularizing (skeptical) prior
 
-Bayesian learning combines prior knowledge with data (facts) to update model's beliefs about the data generating process. If priors are completely uninformative, e.g. $U(-\infty, \infty)$, then updated beliefs will be based completely on the input data which can lead to overfitting. To prevent this we can put a more strict prior on parameter's of our model This way the model will be less excited by the input data. In a way, priors make the model skeptical about the input data. Since such priors achieve the effect of regularization, we often call them regularization priors.
+Bayesian learning combines prior knowledge with data (facts) to update model's beliefs about the data generating process. If priors are completely uninformative (e.g. $U(-\infty, \infty)$) then updated beliefs will be based completely on the input data which can lead to overfitting. To prevent this we can put a more strict prior on model's of our parameter. This way the model will be less excited by the input data. In a way, priors make the model skeptical about the input data. Since such priors achieve the effect of regularization, we often call them regularization priors.
 
-As you already saw by now, we commonly put such priors on $\beta$ coefficients in our regression models, now you know that the main goal of this is to avoid overfitting. But be careful here, if we are too skeptical (we provide too strict priors) then our model will not pay enough attention to the input data and will underfit! If we standardize our input variables then $\beta$ coefficients should be close to 0. In our previous models we put a $\text{Cauchy}(0, 2)$, $N(0, 1)$, or a similar prior on our $\beta$ coefficients. Below is a more flexible way, in this example of a multiple linear regression model we put a $N(0, \sigma_\beta)$ prior on our $\beta$ coefficients, where $\sigma_\beta$ is a hyper-parameter that we can provide as input to the model. Finding the optimal value of this parameter is usually done in the same way as with hyper-parameters in any other machine learning model -- with cross validation or some other approach to model parameter selection.
+As you already saw by now, we commonly put such priors on $\beta$ coefficients in our regression models, now you know that the main goal of this is to avoid overfitting. But be careful here, if we are too skeptical (we provide too strict priors) then our model will not pay enough attention to the input data and will underfit! If we standardize our input variables then $\beta$ coefficients should be close to 0. In our previous models we put a $N(0, 1)$ (or similar) prior on our $\beta$ coefficients. Below is a more flexible way, in this example of a multiple linear regression model we put a $N(0, \sigma_\beta)$ prior on our $\beta$ coefficients, where $\sigma_\beta$ is a hyper-parameter that we can provide as input to the model. Finding the optimal value of this parameter is usually done in the same way as with hyper-parameters in any other machine learning model -- with cross validation or some other approach to model parameter selection.
 
 ```
 data {
@@ -629,7 +629,7 @@ On the Bayesian side our comparison implements five different Bayesian linear re
 * Bayesian regression with a regularizing prior ($\sigma_\beta = 0.1$, `models/regularization_none.stan`),
 * Bayesian regression with a regularizing prior ($\sigma_\beta = 1$, `models/regularization_none.stan`),
 * Bayesian lasso regression (regularization through a hyper-prior, `models/regularization_hyperprior_l1.stan`),
-* Bayesian ridge regression (regularization through a hyper-prior, `models/regularization_hyperprior_l2.stan`).
+* Bayesianridge regression (regularization through a hyper-prior, `models/regularization_hyperprior_l2.stan`).
 
 The figure below visualizes results of the comparison.
 
