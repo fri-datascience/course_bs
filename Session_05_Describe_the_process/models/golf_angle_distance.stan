@@ -1,32 +1,54 @@
 data {
-  int J;
-  int n[J];
-  vector[J] x;
-  int y[J];
-  real r;
-  real R;
-  real overshot;
-  real distance_tolerance;
+  int N;       // number of data points
+  int n[N];    // number of puts at each data poing
+  vector[N] x; // distance for each data point
+  int y[N];    // number of hits at each data point
 }
 
 transformed data {
-  vector[J] threshold_angle = asin((R-r) ./ x);
+  // golf ball radius 2.135 cm
+  real r = 2.135 / 100;
+  // golf hole radius
+  real R = 5.398 / 100;
+  
+  // trehshold angle
+  vector[N] threshold_angle = asin((R-r) ./ x);
+  
+  // distance parameters
+  real o = 0.25;  // overshot
+  real d_t = 0.75; // distance tolerance
 }
 
 parameters {
-  real<lower=0> sigma_angle;
-  real<lower=0> sigma_distance;
+  real<lower=0> sigma_a;
+  real<lower=0> sigma_d;
 }
 
 model {
-  vector[J] p_angle = 2*Phi(threshold_angle / sigma_angle) - 1;
-  vector[J] p_distance = Phi((distance_tolerance - overshot) ./ ((x + overshot)*sigma_distance)) -
-               Phi((- overshot) ./ ((x + overshot)*sigma_distance));
-  vector[J] p = p_angle .* p_distance;
+  // angular probabilities
+  vector[N] p_angle = 2*Phi(threshold_angle / sigma_a) - 1;
+
+  // distance probabilities
+  vector[N] p_distance = Phi((d_t - o) ./ ((x + o)*sigma_d)) -
+               Phi((- o) ./ ((x + o)*sigma_d));
+               
+  // probabilities
+  vector[N] p = p_angle .* p_distance;
+  
+  // priors
+  sigma_a ~ cauchy(0, 2.5);
+  sigma_d ~ cauchy(0, 2.5);
+  
   y ~ binomial(n, p);
-  [sigma_angle, sigma_distance] ~ normal(0, 1);
 }
 
 generated quantities {
-  real sigma_degrees = sigma_angle * 180 / pi();
+    // rad to deg converter
+  real sigma_a_degrees = sigma_a * 180 / pi();
+  
+  // recalculate and return probs
+  // probabilities
+  vector[N] p = (2*Phi(threshold_angle / sigma_a) - 1) .*
+                (Phi((d_t - o) ./ ((x + o)*sigma_d)) -
+                Phi((- o) ./ ((x + o)*sigma_d)));
 }
