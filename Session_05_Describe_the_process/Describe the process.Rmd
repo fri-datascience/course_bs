@@ -97,9 +97,24 @@ $$\alpha = sin^{-1} \left ( \frac{R-r}{x} \right ).$$
 
 This angle defines the accuracy that is required in order for the ball to end up in the cup when putting from a certain distance. Our next step is to model the human error. Because players are not robots they cannot hit each ball exactly in the desired direction. Because of several factors there is some variability involved when trying to achieve this goal. We can assume that the hit angle ($\beta$) follows a zero-centered normal distribution with some standard deviation ($\sigma$). If the hit angle is smaller than the threshold angle ($\alpha$), the ball will end up and in the cup and if it is larger, it will not. We can model this as:
 
-$$Pr(\beta < \alpha) = Pr(\beta < \left ( sin^{-1} \left ( \frac{R-r}{x} \right ) \right ) = 2 \Phi \left ( \frac{sin^{-1} \left ( \frac{R-r}{x} \right )}{\sigma}  \right ) - 1,$$
+$$Pr(|\beta| < \alpha).$$
+Since $\beta$ is a normally distributed variable, we can calculate its CDF by translating it to a random variable of a standard normal distribution ($Z = N(0,1)$). Say $x$ is a random normal variable:
 
-where $\Phi$ is the cumulative density function of the standard normal distribution ($N(0, 1)$). The only unknown parameter in this model is $\sigma$, which denotes the standard deviation of the distribution of shot angles. With $\sigma$ we model the angular accuracy of golfers. The figure below visualized how the probability of making a putt given some distance changes in relation to $\sigma$. A larger $\sigma$ is associated with a less accurate golfer, which results in lower probability of making the putts.
+$$x \sim N(\mu, \sigma),$$
+
+we can calculate the probability that $x$ is smaller than some threshold $y$ as:
+
+$$Pr(x < y) = \Phi(\frac{y - \mu}{\sigma}),$$
+
+where $\Phi$ is the cumulative density function of the standard normal distribution $Z$. And we calculate the probability that $|x|$ is smaller than some threshold $y$ as:
+
+$$Pr(|x| < y) = 2 \Phi(\frac{y - \mu}{\sigma}) - 1.$$
+
+In our case this becomes:
+
+$$Pr(|\beta| < \alpha) = Pr(|\beta| < \left ( sin^{-1} \left ( \frac{R-r}{x} \right ) \right ) = 2 \Phi \left ( \frac{sin^{-1} \left ( \frac{R-r}{x} \right )}{\sigma}  \right ) - 1.$$
+
+The only unknown parameter in this model is $\sigma$, which denotes the standard deviation of the distribution of shot angles. With $\sigma$ we model the angular accuracy of golfers. The figure below visualized how the probability of making a putt given some distance changes in relation to $\sigma$. A larger $\sigma$ is associated with a less accurate golfer, which results in lower probability of making the putts.
 
 <center>
   ![](./figs/sigma_angle.png)
@@ -107,12 +122,12 @@ where $\Phi$ is the cumulative density function of the standard normal distribut
 
 Putting everything together gives us:
 
-$$y_i \; | \; x_i, n_i, p_i \sim \text{Bernoulli}(n_i, p_i),$$
+$$y_i \; | \; x_i, n_i, p_i \sim \text{binomial}(n_i, p_i),$$
 $$p_i = 2 \Phi \left ( \frac{\alpha_i}{\sigma}  \right ) - 1 = 2 \Phi \left ( \frac{sin^{-1} \left ( \frac{R-r}{x_i} \right )}{\sigma}  \right ) - 1,$$
 
 $$\sigma \sim \text{Cauchy}(0, 2.5).$$
 
-Below is the full model code in Stan. We use the \texttt{transformed data} to calculate threshold angles ($\alpha$). Next, the process described above is used for calculating putt probabilities. Calculated probabilities are then used in the Bernoulli model for estimating the accuracy of golfers ($\sigma$), which is the only parameter of our model. Finally, we use the \texttt{generated quantites} block to convert the accuracy of golfers from radians to degrees (Stan works with radians) and also to recalculate probabilities which we use to investigate the quality of our fit.
+Below is the full model code in Stan. We use the \texttt{transformed data} to calculate threshold angles ($\alpha$). Next, the process described above is used for calculating putt probabilities. Calculated probabilities are then used in the binomial model for estimating the accuracy of golfers ($\sigma$), which is the only parameter of our model. Finally, we use the \texttt{generated quantites} block to convert the accuracy of golfers from radians to degrees (Stan works with radians) and also to recalculate probabilities which we use to investigate the quality of our fit.
 
 ```
 data {
@@ -171,9 +186,9 @@ At short putting distances this model fits the data much better than the binomia
 
 Controlling the angle in which we hit the ball is not the only thing that we need to get right in order to make a successful putt. We also need to hit the ball with just the right amount of power. Imagine placing the ball a few centimeters away from the cup and smacking it will all your power. Even if you hit the ball in the ideal direction towards the cup, it will simply jump over it and continue its journey. Mark Broadie upgraded the previous model (developed by Andrew Gelman and Deborah Nolan) by adding an additional parameter that corresponds with the control golfers have over the distance of their putts.
 
-Let us suppose that $\mu$ is the distance the golfer's shot would travel if there would be no hole and $x$ is the distance from the hole. The golf ball will go in if I) the angle allows the ball to go over the cup, and II) $\mu$ is in the range of $[x, x + 0.75]$. In other words, the ball will end up in the cup if it is hit in the right direction and if it will travel at most 75 centimeters farther than the cup if there were no cup. We will call this parameter distance tolerance ($d_t = 0.75 m$). The angular factor (I) was already used in the previous model, here we will also add the distance factor (II).
+Let us suppose that $\mu$ is the distance the golfer's shot would travel if there would be no hole and $x$ is the distance from the hole. The golf ball will go in if I) the angle allows the ball to go over the cup, and II) $\mu$ is in the range of $[x, x + 0.75]$. In other words, the ball will end up in the cup if it is hit in the right direction and if it will travel at most 75 centimeters farther than the cup if there were no cup. We will call this parameter distance tolerance ($d_t = 0.75 \; m$). The angular factor (I) was already used in the previous model, here we will also add the distance factor (II).
 
-Since there is some tolerance of how hard a golfer can hit the ball, the golfers do not try to hit the ball so it stops exactly at the location of the cup as this would be supotimal. They overhit the ball a bit to increase their chances of making a successful put.We will assume that in an ideal putt the ball stops 25 centimeters behind the hole. We will call this parameter overshot ($o = 0.25 m$). The figure below (not to scale) visualizes this logic. The black dashed line denotes a perfect hit, which travels exactly the overshot distance farther than the cup. The ball will end in the cup if stops within the shaded area, the length of the shaded area is defined with the distance tolerance parameter ($d_t$).
+Since there is some tolerance of how hard a golfer can hit the ball, the golfers do not try to hit the ball so it stops exactly at the location of the cup as this would be supotimal. They overhit the ball a bit to increase their chances of making a successful put.We will assume that in an ideal putt the ball stops 25 centimeters behind the hole. We will call this parameter overshot ($o = 0.25 \; m$). The figure below (not to scale) visualizes this logic. The black dashed line denotes a perfect hit, which travels exactly the overshot distance farther than the cup. The ball will end in the cup if stops within the shaded area, the length of the shaded area is defined with the distance tolerance parameter ($d_t$).
 
 <center>
   ![](./figs/distance_explanation.png)
@@ -183,16 +198,16 @@ Just like with angle, golfers do not always hit the ball perfectly -- like menti
 
 $$\mu \sim N(x + o, (x + o) \sigma_d).$$
 
-The distance ($\mu$) is acceptable if $\mu \in [x, x + t_d]$ which has a probability of:
+The distance ($\mu$) is acceptable if $\mu \in [x, x + d_t]$ which has a probability of:
 
-$$Pr(\mu \in [x, x + t_d]) = \Phi \left ( \frac{t_d - o}{(x + o) \sigma_d} \right ) - \Phi \left ( \frac{- o}{(x + o) \sigma_d} \right ).$$
+$$Pr(\mu \in [x, x + d_t]) = Pr(\mu < (x + d_t)) - Pr(\mu < x) = \Phi \left ( \frac{d_t - o}{(x + o) \sigma_d} \right ) - \Phi \left ( \frac{- o}{(x + o) \sigma_d} \right ).$$
 
-To summarize, the golfers are aiming to hit the ball so it will travel exactly $x + o$. The hit will end up in the cup if the ball stops on the $[x - o, x + t_d - o]$ interval. The probability of that is calculated with the above equation. Putting everything together we get the following Bayesian model:
+To summarize, the golfers are aiming to hit the ball so it will travel exactly $x + o$. The hit will end up in the cup if the ball stops on the $[x, x + d_t]$ interval. The probability of that is calculated with the above equation. Putting everything together we get the following Bayesian model:
 
-$$y_i \; | \; x_i, n_i, p_i \sim \text{Bernoulli}(n_i, p_i),$$
+$$y_i \; | \; x_i, n_i, p_i \sim \text{binomial}(n_i, p_i),$$
 $$p_{i,a} = 2 \Phi \left ( \frac{sin^{-1} \left ( \frac{R-r}{x_i} \right )}{\sigma_a}  \right ) - 1,$$
 
-$$p_{i,d} = \Phi \left ( \frac{t_d - o}{(x_i + o) \sigma_d} \right ) - \Phi \left ( \frac{- o}{(x_i + o) \sigma_d} \right ),$$
+$$p_{i,d} = \Phi \left ( \frac{d_t - o}{(x_i + o) \sigma_d} \right ) - \Phi \left ( \frac{- o}{(x_i + o) \sigma_d} \right ),$$
 
 $$p_i = p_{i,a} \; p_{i,d},$$
 $$\sigma_a \sim \text{Cauchy}(0, 2.5),$$
