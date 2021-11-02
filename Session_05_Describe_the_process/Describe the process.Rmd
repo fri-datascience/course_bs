@@ -93,7 +93,7 @@ In our first modeling attempt, we did not really think about the data generating
 
 In an ideal scenario a golf ball with the radius r is hit directly along the desired direction towards the cup with the radius R. This desired direction is visualized as a black dotted line. The gray area and dashed gray lines visualize putts that still end up in the cup, but are not ideal. The farther away from the cup we are the more accurate we need to be. We can calculate the threshold angle ($\alpha$) in relation to the distance from the cup ($x$) as:
 
-$$\alpha = sin^{-1} \left ( \frac{R-r}{x} \right ).$$
+$$\alpha = tan^{-1} \left ( \frac{R-r}{x} \right ).$$
 
 This angle defines the accuracy that is required in order for the ball to end up in the cup when putting from a certain distance. Our next step is to model the human error. Because players are not robots they cannot hit each ball exactly in the desired direction. Because of several factors there is some variability involved when trying to achieve this goal. We can assume that the hit angle ($\beta$) follows a zero-centered normal distribution with some standard deviation ($\sigma$). If the hit angle is smaller than the threshold angle ($\alpha$), the ball will end up and in the cup and if it is larger, it will not. We can model this as:
 
@@ -112,7 +112,7 @@ $$Pr(|x| < y) = 2 \Phi(\frac{y - \mu}{\sigma}) - 1.$$
 
 In our case this becomes:
 
-$$Pr(|\beta| < \alpha) = Pr(|\beta| < \left ( sin^{-1} \left ( \frac{R-r}{x} \right ) \right ) = 2 \Phi \left ( \frac{sin^{-1} \left ( \frac{R-r}{x} \right )}{\sigma}  \right ) - 1.$$
+$$Pr(|\beta| < \alpha) = Pr(|\beta| < \left ( tan^{-1} \left ( \frac{R-r}{x} \right ) \right ) = 2 \Phi \left ( \frac{tan^{-1} \left ( \frac{R-r}{x} \right )}{\sigma}  \right ) - 1.$$
 
 The only unknown parameter in this model is $\sigma$, which denotes the standard deviation of the distribution of shot angles. With $\sigma$ we model the angular accuracy of golfers. The figure below visualized how the probability of making a putt given some distance changes in relation to $\sigma$. A larger $\sigma$ is associated with a less accurate golfer, which results in lower probability of making the putts.
 
@@ -123,7 +123,7 @@ The only unknown parameter in this model is $\sigma$, which denotes the standard
 Putting everything together gives us:
 
 $$y_i \; | \; x_i, n_i, p_i \sim \text{binomial}(n_i, p_i),$$
-$$p_i = 2 \Phi \left ( \frac{\alpha_i}{\sigma}  \right ) - 1 = 2 \Phi \left ( \frac{sin^{-1} \left ( \frac{R-r}{x_i} \right )}{\sigma}  \right ) - 1,$$
+$$p_i = 2 \Phi \left ( \frac{\alpha_i}{\sigma}  \right ) - 1 = 2 \Phi \left ( \frac{tan^{-1} \left ( \frac{R-r}{x_i} \right )}{\sigma}  \right ) - 1,$$
 
 $$\sigma \sim \text{Cauchy}(0, 2.5).$$
 
@@ -144,7 +144,7 @@ transformed data {
   real R = 5.398 / 100;
   
   // trehshold angle
-  vector[N] threshold_angle = asin((R-r) ./ x);
+  vector[N] threshold_angle = atan((R-r) ./ x);
 }
 
 parameters {
@@ -205,7 +205,7 @@ $$Pr(\mu \in [x, x + d_t]) = Pr(\mu < (x + d_t)) - Pr(\mu < x) = \Phi \left ( \f
 To summarize, the golfers are aiming to hit the ball so it will travel exactly $x + o$. The hit will end up in the cup if the ball stops on the $[x, x + d_t]$ interval. The probability of that is calculated with the above equation. Putting everything together we get the following Bayesian model:
 
 $$y_i \; | \; x_i, n_i, p_i \sim \text{binomial}(n_i, p_i),$$
-$$p_{i,a} = 2 \Phi \left ( \frac{sin^{-1} \left ( \frac{R-r}{x_i} \right )}{\sigma_a}  \right ) - 1,$$
+$$p_{i,a} = 2 \Phi \left ( \frac{tan^{-1} \left ( \frac{R-r}{x_i} \right )}{\sigma_a}  \right ) - 1,$$
 
 $$p_{i,d} = \Phi \left ( \frac{d_t - o}{(x_i + o) \sigma_d} \right ) - \Phi \left ( \frac{- o}{(x_i + o) \sigma_d} \right ),$$
 
@@ -231,7 +231,7 @@ transformed data {
   real R = 5.398 / 100;
   
   // trehshold angle
-  vector[N] threshold_angle = asin((R-r) ./ x);
+  vector[N] threshold_angle = atan((R-r) ./ x);
   
   // distance parameters
   real o = 0.25;  // overshot

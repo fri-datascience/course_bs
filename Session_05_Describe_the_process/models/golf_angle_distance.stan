@@ -1,8 +1,8 @@
 data {
   int N;       // number of data points
-  int n[N];    // number of puts at each data poing
+  int n[N];    // number of putts at each data point
   vector[N] x; // distance for each data point
-  int y[N];    // number of hits at each data point
+  int y[N];    // number of successful hits at each data point
 }
 
 transformed data {
@@ -12,7 +12,7 @@ transformed data {
   real R = 5.398 / 100;
   
   // trehshold angle
-  vector[N] threshold_angle = asin((R-r) ./ x);
+  vector[N] threshold_angle = atan((R-r) ./ x);
   
   // distance parameters
   real o = 0.25;  // overshot

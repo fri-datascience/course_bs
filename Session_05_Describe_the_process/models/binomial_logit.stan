@@ -1,8 +1,8 @@
 data {
   int N;       // number of data points
-  int n[N];    // number of puts at each data poing
+  int n[N];    // number of putts at each data point
   vector[N] x; // distance for each data point
-  int y[N];    // number of hits at each data point
+  int y[N];    // number of successful hits at each data point
 }
 
 parameters {
