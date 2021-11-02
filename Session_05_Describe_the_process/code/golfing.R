@@ -135,7 +135,7 @@ fit_angle <- model$sample(
 )
 
 # traceplot
-mcmc_trace(fit_angle$draws())
+mcmc_trace(fit_angle$draws("sigma"))
 
 # summary
 fit_angle$summary()
@@ -202,7 +202,7 @@ fit_distance <- model$sample(
 )
 
 # traceplot
-mcmc_trace(fit_distance$draws())
+mcmc_trace(fit_distance$draws(c("sigma_a", "sigma_d")))
 
 # summary
 fit_distance$summary()
