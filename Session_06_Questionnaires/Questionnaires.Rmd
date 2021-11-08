@@ -35,7 +35,7 @@ Over the course of the chapter we will recognize these overarching themes, which
 
 * Many decisions have to be made when designing a questionnaire.
 * Even minor details in the formulation of questions and answers can have a major effect on the responses obtained and ultimately on the conclusions we draw.
-* Research is scarce and most design recommendations are at least a bit controversial - they should be taken as guidelines and not as absolute truths.
+* Research is scarce and most design recommendations are at least a bit controversial -- they should be taken as guidelines and not as absolute truths.
 * So, when in doubt, the best approach is to test the questions and the questionnaire.
 
 
@@ -57,15 +57,15 @@ For a more systematic treatment we will adopt Tourangeau’s four-stage psycholo
 
 ## General guidelines
 
-If cognitive demands/load on respondents are minimised and mental capacity is freed up in order to think about a response, the quality of the data obtained is likely to improve.
+If cognitive demands/load on respondents are minimized and mental capacity is freed up in order to think about a response, the quality of the data obtained is likely to improve.
 
 ###### Question length
 
-Keep questions as short as possible. Research for the English language suggests a maximum of 15-20 words. On the other hand, some research shows that it increases data quality if a question or group of questions is preceeded by a medium-length introduction (15-60 words).
+Keep questions as short as possible. Research for the English language suggests a maximum of 15-20 words. On the other hand, some research shows that it increases data quality if a question or a group of questions is preceded by a medium-length introduction (15-60 words).
 
 ###### Grammar and vocabulary
 
-In general, we should keep gramatical complexity at a minimum: active over passive, repeat nouns instead of pronouns (you, he, she, it, we, they), avoid negations.
+In general, we should keep grammatical complexity at a minimum: active over passive, repeat nouns instead of pronouns (you, he, she, it, we, they), avoid negations.
 
 Use a simple vocabulary. Avoid specialized terminology and complicated words. Don’t use jargon, avoid ambiguous words. Always spell out the complete form of abbreviations and acronyms.
 
@@ -132,7 +132,7 @@ Respondents frequently question the value of the gathered information to themsel
 
 Below is an example of an introduction from the 2021 internal survey at UL-FRI. What does the introduction do well? Could it be improved and how? 
 
-<b>Satisfaction with faculty services - students</b>
+<b>Satisfaction with faculty services -- students</b>
 
 Dear students!
 
@@ -164,6 +164,7 @@ A good questionnaire ends with a comments section that allows the respondent to 
 There are two main types of questions: **open** and **closed**. Open questions give respondents an opportunity to answer the question in their own words. Closed questions give respondents a choice of answers and the respondent is supposed to select one.
 
 Open questions:
+
 - Allow the respondent to interpret the question and answer how they choose.
 - Their use has been declining over time.
 - Common criticism (without empirical support): results depend on articulation ability of respondent, susceptible to salience effects.
@@ -177,6 +178,7 @@ Suppose we ask the respondent what they think the most important problem facing 
 </div>
 
 Closed questions:
+
 - Provide some consistency across respondents.
 - Easier and faster for the respondent to answer. Typically twice as much time.
 - Easier and faster for the researcher to code and analyze.
@@ -212,8 +214,9 @@ Are you vaccinated against COVID-19?
 </div>
 
 There are several ways of dealing with sensitive questions:
-- Provide an *out"*answer, such as *I prefer not to answer.*.
-- Annonimity or at least confidentiality of the study might increase response rates. Of course, respondents must be made aware of this in the frontmatter.
+
+- Provide an *"out"* answer, such as *I prefer not to answer.*.
+- Anonymity or at least confidentiality of the study might increase response rates. Of course, respondents must be made aware of this in the frontmatter.
 - Indirect questioning: What do you believe other people think about *insert sensitive topic*?
 - Move the sensitive questions towards the end: This serves two purposes. First, you lead up to sensitive questions with less sensitive questions thus establishing a rapport with the respondent. Second, when respondents has already invested some time in the survey they are often more likely to complete the survey.
 - Use of ranges instead of specific numbers, where appropriate (age, salary).
@@ -229,7 +232,7 @@ Recent studies have shown that people often have to much work to exercise regula
 Most UL-FRI students fail at least one exam and it is not uncommon for a student to perform poorly on an exam even though they were well prepared and are knowledgeable. What was your exam score?
 </div>
 
-Related to sensitive questions is the use of emotionally charged words that can stir up unnecessary emotion in the participant. For example, words such as elite, patriotic, horrible, crisis, joy, fear, sadness, etc. The use of such words is appropriate in literary works, advertising campaign, etc., but should be avoided in questionnaires. A special kind of emotionally charged words are prestige names - names of people, companies, locations, etc. 
+Related to sensitive questions is the use of emotionally charged words that can stir up unnecessary emotion in the participant. For example, words such as elite, patriotic, horrible, crisis, joy, fear, sadness, etc. The use of such words is appropriate in literary works, advertising campaign, etc., but should be avoided in questionnaires. A special kind of emotionally charged words are prestige names -- names of people, companies, locations, etc. 
 
 <div style="padding: 10px; border: 1px solid transparent; border-color: transparent; margin-bottom: 5px; border-radius: 4px; color: #000000; background-color: #f5f7f7; border-color: #000000;">
 <b>Examples of emotionally charged words:</b>
@@ -266,27 +269,27 @@ We have already discussed leading questions in the context of sensitive question
 
 <b>Sequence 1:</b>
 
-Are you worried about the number of young people without jobs? - Yes
+Are you worried about the number of young people without jobs? -- Yes
 
-Are you worried about the rise in crime among teenagers? - Yes
+Are you worried about the rise in crime among teenagers? -- Yes
 
-Do you think there's a lack of discipline in our society? - Yes
+Do you think there's a lack of discipline in our society? -- Yes
 
-Do you think young people could use more authority and leadership in their lives? - Yes
+Do you think young people could use more authority and leadership in their lives? -- Yes
 
-Would you be in favor of reintroducing the national service? - ???
+Would you be in favor of reintroducing the national service? -- ???
 
 <b>Now consider Sequence 2:</b>
 
-Are you worried about the danger of war? - Yes
+Are you worried about the danger of war? -- Yes
 
-Are you worried about the growth of armaments? - Yes
+Are you worried about the growth of armaments? -- Yes
 
-Do you think there's a danger in giving young people guns and teaching them how to kill? - Yes
+Do you think there's a danger in giving young people guns and teaching them how to kill? -- Yes
 
-Do you think it's wrong to force people to take up arms against their will?- Yes
+Do you think it's wrong to force people to take up arms against their will? -- Yes
 
-Would you oppose the reintroduction of national service? - ??? 
+Would you oppose the reintroduction of national service? -- ??? 
 </div>
 
 ###### Loaded questions
@@ -329,7 +332,7 @@ Shorter scales have less information and responses have to be treated as ordinal
 
 For respondents with more relative cognitive ability, more points may lead to more information. For the general public, 5 points should be enough in most cases.
 
-Bipolar (like-dislike) and unipolar (not important - extremely important) scales seem to differ in the optimal number of points (7 for bipolar, 5 for unipolar).
+Bipolar (like-dislike) and unipolar (not important -- extremely important) scales seem to differ in the optimal number of points (7 for bipolar, 5 for unipolar).
 
 In most cases a longer scale leads to longer response times. There is one notable exception: counter-intuitively, 5 point scales have lower response times than 4 and 6 point scales.
 
