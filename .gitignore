@@ -2,6 +2,11 @@
 *.exe
 *.Rhistory
 
+## ignore compiled unix models
+# ignore files without extension
+*/models/*
+!*/models/*.*
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
