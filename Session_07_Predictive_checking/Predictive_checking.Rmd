@@ -22,7 +22,7 @@ Prior predictive checking generates data according to a given choice of priors t
 
 In the first example, we will use prior predictive checking and simulated data to get a deeper understanding of our model. In our case we will use logistic regression, but this process can be applied to any kind of model. In the linear regression model we will put $N(0, 1)$ priors on beta coefficients to inspect how outcomes vary with the number of predictors $n$. To inspect this, we will generate $n$ beta coefficients by using our prior distribution, values of the $n$ predictors will be drawn from $U(-1, 1)$. Next, we will use the logistic regression to simulate the $\theta$ parameter of the posterior distribution:
 
-$$\theta = \text{inv_logit}(\sum_{i = 1}^n\beta x).$$
+$$\theta = \text{inv_logit}(\sum_{i = 1}^n x_i \beta_i).$$
 
 Below is the implementation of the described process.
 
@@ -217,7 +217,7 @@ fit$summary()
 # extract draws
 df <- as_draws_df(fit$draws())
 
-# replicated datasets
+# 16 replicated datasets (4x4 grid for visualizations)
 n <- 16
 df_16 <- sample_n(df, 16)
 df_ppc <- data.frame(temperature=numeric(), iteration=factor())
@@ -288,9 +288,9 @@ Below you can see that this distribution is indeed a much better fit for reactio
 
 In more complex models (e.g. highly dimensional posterior distributions, complicated hierarchical models ...) visualizing our fits is often unfeasible. There, we can use the fit model in a generative manner and compare generated data with the real one, for example through some summary statistics. But we have to be careful here since summary statistics can be misleading.
 
-In the case of reaction times, if we calculate the sample mean and compare it to means of both of our fits they practically equal (0.78 s). By now you should know that if we are interested only in means than the normal distribution is usually a perfectly viable choice. Furthermore, if we compare variances, we also get the same result for all three cases (0.08). However, if we take a look at a more descriptive statistics, such as 90% HDI (highest density interval) of the underlying distribution, we can see that the normal model is indeed not the best fit. 90% HDI of the underlying distribution equals 0.32--1.27 s for the normal model and 0.41--1.19 s for EMG model, this is already a significant difference! If we check HDI for our sample we get 0.42--1.21 s. If for some reason we were unable to plot the fit distribution against the data, exploring HDIs would also confirm that the EMG model is indeed a better fit.
+In the case of reaction times, if we calculate the sample mean and compare it to means of both of our fits they practically equal (0.78 s). By now you should know that if we are interested only in means than the normal distribution is usually a perfectly viable choice. Furthermore, if we compare variances, we also get a similar result in all cases (0.08). However, if we take a look at a more descriptive statistics, such as 90% HDI (highest density interval) of the underlying distribution, we can see that the normal model is indeed not the best fit. 90% HDI of the underlying distribution equals 0.32--1.27 s for the normal model and 0.41--1.19 s for EMG model, this is already a significant difference! If we check HDI for our sample we get 0.42--1.21 s. If for some reason we were unable to plot the fit distribution against the data, exploring HDIs would also confirm that the EMG model is indeed a better fit.
 
-Like we said, if we were interested in means the normal model would suffice, but if our questions are more complex than the normal model would most likely provide us with erroneous answers. For example, let us say that for some reason we are interested in the percentage of responses where reaction time was slower than one second (marked with a dashed vertical line in both visualizations above). With the normal model 21.66% (90% HDI 20.18--23.09%) of responses were slower than one second, while in the case of EMG model 16.95% (90% HDI 15.76--18.24%) were slower, we again have a discrepancy between results from both models. If we look at the fit we can confidently say that the inferences made with the EMG model are much more credible here (in our sample 17.82% of reactions were slower than 1 s).
+Like we said, if we were interested in means the normal model would suffice, but if our questions are more complex than the normal model would most likely provide us with erroneous answers. For example, let us say that we are interested in the percentage of responses where reaction time was slower than one second (marked with a dashed vertical line in both visualizations above). With the normal model 21.66% (90% HDI 20.18--23.09%) of responses were slower than one second, while in the case of EMG model 16.95% (90% HDI 15.76--18.24%) were slower, we again have a discrepancy between results from both models. If we look at the fit we can confidently say that the inferences made with the EMG model are much more credible here (in our sample 17.82% of reactions were slower than 1 s).
 
 ### Comparing two groups and the region of practical equivalence
 

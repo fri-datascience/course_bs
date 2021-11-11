@@ -72,4 +72,4 @@ ggplot() +
   ylim(6, 12) +
   scale_x_continuous(breaks=c(0, 40, 80, 120), labels=c(1900, 1940, 1980, 2020), limits=c(0, 120)) +
   xlab("Year") +
-  ylab("T [�C]")
+  ylab("T [°C]")
