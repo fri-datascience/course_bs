@@ -3,8 +3,9 @@
 *.Rhistory
 
 ## ignore compiled unix models
-# ignore files without extension
+# ignore everything in models
 */models/*
+# unignore files with an extension
 !*/models/*.*
 
 ## Core latex/pdflatex auxiliary files:
