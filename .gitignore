@@ -1,12 +1,12 @@
-## R stuff
-*.exe
-*.Rhistory
-
 ## ignore compiled unix models
 # ignore everything in models
 */models/*
 # unignore files with an extension
 !*/models/*.*
+
+## R stuff
+*.exe
+*.Rhistory
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
