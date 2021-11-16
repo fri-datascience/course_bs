@@ -85,7 +85,7 @@ $$\beta \sim N(0, 1),$$
 
 $$\sigma \sim U(0, 50).$$
 
-Priors above deserve some clarification. We will shift our predictor (weight) so it will start at zero. We will draw weights (our independent variable) from $U(50, 90)$, so we are assuming our population is composed of healthy adults. We put a weakly informative prior ($N(150, 50)$) based on an (un)educated guess on the intercept. Going from there we set the other two priors in a similar fashion.
+Priors above deserve some clarification. We will shift our predictor (weight) so it will start at zero. We will draw weights (our independent variable) from $U(50, 90)$, so we are assuming our population is composed of healthy adults. We put a weakly informative prior -- $N(150, 50)$ -- based on an (un)educated guess on the intercept. Going from there we set the other two priors in a similar fashion.
 
 Like in the previous example, we could again code everything in R, for illustrative purposes, this time around we will do it in Stan. Since we will use Stan only as a random number generator (fixed parameter sampler) we do not need the `model` block.
 
