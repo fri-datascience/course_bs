@@ -249,7 +249,7 @@ ggplot(data=df_ppc, aes(x=temperature)) +
 
 ## A simple linear model for temperature prediction
 
-Since a picture is worth more than a thousand words it is often a very good practice to plot your posterior distribution against real data and look for any discrepancies. As you saw in almost all of our previous lectures, when possible we should always prepare such a visualization. Below is a simple example that visualizes our simple linear regression model (`/model/simple_linear.stan`) for predicting the rise of average temperature in Slovenia through time against the actual data (average temperature for years 1901--2015). See `/code/posterior_predictive_linear.R` for our implementation. As you can see that at a glance the fit looks quite OK (we will try to improve it during our next session). Based on this visualization one might argue that the model has issues with capturing the seemingly increasing rise in temperature over the last couple of years, (unfortunately) this trend does not look linear, so it is completely reasonable that our model fails at capturing it. Since our model looks OK, we can can use it to do some simple analysis. Our only predictor were years and its $\beta$ coefficient is 0.013 (90\% CI 0.01--0.016), meaning that we are very confident that temperature has been rising for the last 100 years or so.
+Since a picture is worth more than a thousand words it is often a very good practice to plot your posterior distribution against real data and look for any discrepancies. As you saw in almost all of our previous lectures, when possible we should always prepare such a visualization. Below is a simple example that visualizes our simple linear regression model (`/model/simple_linear.stan`) for predicting the rise of average temperature in Slovenia through time against the actual data (average temperature for years 1901--2015). See `/code/posterior_predictive_linear.R` for our implementation. As you can see that at a glance the fit looks quite OK (we will try to improve it during our next session). Based on this visualization one might argue that the model has issues with capturing the seemingly increasing rise in temperature over the last couple of years, (unfortunately) this trend does not look linear, so it is completely reasonable that our model fails at capturing it. Since our model looks OK, we can can use it to do some simple analysis. Our only predictor were years and its $\beta$ coefficient is 0.013 (90\% HDI 0.01--0.016), meaning that we are very confident that temperature has been rising for the last 100 years or so.
 
 ![](./figs/posterior_predictive_linear.png)
 
@@ -293,6 +293,8 @@ In the case of reaction times, if we calculate the sample mean and compare it to
 
 Like we said, if we were interested in means the normal model would suffice, but if our questions are more complex than the normal model would most likely provide us with erroneous answers. For example, let us say that we are interested in the percentage of responses where reaction time was slower than one second (marked with a dashed vertical line in both visualizations above). With the normal model 21.66% (90% HDI 20.18--23.09%) of responses were slower than one second, while in the case of EMG model 16.95% (90% HDI 15.76--18.24%) were slower, we again have a discrepancy between results from both models. If we look at the fit we can confidently say that the inferences made with the EMG model are much more credible here (in our sample 17.82% of reactions were slower than 1 s).
 
+Depending on the situation and the type of time measurements some other distribution might also come in handy. See http://lindeloev.net/shiny/rt/ for a list of suitable distributions (along with their weaknesses and strengths) and a very nice interactive visualization of all of them.
+
 ### Comparing two groups and the region of practical equivalence
 
 Finally, let us compare reaction times between incongruent and congruent conditions. In the incongruent case the mean reaction time equaled 0.78 s (90% HDI 0.77--0.79 s) and 0.62 s (90% HDI 0.61--0.63 s) in the congruent case. We are as sure as we can be ("100%") that reaction times in the congruent condition are faster than in the incongruent one. 
@@ -308,10 +310,12 @@ Another important technique in posterior predictive checking is fitting our mode
 
 # Recommended readings
 
-* Gelman A. et al. (2020). Bayesian workflow, https://arxiv.org/abs/2011.01808.
+* Gelman A. et al. (2020). Bayesian workflow (https://arxiv.org/abs/2011.01808).
+
+* Lindeløv J. K. (2021). Reaction time distributions: an interactive overview  (http://lindeloev.net/shiny/rt/).
 
 # Additional readings
 
-* Betancourt M. (2020). Towards A Principled Bayesian Workflow, https://betanalpha.github.io/assets/case_studies/.
+* Betancourt M. (2020). Towards A Principled Bayesian Workflow (https://betanalpha.github.io/assets/case_studies/).
 
-* Gnabry J. et al. (2018). Visualization in Bayesian workflow, https://arxiv.org/abs/1709.01449.
+* Gnabry J. et al. (2018). Visualization in Bayesian workflow (https://arxiv.org/abs/1709.01449).

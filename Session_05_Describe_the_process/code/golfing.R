@@ -1,12 +1,12 @@
 # libraries --------------------------------------------------------------------
-library(cmdstanr)  # for interfacing Stan
-library(ggplot2)   # for visualizations
-library(posterior) # for extracting samples
-library(bayesplot) # for some quick MCMC visualizations
-library(mcmcse)    # for comparing samples and calculating MCSE
-library(arm)       # for logit and inverse logit functions
-library(tidyverse) # for data manipulations
-
+library(cmdstanr)   # for interfacing Stan
+library(ggplot2)    # for visualizations
+library(posterior)  # for extracting samples
+library(bayesplot)  # for some quick MCMC visualizations
+library(mcmcse)     # for comparing samples and calculating MCSE
+library(arm)        # for logit and inverse logit functions
+library(tidyverse)  # for data manipulations
+library(HDInterval) # for HDI
 
 # color palette ----------------------------------------------------------------
 # 1 - #a6cee3
@@ -28,7 +28,7 @@ precision <- 100
 x <- seq(from=0, to=max(data$distance), length.out=precision)
 
 # calculate error bars in data for visualizations
-df_golf <- data.frame(x=numeric(), p=numeric(), q5=numeric(), q95=numeric())
+df_golf <- data.frame(x=numeric(), p=numeric(), hdi5=numeric(), hdi95=numeric())
 for (i in 1:nrow(data)) {
   # get row
   row <- data[i,]
@@ -39,16 +39,15 @@ for (i in 1:nrow(data)) {
   # draw
   b <- rbinom(1000, row$n, p) / row$n
   
-  # quantiles
-  q5 <- quantile(b, 0.05)
-  q95 <- quantile(b, 0.95)
+  # hdi
+  hdi90 <- hdi(b, credMass=0.90)
   
   # bind
-  df_golf <- df_golf %>% add_row(x=row$distance, p=p, q5=q5, q95=q95)
+  df_golf <- df_golf %>% add_row(x=row$distance, p=p, hdi5=hdi90[1], hdi95=hdi90[2])
 }
 
 # plot data
-ggplot(df_golf, aes(x=x, y=p, ymin=q5, ymax=q95)) +
+ggplot(df_golf, aes(x=x, y=p, ymin=hdi5, ymax=hdi95)) +
   geom_errorbar(color="grey75") +
   geom_point(color="grey25") +
   theme_minimal() +
@@ -92,28 +91,29 @@ for (i in 1:nrow(df_binomial_samples)) {
 }
 
 # data frame for storing probabilities
-df_binomial <- data.frame(x=numeric(), p=numeric(), q5=numeric(), q95=numeric())
+df_binomial <- data.frame(x=numeric(), p=numeric(), hdi5=numeric(), hdi95=numeric())
 
-# calculate mean and quantiles for each distance
+# calculate mean and hdi for each distance
 for (i in 1:ncol(X)) {
   # get column
   column <- X[, i]
   
   # calcuate
   p <- mean(column)
-  q5 <- quantile(column, 0.05)
-  q95 <- quantile(column, 0.95)
+  
+  # hdi
+  hdi90 <- hdi(column, credMass=0.90)
   
   # bind
   df_binomial <- df_binomial %>%
-    add_row(x=x[i], p=p, q5=q5, q95=q95)
+    add_row(x=x[i], p=p, hdi5=hdi90[1], hdi95=hdi90[2])
 }
 
 # visualize data and results
 ggplot(df_binomial,
-       aes(x=x, y=p, ymin=q5, ymax=q95)) +
+       aes(x=x, y=p, ymin=hdi5, ymax=hdi95)) +
   geom_errorbar(df_golf,
-                mapping=aes(x=x, y=p, ymin=q5, ymax=q95),
+                mapping=aes(x=x, y=p, ymin=hdi5, ymax=hdi95),
                 color="grey75") +
   geom_point(df_golf,
              mapping=aes(x=x, y=p),
@@ -152,34 +152,33 @@ X <- as_draws_matrix(fit_angle$draws())
 X <- X[,4:(4+nrow(data)-1)]
 
 # data frame for storing probabilities
-df_angle <- data.frame(x=numeric(), p=numeric(), q5=numeric(), q95=numeric())
+df_angle <- data.frame(x=numeric(), p=numeric(), hdi5=numeric(), hdi95=numeric())
 
-# calculate mean and quantiles for each distance
+# calculate mean and hdi for each distance
 for (i in 1:ncol(X)) {
   # get column
   column <- X[, i]
   
   # calcuate
   p <- mean(column)
-  q5 <- quantile(column, 0.05)
-  q95 <- quantile(column, 0.95)
-  
+  hdi90 <- hdi(column, credMass=0.90)
+    
   # bind
   df_angle <- df_angle %>%
-    add_row(x=data$distance[i], p=p, q5=q5, q95=q95)
+    add_row(x=data$distance[i], p=p, hdi5=hdi90[1], hdi95=hdi90[2])
 }
 
 # visualize data and results
 ggplot(df_angle,
-       aes(x=x, y=p, ymin=q5, ymax=q95)) +
+       aes(x=x, y=p, ymin=hdi5, ymax=hdi95)) +
   geom_errorbar(df_golf,
-                mapping=aes(x=x, y=p, ymin=q5, ymax=q95),
+                mapping=aes(x=x, y=p, ymin=hdi5, ymax=hdi95),
                 color="grey75") +
   geom_point(df_golf,
              mapping=aes(x=x, y=p), 
              color="grey25") +
   geom_ribbon(df_binomial,
-              mapping=aes(x=x, y=p, ymin=q5, ymax=q95),
+              mapping=aes(x=x, y=p, ymin=hdi5, ymax=hdi95),
               fill="#a6cee3",
               alpha=0.5) +
   geom_line(df_binomial,
@@ -220,40 +219,39 @@ X <- as_draws_matrix(fit_distance$draws())
 X <- X[,5:(5+nrow(data)-1)]
 
 # data frame for storing probabilities
-df_distance <- data.frame(x=numeric(), p=numeric(), q5=numeric(), q95=numeric())
+df_distance <- data.frame(x=numeric(), p=numeric(), hdi5=numeric(), hdi95=numeric())
 
-# calculate mean and quantiles for each distance
+# calculate mean and hdi for each distance
 for (i in 1:ncol(X)) {
   # get column
   column <- X[, i]
   
   # calcuate
   p <- mean(column)
-  q5 <- quantile(column, 0.05)
-  q95 <- quantile(column, 0.95)
-  
+  hdi90 <- hdi(column, credMass=0.90)
+    
   # bind
   df_distance <- df_distance %>%
-    add_row(x=data$distance[i], p=p, q5=q5, q95=q95)
+    add_row(x=data$distance[i], p=p, hdi5=hdi90[1], hdi95=hdi90[2])
 }
 # visualize data and results
 ggplot(df_distance,
-       aes(x=x, y=p, ymin=q5, ymax=q95)) +
+       aes(x=x, y=p, ymin=hdi5, ymax=hdi95)) +
   geom_errorbar(df_golf,
-                mapping=aes(x=x, y=p, ymin=q5, ymax=q95),
+                mapping=aes(x=x, y=p, ymin=hdi5, ymax=hdi95),
                 color="grey75") +
   geom_point(df_golf,
              mapping=aes(x=x, y=p), 
              color="grey25") +
   geom_ribbon(df_binomial,
-              mapping=aes(x=x, y=p, ymin=q5, ymax=q95),
+              mapping=aes(x=x, y=p, ymin=hdi5, ymax=hdi95),
               fill="#a6cee3",
               alpha=0.5) +
   geom_line(df_binomial,
             mapping=aes(x=x, y=p),
             color="#a6cee3") +
   geom_ribbon(df_angle,
-              mapping=aes(x=x, y=p, ymin=q5, ymax=q95),
+              mapping=aes(x=x, y=p, ymin=hdi5, ymax=hdi95),
               fill="#1f78b4",
               alpha=0.5) +
   geom_line(df_angle,

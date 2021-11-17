@@ -4,10 +4,10 @@ library(ggplot2)
 library(bayesplot)
 library(posterior)
 library(ggdist)
-library(cowplot) # for plotting grids of small plots
-library(psych) # for independent variables correlation plot
+library(cowplot)    # for plotting grids of small plots
+library(psych)      # for independent variables correlation plot
+library(HDInterval) # for HDI
 library(tidyverse)
-
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
@@ -107,14 +107,14 @@ plots <- NULL
 for (i in 1:9) {
   df_preds <- data.frame(x=df_pred %>% nth(i))
   df_counts <- df_preds %>% count(x)
-  q25 <- quantile(df_preds$x, 0.05)
-  q75 <- quantile(df_preds$x, 0.75)
+
+  hdi50 <- hdi(df_preds$x, credMass=0.75)
   
   p <- ggplot(data = df_counts, aes(x = x, y = n)) +
     geom_bar(stat="identity", color="skyblue", fill="skyblue", alpha = 0.75) +
     geom_vline(xintercept=df_am[i,]$Y_FTHG, color = "grey50", size = 2) +
-    geom_vline(xintercept=q25, color = "grey25", size = 1, linetype = "dashed") +
-    geom_vline(xintercept=q75, color = "grey25", size = 1, linetype = "dashed") +
+    geom_vline(xintercept=hdi50[1], color = "grey25", size = 1, linetype = "dashed") +
+    geom_vline(xintercept=hdi50[2], color = "grey25", size = 1, linetype = "dashed") +
     scale_x_continuous("Goals", breaks=df_counts$x, labels=df_counts$x, limits=c(-0.5,6.5)) +
     ylim(0, 1500) +
     ylab("Count") +

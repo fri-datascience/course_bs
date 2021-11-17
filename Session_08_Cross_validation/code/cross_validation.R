@@ -164,6 +164,5 @@ df_mse_test %>%
   group_by(order) %>%
   summarize(mean_mse=mcse(mse)$est,
             mcse_mse=mcse(mse)$se,
-            q5=quantile(mse, probs=0.05),
-            q95=quantile(mse, probs=0.95))
-
+            hdi5=hdi(mse, credMass=0.90)[1],
+            hdi95=hdi(mse, credMass=0.90)[2])

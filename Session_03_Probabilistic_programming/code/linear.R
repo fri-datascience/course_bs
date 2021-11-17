@@ -30,7 +30,7 @@ mcmc_trace(fit$draws())
 fit$summary()
 
 # analysis ---------------------------------------------------------------------
-# lines and confidence in lines
+# lines and uncertainty
 df <- as_draws_df(fit$draws())
 
 # params

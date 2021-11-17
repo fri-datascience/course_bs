@@ -53,8 +53,8 @@ df <- as_draws_df(fit$draws())
 # mcse
 mcse(df$b)
 
-# quantiles
-quantile(df$b, probs=c(0.05, 0.95))
+# hdi
+hdi(df$b, credMass=0.90)
 
 # visualize data points and regression lines
 # plot only 200 random regression lines

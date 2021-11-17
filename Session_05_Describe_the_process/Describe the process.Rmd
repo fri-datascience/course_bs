@@ -75,7 +75,7 @@ model {
 
 We also put some weakly informative priors on our regression parameters, mainly to help out the sampling process and avoid any warnings in the warmup phase. All diagnostics show no reasons for concern, the mean value of the alpha (a) parameter equals 1.74 $\pm$ 0.001, while the mean value of the beta (b) parameter equals -0.54 $\pm$ 0.0002. The negative beta parameters means that probability of making a putt decreases with distance, which is obviously correct.
 
-Below is a visualization of our fit plotted on top of the underlying data. The blue line depicts the mean predicted probabilities, the ribbon around the line depicts the 90% confidence interval, note that there is very little uncertainty in predictions. The black dots denote the underlying data points along and their 90% CI.
+Below is a visualization of our fit plotted on top of the underlying data. The blue line depicts the mean predicted probabilities, the ribbon around the line depicts the 90% high density interval, note that there is very little uncertainty in predictions. The black dots denote the underlying data points along and their 90% HDI.
 
 <center>
   ![](./figs/binomial.png)
@@ -173,7 +173,7 @@ generated quantities {
 
 The fitting process executed without any issues and the diagnostics look fine, so we can continue with our analysis. The $\sigma$ parameters equals 0.22 $\pm$ 0.8 $\cdot$ 10^-5^ in radians and in 1.23 $\pm$ 0.0005 in degrees. Meaning that the standard deviation of golf putting angular errors in pro golfers is just above a degree. Which is mightily impressive.
 
-The figure below visualizes the model's fit (the dark blue line) the ribbon behind it estimates its uncertainty with a 90% confidence interval. The light blue line visualizes the binomial logistic model, while black points visualize the underlying data.
+The figure below visualizes the model's fit (the dark blue line) the ribbon behind it estimates its uncertainty with a 90% high density interval. The light blue line visualizes the binomial logistic model, while black points visualize the underlying data.
 
 <center>
   ![](./figs/angle.png)

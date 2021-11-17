@@ -551,6 +551,26 @@ ggplot(data = df_player1, aes(x = theta, group = Rim, fill = Rim)) +
   theme_minimal()
 ```
 
+Note that the above statement that we are ~100% certain that the player is more successful when shooting on the default rim than on the special rim is based on averages. We are answering the question: *"How certain are we that the player will make more shots on the default rim than on the special rim if we were to see him shoot a lot of shots?"* On the other hand, we need to perform analysis in a different way, if the question is *"What is the probability that the player will make the next shot on the default rim versus the probability that it will make the next shot on the special rim?"* These types of question also commonly pop up during our analyses. In this case, we need to acknowledge the whole distribution and not only the mean/location parameter of it. We usually do this by drawing a large number of samples from each of the distributions and then compare those. Below is an example of such an analysis.
+
+
+```{R message=FALSE}
+# number of draws
+n <- 100000
+
+# draws from the distribution for the default rim
+draws_default <- rbinom(n, 1, df_default$theta)
+
+# draws from the distribution for the special rim
+draws_special <- rbinom(n, 1, df_special$theta)
+
+# compare
+mcse(draws_default > draws_special)
+mcse(draws_default == draws_special)
+mcse(draws_default < draws_special)
+```
+
+
 ## Log probability
 
 The essence of computation in Stan is dealing with the logarithm of the posterior probability density and its gradient, there is no direct random sampling of parameters from the distribution. So in practice $\texttt{y[i] ~ normal(mu, sigma)}$ multiplies the current posterior probability by the density of the $\texttt{normal}$ distribution at $\texttt{y[i]}$. This is the same as an increment of current log-probability by the log-density of the normal distribution at $\texttt{y[i]}$. Actually in Stan you could replace
@@ -619,7 +639,7 @@ fit$summary()
 The `traceplot` and `summary` both show no reasons for any concerns, we will skip them here for brevity, but in practice you should always start your analysis by inspecting the outputs of these two functions. Whenever possible you should also always visually inspect how fitted distributions match the underlying data. With more complex and highly dimensional models this most likely will not be possible but here we can easily do this.
 
 ```{R message=FALSE}
-# lines and confidence in lines
+# lines and uncertainty
 df <- as_draws_df(fit$draws())
 
 # plot only 100 random regression lines
@@ -632,6 +652,66 @@ ggplot() +
   theme_minimal()
 ```
 
+# High density intervals
+
+During our lectures we will often use high density intervals (HDI) instead of confidence intervals (CI). The difference is that the confidence interval calculates its bound by symmetrically cutting away the data on both ends of the distribution. For example, the lower bound of the 90% CI is the 5^th^ quantile, while the upper bound is the 95^th^ quantile, regardless of the distribution's shape. This means that with asymmetrical and multi-modal distributions the 90% CI does not represent the 90% of the data we are most likely to see. While for symmetrical distributions CI and HDI give the same results. 
+
+HDI on the other hand acknowledges the shape of the distribution and give us an interval where the density of the distribution is the highest. In other words, a 90% HDI will give us the region where the likelihood of the distribution is higher than in the remaining 10%. Since we are traditionally interested in that region, we will be mainly using the HDI in this course. Below is a simple example that shows how we can calculate HDI numerically. The visualization at the end also shows the difference between HDI (solid dark grey lines) and the CI (dashed light grey lines).
+
+```{R message=FALSE}
+# precision/number of samples
+n <- 10000
+
+# arbitrary gamma parameters
+alpha <- 5
+beta <- 50
+
+# generate some random gamma numbers
+x <- rgamma(n, alpha, beta)
+
+# let us calculate 90% HDI
+cred_mass <- 0.9
+
+# sort our samples
+x <- sort.int(x, method='quick')
+
+# number of total values to exclude (10% of all data)
+exclude <- n - floor(n * cred_mass)
+
+# in the most extreme cases we exclude everything (10% of data in our case)
+# either at the bottom or in the upper part of the distribution
+# these are our bounds
+upper_bound <- x[(n - exclude + 1):n]
+lower_bound <- x[1:exclude]
+
+# in order to discard 10% of data we need to use a pair from our bound vectors
+# find the lower/upper pair with minimum distance between them
+# smaller the difference higher the density of that chunk
+# this is then our solution
+best <- which.min(upper_bound - lower_bound)
+
+# extract the best pair
+result <- c(lower_bound[best], upper_bound[best])
+
+# 90% confidence interval
+q5 <- quantile(x, 0.05)
+q95 <- quantile(x, 0.95)
+
+# report
+cat(paste0("90% HDI: [", round(result[1],3), ", ", round(result[2],3), "]"))
+cat(paste0("90% CI: [", round(q5,3), ", ", round(q95,3), "]"))
+
+# plot
+df <- data.frame(x=x)
+ggplot(data = df) +
+  geom_density(aes(x=x), color=NA, fill="skyblue", alpha=0.75) +
+  xlab("difference") +
+  geom_vline(xintercept = q5, linetype="dashed", color = "grey80", size=1) +
+  geom_vline(xintercept = q95, linetype="dashed", color = "grey80", size=1) +
+  geom_vline(xintercept = result[1], color = "grey40", size=1) +
+  geom_vline(xintercept = result[2], color = "grey40", size=1)
+
+```
 
 # Presenting our models
 
@@ -652,6 +732,8 @@ Just like with other things the easiest solution is usually not the best, it is 
 * **Chapter 14 (Stan)** in Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
 
 # Additional readings
+
+* Meredith M. and Kruschke K. (2020). HDInterval, (https://cran.r-project.org/web/packages/HDInterval/index.html, https://github.com/mikemeredith/HDInterval).
 
 * van de Meent J-W., Paige B., Yang H., Wood F. (2021). An Introduction to Probabilistic Programming (https://arxiv.org/pdf/1809.10756.pdf).
 

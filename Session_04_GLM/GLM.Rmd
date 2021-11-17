@@ -305,7 +305,7 @@ Once we standardize our independent variables we can check their distributions a
   ![](./figs/correlations.png)
 </center>
 
-There were no issues in the fitting process and basic diagnostics show no reasons for concern. A quick inspection of $\beta$ coefficients (see the figure below) suggests that the results make sense -- independent variables associated with the amount of goals scored by the away team (e.g. `X_ScoringRateA` and `X_CornerRatioA`) have less influence on predictions as the variables directly associated with the amount of goals scored by the home team (e.g. `X_ScoringRateH` and `X_CornerRatioH`). In a Bayesian setting we usually determine whether an independent variable has an influence (either positive or negative) on the dependent variable by checking whether the whole 95% CI of its $\beta$ coefficients posterior lies above or below 0.
+There were no issues in the fitting process and basic diagnostics show no reasons for concern. A quick inspection of $\beta$ coefficients (see the figure below) suggests that the results make sense -- independent variables associated with the amount of goals scored by the away team (e.g. `X_ScoringRateA` and `X_CornerRatioA`) have less influence on predictions as the variables directly associated with the amount of goals scored by the home team (e.g. `X_ScoringRateH` and `X_CornerRatioH`). In a Bayesian setting we usually determine whether an independent variable has an influence (either positive or negative) on the dependent variable by checking whether the whole 95% HDI of its $\beta$ coefficients posterior lies above or below 0.
 
 <center>
   ![](./figs/poisson_betas.png)
@@ -325,7 +325,7 @@ To get a better understanding of our model let us compare a couple of prediction
   ![](./figs/poisson_am_predictions.png)
 </center>
 
-The blue histogram in the background visualizes the posterior distribution of our predictions, the two dashed lines visualize the 25^th^ and 75^th^ percentiles of these posterior distribution and the thick solid line visualizes the actual result. We can see that in 8 out of 9 cases the actual amount of scored goals was inside this 50% CI. Like expected, our model was way off the mark in the game where a lot of goals was scored.
+The blue histogram in the background visualizes the posterior distribution of our predictions, the two dashed lines visualize the 25^th^ and 75^th^ percentiles of these posterior distribution and the thick solid line visualizes the actual result. We can see that in 8 out of 9 cases the actual amount of scored goals was inside this 75% HDI. Like expected, our model was way off the mark in the game where a lot of goals was scored.
 
 
 ## Categorical regression (multinomial logistic regression)
