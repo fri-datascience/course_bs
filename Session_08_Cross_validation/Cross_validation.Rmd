@@ -39,7 +39,7 @@ There are two CV techniques that we can stumble upon in the literature. The firs
 The nested CV approach uses a constant size of the test set and increases the training set size in each split. As the training set grows, the test sets is pushed towards newer data. The final split is similar to a holdout split -- the newest data is used for the test set and all of the remaining data is used for the training set. The problem with this approach is that our estimates of performance and uncertainty are based on models that were trained on a different amount of data. This can give us performance estimates that are lower and uncertainty estimates that are higher than they should be. The visualization below how the nested approach might look like on our hypotethical dataset.
 
 <center>
-  ![](./figs/time_cv.png){width=50%}
+  ![](./figs/time_cv.png){width=75%}
 </center>
 
 ## Example
