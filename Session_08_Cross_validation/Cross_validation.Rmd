@@ -20,7 +20,7 @@ Cross-validation is a widely spread technique for estimating how well our models
 
 Cross-validation (CV) is a procedure for estimating the generalization error of our models. To evaluate model's generalization CV tests our models against unknown data in order to find out how well our model generalizes (e.g is our model overfitting, do we have selection bias ...). Since you should be already familiar with the majority of CV techniques (leave-one-out cross-validation, leave-p-out cross-validation, k-fold cross-validation, holdout ...) we will sift through them relatively quickly. The gist of CV is to split the dataset into two subsets -- the train set and the test set. The train set is then used for building the model and the test set is used for evaluating it. This way we are evaluation our model on data it has never seen before. Note that the same methods apply when we have to split the data into three sets (the train set, the validation set and the test set), for example for hyper parameter tuning. CV methods are split into two groups -- exhaustive and non-exhaustive.
 
-Exhaustive CV methods split the original dataset (containing $n$ observations) into train and test sets in all possible ways. The most exhaustive and consequently the most computationally intensive and time consuming is leave-$p$-out cross-validation (LpO CV). In it we use $p$ observations as the train set and the remaining $n - p$ as the test set. We use this split in order to train and test our model. We repeat this process until we exhaust all possible train sets -- all subsets of size $p$ in our whole dataset. This means that we need to repeat the process $n \choose p$ times. As you might imagine, this is more often than not unfeasible.
+Exhaustive CV methods split the original dataset (containing $n$ observations) into train and test sets in all possible ways. The most exhaustive and consequently the most computationally intensive and time consuming is leave-$p$-out cross-validation (LpO CV). In it we use $p$ observations as the test set and the remaining $n - p$ as the train set. We use this split in order to train and test our model. We repeat this process until we exhaust all possible test sets -- all subsets of size $p$ in our whole dataset. This means that we need to repeat the process $n \choose p$ times. As you might imagine, this is more often than not unfeasible.
 
 A more popular exhaustive CV technique is called leave-one-out cross-validation (LOOCV), a variant of LpO CV with $p$ set to 1. In LOOCV we train our model on all observations with the exception of one (the one we leave out). The left out observation is used for model evaluation. We repeat the process so each observations is left out exactly once, we end up repeating the process $n$ times, once for each observation. If LOOCV is also too complex to execute in practice we have to resort to non-exhaustive CV techniques.
 
@@ -34,9 +34,9 @@ When executing any kind of cross-validation it is important to adapt it to our u
 
 A common approach is to use holdout, there we have to be careful and split it so that the test set is composed of the newest data and the train set it composed from older data. The visualization below shows an example of holdout where we split six months of data into a five month train set (blue rectangles) and a one month test set (red rectangle). However, this way we only have a single split which means that we will be often unable to estimate uncertainty of the calculated metrics (if our models are not Bayesian that is).
 
-There are two CV techniques that we can stumble upon in the literature. The first one is called walk-forward CV, there we use a sliding window approach to construct multiple train and test splits on our data. The visualization below shows how such a split might look like if we used a four month wide sliding window on our six months of data. This results in three CV splits, each one composed of a three month train set and a 1 month test set. This approach is suitable if you have a lot of data as each CV split discards a certain chunk of it. 
+There are two CV techniques that we can stumble upon in the literature. The first one is called walk-forward CV, there we use a sliding window approach to construct multiple train and test splits on our data. The visualization below shows how such a split might look like if we used a four month wide sliding window on our six months of data. This results in three CV splits, each one composed of a three month train set and a one month test set. This approach is suitable if you have a lot of data as each CV split discards a certain chunk of it. In the visualization below, discarded data is denoted with light grey rectangles.
 
-The nested CV approach uses a constant size of the test set and increases the training set size in each split. As the training set grows, the test sets is pushed towards newer data. The final split is similar to a holdout split -- the newest data is used for the test set and all of the remaining data is used for the training set. The problem with this approach is that our estimates of performance and uncertainty are based on models that were trained on a different amount of data. This can give us performance estimates that are lower and uncertainty estimates that are higher than they should be. The visualization below how the nested approach might look like on our hypotethical dataset.
+The nested CV approach uses a constant size of the test set and increases the training set size in each split. As the training set grows, the test sets is pushed towards newer data. The final split is similar to a holdout split -- the newest data is used for the test set and all of the remaining data is used for the training set. The problem with this approach is that our estimates of performance and uncertainty are based on models that were trained on a different amount of data. This can give us performance estimates that are lower and uncertainty estimates that are higher than they should be. The visualization below how the nested approach might look like on our hypothetical dataset.
 
 <center>
   ![](./figs/time_cv.png){width=75%}
@@ -46,7 +46,7 @@ The nested CV approach uses a constant size of the test set and increases the tr
 
 We will use cross-validation to try and find a good regression model for predicting temperature from years. We will evaluate several polynomial regressions with a different order of the polynomial term:
 
-$$y \; | \; x, \beta \sim N(\sum_{i=1}^{p}{\beta_i x^{i-1}}, \sigma),$$
+$$y \; | \; x, \beta, \sigma \sim N(\sum_{i=1}^{p}{\beta_i x^{i-1}}, \sigma),$$
 
 $$\beta_2, \beta_3, ... , \beta_{p} \sim Cauchy(0, 1).$$
 
@@ -60,7 +60,9 @@ $$y \; | \; x, \beta \sim N(\beta_1 + \beta_2 x^1 + \beta_3 x^2 + \beta_4 x^3 + 
 
 Source code for this experiment can be found in `/code/cross_validation.R`. The figure below visualizes how our models of varying complexity (numbers above graphs denote order of the used polynomial) fit the underlying data.
 
-![](./figs/cross_validation_posterior.png)
+<center>
+  ![](./figs/cross_validation_posterior.png)
+</center>
 
 To evaluate our models, we performed holdout cross-validation where we trained the model on temperature observations before the year 1995 and tested it on observations after the year 1995. To emphasize that CV is CV regardless of the modeling methodology (Bayesian modeling, random forests, deep neural networks ...) we used mean squared error (MSE) to measure model's error. MSE was used because we are evaluating the posterior mean and the decision-theoretic optimal estimator for the posterior mean is MSE. If we were evaluating something else then a different measure would be optimal (e.g. absolute error if we are interested in the median). So, to pick the optimal evaluation method we need to be familiar with decision theory. Bayesian modeling is again at an advantage here, since we are always working with distributions we can always use log-score to measure the quality of our fit. Indeed, log-score is the go-to measure for evaluating Bayesian models.
 
@@ -70,11 +72,16 @@ $$\text{MSE} = \frac{1}{n} \sum_{i=1}^n (y_i - y'_i)^2,$$
 
 where $n$ is the size of the dataset, equal to the size of the test set when evaluating how good the model is for predicting new values (out-of-sample evaluation) or the size of the train set when evaluating how good the models fits the training data (in-sample evaluation). $y_i$ denotes an actual observation and $y'_i$ the predicted value for that observation. We first checked how our models fit the training data, this is visualized on the figure below.
 
-![](./figs/in_sample_mse.png)
+<center>
+  ![](./figs/in_sample_mse.png)
+</center>
 
 As you can see more complex models fit the data better, this is expected behavior. Complex models are more prone to overfitting and will as a rule give better in-sample results. If we increased our complexity even further we would get an even lower in-sample error. But we are traditionally interested in models that generalize well, to evaluate how our models generalize let us check the out-of-sample error:
 
-![](./figs/out_of_sample_mse.png)
+<center>
+  ![](./figs/out_of_sample_mse.png)
+</center>
+
 
 Indeed, it seems like the 4^th^ order polynomial regression overfits, as you can see its out-of-sample error is higher than that of the 3^rd^ order polynomial regression. In our case, 3^rd^ order polynomial regression seems to be the best model. The table below confirms this finding.
 
@@ -135,7 +142,7 @@ ggplot(data=df, aes(x=q, y=D_KL)) +
   ylab("K-L divergence")
 ```
 
-The problem in practice is that we do not know the truth $p$, we only have the model $q$. It turns out that we do not need the truth part in the $D_KL$ since it is in its essence merely an additive term. We can get a relative difference from the truth without knowing the truth. In other words, we do not know what the truth is, but we do know how far away from it we are with a particular model. What comes in handy for us Bayesians is the fact that we can estimate divergence with log-score (sum of log likelihoods of each observation):
+The problem in practice is that we do not know the truth $p$, we only have the model $q$. It turns out that we do not need the truth part in the $D_{KL}$ since it is in its essence merely an additive term. We can get a relative difference from the truth without knowing the truth. In other words, we do not know what the truth is, but we do know how far away from it we are with a particular model. What comes in handy for us Bayesians is the fact that we can estimate divergence with log-score (sum of log likelihoods of each observation):
 
 $$\text{LS} = -2 \sum_{i=1}^n log(p(y_i \; | \; \theta)).$$
 
@@ -149,15 +156,19 @@ $$y \; | \; x, \beta, \sigma \sim N \left(\alpha + \sum_{i=1}^m \beta_i x_i, \si
 
 where $\alpha$ is the intercept, $\beta$ are the beta coefficients, $\sigma$ the standard deviation and $m$ the parameter that determines the model's complexity. We expect to get the best results when $m = 2$ since that is the complexity of the data generating process. If we use a lower value of $m$ we expect underfitting, while with larger value we expect overfitting -- the model will also fit to predictors that are nothing but noise. The most complex model that we used had $m = 6$. The figure below visualizes in-sample and out-of-sample approximated deviance (means and 90% HDI) when models were trained and tested on 20 observations.
 
-![](./figs/logscore_20.png)
+<center>
+  ![](./figs/logscore_20.png)
+</center>
 
-On the left side of the figure, we see a similar trend as in the previous example -- more complex models have a lower in-sample deviance (error). This will always be the case, more complex models are able to (over)fit the training data better. On the right side, we can see that out-of-sample deviance is the lowest (the best) when our model uses the same complexity as the data generating model -- any other result would be a reason for alarm here. High out-of-sample deviance for complex models again tells us that these models overfit. Figure below shows the difference between in-sample and out-of-sample deviance for all of our models.
+On the left side of the figure, we see a similar trend as in the previous example -- more complex models have a lower in-sample deviance (error). This will always be the case, more complex models are able to (over)fit the training data better. On the right side, we can see that out-of-sample deviance is the lowest (the best) when our model uses the same complexity as the data generating model -- any other result would be a reason for alarm here. High out-of-sample deviance for complex models again tells us that these models overfit.
 
 What is also important here is the fact that as model's complexity grows the in-sample deviance is getting lower and (once we get past the "optimal" model) the out-of-sample deviance starts getting higher. As a result the difference between in-sample deviance and out-of-sample deviance increases with model's complexity.
 
 Let us repeat the process on a larger dataset, this time around we trained and tested our models on 200 observations. Everything described above also holds here, but pay attention to the difference between the in-sample and the out-of-sample deviance. The relative difference here is much lower, if we have more observations it is harder for models to overfit and the out-of-sample error will be lower in comparison with the in-sample error.
 
-![](./figs/logscore_200.png)
+<center>
+  ![](./figs/logscore_200.png)
+</center>
 
 Findings of this toy example will play an important role in the cross-validation approximation techniques we will meet in sections that follow.
 
@@ -166,15 +177,18 @@ Findings of this toy example will play an important role in the cross-validation
 Akaike information criterion (AIC) is the simplest estimator of the out-of-sample deviance. To estimate out-of-sample deviance from in-sample deviance we need to take into account the trends uncovered by our toy example. AIC does this in a very simple way:
 
 $$\text{AIC} = D_{is} + 2p = \text{LS} + 2p,$$
-where $D_{is}$ is the in-sample deviance which we estimate with log-score ($S(q)$) and $p$ is the number of model's parameters. So AIC approximates out-of-sample deviance by calculating the in-sample deviance and penalizing it for the number of parameters. It is very simple to understand and calculate but it has several downsides:
+where $D_{is}$ is the in-sample deviance which we estimate with log-score ($S(q)$) and $p$ is the number of model's parameters. So AIC approximates out-of-sample deviance by calculating the in-sample deviance and penalizing it for the number of parameters. It is very simple to understand and calculate but it has several constraints:
 
 * priors have to be flat or overwhelmed by the data,
-* the sample size ($n$) is much greater then the number of parameters ($p$),
-* the posterior distribution is approximately multivariate Gaussian.
+* the sample size ($n$) has to be much greater then the number of parameters ($p$),
+* the posterior distribution has to be approximately multivariate Gaussian.
 
 As you see, this is not a truly Bayesian approach, but nevertheless gives good results if the above conditions are met. In the figure below we used AIC (mean and 90% HDI) to compare our models from the toy example.
 
-![](./figs/aic.png)
+<center>
+  ![](./figs/aic.png)
+</center>
+
 
 ## Widely applicable information criterion
 
@@ -195,7 +209,9 @@ The effective number of parameters is calculated as:
 $$p_{\text{WAIC}} = \sum_{i=1}^n V(y_i) = \sum_{i=1}^n \underset{j \in s}{\text{var}} \left(log(p(y_i \; | \; \theta_j)) \right),$$
 where $V(y_i)$ is the variance of log-likelihood in observation $i$. To get $V(y_i)$ we calculate the variance in log-likelihood of $y_i$ for all samples ($j \in s$) from the posterior distribution. WAIC looks complicated but it is fortunately quite easy to calculate and is readily implemented in several popular R libraries for Bayesian statistics (e.g. loo, rethinking). In the figure below we used WAIC (mean and SE) to compare our models from the toy example.
 
-![](./figs/waic.png)
+<center>
+  ![](./figs/waic.png)
+</center>
 
 ## Model weights and averaging
 
@@ -205,7 +221,9 @@ $$w_i = \frac{e^{-\frac{1}{2} \Delta \text{WAIC}_i}}{\sum_{j=1}^m e^{-\frac{1}{2
 
 where $m$ is the number of models we are evaluating and $\Delta \text{WAIC}_i$ is the difference in WAIC between model $i$ and the best model. The equation might look a bit funky, but all it is doing is reversing the -2 multiplication followed by reversing the log transformation -- it is putting WAIC on the probability scale. In the equation above we used WAIC ($\Delta \text{WAIC}$) to calculate weights, in practice you can use any other measure as well (e.g. $\Delta \text{AIC}$ or $\Delta \text{LOOIC}$). Akaike weights can be interpreted as estimates of the probability that a model will make the best prediction on new data conditional on the set of models considered. The figure below visualizes Akaike weights for our toy example.
 
-![](./figs/weights.png)
+<center>
+  ![](./figs/weights.png)
+</center>
 
 ## Leave one out information criterion
 
@@ -221,7 +239,9 @@ $$\text{elpd} = -2 \sum_{i=1}^N log \left( \frac{1}{\frac{1}{s} \sum_{j=1}^s \fr
 
 Just like in the case of WAIC, LOOIC is readily implemented in the loo R library which, as you can see in the code examples (`./code/deviance.R`), is quite easy to use. In the figure below we used LOOIC (mean and SE) to compare our models from the toy example.
 
-![](./figs/looic.png)
+<center>
+  ![](./figs/looic.png)
+</center>
 
 There are several other methods for estimating out-of-sample deviance, for example the deviance information criterion (DIC) and Bayesian information criterion (BIC). Since these methods are a bit older and have been replaced by newer and better methods we decided to omit them in this document.
 
