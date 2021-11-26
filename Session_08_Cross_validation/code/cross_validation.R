@@ -142,22 +142,22 @@ ggplot() +
             alpha=0.3) +
   facet_grid(. ~ order) +
   xlab("Year") +
-  ylab("T [�C]") +
+  ylab("T [°C]") +
   ylim(6, 14)
 
-  
+
 # compare ----------------------------------------------------------------------
 # plot
+ggplot(data = df_mse_train, aes(y = order, x = mse)) +
+  stat_eye(fill = "skyblue", alpha = 0.75) +
+  xlab("MSE") +
+  ylab("Order of the polynomial")
+
 ggplot(data = df_mse_test, aes(y = order, x = mse)) +
   stat_eye(fill = "skyblue", alpha = 0.75) +
   xlab("MSE") +
   ylab("Order of the polynomial") +
   coord_cartesian(xlim=c(0, 10))
-
-ggplot(data = df_mse_train, aes(y = order, x = mse)) +
-  stat_eye(fill = "skyblue", alpha = 0.75) +
-  xlab("MSE") +
-  ylab("Order of the polynomial")
 
 # numerical info
 df_mse_test %>%
