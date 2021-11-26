@@ -12,10 +12,10 @@ library(cowplot)
 # load data
 data <- read.csv("../data/piglets.csv")
 
-# model
+# models
 model_n <- cmdstan_model("../models/normal.stan")
 model_g <- cmdstan_model("../models/groups_normal.stan")
-model_h <- cmdstan_model("../models/hierarhical_normal.stan")
+model_h <- cmdstan_model("../models/Hierarchical_normal.stan")
 
 
 # fit --------------------------------------------------------------------------
@@ -147,7 +147,7 @@ ggplot() +
   ylab("Density")
   
 
-# hierarhical normal model visual posterior check ------------------------------
+# Hierarchical normal model visual posterior check ------------------------------
 # use only n_dist distributions
 df_sample_h <- sample_n(df_h, n_dist)
 
@@ -209,10 +209,13 @@ hierarchical_90HDI <- hdi(df_h$mu_mu, credMass=0.9)
 df_top <- rbind(df_top, data.frame(Mean=hierarchical_mean,
                                    Q5=hierarchical_90HDI[1],
                                    Q95=hierarchical_90HDI[2],
-                                   Model="Hierarhical"))
+                                   Model="Hierarchical"))
 
 
 # plot
+# set model factors so the colors are the same
+df_top$Model <- factor(df_top$Model, levels = c("Normal", "Hierarchical", "Sample"))
+
 ggplot(data=df_top,
        aes(x=Model,
            y=Mean,
