@@ -85,13 +85,13 @@ As you can see more complex models fit the data better, this is expected behavio
 
 Indeed, it seems like the 4^th^ order polynomial regression overfits, as you can see its out-of-sample error is higher than that of the 3^rd^ order polynomial regression. In our case, 3^rd^ order polynomial regression seems to be the best model. The table below confirms this finding.
 
-| $p$ | Mean MSE        | q5%  | q95% |
-|---- |-----------------|------|------|
-| 0   | 3.89 $\pm$ 0.01 | 2.81 | 5.08 |
-| 1   | 2.50 $\pm$ 0.01 | 1.52 | 3.65 |
-| 2   | 2.61 $\pm$ 0.02 | 1.22 | 4.51 |
-| 3   | 1.48 $\pm$ 0.02 | 0.67 | 3.16 |
-| 4   | 7.47 $\pm$ 0.17 | 1.00 | 20.5 |
+| $p$ | Mean MSE        | HDI5%  | HDI95% |
+|-----|-----------------|--------|--------|
+| 0   | 3.89 $\pm$ 0.01 | 2.81   | 5.08   |
+| 1   | 2.50 $\pm$ 0.01 | 1.52   | 3.65   |
+| 2   | 2.61 $\pm$ 0.02 | 1.22   | 4.51   |
+| 3   | 1.48 $\pm$ 0.02 | 0.67   | 3.16   |
+| 4   | 7.47 $\pm$ 0.17 | 1.00   | 20.5   |
 
 
 # Approximating cross-validation

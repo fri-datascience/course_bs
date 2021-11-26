@@ -94,7 +94,7 @@ for (p in 0:max_order) {
   # extract mse
   df <- as_draws_df(fit$draws(c("mse_train", "mse_test", "b")))
   
-  # remove unwanted columns#
+  # remove unwanted columns
   # also cast to regular data frame to avoid some warnings later on
   df <- data.frame(df %>% select(-.chain, -.iteration, -.draw))
   

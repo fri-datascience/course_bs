@@ -5,7 +5,7 @@ library(bayesplot)
 library(posterior)
 library(tidyverse)
 library(HDInterval)
-library(loo) # for WAIC calculation
+library(loo) # for WAIC and LOOIC calculations
 
 # model ------------------------------------------------------------------------
 # compile the model
