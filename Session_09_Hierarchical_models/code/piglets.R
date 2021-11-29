@@ -15,7 +15,7 @@ data <- read.csv("../data/piglets.csv")
 # models
 model_n <- cmdstan_model("../models/normal.stan")
 model_g <- cmdstan_model("../models/groups_normal.stan")
-model_h <- cmdstan_model("../models/Hierarchical_normal.stan")
+model_h <- cmdstan_model("../models/hierarchical_normal.stan")
 
 
 # fit --------------------------------------------------------------------------
