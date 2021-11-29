@@ -103,7 +103,7 @@ With really complex models or when we have large amounts of data exhausting cros
 Information is the reduction in uncertainty caused by learning an outcome. Uncertainty arises from frequency distributions of events. For example, the uncertainty about what the weather will be like tomorrow in Ljubljana is much higher than it is for Los Angeles (high chance of sunny weather) or Glasgow (high chance of rain). A formal way to deal with uncertainty is through information entropy ($H$). The formulation was developed by Claude Shannon in 1948, it essentially says that uncertainty in a probability distribution is the average (minus) log-probability of an event.
 
 $$H(p) = - E [log(p_i)] = - \sum_{i=1}^n p_i \; log(p_i).$$
-You can also think of the information entropy as the potential surprise. If entropy is low the potential of surprise is higher. For example, we are much more surprised if we see rain in Los Angeles than we are if we see it in Ljubljana.
+You can also think of the information entropy as the potential surprise. If entropy is low the potential of surprise is higher. For example, we are not often surprised by wehater in Los Angeles as it is almost always sunny, we are much more often surprised by rain in Ljubljana.
 
 Information entropy plays a pivotal role in model evaluation, we can use it to evaluate how far our model is from the target (the truth). The key lies in the Kullback-Leibler divergence (also known as K-L divergence):
 
