@@ -84,6 +84,7 @@ fit_g <- model_g$sample(
 
 # diagnostics
 mcmc_trace(fit_g$draws())
+fit_g$summary()
 
 # samples
 df_g <- as_draws_df(fit_g$draws(c("sigma", "mu")))
