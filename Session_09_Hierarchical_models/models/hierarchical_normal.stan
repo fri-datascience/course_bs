@@ -7,7 +7,7 @@ data {
 
 parameters {
   real<lower=0> sigma_mu;
-  real mu_mu;  
+  real mu_mu;
   real<lower=0> sigma;
   vector[m] mu;
 }

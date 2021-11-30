@@ -95,7 +95,7 @@ fit22$summary(c("mu_a", "sigma_a", "mu_b", "sigma_b", "mu_s", "sigma_s"))
 # number of lines
 n_lines <- 20
 
-# use a different fit or data for other parts of the experiment
+# use a different fit or data to explore other segments of the experiment
 # e.g. fit22 for group2_part2
 fit <- fit12
 data <- group1_part2
@@ -130,13 +130,11 @@ for (i in 1:n_subjects) {
 ggplot() +
   geom_jitter(data=data,
              aes(x=sequence, y=response),
-             color="skyblue",
-             shape=16, alpha=0.6) +
+             shape=16, alpha=0.2) +
   geom_abline(data=df_subjects,
               aes(slope=beta,
                   intercept=alpha),
-              color="skyblue",
-              alpha=0.3,
+              alpha=0.1,
               size=1) +
   facet_wrap(. ~ subject, ncol=5) +
   ylab("Response") +

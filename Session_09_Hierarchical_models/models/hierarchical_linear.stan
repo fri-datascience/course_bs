@@ -7,7 +7,7 @@ data {
 }
 
 parameters {
-  // subject level parameters  
+  // subject level parameters
   vector[m] alpha;
   vector[m] beta;
   vector<lower=0>[m] sigma;
