@@ -55,7 +55,7 @@
 
 \section*{Grading}
 
-The final grade is composed of two parts, 50\% from the homework and the other 50\% either from an exam or from a practical project. The homework part is mandatory for all students, if all goes to plan there will be 11 exercises in total. Unless otherwise noted, all homework is due in 1 week and should be submitted as a 1 page report in the pdf format. General feedback to your homework will be provided on the group level via the course's forum. If some of you want more detailed, individual feedback about your work, we will happily provide it on request. Each homework will be graded on a scale from 1 to 5:
+The final grade is composed of two parts, the first 50\% comes from the homework and the other 50\% either from an exam or from a practical project. The homework part is mandatory for all students, if all goes to plan there will be 11 exercises in total. Unless otherwise noted, all homework is due in 1 week and should be submitted as a 1 page report in the pdf format. General feedback to your homework will be provided on the group level via the course's forum. If some of you want more detailed, individual feedback about your work, we will happily provide it on request. Each homework will be graded on a scale from 1 to 5:
 
 \begin{itemize}
 	\item 5 -- the best submission (or multiple best submissions within the margin of error),
@@ -67,7 +67,7 @@ The final grade is composed of two parts, 50\% from the homework and the other 5
 
 To get a positive grade, you need to gather at least 25 points from homework. Only 10 exercises out of 11 will count towards your grade, meaning that your worst submission will be discarded when calculating the final homework grade.
 
-The traditional way to to finish the course will be via a written exam. Only students that gathered at least 25 points from the homework are allowed to take the exam. The exam lasts for 120 minutes, during the exam you are allowed to use all literature (books, computers, the internet ...). Note though that you are strictly prohibited to use tools for communication (e.g. messaging, Discord, Facebook ...). If we see you using such a tool, you will receive a negative grade (no questions asked!) and will be prohibited to take then next scheduled exam. In the exam you will be asked to provide a constructive discussion or a critique of actual real-world data analyses. For example, you will be provided an excerpt from a paper that used an inappropriate statistical model, your task will be to identify and expose this weakness in a constructive fashion and also provide a solution that fixes the problem.
+The traditional way to to finish the course will be via a written exam. Only students that gathered at least 25 points from the homework are allowed to take the exam. The exam lasts for 120 minutes, during the exam you are allowed to use all literature (books, computers, the internet ...). Note though that you are strictly prohibited to use tools for communication (e.g. messaging, Discord, Facebook ...). If we see you using such a tool, you will receive a negative grade (no questions asked!) and will be prohibited to take then next scheduled exam. In the exam you will be asked to provide a constructive discussion or a critique of actual real-world data analyses. For example, you will be provided an excerpt from a paper that used an inappropriate statistical model, your task will be to identify and expose this weakness in a constructive fashion and also provide a solution that fixes the problem. To pass the exam you need to obtain at least 50\% of points at it.
 
 The alternative to the exam is the project. In the last month of the course, we will invite a couple of best students (based on homework) to form groups and collaborate on real-world data analysis problems. We plan to submit the results of theses projects to scientific journals, so your goal here will be to execute a data analysis of the highest standard. Obviously, you will be listed as co-authors on the submitted paper. Note here that by taking this way you will not be able to complete the course in January or February 2022. Projects will span at least over a couple of months, do not worry though we will assure that you will be able to finish the course by the end of the school year (June 2022 or September 2022 at the latest).
 
@@ -87,7 +87,7 @@ The main goal of this lecture is to illustrate how uncertainty is part of our ev
 
 Statistical (probabilistic) models are used for describing how certain data we are interested in was generated. Probabilistic programming languages offer both a methodological way for specifying statistical models and tools for performing automated inferences on these models.
 
-Stan is a widespread probabilistic programming language, it offers an intuitive framework for specifying statistical models along with algorithms for full Bayesian inference for continuous variable models through Markov chain Monte Carlo methods such as the No-U-Turn sampler, an adaptive form of Hamiltonian Monte Carlo sampling.
+Stan is probably the most widespread probabilistic programming language. It couples well with several popular programing languages and offers an intuitive framework for specifying statistical models along with algorithms for full Bayesian inference for continuous variable models through Markov chain Monte Carlo methods such as the No-U-Turn sampler, an adaptive form of Hamiltonian Monte Carlo sampling.
 
 \subsection*{The Generalized Linear Model [26. 10. 2021]}
 
@@ -105,7 +105,7 @@ Measuring things accurately and precisely is difficult to start with, but even m
 
 Bayesian modeling is an iterative process, we start by picking an initial model and settings its priors. To investigate whether our priors have undesirable effects that contradict domain knowledge we start by performing prior predictive checks. Once we are happy with our priors, we fit the model and diagnose the fitting process (traceplot, convergence, diagnostics ...). If all is good, we then execute posterior predictive checks to evaluate whether our model is suitable for answering the questions we are asking.
 
-\subsection*{Model Selection with Cross-Validation [23. 11. 2021]}
+\subsection*{Bayesian Cross-Validation [23. 11. 2021]}
 
 Cross-validation is a widely spread technique for estimating how well our models generalize (how they fare when encountering unknown data). Since in Bayesian statistics we are always working with probability distributions we can use log-score as our go-to model evaluation measure. This allows us to resort to information theory for calculating good cross-validation approximations without actually performing the actual (often very time consuming) cross-validation. An important point to emphasize here is that cross-validation and regularization are not mutually exclusive, they go hand in hand and traditionally we use both at the same time.
 
@@ -115,7 +115,7 @@ In Bayesian modeling hierarchical models (also called multilevel models) are an 
 
 \subsection*{Sampling [7. 12. 2021]}
 
-In this lecture we focus on the basics of sampling in the context of survey sampling. We cover three of the most common probability sampling approaches: simple random sampling, stratified sampling, and cluster sampling. We also briefly discuss non-probability sampling methods: convenience sampling, judgment sampling, quota sampling, and snowball sampling.
+This lecture will revolve around the basics of sampling in the context of survey sampling. We will cover three of the most common probability sampling approaches: simple random sampling, stratified sampling, and cluster sampling. We will also briefly discuss non-probability sampling methods: convenience sampling, judgment sampling, quota sampling, and snowball sampling.
 
 \subsection*{Priors [14. 12. 2021]}
 
@@ -123,15 +123,15 @@ Defining priors is an integral part in Bayesian statistics. The main purpose of 
 
 \subsection*{Modelling time sensitive data [21. 12. 2021]}
 
-We are often faced with data that is time sensitive (time-series). Since the time component is usually of paramount importance in such data we have to be extra careful when handling and modelling our data. For this purpose, we will take a look at specialized Bayesian models for modelling time sensitive data.
+We are often faced with data that is time sensitive in the form of time-series. Since the time component is usually of paramount importance in such data we have to be extra careful when handling and modelling our data. For this purpose, we will take a look at specialized Bayesian models for modelling time sensitive data.
 
 \subsection*{Holiday [28. 12. 2021]}
 
 Happy holidays!
 
-\subsection*{Spatial models [4. 1. 2022]}
+\subsection*{COVID case study [4. 1. 2022]}
 
-In several scientific fields (e.g. weather, astronomy, geography) the data almost always has a spatial component to it. Simply discarding this component will most likely lead to suboptimal or even erroneous models. In this lecture we will learn how we can empower our Bayesian models with spatial information.
+Our penultimate lecture will be a showcase of Bayesian s
 
 \subsection*{Putting it all together [11. 1. 2022]}
 
@@ -139,7 +139,7 @@ Before the final lecture you will self-study a few parts from different research
 
 \section*{Lab practice}
 
-The lab practice slot will be used for more hands-on oriented work. Since the work here will be more dynamic we do not have a clear schedule. Some of the activities that await you are:
+The lab practice slot will be used for more hands-on oriented work. Since the work here will be more dynamic we do not have a clear schedule. Some of the activities that could await you are:
 
 \begin{itemize}
 	\item designing a questionnaire,
