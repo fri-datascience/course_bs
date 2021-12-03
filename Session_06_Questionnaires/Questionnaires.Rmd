@@ -59,6 +59,10 @@ For a more systematic treatment we will adopt Tourangeau’s four-stage psycholo
 
 If cognitive demands/load on respondents are minimized and mental capacity is freed up in order to think about a response, the quality of the data obtained is likely to improve.
 
+###### Questionnaire length
+
+Many studies confirm that questionnaire length has a substantial effect on the number of participants that start the questionnaire. Similarly, *respondent fatigue* is also well documented. Tired or bored respondents more often say that they *don't know*, choose answers down the same column, give shorter answers, or give up answering the questionnaire altogether.
+
 ###### Question length
 
 Keep questions as short as possible. Research for the English language suggests a maximum of 15-20 words. On the other hand, some research shows that it increases data quality if a question or a group of questions is preceded by a medium-length introduction (15-60 words).
@@ -108,7 +112,7 @@ Another example where order matters are demographics questions. It is common pra
 
 Similarly, early questions should be easier and pleasant to answer to build a rapport with the respondent.
 
-A *filter question* (or screening question) is a question that is used to avoid asking respondents further questions that do not pertain to them. Filter questions should always be included to avoid asking unnecessary questions.
+A **filter question** (or screening question) is a question that is used to avoid asking respondents further questions that do not pertain to them. Filter questions should always be included to avoid asking unnecessary questions.
 
 ## Front and backmatter
 
@@ -280,15 +284,10 @@ Do you think young people could use more authority and leadership in their lives
 Would you be in favor of reintroducing the national service? -- ???
 
 <b>Now consider Sequence 2:</b>
-
 Are you worried about the danger of war? -- Yes
-
 Are you worried about the growth of armaments? -- Yes
-
 Do you think there's a danger in giving young people guns and teaching them how to kill? -- Yes
-
 Do you think it's wrong to force people to take up arms against their will? -- Yes
-
 Would you oppose the reintroduction of national service? -- ??? 
 </div>
 
