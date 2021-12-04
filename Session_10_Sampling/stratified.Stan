@@ -9,12 +9,10 @@ data {
 parameters {
   vector[k] mu;
   real<lower=0> sigma[k];
-  real<lower=0> alpha;
-  real<lower=0> beta;
 }
 
 model {
-  sigma ~ gamma(alpha, beta);
+  sigma ~ uniform(0, 10);
   for (i in 1:n) {
     y[i] ~ normal(mu[id[i]], sigma[id[i]]);
   }

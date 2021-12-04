@@ -24,10 +24,8 @@ generated quantities {
   
   for (i in 1:k) {
      int idx = categorical_rng(w);
-    
      tot_w += w[idx];
      mu_est += w[idx] * mu[idx];
-     // print(idx, " ", tot_w, " ", mu_est, " ", w[idx], " ", mu[idx], " ", mu);
   }
   
   mu_est /= tot_w;
