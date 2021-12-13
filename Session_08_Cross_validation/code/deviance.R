@@ -74,8 +74,8 @@ for (m in 0:m_max) {
                   data.frame(AIC=-2*rowSums(df_ll) + 2*(m+1), Order=as.factor(m)))
 }
 
-# compare ----------------------------------------------------------------------
-# AIC
+
+# AIC --------------------------------------------------------------------------
 df_aic_summary <- df_aic %>% group_by(Order) %>% 
   summarize(mean_AIC=mean(AIC),
             hdi5=hdi(AIC, credMass=0.9)[1],
@@ -88,27 +88,28 @@ ggplot(data=df_aic_summary, aes(x=Order, y=mean_AIC)) +
   xlab("Number of predictors") +
   ylab("AIC")
 
-# WAIC
+
+# WAIC -------------------------------------------------------------------------
 df_waic <- data.frame(WAIC=numeric(), SE=numeric(), Order=factor())
 
 for (i in 0:m_max) {
   waic <- waic(log_lik[[i+1]])
-  df_waic <- rbind(df_waic, data.frame(waic=waic$estimates[3,1],
+  df_waic <- rbind(df_waic, data.frame(WAIC=waic$estimates[3,1],
                                        SE=waic$estimates[3,2],
                                        Order=as.factor(i)))
 }
 
 # plot
-ggplot(data=df_waic, aes(x=Order, y=waic)) +
+ggplot(data=df_waic, aes(x=Order, y=WAIC)) +
   geom_point(shape=16, size=2) +
-  geom_linerange(aes(ymin = (waic-SE), ymax = (waic+SE)), alpha=0.3) +
+  geom_linerange(aes(ymin = (WAIC-SE), ymax = (WAIC+SE)), alpha=0.3) +
   xlab("Number of predictors") +
   ylab("WAIC")
 
 
-# averaging
+# Akaike weights for model combination -----------------------------------------
 # calculate delta_waic
-df_waic$delta_waic <- abs(df_waic$waic - min(df_waic$waic))
+df_waic$delta_waic <- abs(df_waic$WAIC - min(df_waic$WAIC))
 
 # calculate weights
 df_waic$weight <- exp(-0.5 * df_waic$delta_waic) / sum(exp(-0.5 * df_waic$delta_waic))
@@ -122,7 +123,8 @@ ggplot(data=df_waic, aes(x=Order, y=weight)) +
   theme_minimal() +
   ylim(0, 1)
 
-# LOOIC
+
+# LOOIC ------------------------------------------------------------------------
 df_loo <- data.frame(loo=numeric(), SE=numeric(), Order=factor())
 
 for (i in 0:m_max) {
