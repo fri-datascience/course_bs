@@ -27,7 +27,7 @@ The main goal of this handout is to illustrate how uncertainty is part of our ev
 We begin with the results of a survey we did with 30 participants where each participant was asked to asign a percentage probability to each of several common expressions that we use to express uncertainty. Each dot in the figure below represents one participant's probability assignment and the numbers in red the average across all participants for that expression:
 
 <center>
-![](./questionnaire.png){width=70%}
+![](./figs/questionnaire.png){width=70%}
 </center>
 
 Note that the survey was in Slovenian and some bias might have been introduced in translation, but the results are more than sufficient for the arguments we are trying to make. First, our natural language obviously already contains expressions that serve the purpose of expressing uncertainty. And there are few better indicators of the importance of something than that it is an integral part of our language.

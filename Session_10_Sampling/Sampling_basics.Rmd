@@ -48,7 +48,7 @@ The dataset that we will use throughout is an export of the football player data
 ```{r include=FALSE}
 n  <- 200  # sample size
 m  <- 100 # number of simulations
-df <- readRDS("FM2017.rds")
+df <- readRDS("./data/FM2017.rds")
 df <- df[complete.cases(df),]
 df$BestPosition <- names(df)[75:89][apply(df[,75:89],1, function(x){which(x == max(x))[1]})]
 df <- df[, names(df) %in% c("Name", "NationID", "Age", "Height", "Weight", "BestPosition", "PenaltyTaking")]
@@ -99,7 +99,7 @@ Simple random sampling is indeed simple but also very effective. The main reason
 Because of the CLT, we can, when the sample was obtained via simple random sampling, estimate the mean using a simple normal-likelihood model, even though the data might not be normally distributed. Here is the model in Stan:
 
 ```{r comment='', echo = F}
-cat(readLines("./simple.Stan"), sep = '\n')
+cat(readLines("./models/simple.stan"), sep = '\n')
 ```
 
 Note that results obtained with this approach will be for all but the smallest sample sizes very similar to those obtained with bootstrapping or a simple normal asymptotic argument of taking the average and quantifying uncertainty with sample standard deviation divided by the squared root of the sample size.
@@ -109,7 +109,7 @@ library(cmdstanr)
 library(posterior)
 
 set.seed(0)
-model1 <- cmdstan_model("./simple.Stan")
+model1 <- cmdstan_model("./models/simple.stan")
 
 if (file.exists("./saved_results/001.rds")) {
   res001 <- readRDS("./saved_results/001.rds")
@@ -258,11 +258,11 @@ The average over all estimates is `r round(mean(mus003), 2)` and their standard 
 A simple but effective way of modeling data that arise from stratified sampling is to model each strata separately according to the sampling procedure used for that strata (in our case, a simple random sample). The estimate of the grand mean is a weighted sum of the individual means, where the weights are derived from the proportion of each strata in the entire population:
 
 ```{r comment='', echo = F}
-cat(readLines("./stratified.Stan"), sep = '\n')
+cat(readLines("./models/stratified.stan"), sep = '\n')
 ```
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE, results = 'hide'}
-model2 <- cmdstan_model("./stratified.Stan")
+model2 <- cmdstan_model("./models/stratified.stan")
 
 weights <- round(table(df$BestPosition) / nrow(df) * n)
 weights[12] <- weights[12] + 2 # a bit of a hack to get exact n
@@ -344,7 +344,7 @@ h_bootstrap <- function(x, group, w, m = 100) {
 Finally, we will use a Bayesian model that models the two-level strucure. Similarly, we will estimate the mean of each cluster separately and the grand mean by sampling with replacement from the clusters:
 
 ```{r comment='', echo = F}
-cat(readLines("./clustered.Stan"), sep = '\n')
+cat(readLines("./models/clustered.stan"), sep = '\n')
 ```
 
 Note that
@@ -352,7 +352,7 @@ Note that
 Now we are ready to simulate:
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, results="hide", fig.width=2, fig.height=2}
-model3 <- cmdstan_model("./clustered.Stan")
+model3 <- cmdstan_model("./models/clustered.stan")
 
 # cluster sampling
 weights <- table(df$BestPosition) / nrow(df) 

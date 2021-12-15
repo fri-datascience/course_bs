@@ -1,0 +1,26 @@
+---
+title: "Time-series modelling"
+author: Jure Demšar and Erik Štrumbelj, University of Ljubljana
+output:
+    prettydoc::html_pretty:
+      highlight: github
+      theme: architect
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+```
+
+
+# Summary
+
+TODO
+
+
+# Time-series
+
+TODO
+
+# Recommended readings
+
+TODO

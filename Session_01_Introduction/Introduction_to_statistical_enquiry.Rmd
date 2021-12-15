@@ -40,7 +40,7 @@ Throughout the course we will emphasize the following: Transitioning from practi
 Our view on statistical enquiry and how we try to teach it leans heavily on the work of Wild and Pfannkuch (1999) and their four dimensions of statistical enquiry: the investigative cycle, types of thinking, the interrogative cycle, and dispositions. In the remainder of this text we will introduce these dimensions and relate theory to practical examples.
 
 <center>
-![](./dimensions.png){width=100%}
+![](./figs/dimensions.png){width=100%}
 </center>
 
 ### Dimension 1: The PPDAC investigative cycle model
