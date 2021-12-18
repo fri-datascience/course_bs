@@ -159,7 +159,7 @@ Luckily researchers developed tools that solve both issues outlined above at the
 Once expert provide their judgment, MATCH uses the least squares procedure to fit various parametric distributions numerically. It fits 6 different distributions (normal, Student's t, scaled beta, gamma, log normal and log Student's t) and automatically denotes which one fits expert's judgment the best. For Student's t the degrees of freedom parameter is set to 3, to give a more heavy tailed alternative to the normal distribution (to get the Cauchy distribution, degrees of freedom need to equal 1). Below is a snapshot of the MATCH tool developed by Morris et al. at the University of Nottingham.
 
 <center>
-![](./figs/MATCH.png)
+  ![](./figs/MATCH.png)
 </center>
 
 # Recommended readings
