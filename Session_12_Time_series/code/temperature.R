@@ -35,7 +35,6 @@ df_fft <- data.frame(P=P[-1], f=f[-1])
 # power spectrum
 ggplot(df_fft, aes(x=f, y=P)) +
   geom_bar(stat="identity") +
-  geom_vline(xintercept=1/12, color="grey50") +
   xlim(0, 0.2)
 
 
@@ -94,7 +93,7 @@ for (i in idx) {
                        Temperature = ssn))
 
   # trend
-  trend <- df_s$beta_1[i] * t + df_s$beta_0[i]
+  trend <- df_s$beta[i] * t + df_s$alpha[i]
   df_decomposed <- df_decomposed %>%
     add_row(data.frame(idx = as.character(i),
                        Type = "Trend",

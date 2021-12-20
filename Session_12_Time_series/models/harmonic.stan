@@ -12,8 +12,8 @@ parameters {
   vector[k] beta_sin;
   
   // trend parameters
-  real beta_0;
-  real beta_1;
+  real alpha;
+  real beta;
   
   // variance
   real<lower=0> sigma;
@@ -30,6 +30,6 @@ model {
     }
       
     // regression model
-    y[i] ~ normal(ssn + beta_1 * t[i] + beta_0, sigma);
+    y[i] ~ normal(alpha + beta * t[i] + ssn, sigma);
   }
 }

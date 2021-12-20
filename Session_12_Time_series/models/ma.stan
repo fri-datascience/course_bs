@@ -1,13 +1,13 @@
 data {
   int<lower=1> n; // number of observations
   vector[n] y;    // time-series
-  int<lower=1> Q; // the Q parameter
+  int<lower=1> q; // the q parameter
 }
 
 parameters {
   real mu;                            // mean
+  vector<lower=-1, upper=1>[q] theta; // error coeffifcients
   real<lower=0> sigma;                // error scale
-  vector<lower=-1, upper=1>[Q] theta; // error coeffifcients
 }
 
 transformed parameters {
@@ -17,8 +17,8 @@ transformed parameters {
   // calculate
   for (t in 1:n) {
     epsilon[t] = y[t] - mu;
-    for (q in 1:min(t - 1, Q)) {
-      epsilon[t] = epsilon[t] - theta[q] * epsilon[t - q];
+    for (i in 1:min(t - 1, q)) {
+      epsilon[t] = epsilon[t] - theta[i] * epsilon[t - i];
     }
   }
 }
@@ -37,8 +37,8 @@ model {
 
   for (t in 1:n) {
     eta[t] = mu;
-    for (q in 1:min(t - 1, Q)) {
-      eta[t] = eta[t] + theta[q] * epsilon[t - q];
+    for (i in 1:min(t - 1, q)) {
+      eta[t] = eta[t] + theta[i] * epsilon[t - i];
     }
   }
   

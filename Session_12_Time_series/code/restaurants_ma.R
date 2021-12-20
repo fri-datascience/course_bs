@@ -20,18 +20,23 @@ df$month <- 1:nrow(df)
 # ar ---------------------------------------------------------------------------
 model <- cmdstan_model("../models/ma.stan")
 
+# use act to get the p parameter
+acf(df$spending, lag.max = 50)
+
+# set q
+q = 12
+
 # prep data for stan
-Q = 6
 stan_data <- list(y = df$spending, 
                   n = nrow(df),
-                  Q = Q)
+                  q = q)
 
 # fit
 fit <- model$sample(
   data = stan_data,
   parallel_chains = 4,
   seed = 1,
-  adapt_delta = 0.99
+  adapt_delta = 0.9
 )
 
 # diagnostics
@@ -51,22 +56,37 @@ df_plot <- data.frame(idx = character(),
                       Month = integer(),
                       S = numeric())
 
+# forecast n_f months
+n_f <- 6
+n_t <- nrow(df)
+t <- 1:(n_t + n_f)
+
 for (i in 1:nrow(df_ss)) {
   # mu, thetas and epsilons
   mu <- df_ss[i, ]$mu
-  thetas <- df_ss[i,3:(3+Q-1)]
-  epsilons <- df_ss[i,(3+Q):ncol(df_ss)]
+  thetas <- as.numeric(df_ss[i,3:(3+q-1)])
+  epsilons <- as.numeric(df_ss[i,(3+q):ncol(df_ss)])
   
   # init spending
   s <- df$spending
   
-  for (j in (Q+1):nrow(df)) {
-    s[j] <- mu + sum(thetas * epsilons[(j-Q):(j-1)])
+  # model
+  for (j in (q+1):n_t) {
+    s[j] <- mu + sum(thetas * epsilons[(j-q):(j-1)])
+  }
+  
+  # forecast
+  for (j in (n_t+1):(n_t+n_f)) {
+    # spending
+    s[j] <- mu + sum(thetas * epsilons[(j-q):(j-1)])
+    
+    # epsilon
+    epsilons[j] <- s[j] - mu - sum(thetas * epsilons[(j-1-q):(j-2)])
   }
   
   df_plot <- df_plot %>%
     add_row(data.frame(idx = as.character(i),
-                       Month = df$month,
+                       Month = t,
                        S = s))
 }
 

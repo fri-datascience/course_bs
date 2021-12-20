@@ -94,7 +94,7 @@ for (i in idx) {
                        Concentration = ssn))
   
   # trend
-  trend <- df_s$beta_1[i] * x + df_s$beta_0[i]
+  trend <- df_s$beta[i] * x + df_s$alpha[i]
   df_decomposed <- df_decomposed %>%
     add_row(data.frame(idx = as.character(i),
                        Type = "Trend",

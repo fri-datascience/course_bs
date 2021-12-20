@@ -20,11 +20,16 @@ df$month <- 1:nrow(df)
 # ar ---------------------------------------------------------------------------
 model <- cmdstan_model("../models/ar.stan")
 
+# use pacf to get the p parameter
+pacf(df$spending)
+
+# set p
+p = 13
+
 # prep data for stan
-K = 6
 stan_data <- list(y = df$spending, 
                   n = nrow(df),
-                  K = K)
+                  p = p)
 
 # fit
 fit <- model$sample(
@@ -50,21 +55,32 @@ df_plot <-data.frame(idx = character(),
                      Month = integer(),
                      S = numeric())
 
+# forecast n_f months
+n_f <- 6
+n_t <- nrow(df)
+t <- 1:(n_t + n_f)
+
 for (i in 1:nrow(df_ss)) {
   # alpha and betas
-  alpha <- df_ss[i, ]$alpha
-  betas <- df_ss[i,2:(2+K-1)]
+  alpha <- as.numeric(df_ss[i, ]$alpha)
+  betas <- as.numeric(df_ss[i,2:(2+p-1)])
   
   # init spending
   s <- df$spending
   
-  for (j in (K+1):nrow(df)) {
-    s[j] <- alpha + sum(betas * df$spending[(j-K):(j-1)])
+  # model
+  for (j in (p+1):n_t) {
+    s[j] <- alpha + sum(betas * df$spending[(j-p):(j-1)])
+  }
+  
+  # forecast
+  for (j in (n_t+1):(n_t+n_f)) {
+    s[j] <- alpha + sum(betas * s[(j-p):(j-1)])
   }
   
   df_plot <- df_plot %>%
     add_row(data.frame(idx = as.character(i),
-                       Month = df$month,
+                       Month = t,
                        S = s))
 }
 

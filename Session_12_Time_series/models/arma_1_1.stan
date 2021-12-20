@@ -14,14 +14,14 @@ transformed parameters {
   // prediction for time t
   vector[n] nu; 
   // error for time t
-  vector[n] err;
+  vector[n] epsilon;
   
   // arma(1, 1)
-  nu[1] = mu + beta * mu;     
-  err[1] = y[1] - nu[1];
+  nu[1] = mu;
+  epsilon[1] = y[1] - nu[1];
   for (t in 2:n) {
-    nu[t] = mu + beta * y[t - 1] + theta * err[t - 1];
-    err[t] = y[t] - nu[t];
+    nu[t] = mu + beta * y[t - 1] + theta * epsilon[t - 1];
+    epsilon[t] = y[t] - nu[t];
   }
 }
 
@@ -33,5 +33,5 @@ model {
   sigma ~ cauchy(0, 5);
   
   // likelihood
-  err ~ normal(0, sigma);
+  epsilon ~ normal(0, sigma);
 }

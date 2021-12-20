@@ -1,21 +1,21 @@
 data {
   int<lower=1> n; // number of observations
   vector[n] y;    // time-series
-  int<lower=1> K; // the K parameter
+  int<lower=1> p; // the p parameter
 } 
 
 parameters {
   real alpha;
-  vector[K] beta;
+  vector[p] beta;
   real sigma;
 }
 
 model {
-  for (t in (K+1):n) {
+  for (t in (p+1):n) {
     
     // the autoregressive part
     real mu = alpha;
-    for (i in 1:K) {
+    for (i in 1:p) {
       mu += beta[i] * y[t-i];
     }
     

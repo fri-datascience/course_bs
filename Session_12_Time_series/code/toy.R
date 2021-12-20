@@ -60,5 +60,4 @@ df_acf <- df_acf %>% add_row(data.frame(Lag=acf$lag, ACF=acf$acf, type="Seasonal
 # plot
 ggplot(df_acf, aes(x=Lag, y=ACF)) +
   geom_bar(stat="identity", width = 0.5) +
-  geom_hline(yintercept=c(-0.05, 0.05), size=0.25, color="blue4", linetype="dashed") +
   facet_wrap( ~ type, ncol=2)

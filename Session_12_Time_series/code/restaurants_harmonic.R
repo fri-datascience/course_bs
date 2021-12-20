@@ -81,7 +81,7 @@ for (i in idx) {
                        Spending = ssn))
 
   # trend
-  trend <- df_s$beta_1[i] * t + df_s$beta_0[i]
+  trend <- df_s$beta[i] * t + df_s$alpha[i]
   df_decomposed <- df_decomposed %>%
     add_row(data.frame(idx = as.character(i),
                        Type = "Trend",
@@ -107,14 +107,22 @@ ggplot(df_decomposed, aes(x=Month,
 
 
 # plot fit ---------------------------------------------------------------------
+# get a subsample of 20 random samples
+df_ss <- df_s[sample(1:nrow(df_s), 20, rep = F), ]
+
 df_plot <- data.frame(idx = character(),
                       Month = integer(),
                       S = numeric())
 
-for (i in 1:nrow(df_s)) {
+# forecast n_f months
+n_f <- 6
+n_t <- nrow(df)
+t <- 1:(n_t + n_f)
+
+for (i in 1:nrow(df_ss)) {
   # seasonality and trend
-  ssn <- df_s$beta_cos[i] * cos(omega * t) + df_s$beta_sin[i] * sin(omega * t)
-  trend <- df_s$beta_1[i] * t + df_s$beta_0[i]
+  ssn <- df_ss$beta_cos[i] * cos(omega * t) + df_ss$beta_sin[i] * sin(omega * t)
+  trend <- df_ss$beta[i] * t + df_ss$alpha[i]
   
   df_plot <- df_plot %>%
     add_row(data.frame(idx = as.character(i),

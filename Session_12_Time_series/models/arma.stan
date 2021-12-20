@@ -1,14 +1,14 @@
 data {
   int<lower=1> n; // num observations
   vector[n] y;    // observed outputs
-  int<lower=1> K; // the K AR parameter
-  int<lower=1> Q; // the Q MA parameter 
+  int<lower=1> p; // the p AR parameter
+  int<lower=1> q; // the q MA parameter 
 }
 
 parameters {
   real mu;                            // mean coeff
-  vector[K] beta;                    // autoregression coeff
-  vector<lower=-1, upper=1>[Q] theta; // moving avg coeff
+  vector[p] beta;                     // autoregression coeff
+  vector<lower=-1, upper=1>[q] theta; // moving avg coeff
   real<lower=0> sigma;                // noise scale
 }
 
@@ -16,7 +16,7 @@ transformed parameters {
   // prediction for time t
   vector[n] nu; 
   // error for time t
-  vector[n] err;
+  vector[n] epsilon;
   // storages
   real ar;
   real ma;
@@ -24,7 +24,7 @@ transformed parameters {
   for (t in 1:n) {
     // ar
     ar = 0;
-    for (j in 1:K) {
+    for (j in 1:p) {
       if (t - j > 0) {
         ar = ar + beta[j] * y[t - j];
       }
@@ -32,14 +32,14 @@ transformed parameters {
     
     // ma
     ma = 0;
-    for (j in 1:Q) {
+    for (j in 1:q) {
       if (t - j > 0) {
-        ma = ma + theta[j] * err[t - j];
+        ma = ma + theta[j] * epsilon[t - j];
       }
     }
     
     nu[t] = mu + ar + ma;
-    err[t] = y[t] - nu[t];
+    epsilon[t] = y[t] - nu[t];
   }
 }
 
@@ -51,5 +51,5 @@ model {
   sigma ~ cauchy(0, 5);
   
   // likelihood
-  err ~ normal(0, sigma);
+  epsilon ~ normal(0, sigma);
 }
