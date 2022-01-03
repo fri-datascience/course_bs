@@ -20,7 +20,7 @@ df$month <- 1:nrow(df)
 # ar ---------------------------------------------------------------------------
 model <- cmdstan_model("../models/ma.stan")
 
-# use act to get the p parameter
+# use acf to get the p parameter
 acf(df$spending, lag.max = 50)
 
 # set q
@@ -81,7 +81,7 @@ for (i in 1:nrow(df_ss)) {
     s[j] <- mu + sum(thetas * epsilons[(j-q):(j-1)])
     
     # epsilon
-    epsilons[j] <- s[j] - mu - sum(thetas * epsilons[(j-1-q):(j-2)])
+    epsilons[j] <- s[j] - (mu + sum(thetas * epsilons[(j-1-q):(j-2)]))
   }
   
   df_plot <- df_plot %>%
