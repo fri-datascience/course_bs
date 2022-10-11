@@ -2,12 +2,10 @@
 # https://gist.github.com/oliviergimenez
 # https://gist.github.com/oliviergimenez/5ee33af9c8d947b72a39ed1764040bf3
 
-
 # libraries --------------------------------------------------------------------
 library(ggdist)
 library(ggplot2)
 library(tidyverse)
-
 
 # support functions ------------------------------------------------------------
 # prior
@@ -53,7 +51,6 @@ metropolis <- function(z, n, steps = 1000, init = 0.5, step = 0.2) {
   theta_posterior
 }
 
-
 # MCMC based inference ---------------------------------------------------------
 z <- 5
 n <- 12
@@ -86,14 +83,12 @@ ggplot(data = df_samples, aes(x = theta)) +
   ylab("density") +
   theme_minimal()
 
-
 # fairness calculation ---------------------------------------------------------
 bottom_cut <- 0.3
 top_cut <- 0.7
 df_samples$fair <- df_samples$theta > bottom_cut & df_samples$theta < top_cut
 fairness <- sum(df_samples$fair) / nrow(df_samples)
 cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
-
 
 # fairness visualization -------------------------------------------------------
 ggplot(data = df_samples, aes(x = theta)) +

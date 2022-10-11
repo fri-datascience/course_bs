@@ -9,7 +9,6 @@ library(mcmcse)    # for comparing samples and calculating MCSE
 library(ggdist)    # for distribution visualizations
 library(shinystan) # for visual diagnostics
 
-
 # modelling and data prep ------------------------------------------------------
 # compile the model
 model <- cmdstan_model("../models/bernoulli_beta.stan")
@@ -27,7 +26,6 @@ fit <- model$sample(
   seed = 1
 )
 
-
 # diagnostics ------------------------------------------------------------------
 # traceplot
 mcmc_trace(fit$draws("theta"))
@@ -40,7 +38,6 @@ fit$cmdstan_diagnose()
 
 # visual checks
 launch_shinystan(fit)
-
 
 # analysis ---------------------------------------------------------------------
 # convert theta draws to data frame

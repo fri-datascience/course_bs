@@ -6,7 +6,6 @@ library(posterior) # for extracting samples
 library(bayesplot) # for some quick MCMC visualizations
 library(mcmcse)    # for comparing samples and calculating MCSE
 
-
 # modelling and data prep ------------------------------------------------------
 # compile the model
 model <- cmdstan_model("../models/normal.stan")
@@ -36,14 +35,12 @@ fit <- model$sample(
   seed = 1
 )
 
-
 # diagnostics ------------------------------------------------------------------
 # traceplot
 mcmc_trace(fit$draws())
 
 # summary
 fit$summary()
-
 
 # analysis ---------------------------------------------------------------------
 # convert samples to data frame

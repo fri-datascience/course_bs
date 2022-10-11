@@ -1,5 +1,5 @@
 # libraries --------------------------------------------------------------------
-library(cmdstanr)  # for interfacing Stan
+library(cmdstanr)
 library(mcmcse)
 library(posterior)
 
@@ -29,7 +29,6 @@ mcmc_trace(fit$draws())
 
 # summary
 fit$summary()
-
 
 # analysis ---------------------------------------------------------------------
 # convert samples to data frame

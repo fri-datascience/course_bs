@@ -3,7 +3,6 @@ library(ggplot2)
 library(ggdist)
 library(distributional)
 
-
 # coin fairness calculator -----------------------------------------------------
 # set parameters
 alpha <- 6
