@@ -1,9 +1,9 @@
 data {
-  int<lower=0> n;            // number of observations
-  int<lower=0> m;            // number of independent variables
-  vector[m] x[n];            // independent variables
-  int<lower=0> k;            // number of outcomes
-  int<lower=1,upper=k> y[n]; // dependent variables
+  int<lower=0> n;               // number of observations
+  int<lower=0> m;               // number of independent variables
+  vector[m] x[n];               // independent variables
+  int<lower=0> k;               // number of outcomes
+  array int<lower=1,upper=k> y; // dependent variables
 }
 
 transformed data {

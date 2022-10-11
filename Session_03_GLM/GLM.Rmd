@@ -179,9 +179,9 @@ Below is model's code in Stan, as you can see the Bernoulli logit regression is 
 
 ```
 data {
-  int<lower=1> n;             // number of observations
-  vector<lower=0>[n] x;       // height
-  int<lower=0, upper=1> y[n]; // gender 
+  int<lower=1> n;                   // number of observations
+  vector<lower=0>[n] x;             // height
+  array[n] int<lower=0, upper=1> y; // gender 
 }
 
 parameters {
@@ -257,10 +257,10 @@ Below is Stan code for the Poisson regression, note that we use the `generated q
 
 ```
 data {
-  int<lower=1> n;    // number of data points
-  int<lower=0> m;    // number of independent variables
-  matrix[n,m] X;     // independent variables
-  int<lower=0> y[n]; // dependent variable 
+  int<lower=1> n;          // number of data points
+  int<lower=0> m;          // number of independent variables
+  matrix[n,m] X;           // independent variables
+  array[n] int<lower=0> y; // dependent variable 
 }
 
 parameters {
@@ -280,9 +280,10 @@ model {
 
 generated quantities {
   // lambdas
-  real<lower=0> lambda[n];
+  vector<lower=0>[n] lambda;
+
   // predictions
-  int<lower=0> pred[n];
+  array[n] int<lower=0> pred;
   
   for (i in 1:n) {
     lambda[i] = exp(alpha + X[i] * beta);
@@ -341,11 +342,11 @@ The classical categorical regression can have problems with identifiability (two
 
 ```
 data {
-  int<lower=0> n;            // number of observations
-  int<lower=0> m;            // number of independent variables
-  vector[m] x[n];            // independent variables
-  int<lower=0> k;            // number of outcomes
-  int<lower=1,upper=k> y[n]; // dependent variables
+  int<lower=0> n;               // number of observations
+  int<lower=0> m;               // number of independent variables
+  vector[m] x[n];               // independent variables
+  int<lower=0> k;               // number of outcomes
+  array int<lower=1,upper=k> y; // dependent variables
 }
 
 transformed data {
@@ -500,11 +501,11 @@ Fortunately, the implementation in Stan is easier. In the code below the vector 
 
 ```
 data {
-  int n;                     // number of observations
-  int m;                     // number of independent variables
-  row_vector[m] x[n];        // independent variables
-  int k;                     // number of outcomes
-  int<lower=1,upper=k> y[n]; // dependent variables
+  int n;                           // number of observations
+  int m;                           // number of independent variables
+  row_vector[m] x[n];              // independent variables
+  int k;                           // number of outcomes
+  array[n] int<lower=1,upper=k> y; // dependent variables
 }
 
 parameters {

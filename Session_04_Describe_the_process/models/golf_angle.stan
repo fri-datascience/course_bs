@@ -1,8 +1,8 @@
 data {
-  int N;       // number of data points
-  int n[N];    // number of putts at each data point
-  vector[N] x; // distance for each data point
-  int y[N];    // number of successful hits at each data point
+  int N;          // number of data points
+  array[N] int n; // number of putts at each data point
+  vector[N] x;    // distance for each data point
+  array[N] int y; // number of successful hits at each data point
 }
 
 transformed data {

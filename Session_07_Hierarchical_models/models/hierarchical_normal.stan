@@ -2,7 +2,7 @@ data {
   int<lower=0> n; // number of observations
   int<lower=0> m; // number of groups
   vector[n] y;    // observations
-  int g[n];       // group indexes
+  array[n] int g; // group indexes
 }
 
 parameters {

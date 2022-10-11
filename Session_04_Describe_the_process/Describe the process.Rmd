@@ -53,10 +53,10 @@ Binomial logistic regression is a very common GLM, it is so common that it is al
 
 ```
 data {
-  int N;       // number of data points
-  int n[N];    // number of puts at each data poing
-  vector[N] x; // distance for each data point
-  int y[N];    // number of hits at each data point
+  int N;             // number of data points
+  array[N] int n;    // number of puts at each data point
+  vector[N] x;       // distance for each data point
+  array[N] int y;    // number of hits at each data point
 }
 
 parameters {
@@ -131,10 +131,10 @@ Below is the full model code in Stan. We use the \texttt{transformed data} to ca
 
 ```
 data {
-  int N;       // number of data points
-  int n[N];    // number of puts at each data poing
-  vector[N] x; // distance for each data point
-  int y[N];    // number of hits at each data point
+  int N;             // number of data points
+  array[N] int n;    // number of puts at each data point
+  vector[N] x;       // distance for each data point
+  array[N] int y;    // number of hits at each data point
 }
 
 transformed data {
@@ -218,10 +218,10 @@ $$\sigma_d \sim \text{Cauchy}(0, 2.5).$$
 
 ```
 data {
-  int N;       // number of data points
-  int n[N];    // number of puts at each data poing
-  vector[N] x; // distance for each data point
-  int y[N];    // number of hits at each data point
+  int N;             // number of data points
+  array[N] int n;    // number of puts at each data point
+  vector[N] x;       // distance for each data point
+  array[N] int y;    // number of hits at each data point
 }
 
 transformed data {

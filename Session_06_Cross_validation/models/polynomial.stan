@@ -14,13 +14,13 @@ transformed data {
 }
 
 parameters {
-  real b[p_order];     // poly terms
+  vector[p_order] b;     // poly terms
   real<lower=0> sigma; // stdev
 }
 
 model {
   // x 
-  real mu[p_order];
+  vector[p_order] mu;
   
   // priors
   for (j in 2:p_order)  {

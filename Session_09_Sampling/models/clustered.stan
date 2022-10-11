@@ -2,13 +2,13 @@ data {
   int n;
   int k;
   simplex[k] w;
-  int id[n];
-  real y[n];
+  array[n] int id;
+  vector[n] y;
 }
 
 parameters {
   vector[k] mu;
-  real<lower=0> sigma[k];
+  vector<lower=0>[k] sigma;
 }
 
 model {

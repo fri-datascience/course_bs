@@ -1,9 +1,9 @@
 data {
-  int<lower=0> n;    // total number of measurements
-  int<lower=0> m;    // number of subjects
-  vector[n] x;       // sequence/time
-  vector[n] y;       // response
-  int<lower=0> s[n]; // subject ids
+  int<lower=0> n;          // total number of measurements
+  int<lower=0> m;          // number of subjects
+  vector[n] x;             // sequence/time
+  vector[n] y;             // response
+  array[n] int<lower=0> s; // subject ids
 }
 
 parameters {

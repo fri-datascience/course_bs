@@ -11,14 +11,14 @@ transformed data {
 }
 
 parameters {
-  real b[mm];          // betas
+  vector[mm] b;    // betas
   real<lower=0> sigma; // stdev
 }
 
 model {
   for (i in 1:n) {
     // storage for linear terms
-    real mu[mm];
+    vector[mm] mu;
     
     // calculate terms
     for (j in 1:mm) {
@@ -36,7 +36,7 @@ generated quantities {
   
   for (i in 1:n) {
     // mu
-    real mu[mm];
+    vector[mm] mu;
      
     // calculate terms
     for (j in 1:mm) {

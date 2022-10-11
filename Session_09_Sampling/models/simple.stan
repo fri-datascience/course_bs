@@ -1,6 +1,6 @@
 data {
   int n;
-  real y[n];
+  vector[n] y;
 }
 
 parameters {

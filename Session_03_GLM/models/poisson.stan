@@ -1,8 +1,8 @@
 data {
-  int<lower=1> n;    // number of data points
-  int<lower=0> m;    // number of independent variables
-  matrix[n,m] X;     // independent variables
-  int<lower=0> y[n]; // dependent variable 
+  int<lower=1> n;          // number of data points
+  int<lower=0> m;          // number of independent variables
+  matrix[n,m] X;           // independent variables
+  array[n] int<lower=0> y; // dependent variable 
 }
 
 parameters {
@@ -22,9 +22,10 @@ model {
 
 generated quantities {
   // lambdas
-  real<lower=0> lambda[n];
+  vector<lower=0>[n] lambda;
+
   // predictions
-  int<lower=0> pred[n];
+  array[n] int<lower=0> pred;
 
   for (i in 1:n) {
     // calculate the lambda

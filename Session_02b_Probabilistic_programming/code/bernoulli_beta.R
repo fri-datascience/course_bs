@@ -7,6 +7,7 @@ library(posterior) # for extracting samples
 library(bayesplot) # for some quick MCMC visualizations
 library(mcmcse)    # for comparing samples and calculating MCSE
 library(ggdist)    # for distribution visualizations
+library(shinystan) # for visual diagnostics
 
 
 # modelling and data prep ------------------------------------------------------
@@ -34,6 +35,12 @@ mcmc_trace(fit$draws("theta"))
 # summary
 fit$summary()
 
+# additional automated diagnostics
+fit$cmdstan_diagnose()
+
+# visual checks
+launch_shinystan(fit)
+
 
 # analysis ---------------------------------------------------------------------
 # convert theta draws to data frame
@@ -52,7 +59,7 @@ cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
 # plot
 ggplot(data = df, aes(x = theta)) +
   stat_slab(aes(fill = stat(x < bottom_cut | x > top_cut)),
-               alpha=0.75,
+               alpha = 0.75,
                show.legend = FALSE,
                normalize = "none",
                scale = 1) +

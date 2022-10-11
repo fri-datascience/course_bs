@@ -1,7 +1,7 @@
 data {
-  int<lower=1> n;             // number of measurements
-  vector<lower=0>[n] x;       // height
-  int<lower=0, upper=1> y[n]; // gender 
+  int<lower=1> n;                   // number of measurements
+  vector<lower=0>[n] x;             // height
+  array[n] int<lower=0, upper=1> y; // gender 
 }
 
 parameters {

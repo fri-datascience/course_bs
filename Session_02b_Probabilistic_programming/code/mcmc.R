@@ -20,20 +20,13 @@ likelihood <- function(z, n, theta) {
   dbinom(x = z, size = n, prob = theta)
 }
 
-# posterior density function (log scale)
+# posterior is likelihood * prior
 posterior <- function(z, n, theta) {
   likelihood(z, n, theta) * prior(theta)
 }
 
-# propose candidate value
-move <- function(theta, step = .2) {
-  theta_candidate <- theta + rnorm(1, 0, step)
-  theta_candidate <- min(1, max(0, theta_candidate))
-  return(theta_candidate)
-}
-
 # metropolis-hastings
-metropolis <- function(z, n, steps = 1000, init = 0.5) {
+metropolis <- function(z, n, steps = 1000, init = 0.5, step = 0.2) {
   # theta storage
   theta_posterior <- rep(NA, steps)
 
@@ -41,15 +34,16 @@ metropolis <- function(z, n, steps = 1000, init = 0.5) {
   theta_posterior[1] <- init
 
   for (t in 2:steps) {
-    # propose next candidate value
-    theta_candidate <- move(theta_posterior[t - 1])
+    # propose next candidate value and clamp to 0..1
+    theta_candidate <- theta_posterior[t - 1] + rnorm(1, 0, step)
+    theta_candidate <- min(1, max(0, theta_candidate))
 
     # calculate ratio
     likelihood_candidate <- posterior(z, n, theta_candidate)
     likelihood_previous <- posterior(z, n, theta_posterior[t - 1])
     likelihood_ratio <- likelihood_candidate / likelihood_previous
 
-    # decide to accept candidate value or to keep current value
+    # decide to accept candidate value or to keep the current value
     accept <- rbinom(1, 1, prob = min(likelihood_ratio, 1))
     theta_posterior[t] <-
       ifelse(accept, theta_candidate, theta_posterior[t - 1])
@@ -68,31 +62,41 @@ chain1 <- metropolis(z, n)
 chain2 <- metropolis(z, n, init = 0.25)
 chain3 <- metropolis(z, n, init = 0.75)
 
-# plot chains through time
-df_chains <- data.frame(x = seq_len(length(chain1)),
+# plot samples through time
+df_samples <- data.frame(x = seq_len(length(chain1)),
                         theta = chain1, chain = "1")
 
-df_chains <- df_chains %>%
+df_samples <- df_samples %>%
   add_row(data.frame(x = seq_len(length(chain2)), theta = chain2, chain = "2"))
 
-df_chains <- df_chains %>%
+df_samples <- df_samples %>%
   add_row(data.frame(x = seq_len(length(chain3)), theta = chain3, chain = "3"))
 
-ggplot(df_chains, aes(x = x, y = theta, color = chain)) +
+# traceplot
+ggplot(df_samples, aes(x = x, y = theta, color = chain)) +
   geom_line() +
   scale_color_brewer(type = "qual", palette = "Set1")
+
+# visualize
+ggplot(data = df_samples, aes(x = theta)) +
+  geom_histogram(bins = 50, color = "skyblue",
+                 fill = "skyblue", alpha = 0.75) +
+  xlim(0, 1) +
+  xlab("") +
+  ylab("density") +
+  theme_minimal()
 
 
 # fairness calculation ---------------------------------------------------------
 bottom_cut <- 0.3
 top_cut <- 0.7
-df_chains$fair <- df_chains$theta > bottom_cut & df_chains$theta < top_cut
-fairness <- sum(df_chains$fair) / nrow(df_chains)
+df_samples$fair <- df_samples$theta > bottom_cut & df_samples$theta < top_cut
+fairness <- sum(df_samples$fair) / nrow(df_samples)
 cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
 
 
 # fairness visualization -------------------------------------------------------
-ggplot(data = df_chains, aes(x = theta)) +
+ggplot(data = df_samples, aes(x = theta)) +
   stat_dist_slab(aes(fill = stat(x < bottom_cut | x > top_cut)),
                     alpha = 0.75,
                     show.legend = FALSE,
