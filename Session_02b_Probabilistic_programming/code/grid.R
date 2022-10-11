@@ -17,7 +17,7 @@ n <- 12
 z <- 5
 
 # likelihood
-likelihood <- dbinom(z, n, prob=grid)
+likelihood <- dbinom(z, n, prob = grid)
 
 # posterior
 posterior <- likelihood * prior
@@ -36,7 +36,8 @@ cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
 # fairness visualization -------------------------------------------------------
 df <- data.frame(x = grid, y = posterior)
 ggplot(data = df, aes(x = x, y = y)) +
-  geom_bar(stat="identity", color="skyblue", fill="skyblue", alpha = 0.75) +
+  geom_bar(stat = "identity", color = "skyblue",
+           fill = "skyblue", alpha = 0.75) +
   xlim(0, 1) +
   xlab("") +
   ylab("density") +

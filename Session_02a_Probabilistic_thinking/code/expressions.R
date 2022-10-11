@@ -21,22 +21,32 @@ library(ggdist)
 library(tidyverse)
 
 # load the data-----------------------------------------------------------------
-df <- read.csv("../data/expressions.csv")
+df <- read.csv("../data/expressions2022.csv")
 
 # set factors
 df_mean <- df %>%
     group_by(expression) %>%
-    summarise(mean_probability = mean(probability)) %>%
-    arrange(desc(mean_probability))
+    summarise(mean_p = round(mean(probability),1)) %>%
+    arrange(desc(mean_p))
 
 df$expression <- factor(df$expression, levels = df_mean$expression)
 
 # plot -------------------------------------------------------------------------
 ggplot(df, aes(x = probability)) +
     geom_density(color = NA, fill = "skyblue", alpha = 0.75) +
-    geom_point(aes(y = 0, x = probability), shape = 16, color = "grey25") +
+    geom_point(aes(y = 0, x = probability), shape = 16, color = "grey50") +
     geom_vline(xintercept = 50, linetype = "dashed") +
+    geom_segment(data = df_mean,
+               aes(x = mean_p, xend = mean_p, y = 0, yend = 0.35),
+               size = 1,color = "grey50") +
+    geom_text(data = df_mean, aes(x = mean_p, y = 0.43, label = mean_p)) +
     facet_wrap(expression ~ ., ncol = 1) +
     xlim(0, 100) +
     xlab("probability [%]") +
     theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+ggsave("../figs/expressions2022.png",
+       width = 1280,
+       height = 2560,
+       dpi = 200,
+       units = "px")

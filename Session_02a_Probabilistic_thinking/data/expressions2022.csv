@@ -1,0 +1,71 @@
+expression,probability
+
+almost no chance,1
+maybe,50
+I'm sure,100
+I doubt it,20
+unlikely,40
+unbelievable,0.1
+very likely,80
+almost surely,95
+good chances,75
+the chances are small,5
+I strongly believe,90
+not sure,10
+probably,60
+
+almost no chance,5
+maybe,40
+I'm sure,90
+I doubt it,15
+unlikely,10
+unbelievable,0.001
+very likely,95
+almost surely,99
+good chances,80
+the chances are small,10
+I strongly believe,95
+not sure,50
+probably,80
+
+almost no chance,5
+maybe,50
+I'm sure,100
+I doubt it,15
+unlikely,15
+unbelievable,0
+very likely,85
+almost surely,90
+good chances,75
+the chances are small,15
+I strongly believe,90
+not sure,55
+probably,80
+
+almost no chance,0.1
+maybe,60
+I'm sure,93
+I doubt it,30
+unlikely,30
+unbelievable,15
+very likely,85
+almost surely,95
+good chances,70
+the chances are small,10
+I strongly believe,75
+not sure,50
+probably,77
+
+almost no chance,2
+maybe,30
+I'm sure,85
+I doubt it,10
+unlikely,5
+unbelievable,1
+very likely,95
+almost surely,99
+good chances,75
+the chances are small,15
+I strongly believe,90
+not sure,40
+probably,80
