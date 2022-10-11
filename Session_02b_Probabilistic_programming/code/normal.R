@@ -25,10 +25,10 @@ y2 <- rnorm(20, 170, 20)
 y <- c(y1, y2)
 
 # group markers
-g <- c(rep(1,n),rep(2,n))
+g <- c(rep(1, n), rep(2, n))
 
 # prepare input data
-stan_data <- list(n = 2*n, y = y, g=g)
+stan_data <- list(n = 2 * n, y = y, g = g)
 
 # fit
 fit <- model$sample(
@@ -51,10 +51,10 @@ df <- as_draws_df(fit$draws())
 
 # compare mu1 with mu2
 ggplot(data = df) +
-  geom_density(aes(x=mu1), color=NA, fill="skyblue", alpha=0.5) +
-  geom_density(aes(x=mu2), color=NA, fill="tomato", alpha=0.5) +
+  geom_density(aes(x = mu1), color = NA, fill = "skyblue", alpha = 0.5) +
+  geom_density(aes(x = mu2), color = NA, fill = "tomato", alpha = 0.5) +
   xlab("mu")
-               
+
 # diff
 mcse(df$diff)
 
@@ -66,6 +66,7 @@ q95 <- quantile(df$diff, 0.95)
 
 # plot diff
 ggplot(data = df) +
-  geom_density(aes(x=diff), color=NA, fill="skyblue", alpha=0.75) +
+  geom_density(aes(x = diff), color = NA, fill = "skyblue", alpha = 0.75) +
   xlab("difference") +
-  geom_vline(xintercept = q95, linetype="dashed", color = "grey75", size=1.5)
+  geom_vline(xintercept = q95, linetype = "dashed",
+             color = "grey75", size = 1.5)
