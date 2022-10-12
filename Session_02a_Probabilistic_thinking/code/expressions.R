@@ -26,20 +26,24 @@ df <- read.csv("../data/expressions2022.csv")
 # set factors
 df_mean <- df %>%
     group_by(expression) %>%
-    summarise(mean_p = round(mean(probability),1)) %>%
+    summarise(mean_p = round(mean(probability), 1)) %>%
     arrange(desc(mean_p))
 
+df_mean$expression <- factor(df_mean$expression, levels = df_mean$expression)
 df$expression <- factor(df$expression, levels = df_mean$expression)
 
+
 # plot -------------------------------------------------------------------------
+y_offset <- 0.12
 ggplot(df, aes(x = probability)) +
     geom_density(color = NA, fill = "skyblue", alpha = 0.75) +
     geom_point(aes(y = 0, x = probability), shape = 16, color = "grey50") +
     geom_vline(xintercept = 50, linetype = "dashed") +
     geom_segment(data = df_mean,
-               aes(x = mean_p, xend = mean_p, y = 0, yend = 0.35),
-               size = 1,color = "grey50") +
-    geom_text(data = df_mean, aes(x = mean_p, y = 0.43, label = mean_p)) +
+                 aes(x = mean_p, xend = mean_p, y = 0, yend = y_offset),
+                 size = 1, color = "grey50") +
+    geom_text(data = df_mean, aes(x = mean_p, y = y_offset + 0.05,
+              label = mean_p)) +
     facet_wrap(expression ~ ., ncol = 1) +
     xlim(0, 100) +
     xlab("probability [%]") +

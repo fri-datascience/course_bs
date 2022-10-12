@@ -548,7 +548,7 @@ library(shinystan) # for visual diagnostics
 model <- cmdstan_model("./models/bernoulli_beta.stan")
 
 # prepare the data
-data <- read.csv("./data/basketball_shots.csv", sep=";")
+data <- read.csv("./data/basketball_shots.csv", sep = ";")
 
 # filter for 1st player, default and special rims
 player1_default <- data %>% filter(PlayerID == 1 & SpecialRim == 0)
@@ -603,10 +603,12 @@ The above diagnostics will be enough for the majority of our use cases, Stan als
 
 ```{R eval=FALSE}
 # additional automated diagnostics
-fit$cmdstan_diagnose()
+fit_default$cmdstan_diagnose()
+fit_special$cmdstan_diagnose()
 
 # visual checks
-launch_shinystan(fit)
+launch_shinystan(fit_default)
+launch_shinystan(fit_special)
 ```
 
 Since our diagnostics show no reason for concern, we can extract our samples and start our analysis.

@@ -7,7 +7,8 @@ library(bayesplot) # for some quick MCMC visualizations
 library(mcmcse)    # for comparing samples and calculating MCSE
 
 # modelling and data prep ------------------------------------------------------
-# compile the model
+# the normal.stan model compares two groups
+# see normal_minimal.stan for a model that fits a normal model to a single group
 model <- cmdstan_model("../models/normal.stan")
 
 # prepare the data

@@ -16,7 +16,6 @@ top_cut <- 0.7
 fairness <- pbeta(top_cut, alpha, beta) - pbeta(bottom_cut, alpha, beta)
 cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
 
-
 # coin fairness visualization --------------------------------------------------
 df <- data.frame(dist = "beta")
 ggplot(data = df, aes(y = 0, dist = dist, arg1 = alpha, arg2 = beta)) +

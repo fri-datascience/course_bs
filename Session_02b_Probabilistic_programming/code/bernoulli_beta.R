@@ -26,6 +26,13 @@ fit <- model$sample(
   seed = 1
 )
 
+# additional parameters
+# chains specifies - number of chains, default = 4
+# parallel_chains - how many chains to run in parallel, default = 1
+# refresh - reporting frequency, default = 100
+# iter_warmup - number of warmup steps, default = 1000
+# iter_sampling - number of sampling steps, default = 1000
+
 # diagnostics ------------------------------------------------------------------
 # traceplot
 mcmc_trace(fit$draws("theta"))
