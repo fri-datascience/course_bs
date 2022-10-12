@@ -6,7 +6,6 @@ library(tidyverse) # for data prep
 library(posterior) # for extracting samples
 library(bayesplot) # for some quick MCMC visualizations
 library(mcmcse)    # for comparing samples and calculating MCSE
-library(ggdist)    # for distribution visualizations
 library(shinystan) # for visual diagnostics
 
 # modelling and data prep ------------------------------------------------------
@@ -14,8 +13,8 @@ library(shinystan) # for visual diagnostics
 model <- cmdstan_model("../models/bernoulli_beta.stan")
 
 # prepare the data
-n <- 12
 y <- c(0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0)
+n <- length(y)
 
 # prepare input data
 stan_data <- list(n = n, y = y)
@@ -27,7 +26,7 @@ fit <- model$sample(
 )
 
 # additional parameters
-# chains specifies - number of chains, default = 4
+# chains - number of chains, default = 4
 # parallel_chains - how many chains to run in parallel, default = 1
 # refresh - reporting frequency, default = 100
 # iter_warmup - number of warmup steps, default = 1000
