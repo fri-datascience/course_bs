@@ -1,12 +1,12 @@
 # libraries --------------------------------------------------------------------
-library(cmdstanr)  # for interfacing Stan
-library(ggplot2)   # for visualizations
-library(ggdist)    # for distribution visualizations
-library(tidyverse) # for data prep
-library(posterior) # for extracting samples
-library(bayesplot) # for some quick MCMC visualizations
-library(mcmcse)    # for comparing samples and calculating MCSE
-library(shinystan) # for visual diagnostics
+library(cmdstanr)
+library(ggplot2)
+library(ggdist)
+library(tidyverse)
+library(posterior)
+library(bayesplot)
+library(mcmcse)
+library(shinystan)
 
 # load the data and the model --------------------------------------------------
 # compile the model

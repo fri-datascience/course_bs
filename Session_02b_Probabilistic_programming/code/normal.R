@@ -1,10 +1,10 @@
 # libraries --------------------------------------------------------------------
-library(cmdstanr)  # for interfacing Stan
-library(ggplot2)   # for visualizations
-library(ggdist)    # for distribution visualizations
-library(posterior) # for extracting samples
-library(bayesplot) # for some quick MCMC visualizations
-library(mcmcse)    # for comparing samples and calculating MCSE
+library(cmdstanr)
+library(ggplot2)
+library(ggdist)
+library(posterior)
+library(bayesplot)
+library(mcmcse)
 
 # modelling and data prep ------------------------------------------------------
 # the normal.stan model compares two groups

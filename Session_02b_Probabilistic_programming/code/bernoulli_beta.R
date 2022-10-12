@@ -39,12 +39,6 @@ mcmc_trace(fit$draws("theta"))
 # summary
 fit$summary()
 
-# additional automated diagnostics
-fit$cmdstan_diagnose()
-
-# visual checks
-launch_shinystan(fit)
-
 # analysis ---------------------------------------------------------------------
 # convert theta draws to data frame
 df <- as_draws_df(fit$draws("theta"))
