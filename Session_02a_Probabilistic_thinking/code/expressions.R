@@ -34,7 +34,7 @@ df$expression <- factor(df$expression, levels = df_mean$expression)
 
 
 # plot -------------------------------------------------------------------------
-y_offset <- 0.12
+y_offset <- 0.05
 ggplot(df, aes(x = probability)) +
     geom_density(color = NA, fill = "skyblue", alpha = 0.75) +
     geom_point(aes(y = 0, x = probability), shape = 16, color = "grey50") +
