@@ -1,0 +1,64 @@
+---
+title: "ggplot exercises"
+author: Jure Demšar, University of Ljubljana
+output:
+    prettydoc::html_pretty:
+      highlight: github
+      theme: architect
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+```
+
+# Summary
+
+The ggplot R package ([https://ggplot2.tidyverse.org/reference/ggplot.html](https://ggplot2.tidyverse.org/reference/ggplot.html)) is arguably the most powerful visualization toolkit out there. The logic behind it follows the best practices of modern design and data visualization. As a result, the results the package produces look nice and usually do not contain unnecessary clutter that would make them less readable. By using this package properly you will be able to create professionally looking visualizations that convey the story you try to tell in an efficient manner. Mastering this skill is not important only to produce visualizations that look nice for the reports in this course, but also for you master's thesis.
+
+Note that ggplot is now also available for Python ([https://realpython.com/ggplot-python/](https://realpython.com/ggplot-python/)).
+
+## 1
+
+The `50_startups.csv` dataset contains information about how startup companies spent their resources, where was their location and what were their profits. Let us perform an exploratory analysis by drawing the following plots:
+
+1. A bar chart that visualizes the distribution of locations.
+2. A histogram that visualizes the distribution of profits.
+3. A density plot that visualizes the distribution of funds into research/administration/marketing.
+
+Hints:
+
+* For density plots, you can use the tools that are available in the basic ggplot package or you can use ggdist, which is a package that upgrades ggplot with additional tools for visualizing distributions.
+* You should use color palettes that are friendly for those that are color blind (around 8% of men). See [https://ggplot2.tidyverse.org/reference/scale_brewer.html](https://ggplot2.tidyverse.org/reference/scale_brewer.html) and [https://colorbrewer2.org/](https://colorbrewer2.org/).
+* You can use `theme_minimal()` to make your plots even more minimalistic. One of the most known graphical designers of all time, Edward Tufte said that every graphical element (e.g., dot, line, etc.) should exist only if it conveys some information. His most known book, The visual display of quantitative information ([https://www.edwardtufte.com/tufte/books_vdqi
+](https://www.edwardtufte.com/tufte/books_vdqi)) is one of the most important books on graphical design and visualization. 
+
+## 2
+
+Use the same dataset as in the first exercise, but this time plot distributions of funds invested into research, administration and marketing, along with the distribution of profit in the same chart.
+
+Hint:
+
+* Putting all the information on a single canvas will most likely not be the best way to do this, try using `facet_grid()` or `facet_wrap()`.
+
+## 3
+
+For the sake of this exercise, assume that we read a paper that claims that the temperature over the years is rising as:
+
+$$t = -17 + \beta x,$$
+
+where $t$ is the temperature, $x$ a given year and $\beta \sim N(0.01, 0.02)$. Visualize these findings in a suitable manner.
+
+Hint:
+
+* When uncertainty is present, visualize it!
+
+## 4
+
+The dataset `flanker.csv` contains reaction times of participants from the so called Flanker experiment. In this version of the experiment participants had 2 buttons, one placed on their left and one on their right. Next, 7 arrows were displayed on the screen and the participant had to click the left button if the middle arrow was pointing to the left, or the right button if the middle arrow was pointing to the right. There are two conditions, in the `congruent` condition all arrows were pointing in the same direction (e.g., `<<<<<<<` or `>>>>>>>`) in the `incongruent` condition the middle arrow is pointing in a different direction than the other arrows (e.g., `<<<><<<` or `>>><>>>`).
+
+Construct the following visualization:
+
+1. Visualize the distribution of reaction times for each participant for each of the two conditions.
+2. Add a vertical line that denotes the mean reaction time.
+3. Add a label on top of, or next to the vertical line that shows the mean reaction time.
+4. Sort the visualization so the participant with the shortest reaction time is on top and the one with the slowest is on the bottom (sort by one of the two conditions).
