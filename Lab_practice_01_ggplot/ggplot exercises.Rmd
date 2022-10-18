@@ -13,9 +13,9 @@ knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 
 # Summary
 
-The ggplot R package ([https://ggplot2.tidyverse.org/reference/ggplot.html](https://ggplot2.tidyverse.org/reference/ggplot.html)) is arguably the most powerful visualization toolkit out there. The logic behind it follows the best practices of modern design and data visualization. As a result, the results the package produces look nice and usually do not contain unnecessary clutter that would make them less readable. By using this package properly you will be able to create professionally looking visualizations that convey the story you try to tell in an efficient manner. Mastering this skill is not important only to produce visualizations that look nice for the reports in this course, but also for you master's thesis.
+The `ggplot` R package ([https://ggplot2.tidyverse.org/reference/ggplot.html](https://ggplot2.tidyverse.org/reference/ggplot.html)) is arguably the most powerful visualization toolkit out there. The logic behind it follows the best practices of modern design and data visualization. As a result, the results the package produces look nice and usually do not contain unnecessary clutter that would make them less readable. By using this package properly you will be able to create professionally looking visualizations that convey the story you try to tell in an efficient manner. Mastering this skill is not important only to produce visualizations that look nice for the reports in this course, but also for you master's thesis.
 
-Note that ggplot is now also available for Python ([https://realpython.com/ggplot-python/](https://realpython.com/ggplot-python/)).
+Note that `ggplot` is now also available for Python ([https://realpython.com/ggplot-python/](https://realpython.com/ggplot-python/)).
 
 ## 1
 
@@ -24,13 +24,15 @@ The `50_startups.csv` dataset contains information about how startup companies s
 1. A bar chart that visualizes the distribution of locations.
 2. A histogram that visualizes the distribution of profits.
 3. A density plot that visualizes the distribution of funds into research/administration/marketing.
+4. A single plot with all three previous components.
 
 Hints:
 
-* For density plots, you can use the tools that are available in the basic ggplot package or you can use ggdist, which is a package that upgrades ggplot with additional tools for visualizing distributions.
+* For density plots, you can use the tools that are available in the basic `ggplot` package or you can use `ggdist`, which is a package that upgrades `ggplot` with additional tools for visualizing distributions.
 * You should use color palettes that are friendly for those that are color blind (around 8% of men). See [https://ggplot2.tidyverse.org/reference/scale_brewer.html](https://ggplot2.tidyverse.org/reference/scale_brewer.html) and [https://colorbrewer2.org/](https://colorbrewer2.org/).
 * You can use `theme_minimal()` to make your plots even more minimalistic. One of the most known graphical designers of all time, Edward Tufte said that every graphical element (e.g., dot, line, etc.) should exist only if it conveys some information. His most known book, The visual display of quantitative information ([https://www.edwardtufte.com/tufte/books_vdqi
 ](https://www.edwardtufte.com/tufte/books_vdqi)) is one of the most important books on graphical design and visualization. 
+* One of the libraries for creating a plot grid from multiple ggplot elements is `cowplot`.
 
 ## 2
 
