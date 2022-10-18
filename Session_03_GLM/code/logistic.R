@@ -6,7 +6,6 @@ library(posterior)
 library(arm) # for logit and inverse logit functions
 library(tidyverse)
 
-
 # modelling and data prep ------------------------------------------------------
 # compile the model
 model <- cmdstan_model("../models/logistic.stan")
@@ -30,14 +29,12 @@ fit <- model$sample(
   seed = 1
 )
 
-
 # diagnostics ------------------------------------------------------------------
 # traceplot
 mcmc_trace(fit$draws())
 
 # summary
 fit$summary()
-
 
 # analysis ---------------------------------------------------------------------
 # extract draws
@@ -46,7 +43,6 @@ df <- as_draws_df(fit$draws())
 # mcse
 mcse(df$alpha)
 mcse(df$beta)
-
 
 # visualize posterior and data -------------------------------------------------
 # number of lines
@@ -83,7 +79,6 @@ ggplot() +
             color="skyblue", alpha=0.2, size=1) +
   ylab("p(male)")
 
-
 # beta interpretations ---------------------------------------------------------
 # marginal posterior of beta
 ggplot(data=df, aes(x=beta)) +
@@ -101,5 +96,5 @@ theta184 <- invlogit(mean_alpha + mean_beta * 184)
 log_odds183 <- log(theta183 / (1 - theta183))
 log_odds184 <- log(theta184 / (1 - theta184))
 
-# diff == mean_beta! so beta tells us how log_odds will change if the predictor changes
+# diff == mean_beta! so beta tells us how log_odds will change with predictor
 diff <- log_odds184 - log_odds183

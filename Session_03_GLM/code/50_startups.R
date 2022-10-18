@@ -18,10 +18,14 @@ data <- read.csv("../data/50_startups.csv")
 data <- data %>% select(research, administration, marketing, profit)
 
 # normalized columns
-data$r <- (data$research - min(data$research)) / (max(data$research) - min(data$research))
-data$a <- (data$administration - min(data$administration)) / (max(data$administration) - min(data$administration))
-data$m <- (data$marketing - min(data$marketing)) / (max(data$marketing) - min(data$marketing))
-data$p <- (data$profit - min(data$profit)) / (max(data$profit) - min(data$profit))
+data$r <- (data$research - min(data$research)) /
+            (max(data$research) - min(data$research))
+data$a <- (data$administration - min(data$administration)) /
+            (max(data$administration) - min(data$administration))
+data$m <- (data$marketing - min(data$marketing)) /
+            (max(data$marketing) - min(data$marketing))
+data$p <- (data$profit - min(data$profit)) /
+            (max(data$profit) - min(data$profit))
 
 # fit without normalization
 # prep for Stan
@@ -48,7 +52,6 @@ fit_normalized <- model$sample(
   seed = 1
 )
 
-
 # diagnostics ------------------------------------------------------------------
 # traceplot
 mcmc_trace(fit$draws())
@@ -57,7 +60,6 @@ mcmc_trace(fit_normalized$draws())
 # compare summaries
 fit$summary()
 fit_normalized$summary()
-
 
 # extract samples --------------------------------------------------------------
 # convert draws to df
@@ -71,7 +73,6 @@ mcse(df$`b[3]`)
 mcse(df_normalized$`b[1]`)
 mcse(df_normalized$`b[2]`)
 mcse(df_normalized$`b[3]`)
-
 
 # compare default vs normalized ------------------------------------------------
 # calculate ratios

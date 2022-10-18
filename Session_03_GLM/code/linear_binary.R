@@ -5,7 +5,6 @@ library(bayesplot)
 library(posterior)
 library(tidyverse)
 
-
 # modelling and data prep ------------------------------------------------------
 # compile the model
 model <- cmdstan_model("../models/simple_linear.stan")
@@ -21,7 +20,7 @@ data$GenderNumeric <- as.numeric(data$Gender) - 1
 n <- nrow(data)
 x <- data$Height
 y <- data$GenderNumeric
-stan_data <- list(n=n, x=x, y=y)
+stan_data <- list(n = n, x = x, y = y)
 
 # fit
 fit <- model$sample(
@@ -29,7 +28,6 @@ fit <- model$sample(
   parallel_chains = 4,
   seed = 1
 )
-
 
 # diagnostics ------------------------------------------------------------------
 # traceplot
@@ -44,11 +42,11 @@ df <- as_draws_df(fit$draws())
 
 # visualize data points and regression lines
 # plot only 100 random regression lines
-df_100 <- data.frame(alpha=df$a, beta=df$b)
+df_100 <- data.frame(alpha = df$a, beta = df$b)
 df_100 <- sample_n(df_100, 100)
 
 # plot
-ggplot() + 
+ggplot() +
   geom_point(data = data,
              aes(x = Height, y = GenderNumeric),
              alpha = 0.2, size = 3, shape = 16) +

@@ -6,7 +6,6 @@ library(posterior)
 library(randomForest) # for random forest
 library(glmnet)       # for L2 (ridge) and L1 (lasso) regressions
 
-
 # load and prepare data --------------------------------------------------------
 data <- read.csv("../data/ozone.csv")
 
@@ -21,12 +20,10 @@ data[,-1] <- scale(data[,-1])
 dat_train <- data[ idx,]
 dat_test <- data[-idx,]
 
-
 # compare different models -----------------------------------------------------
 res_tr <- NULL
 res_te <- NULL
 options(stringsAsFactors = FALSE)
-
 
 # linear regression ------------------------------------------------------------
 my_lm <- lm(target ~ ., dat_train)
@@ -51,7 +48,6 @@ res_te <- rbind(res_te, data.frame(Method = "rf",
                                    Row = 1:nrow(dat_test),
                                    Predicted = predict(my_rf, newdata = dat_test),
                                    True = dat_test$target))
-
 
 # L2-regularized regression, cross-validated reg. parameter --------------------
 cvfit <- glmnet::cv.glmnet(x = as.matrix(dat_train[,-1]), y = dat_train[,1],
@@ -116,7 +112,6 @@ res_te <- rbind(res_te, data.frame(Method = "lmBayes",
                                    Predicted = colMeans(pred_test),
                                    True = dat_test$target))
 
-
 # Bayesian lm sceptic prior = 1 ------------------------------------------------
 model <- cmdstan_model("../models/regularization_parameter.stan")
 
@@ -150,7 +145,6 @@ res_te <- rbind(res_te, data.frame(Method = "lmBayes[1]",
                                    Row = 1:nrow(dat_test),
                                    Predicted = colMeans(pred_test),
                                    True = dat_test$target))
-
 
 # Bayesian lm sceptic prior = 0.1 ----------------------------------------------
 model <- cmdstan_model("../models/regularization_parameter.stan")
@@ -186,7 +180,6 @@ res_te <- rbind(res_te, data.frame(Method = "lmBayes[0.1]",
                                    Predicted = colMeans(pred_test),
                                    True = dat_test$target))
 
-
 # L1 regularized Bayesian (with hyperprior) ------------------------------------
 model <- cmdstan_model("../models/regularization_hyperprior_l1.stan")
 
@@ -220,7 +213,6 @@ res_te <- rbind(res_te, data.frame(Method = "L1Bayes",
                                    Row = 1:nrow(dat_test),
                                    Predicted = colMeans(pred_test),
                                    True = dat_test$target))
-
 
 # L2 regularized Bayesian (with hyperprior) ------------------------------------
 model <- cmdstan_model("../models/regularization_hyperprior_l2.stan")
@@ -256,7 +248,6 @@ res_te <- rbind(res_te, data.frame(Method = "L2Bayes",
                                    Predicted = colMeans(pred_test),
                                    True = dat_test$target))
 
-
 # compare predictive quality ---------------------------------------------------
 se_lb <- function(x) {mean(x) - sd(x) / sqrt(length(x))}
 se_ub <- function(x) {mean(x) + sd(x) / sqrt(length(x))}
@@ -267,7 +258,6 @@ tmp <- rbind(data.frame(res_te, Data = "test"),
 ggplot(tmp, aes(x = Method, y = (Predicted - True)^2, colour = Method)) + 
   facet_wrap(~Data) +
   stat_summary(fun.data = "mean_cl_boot", size = 0.75)
-
 
 # compare coefficients ---------------------------------------------------------
 coeff_lm  <- my_lm$coefficients[-1]

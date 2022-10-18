@@ -49,7 +49,7 @@ The $\beta$ coefficients are the core of regression models as they describe the 
 
 A positive value of a $\beta$ coefficient denotes a positive correlation between the independent while the opposite holds for a negative of a $\beta$ coefficient. For example, the value of $\beta_r$ tells us that investing in research has a positive influence on profit. Furthermore, the value of 0.714 denotes that \$1 invested in research will generate a profit of \$0.714 on average. As we can see, investing in all three aspects of a business generates profit, this makes sense as if something is not valuable for a company they most likely would not do it. When independent variables are on the same scale we can compare their effects through $\beta$ coefficients.
 
-In our case all three independent variables use the same scale -- money invested in USD (\$) -- meaning that we can directly compare these coefficients. For example, $\beta_r$ in approximately 2.2 times larger than $\beta_a$, this means that resources invested in research should generate approximately 2.2 times as much profit as resources invested in administration. However, if we used another independent variable, for example happiness of employees measured on a scale from 1 to 10, its $\beta$ coefficient could not be directly comparable with the other three as it would reside on a completely different scale.
+In our case all three independent variables use the same scale -- money invested in USD (\$) -- meaning that we can directly compare these coefficients. For example, $\beta_r$ is approximately 2.2 times larger than $\beta_a$, this means that resources invested in research should generate approximately 2.2 times as much profit as resources invested in administration. However, if we used another independent variable, for example happiness of employees measured on a scale from 1 to 10, its $\beta$ coefficient could not be directly comparable with the other three as it would reside on a completely different scale.
 
 When preparing data for (G)LMs we often standardize or normalize it, when doing so we have to pay attention to the purpose of our regression. Let us illustrate this on our case by comparing results between two cases, in the first case we will use input data as is, and in the second data we will normalize each column independently:
 
@@ -70,7 +70,7 @@ If we compare findings between the two methods we can spot significant differenc
 
 What happened here? When normalizing the data we changed the ratio between research, administration and marketing investments in the input data. The reason for that lies in the fact that maximum and minimum values in columns are different! Since in the normalized case the input data does not reflect the proper ratio between spending of startup companies this input data cannot be used to get the answer we are interested in.
 
-On the other hand, if we are interested in developing a model that is capable of estimating profits of new companies given their spending then normalization or standardization of input variables is a perfectly viable path to take. In this case we no longer care what the ratio between $\beta$ coefficients is, instead we are probably interested only in getting an estimator that is as accurate as possible. The point of this example was to emphasize that we have to be careful when performing various transformation on input data since these transformations might change the results of our analysis. Like previously mentioned, we will often regularize or standardize our input data, but as illustrated in some cases we have to be extra carefule when doing this. Before we move onto GLMs let us briefly touch three additional subjects.
+On the other hand, if we are interested in developing a model that is capable of estimating profits of new companies given their spending then normalization or standardization of input variables is a perfectly viable path to take. In this case we no longer care what the ratio between $\beta$ coefficients is, instead we are probably interested only in getting an estimator that is as accurate as possible. The point of this example was to emphasize that we have to be careful when performing various transformation on input data since these transformations might change the results of our analysis. Like previously mentioned, we will often regularize or standardize our input data, but as illustrated in some cases we have to be extra careful when doing this. Before we move onto GLMs let us briefly touch three additional subjects.
 
 ## Polynomial regression
 
@@ -82,13 +82,13 @@ This is called polynomial regression and still falls in the category of linear m
 
 ## Non-additive interactions between independent variables
 
-When designing models it is also important to consider possible interactions between independent variables. So far, we used only additive interactions but we are often faced with data where more complex interactions are useful too. Consider, for example, a study where we are trying to model people's hapiness by using their health and annual income. If someone has no income then they are most likely unhappy, regardless of their health status. Vice versa, if they are of extremely poor health, wealth most likely will not cheer them up. In such examples, consider adding a multiplicative interaction between independent variables:
+When designing models it is also important to consider possible interactions between independent variables. So far, we used only additive interactions but we are often faced with data where more complex interactions are useful too. Consider, for example, a study where we are trying to model people's happiness by using their health and annual income. If someone has no income then they are most likely unhappy, regardless of their health status. Vice versa, if they are of extremely poor health, wealth most likely will not cheer them up. In such examples, consider adding a multiplicative interaction between independent variables:
 
 $$y_i \; | \; x_i, \alpha, \beta_h, \beta_w, \beta_{hw}, \sigma \sim N(\alpha + \beta_h x_{h,i} + \beta_w x_{w,i} + \beta_{hw} x_{h,i} x_{w,i}, \sigma).$$
 
 ## Heavily correlated independent variables
 
- We will use the multiple linear regression model (`models/linear.stan`) and a toy dataset (`data/toy.csv`) to illustrate the behaviour of linear regression when independent variables are heavliy correlated. The `toy.csv` dataset has a single independent variable $x$. For this demonstration we will artificially create another one that is heavily correlated with $x$:
+ We will use the multiple linear regression model (`models/linear.stan`) and a toy dataset (`data/toy.csv`) to illustrate the behavior of linear regression when independent variables are heavily correlated. The `toy.csv` dataset has a single independent variable $x$. For this demonstration we will artificially create another one that is heavily correlated with $x$:
 
 ```
 # load the data
@@ -124,7 +124,7 @@ Now, let us fit the model a couple of times:
 | 2   | 0.892 $\pm$ 0.53 | 0.632 $\pm$ 0.48  |
 | 3   | 1.31 $\pm$ 0.44  | 0.279 $\pm$ 0.45  |
 
-You can see that the means $\beta$ coefficients are quite unstable and have a large standard deviation. This is completely expected since there is an infinite number of ways that we can combine the $x$ and $x2$ independent variables to get a good fit. The purpose of this illustration is to show that while our model provides a good fit of the underlying data, the interpretation of $\beta$ coefficients should be taken with a pinch of salt. Making meaningful conclusions based on our results is impossible here! How do we overcome this? We usually remove one of the correlated variables, the information it stores is extremelly low since the same information is also incorporated in the other variable.
+You can see that the means $\beta$ coefficients are quite unstable and have a large standard deviation. This is completely expected since there is an infinite number of ways that we can combine the $x$ and $x2$ independent variables to get a good fit. The purpose of this illustration is to show that while our model provides a good fit of the underlying data, the interpretation of $\beta$ coefficients should be taken with a pinch of salt. Making meaningful conclusions based on our results is impossible here! How do we overcome this? We usually remove one of the correlated variables, the information it stores is extremely low since the same information is also incorporated in the other variable.
 
 If we observe the values for each run more carefully we can see that the sum of both $\beta$ coefficients is around 1.5. If you remember from last week, the $\beta$ we used to generate this data equalled 1.5 and that would be the result if we removed one of the two problematic independent variables.
 
@@ -133,7 +133,7 @@ If we observe the values for each run more carefully we can see that the sum of 
 
 The generalized linear models (GLM) is an extremely powerful and flexible tool for modeling the relationship between independent variables (also called predictors or explanatory variables) and dependent variables (also called predicted variables or response variables). The GLM generalizes linear regression by allowing the linear model to be related to the response variable via a link function and by allowing the magnitude of the variance of each measurement to be a function of its predicted value.
 
-So far, we already got familiar with the simple linear regression, there we used the value of one metric variable to increase our understanding of another metric variable under the assumption that residuals (errors) are normally distributed. Now, let us try and use the same model for cracking a different nut. Say that we want to use height (in centimetres) of humans to predict their gender. See `models/simple_linear.stan` for Stan code of the model and `code/linear_binary.R` for R code behind this experiment. Since linear regression works with numbers, we had to label the female gender as 0 and the male gender as 1. The visualization below depicts 100 regression lines based on the posterior distributions of intercept and slope in our Bayesian analysis.
+So far, we already got familiar with the simple linear regression, there we used the value of one metric variable to increase our understanding of another metric variable under the assumption that residuals (errors) are normally distributed. Now, let us try and use the same model for cracking a different nut. Say that we want to use height (in centimeters) of humans to predict their gender. See `models/simple_linear.stan` for Stan code of the model and `code/linear_binary.R` for R code behind this experiment. Since linear regression works with numbers, we had to label the female gender as 0 and the male gender as 1. The visualization below depicts 100 regression lines based on the posterior distributions of intercept and slope in our Bayesian analysis.
 
 <center>
   ![](./figs/linear_binary.png)
@@ -159,7 +159,7 @@ The link function ($f(\cdot)$) and its inverse ($f^-1(\cdot)$) provide the relat
 
 ## Logistic regression
 
-Let us start our venture into GLMs by building on our previous attempt of modeling relationship between person's height and gender. In our case gender is a binary variable so it would make sense to use a suitable pdf. Bernoulli's distribution was a good fit when we modeled coin tosses so let us try bulding a linear model with it:
+Let us start our venture into GLMs by building on our previous attempt of modeling relationship between person's height and gender. In our case gender is a binary variable so it would make sense to use a suitable pdf. Bernoulli's distribution was a good fit when we modeled coin tosses so let us try building a linear model with it:
 
 $$y \; | \; \theta \sim \text{Bernoulli}(\theta),$$
 $$f(\theta) = \alpha + x \beta,$$
@@ -253,7 +253,7 @@ Our next GLM will be the Poisson regression which assumes that the dependent var
 
 $$y \; | \; x, \alpha, \beta \sim \text{Poisson}(e^{\alpha + X \beta}),$$
 
-Below is Stan code for the Poisson regression, note that we use the `generated quantitites` block to calculate the values of $\lambda$ and predictions on the fly:
+Below is Stan code for the Poisson regression, note that we use the `generated quantities` block to calculate the values of $\lambda$ and predictions on the fly:
 
 ```
 data {
@@ -438,7 +438,7 @@ The matrix above represents mean $\beta$ coefficient values. Four columns arise 
 # x <- c(intercept, distance, forward, guard)
 x <- c(1, 0.5, 0, 0)
 
-# calculate probabilites
+# calculate probabilities
 c_probs <- softmax(betas %*% x)
 c_probs
 ```
@@ -533,7 +533,7 @@ An alternative to coding your own models is an R package called `rstanarm` that 
 
 # Regularization
 
-A Bayesian approach can also overfit the training data, altough it is less likely to do so, because it uses distributions over parameters instead of point estimates. In this section we will get familiar with two ways of incorporating regularization into Bayesian models.
+A Bayesian approach can also overfit the training data, although it is less likely to do so, because it uses distributions over parameters instead of point estimates. In this section we will get familiar with two ways of incorporating regularization into Bayesian models.
 
 ## Using a regularizing (skeptical) prior
 

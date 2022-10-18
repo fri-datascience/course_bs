@@ -5,13 +5,12 @@ library(bayesplot)
 library(posterior)
 library(tidyverse)
 
-
 # modelling and data prep ------------------------------------------------------
 # compile the model
 model <- cmdstan_model("../models/categorical.stan")
 
 # load data
-data <- read.csv("../data/shot_types.csv", stringsAsFactors=TRUE)
+data <- read.csv("../data/shot_types.csv", stringsAsFactors = TRUE)
 
 # contrasts (one hot encoding)
 contrasts(data$PlayerType) <- contr.treatment(n_distinct(data$PlayerType))
@@ -19,7 +18,7 @@ contrasts(data$PlayerType) <- contr.treatment(n_distinct(data$PlayerType))
 # display contrasts
 contrasts(data$PlayerType)
 
-# note here that intercept is part of the model matrix (1st column always equals 1)
+# the intercept is part of the model matrix (1st column always equals 1)
 X <- model.matrix(~ Distance + PlayerType, data)
 
 # show a couple of top rows to check if all is OK
@@ -32,7 +31,7 @@ y <- data$ShotType
 levels(y)
 
 # stan_data
-stan_data <- list(n=nrow(data), m=ncol(X), k=nlevels(y), x=X, y=y)
+stan_data <- list(n = nrow(data), m = ncol(X), k = nlevels(y), x = X, y = y)
 
 # fit
 fit <- model$sample(
@@ -41,14 +40,12 @@ fit <- model$sample(
   seed = 1
 )
 
-
 # diagnostics ------------------------------------------------------------------
 # traceplot for beta parameters
 mcmc_trace(fit$draws("beta"))
 
 # summary of betas
 fit$summary("beta")
-
 
 # analysis ---------------------------------------------------------------------
 # extract parameters
@@ -60,12 +57,10 @@ df_betas <- df_betas %>% select(-.chain, -.iteration, -.draw)
 # the true bayesian way would be to work with samples all the way
 betas <- matrix(colMeans(df_betas), nrow = 3, ncol = 4)
 
-
 # helper softmax function ------------------------------------------------------
-softmax <- function(x){
+softmax <- function(x) {
   return(as.vector(exp(x) / sum(exp(x))))
 }
-
 
 # calculate example probabilities ----------------------------------------------
 # probabilities for each shot type for a guard shooting from 1.5m
@@ -76,16 +71,15 @@ x <- c(1, 1.5, 0, 1)
 c_probs <- softmax(betas %*% x)
 c_probs
 
-
 # plot probabilities for guards ------------------------------------------------
 precision <- 100
-distance <- seq(0, 10, length.out=precision)
+distance <- seq(0, 10, length.out = precision)
 
 # calculate thetas from distance
-df_thetas <- data.frame(Distance=numeric(),
-                        Type=factor(),
-                        Probability=numeric(),
-                        Player=factor())
+df_thetas <- data.frame(Distance = numeric(),
+                        Type = factor(),
+                        Probability = numeric(),
+                        Player = factor())
 
 # types
 types <- levels(data$ShotType)
@@ -95,36 +89,36 @@ for (i in 1:precision) {
   # intercept, distance, forward, guard)
   x <- c(1, distance[i], 0, 1)
   thetas <- softmax(betas %*% x)
-  
-  df_guard <- data.frame(Distance=distance[i],
-                         Type=types,
-                         Probability=thetas,
-                         Player="Guard")
-  
+
+  df_guard <- data.frame(Distance = distance[i],
+                         Type = types,
+                         Probability = thetas,
+                         Player = "Guard")
+
   # intercept, distance, forward, guard)
   x <- c(1, distance[i], 1, 0)
   thetas <- softmax(betas %*% x)
-  
-  df_forward <- data.frame(Distance=distance[i],
-                         Type=types,
-                         Probability=thetas,
-                         Player="Forward")
+
+  df_forward <- data.frame(Distance = distance[i],
+                         Type = types,
+                         Probability = thetas,
+                         Player = "Forward")
 
   # intercept, distance, forward, guard)
   x <- c(1, distance[i], 0, 0)
   thetas <- softmax(betas %*% x)
-  
-  df_centre <- data.frame(Distance=distance[i],
-                           Type=types,
-                           Probability=thetas,
-                           Player="Centre")
-  
+
+  df_centre <- data.frame(Distance = distance[i],
+                           Type = types,
+                           Probability = thetas,
+                           Player = "Centre")
+
   df_thetas <- rbind(df_thetas, df_guard, df_forward, df_centre)
 }
 
 # plot
-ggplot(data=df_thetas, aes(x=Distance, y=Probability, fill=Type)) +
-  geom_area(size=1,) +
+ggplot(data = df_thetas, aes(x = Distance, y = Probability, fill = Type)) +
+  geom_area(size = 1, ) +
   ggtitle("Shot selection by player type") +
   scale_fill_brewer(palette = "Blues") +
   facet_grid(Player ~ .) +

@@ -6,13 +6,12 @@ library(bayesplot)
 library(posterior)
 library(tidyverse)
 
-
 # modelling and data prep ------------------------------------------------------
 # compile the model
 model <- cmdstan_model("../models/ordered.stan")
 
 # load data and treat strings as factors
-data <- read.csv("../data/poverty.csv", stringsAsFactors=TRUE)
+data <- read.csv("../data/poverty.csv", stringsAsFactors = TRUE)
 
 # contrasts
 contrasts(data$religion) <- contr.treatment(n_distinct(data$religion))
@@ -20,10 +19,10 @@ contrasts(data$degree) <- contr.treatment(n_distinct(data$degree))
 contrasts(data$country) <- contr.treatment(n_distinct(data$country))
 contrasts(data$gender) <- contr.treatment(n_distinct(data$gender))
 
-# note here that intercept is part of the model matrix (1st column always equals 1)
+# note that intercept is part of the model matrix (1st column always equals 1)
 X <- model.matrix(~ religion + degree + country + gender, data)
 # remove intercept since in ordered regression intercepts are cutpoints
-X <- X[,-1]
+X <- X[, -1]
 
 # show a couple of top rows to check if all is OK
 head(X)
@@ -32,7 +31,8 @@ head(X)
 levels(data$poverty)
 
 # fix ordering
-data$poverty <- factor(data$poverty, levels = c("Too Little", "About Right", "Too Much"))
+data$poverty <- factor(data$poverty,
+                       levels = c("Too Little", "About Right", "Too Much"))
 
 # check poverty levels again
 levels(data$poverty)
@@ -41,7 +41,7 @@ levels(data$poverty)
 y <- data$poverty
 
 # stan_data
-stan_data <- list(n=nrow(data), m=ncol(X), k=nlevels(y), x=X, y=y)
+stan_data <- list(n = nrow(data), m = ncol(X), k = nlevels(y), x = X, y = y)
 
 # fit
 fit <- model$sample(
@@ -49,7 +49,6 @@ fit <- model$sample(
   parallel_chains = 4,
   seed = 1
 )
-
 
 # diagnostics ------------------------------------------------------------------
 # traceplot for beta parameters
@@ -59,7 +58,6 @@ mcmc_trace(fit$draws("c"))
 # summary of betas
 fit$summary("beta")
 fit$summary("c")
-
 
 # analysis ---------------------------------------------------------------------
 # extract parameters
@@ -80,7 +78,6 @@ ggplot(data = df_beta_long, aes(x = Value, y = Beta)) +
   stat_eye(fill = "skyblue", alpha = 0.75) +
   xlim(-1.6, 1.6)
 
-
 # calculate an example probability ---------------------------------------------
 mean_beta <- colMeans(df_beta)
 mean_c <- colMeans(df_cutpoints)
@@ -95,9 +92,9 @@ F_2 <- 1 / (1 + exp(-(mean_c[2] - as.numeric(mean_beta %*% x))))
 F_3 <- 1
 
 # Pr(y = j) = Pr(y <= j) - Pr(y <= j - 1)
-Pr_1 = F_1
+Pr_1 <- F_1
 Pr_1
-Pr_2 = F_2 - F_1
+Pr_2 <- F_2 - F_1
 Pr_2
-Pr_3 = F_3 - F_2
+Pr_3 <- F_3 - F_2
 Pr_3
