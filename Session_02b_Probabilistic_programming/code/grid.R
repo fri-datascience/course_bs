@@ -12,8 +12,8 @@ grid <- seq(from = 0, to = 1, length.out = resolution)
 prior <- rep(1, resolution)
 
 # data
-n <- 12
-z <- 5
+n <- 13
+z <- 7
 
 # likelihood
 likelihood <- dbinom(z, n, prob = grid)

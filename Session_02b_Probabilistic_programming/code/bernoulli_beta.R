@@ -13,7 +13,7 @@ library(shinystan) # for visual diagnostics
 model <- cmdstan_model("../models/bernoulli_beta.stan")
 
 # prepare the data
-y <- c(0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0)
+y <- c(0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1)
 n <- length(y)
 
 # prepare input data

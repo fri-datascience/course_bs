@@ -37,12 +37,12 @@ metropolis <- function(z, n, steps = 1000, init = 0.5, step = 0.2) {
     theta_candidate <- min(1, max(0, theta_candidate))
 
     # calculate ratio
-    likelihood_candidate <- posterior(z, n, theta_candidate)
-    likelihood_previous <- posterior(z, n, theta_posterior[t - 1])
-    likelihood_ratio <- likelihood_candidate / likelihood_previous
+    posterior_candidate <- posterior(z, n, theta_candidate)
+    posterior_previous <- posterior(z, n, theta_posterior[t - 1])
+    posterior_ratio <- posterior_candidate / posterior_previous
 
     # decide to accept candidate value or to keep the current value
-    accept <- rbinom(1, 1, prob = min(likelihood_ratio, 1))
+    accept <- rbinom(1, 1, prob = min(posterior_ratio, 1))
     theta_posterior[t] <-
       ifelse(accept, theta_candidate, theta_posterior[t - 1])
   }
@@ -52,8 +52,8 @@ metropolis <- function(z, n, steps = 1000, init = 0.5, step = 0.2) {
 }
 
 # MCMC based inference ---------------------------------------------------------
-z <- 5
-n <- 12
+z <- 7
+n <- 13
 
 chain1 <- metropolis(z, n)
 chain2 <- metropolis(z, n, init = 0.25)
