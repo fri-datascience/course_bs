@@ -40,11 +40,11 @@ Note though, that the intercept often does make a lot of sense. For example if w
 
 The $\beta$ coefficients are the core of regression models as they describe the relationship between independent and dependent variables. The table below shows some summary data for $\beta$ coefficients in our case.
 
-| Variable  | Mean              | q5%   | q95%  |
-|-----------|-------------------|-------|-------|
-| $\beta_r$ | 0.714 $\pm$ 0.002 | 0.603 | 0.824 |
-| $\beta_a$ | 0.329 $\pm$ 0.001 | 0.277 | 0.382 |
-| $\beta_m$ | 0.083 $\pm$ 0.001 | 0.045 | 0.121 |
+| Variable  | Mean              | $q_{0.5}$ | $q_{0.95}$ |
+|-----------|-------------------|-----------|------------|
+| $\beta_r$ | 0.714 $\pm$ 0.002 | 0.603     | 0.824      |
+| $\beta_a$ | 0.329 $\pm$ 0.001 | 0.277     | 0.382      |
+| $\beta_m$ | 0.083 $\pm$ 0.001 | 0.045     | 0.121      |
 
 A positive value of a $\beta$ coefficient denotes a positive correlation between the independent while the opposite holds for a negative of a $\beta$ coefficient. For example, the value of $\beta_r$ tells us that investing in research has a positive influence on profit. Furthermore, the value of 0.714 denotes that \$1 invested in research will generate a profit of \$0.714 on average. As we can see, investing in all three aspects of a business generates profit, this makes sense as if something is not valuable for a company they most likely would not do it. When independent variables are on the same scale we can compare their effects through $\beta$ coefficients.
 
@@ -129,7 +129,7 @@ If we observe the values for each run more carefully we can see that the sum of 
 
 # The generalized linear model
 
-The generalized linear models (GLM) is an extremely powerful and flexible tool for modeling the relationship between independent variables (also called predictors or explanatory variables) and dependent variables (also called predicted variables or response variables). The GLM generalizes linear regression by allowing the linear model to be related to the response variable via a link function and by allowing the magnitude of the variance of each measurement to be a function of its predicted value.
+The generalized linear model (GLM) is an extremely powerful and flexible tool for modeling the relationship between independent variables (also called predictors or explanatory variables) and dependent variables (also called predicted variables or response variables). The GLM generalizes linear regression by allowing the linear model to be related to the response variable via a link function and by allowing the magnitude of the variance of each measurement to be a function of its predicted value.
 
 So far, we already got familiar with the simple linear regression, there we used the value of one metric variable to increase our understanding of another metric variable under the assumption that residuals (errors) are normally distributed. Now, let us try and use the same model for cracking a different nut. Say that we want to use height (in centimeters) of humans to predict their sex. See `models/simple_linear.stan` for Stan code of the model and `code/linear_binary.R` for R code behind this experiment. Since linear regression works with numbers, we had to label the female sex as 0 and the male sex as 1. The visualization below depicts 100 regression lines based on the posterior distributions of intercept and slope in our Bayesian analysis.
 
@@ -219,10 +219,10 @@ Since data preparation and basic diagnostics are similar as in our previous exam
 
 We can see that this model is much better then the previous one -- it fits the underlying data better and we no longer get probabilities below 0 or above 1. Next, let us take a look at the posterior parameters:
 
-| Variable  | Mean              | q5%   | q95% |
-|-----------|-------------------|-------|-------|
-| $\alpha$  | -34.9 $\pm$ 0.132 | -40.6 | -30.4 |
-| $\beta$   | 0.21 $\pm$ 0.001  | 0.180 | 0.241 |
+| Variable  | Mean              | $q_{0.5}$ | $q_{0.95}$ |
+|-----------|-------------------|-----------|------------|
+| $\alpha$  | -34.9 $\pm$ 0.132 | -40.6     | -30.4      |
+| $\beta$   | 0.21 $\pm$ 0.001  | 0.180     | 0.241      |
 
 Does the above $\beta$ value mean that with a 1 cm increase in height the probability of being male increases for 0.21?
 
