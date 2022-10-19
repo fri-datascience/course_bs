@@ -11,16 +11,16 @@ library(tidyverse)
 model <- cmdstan_model("../models/logistic.stan")
 
 # load data
-data <- read.csv("../data/weight_height_gender.csv", stringsAsFactors=TRUE)
+data <- read.csv("../data/weight_height_sex.csv", stringsAsFactors = TRUE)
 
-# cast gender to 0..1
-data$GenderNumeric <- as.numeric(data$Gender) - 1
+# cast sex to 0..1
+data$SexNumeric <- as.numeric(data$Sex) - 1
 
 # prep data
 n <- nrow(data)
 x <- data$Height
-y <- data$GenderNumeric
-stan_data <- list(n=n, x=x, y=y)
+y <- data$SexNumeric
+stan_data <- list(n = n, x = x, y = y)
 
 # fit
 fit <- model$sample(
@@ -50,39 +50,40 @@ n_lines <- 100
 # precision
 precision <- 100
 # heights sequence
-height <- seq(from=min(data$Height), to=max(data$Height), length.out=precision)
+height <- seq(from = min(data$Height), to = max(data$Height),
+              length.out = precision)
 # draw only n_lines
 df_subsample <- sample_n(df, n_lines)
 
 # create these lines
-lines <- data.frame(x=numeric(), y=numeric(), line=numeric())
+lines <- data.frame(x = numeric(), y = numeric(), line = numeric())
 for (i in 1:n_lines) {
   # extract values
   beta <- df_subsample$beta[i]
   alpha <- df_subsample$alpha[i]
-  
+
   # calculate probability
   y <- invlogit(alpha + beta * height)
 
   # add to lines
-  temp <- data.frame(x=height, y=y, line=i)
+  temp <- data.frame(x = height, y = y, line = i)
   lines <- rbind(lines, temp)
 }
 
-# plot weight/gender
+# plot weight/sex
 ggplot() +
-  geom_point(data=data,
-             aes(x=Height, y=GenderNumeric),
-             alpha=0.2, size=3, shape=16) +
-  geom_line(data=lines,
-            aes(x=x, y=y, group=line),
-            color="skyblue", alpha=0.2, size=1) +
+  geom_point(data = data,
+             aes(x = Height, y = SexNumeric),
+             alpha = 0.2, size = 3, shape = 16) +
+  geom_line(data = lines,
+            aes(x = x, y = y, group = line),
+            color = "skyblue", alpha = 0.2, size = 1) +
   ylab("p(male)")
 
 # beta interpretations ---------------------------------------------------------
 # marginal posterior of beta
-ggplot(data=df, aes(x=beta)) +
-  geom_density(color=NA, fill="skyblue", alpha=0.5)
+ggplot(data = df, aes(x = beta)) +
+  geom_density(color = NA, fill = "skyblue", alpha = 0.5)
 
 # mean beta
 mean_alpha <- mean(df$alpha)

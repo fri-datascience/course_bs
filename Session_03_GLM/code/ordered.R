@@ -17,10 +17,10 @@ data <- read.csv("../data/poverty.csv", stringsAsFactors = TRUE)
 contrasts(data$religion) <- contr.treatment(n_distinct(data$religion))
 contrasts(data$degree) <- contr.treatment(n_distinct(data$degree))
 contrasts(data$country) <- contr.treatment(n_distinct(data$country))
-contrasts(data$gender) <- contr.treatment(n_distinct(data$gender))
+contrasts(data$sex) <- contr.treatment(n_distinct(data$sex))
 
 # note that intercept is part of the model matrix (1st column always equals 1)
-X <- model.matrix(~ religion + degree + country + gender, data)
+X <- model.matrix(~ religion + degree + country + sex, data)
 # remove intercept since in ordered regression intercepts are cutpoints
 X <- X[, -1]
 

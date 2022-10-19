@@ -11,7 +11,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 ```
 
-
 # Summary
 
 * The intercept ($\alpha$ or $\beta_0$) and slope parameters ($\beta_i$) in simple linear regression are easy to interpret and can as such provide key insight into our data generating process.
@@ -22,9 +21,9 @@ knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 
 # Parameters of linear regression models
 
-Typically linear regression models have several parameters, the number of parameters depends on the number of independent variables and their interactions. For the purpose of this explanation let us return to the 50 startups datasets that we used for our last homework. In this example we will investigate the relationship between resources invested in research, administration and marketing and the company's profit. For simplicity sake, we will discard the location variable. 
+Typically linear regression models have several parameters, the number of parameters depends on the number of independent variables and their interactions. For the purpose of this explanation let us use the 50 startups datasets that includes information about the profits of startup companies in the USA. In this example we will investigate the relationship between resources invested in research, administration and marketing and the company's profit. For simplicity sake, we will discard the location variable.
 
-The gist of our problem was to figure out how we should distribute our resources if we just opened a startup company, in other words we are interested it the ratio between funds spent for research, administration and marketing that is expected go generate the most profit. We will use Bayesian multiple linear regression (we use the term simple linear regression when there is only one independent variable and the term multiple linear regression if we have more than one independent variable):
+The gist of our problem is to figure out how we should distribute our resources if we just opened a startup company, in other words we are interested it the ratio between funds spent for research, administration and marketing that is expected go generate the most profit. We will use Bayesian multiple linear regression (we use the term simple linear regression when there is only one independent variable and the term multiple linear regression if we have more than one independent variable):
 
 $$y_i \; | \; x_i, \alpha, \beta_r, \beta_a, \beta_m, \sigma \sim N(\alpha + \beta_r x_{r,i} + \beta_a x_{a,i} + \beta_m x_{m,i}, \sigma),$$ 
 $$\beta_r, \beta_a, \beta_n \sim N(0, 1).$$
@@ -118,7 +117,7 @@ The above code snippet create the dummy independent variable and plots the corre
 
 Now, let us fit the model a couple of times:
 
-| Run | $\beta_1$        | \beta_2           |
+| Run | $\beta_1$        | $\beta_2$         |
 |-----|------------------|-------------------|
 | 1   | 1.80 $\pm$ 0.49  | -0.221 $\pm$ 0.45 |
 | 2   | 0.892 $\pm$ 0.53 | 0.632 $\pm$ 0.48  |
@@ -126,20 +125,19 @@ Now, let us fit the model a couple of times:
 
 You can see that the means $\beta$ coefficients are quite unstable and have a large standard deviation. This is completely expected since there is an infinite number of ways that we can combine the $x$ and $x2$ independent variables to get a good fit. The purpose of this illustration is to show that while our model provides a good fit of the underlying data, the interpretation of $\beta$ coefficients should be taken with a pinch of salt. Making meaningful conclusions based on our results is impossible here! How do we overcome this? We usually remove one of the correlated variables, the information it stores is extremely low since the same information is also incorporated in the other variable.
 
-If we observe the values for each run more carefully we can see that the sum of both $\beta$ coefficients is around 1.5. If you remember from last week, the $\beta$ we used to generate this data equalled 1.5 and that would be the result if we removed one of the two problematic independent variables.
-
+If we observe the values for each run more carefully we can see that the sum of both $\beta$ coefficients is around 1.5. If you remember from the previous session, the $\beta$ we used to generate this data equalled 1.5 and that would be the result if we removed one of the two problematic independent variables.
 
 # The generalized linear model
 
 The generalized linear models (GLM) is an extremely powerful and flexible tool for modeling the relationship between independent variables (also called predictors or explanatory variables) and dependent variables (also called predicted variables or response variables). The GLM generalizes linear regression by allowing the linear model to be related to the response variable via a link function and by allowing the magnitude of the variance of each measurement to be a function of its predicted value.
 
-So far, we already got familiar with the simple linear regression, there we used the value of one metric variable to increase our understanding of another metric variable under the assumption that residuals (errors) are normally distributed. Now, let us try and use the same model for cracking a different nut. Say that we want to use height (in centimeters) of humans to predict their gender. See `models/simple_linear.stan` for Stan code of the model and `code/linear_binary.R` for R code behind this experiment. Since linear regression works with numbers, we had to label the female gender as 0 and the male gender as 1. The visualization below depicts 100 regression lines based on the posterior distributions of intercept and slope in our Bayesian analysis.
+So far, we already got familiar with the simple linear regression, there we used the value of one metric variable to increase our understanding of another metric variable under the assumption that residuals (errors) are normally distributed. Now, let us try and use the same model for cracking a different nut. Say that we want to use height (in centimeters) of humans to predict their sex. See `models/simple_linear.stan` for Stan code of the model and `code/linear_binary.R` for R code behind this experiment. Since linear regression works with numbers, we had to label the female sex as 0 and the male sex as 1. The visualization below depicts 100 regression lines based on the posterior distributions of intercept and slope in our Bayesian analysis.
 
 <center>
   ![](./figs/linear_binary.png)
 </center>
 
-We can immediately spot a couple of issues here, the most prominent one being that now all of a sudden gender can have a value that is higher than 1 or lower than 0. We can interpret values between 0 and 1 as probabilities of being male, but what are we supposed to do with values below 0 and above 1, these outliers have no reasonable meaning! Based on the above figure we can also quite confidently claim that our fit is not the best, meaning that our model does not describe the data well. What we need here is a model suitable for modeling values that range from 0 to 1, possibly with something else than a straight line. GLMs are just that! As you will see in sections that follow, they can be used with dependent variables on all scale types (metric, ordinal, nominal and count).
+We can immediately spot a couple of issues here, the most prominent one being that now all of a sudden sex can have a value that is higher than 1 or lower than 0. We can interpret values between 0 and 1 as probabilities of being male, but what are we supposed to do with values below 0 and above 1, these outliers have no reasonable meaning! Based on the above figure we can also quite confidently claim that our fit is not the best, meaning that our model does not describe the data well. What we need here is a model suitable for modeling values that range from 0 to 1, possibly with something else than a straight line. GLMs are just that! As you will see in sections that follow, they can be used with dependent variables on all scale types (metric, ordinal, nominal and count).
 
 ## A formal expression of the GLM
 
@@ -159,7 +157,7 @@ The link function ($f(\cdot)$) and its inverse ($f^-1(\cdot)$) provide the relat
 
 ## Logistic regression
 
-Let us start our venture into GLMs by building on our previous attempt of modeling relationship between person's height and gender. In our case gender is a binary variable so it would make sense to use a suitable pdf. Bernoulli's distribution was a good fit when we modeled coin tosses so let us try building a linear model with it:
+Let us start our venture into GLMs by building on our previous attempt of modeling relationship between person's height and sex. In our case sex is a binary variable so it would make sense to use a suitable pdf. Bernoulli's distribution was a good fit when we modeled coin tosses so let us try building a linear model with it:
 
 $$y \; | \; \theta \sim \text{Bernoulli}(\theta),$$
 $$f(\theta) = \alpha + x \beta,$$
@@ -181,7 +179,7 @@ Below is model's code in Stan, as you can see the Bernoulli logit regression is 
 data {
   int<lower=1> n;                   // number of observations
   vector<lower=0>[n] x;             // height
-  array[n] int<lower=0, upper=1> y; // gender 
+  array[n] int<lower=0, upper=1> y; // sex 
 }
 
 parameters {
@@ -213,7 +211,7 @@ for (i in 1:n)
 
 All of the solutions above should give practically equivalent results. However, the alternative ones are slower and less stable.
 
-Since preparing data and basic diagnostics are similar as in our previous examples we will omit them here for the sake of brevity. But do note that we executed all the steps and everything looked OK! You should never ever skip the diagnostics when doing Bayesian analysis in practice! Like already mentioned, if possible it is always good to visualize how the posterior distribution fits the underlying data: 
+Since data preparation and basic diagnostics are similar as in our previous examples we will omit them here for the sake of brevity. But do note that we executed all the steps and everything looked OK! You should never ever skip the diagnostics when doing Bayesian analysis in practice! Like already mentioned, if possible it is always good to visualize how the posterior distribution fits the underlying data:
 
 <center>
   ![](./figs/bernoulli_logit.png)
@@ -294,7 +292,7 @@ generated quantities {
 
 We will use this for predicting the amount of goals scored on a football match (`data/football.csv`). The dataset contains names of the home and away team, the date of the match, name of the league, home and away goals scored and parameters that describe properties of the two clashing teams. We will use the parameters that describe the play-style of the two teams to predict the number of goals scored by the home team. Complete and commented code for this example can be found in `code/poisson.R`, in this document we will touch only the most interesting parts of this analysis.
 
-When preparing the input data we decided to standardize the input data. This often results in a better fitting experience and results that are easier to interpret. To do this, we used R's `scale` function. The left graph shows original independent variables while the ones on the right are standardized.
+When preparing the input data we decided to standardize it. This often results in a better fitting experience and results that are easier to interpret. To do this, we used R's `scale` function. The left graph shows original independent variables while the ones on the right are standardized.
 
 <center>
   ![](./figs/scale.png)
@@ -326,8 +324,7 @@ To get a better understanding of our model let us compare a couple of prediction
   ![](./figs/poisson_am_predictions.png)
 </center>
 
-The blue histogram in the background visualizes the posterior distribution of our predictions, the two dashed lines visualize the 25^th^ and 75^th^ percentiles of these posterior distribution and the thick solid line visualizes the actual result. We can see that in 8 out of 9 cases the actual amount of scored goals was inside this 75% HDI. Like expected, our model was way off the mark in the game where a lot of goals was scored.
-
+The blue histogram in the background visualizes the posterior distribution of our predictions, the two dashed lines visualize the 25^th^ and 75^th^ percentiles of these posterior distribution and the thick solid line visualizes the actual result. We can see that in 8 out of 9 cases the actual amount of scored goals was inside this 50% HDI. Like expected, our model was way off the mark in the game where a lot of goals was scored.
 
 ## Categorical regression (multinomial logistic regression)
 
@@ -377,7 +374,7 @@ We start by loading our dataset, it has 3 columns -- PlayerType, Distance, ShotT
 
 ```{R}
 # load data
-data <- read.csv("./data/shot_types.csv", stringsAsFactors=TRUE)
+data <- read.csv("./data/shot_types.csv", stringsAsFactors = TRUE)
 ```
 
 Once our variable types are properly set, we can easily prepare matrices with independent and dependent variables. The `model.matrix()` function can be used to create the so called model matrix (https://en.wikipedia.org/wiki/Design_matrix). In model matrices (or design matrices) each row represents an observation of our data, with the successive columns corresponding to the variables and their specific values for that object. To encode nominal variables model matrices use something called contrasts, you can think of contrasts as encoding of variables.
@@ -486,12 +483,12 @@ Essentially, ordinal variable is just a categorization (multinomial prediction) 
 $$F_y(j) = \text{Pr}(y = 1) + \text{Pr}(y = 2) + \ldots + \text{Pr}(y = j) = \text{Pr}(y \leq j).$$
 With the logit regression we worked with log odds by using a logit link function to assure that probabilities are constrained to the [0, 1] interval. We will use a similar approach in the ordered logistic regression, the main difference is that, since we are working with a cumulative link function, we also have to work with the log cumulative odds.
 
-Suppose we have $n$ observations of $m$ independent variables stored in matrix $x$. Each row in $x$ represents an observation vector and has an associated response stored in vector $y$. Log cumulative odds that value of $y$ is lower or equal then the outcome $j$ are thus:
+Suppose we have $n$ observations of $m$ independent variables stored in matrix $X$. Each row in $X$ represents an observation vector and has an associated response stored in vector $y$. Log cumulative odds that value of $y$ is lower or equal then the outcome $j$ are thus:
 
-$$\text{logit}(\text{Pr}(y \leq j)) = \text{log}\left(\frac{\text{Pr}(y \leq j)}{1 - \text{Pr}(y \leq j)}\right) = \alpha_j - \beta x,$$
-$$\text{Pr}(y \leq j)) = \frac{1}{1 + e^{-(\alpha_j - \beta x)}},$$
+$$\text{logit}(\text{Pr}(y \leq j)) = \text{log}\left(\frac{\text{Pr}(y \leq j)}{1 - \text{Pr}(y \leq j)}\right) = \alpha_j - X \beta,$$
+$$\text{Pr}(y \leq j)) = \frac{1}{1 + e^{-(\alpha_j - X \beta)}},$$
 
-where $\alpha_j$ is a cutpoint (threshold, "intercept") unique to each possible outcome value $j$. Since outcomes are ordered $\alpha_1 < \alpha_2 < \ldots < \alpha_{k-1}$ and the cumulative log odds of the largest variable are always infinity $(\text{log}(1 / (1 - 1)))$ we do not need a parameter for it, which is why we need only $k-1$ cutpoints. In the above equation $\beta x$ is a traditional linear model.
+where $\alpha_j$ is a cutpoint (threshold, "intercept") unique to each possible outcome value $j$. Since outcomes are ordered $\alpha_1 < \alpha_2 < \ldots < \alpha_{k-1}$ and the cumulative log odds of the largest variable are always infinity $(\text{log}(1 / (1 - 1)))$ we do not need a parameter for it, which is why we need only $k-1$ cutpoints. In the above equation $X \beta$ is a traditional linear model.
 
 Notice that we are subtracting the linear model from each cutpoint, the reason being that when we decrease the log cumulative odds of every outcome value $j$ below the maximum ($k$), this shifts probability mass upwards towards higher outcome variables, which is the desired outcome if $\beta$ coefficients are positive. Finally, the probability that the outcome of $y$ equals $j$ is calculated as:
 
@@ -522,7 +519,7 @@ model {
 }
 ```
 
-See `code/ordered.R` for a practical example of the ordered logistic regression. There we analyze how religion (yes/no), gender, college degree (yes/no) and country of residence (USA/Sweden) influence people's beliefs whether their country does enough to fight poverty.
+See `code/ordered.R` for a practical example of the ordered logistic regression. There we analyze how religion (yes/no), sex, college degree (yes/no) and country of residence (USA/Sweden) influence people's beliefs whether their country does enough to fight poverty.
 
 ## And many more
 
