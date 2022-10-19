@@ -331,9 +331,9 @@ The blue histogram in the background visualizes the posterior distribution of ou
 Categorical (or multinomial logistic) regression is the first choice model for nominal independent variables. It can be used for unordered and ordered nominal variables, although ordinal regression is more suitable in the latter case. The formulation of binary logistic regression as a log-linear model can be directly extended to categorical regression. In categorical regression the categorical distribution generalizes the Bernoulli and the softmax function generalizes the inverse logit:
 
 $$y \; | \; X, \beta \sim \text{categorical}(\text{softmax}(X \beta)),$$
-$$\text{softmax}(k, x_1, x_2, \ldots, x_n) = \frac{e^{x_k}}{\sum_{i=1}^{n} e^{x_i}}.$$
+$$\text{softmax}(j, x_1, x_2, \ldots, x_n) = \frac{e^{x_j}}{\sum_{i=1}^{n} e^{x_i}},$$
 
-Note here that $\beta$ is not a vector (or a scalar) but a matrix. If we have $k$ outcomes of our dependent variable $y$ and $n$ observations of $m$ independent variables, then $\beta$ will be a matrix with $k$ rows and $m$ columns.
+wjere $j \in [1 .. k]$. Note here that $\beta$ is not a vector (or a scalar) but a matrix. If we have $k$ outcomes of our dependent variable $y$ and $n$ observations of $m$ independent variables, then $\beta$ will be a matrix with $k$ rows and $m$ columns.
 
 The classical categorical regression can have problems with identifiability (two or more parametrizations are observationally equivalent). Identifiablity problems arise because softmax is invariant under adding a constant to each component of its input, thus the model is typically only identified if there is a suitable prior on the coefficients. To overcome this we can use a reference category, we implicitly did a similar thing in logistic regression. There we do not have $\beta$ coefficients for both categories, $\beta$ coefficients there are related only to one category ($y = 1$) while the other is set as a reference ($y = 0$). In Stan the categorical regression model thus looks like this:
 
