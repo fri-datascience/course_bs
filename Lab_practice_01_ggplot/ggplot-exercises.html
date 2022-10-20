@@ -69,7 +69,7 @@ code span.ot { color: #007020; }
     <section id="main-content">
 <div id="summary" class="section level1">
 <h1>Summary</h1>
-<p>The ggplot R package (<a href="https://ggplot2.tidyverse.org/reference/ggplot.html">https://ggplot2.tidyverse.org/reference/ggplot.html</a>)
+<p>The <code>ggplot</code> R package (<a href="https://ggplot2.tidyverse.org/reference/ggplot.html">https://ggplot2.tidyverse.org/reference/ggplot.html</a>)
 is arguably the most powerful visualization toolkit out there. The logic
 behind it follows the best practices of modern design and data
 visualization. As a result, the results the package produces look nice
@@ -79,7 +79,7 @@ professionally looking visualizations that convey the story you try to
 tell in an efficient manner. Mastering this skill is not important only
 to produce visualizations that look nice for the reports in this course,
 but also for you master’s thesis.</p>
-<p>Note that ggplot is now also available for Python (<a href="https://realpython.com/ggplot-python/">https://realpython.com/ggplot-python/</a>).</p>
+<p>Note that <code>ggplot</code> is now also available for Python (<a href="https://realpython.com/ggplot-python/">https://realpython.com/ggplot-python/</a>).</p>
 <div id="section" class="section level2">
 <h2>1</h2>
 <p>The <code>50_startups.csv</code> dataset contains information about
@@ -91,13 +91,14 @@ drawing the following plots:</p>
 <li>A histogram that visualizes the distribution of profits.</li>
 <li>A density plot that visualizes the distribution of funds into
 research/administration/marketing.</li>
+<li>A single plot with all three previous components.</li>
 </ol>
 <p>Hints:</p>
 <ul>
 <li>For density plots, you can use the tools that are available in the
-basic ggplot package or you can use ggdist, which is a package that
-upgrades ggplot with additional tools for visualizing
-distributions.</li>
+basic <code>ggplot</code> package or you can use <code>ggdist</code>,
+which is a package that upgrades <code>ggplot</code> with additional
+tools for visualizing distributions.</li>
 <li>You should use color palettes that are friendly for those that are
 color blind (around 8% of men). See <a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">https://ggplot2.tidyverse.org/reference/scale_brewer.html</a>
 and <a href="https://colorbrewer2.org/">https://colorbrewer2.org/</a>.</li>
@@ -108,6 +109,8 @@ etc.) should exist only if it conveys some information. His most known
 book, The visual display of quantitative information (<a href="https://www.edwardtufte.com/tufte/books_vdqi">https://www.edwardtufte.com/tufte/books_vdqi</a>)
 is one of the most important books on graphical design and
 visualization.</li>
+<li>One of the libraries for creating a plot grid from multiple ggplot
+elements is <code>cowplot</code>.</li>
 </ul>
 </div>
 <div id="section-1" class="section level2">

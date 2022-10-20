@@ -109,6 +109,6 @@ df_ratios <- df_ratios %>% gather(Variable,
                                   c(Research, Administration, Marketing))
 # plot
 ggplot(data = df_ratios, aes(x = Value, y = Variable)) +
-  stat_eye(fill="skyblue", alpha = 0.75) +
+  stat_eye(fill = "skyblue", alpha = 0.75) +
   facet_grid(Type ~ .) +
   xlim(0, 1)

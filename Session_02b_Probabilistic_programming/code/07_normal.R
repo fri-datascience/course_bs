@@ -16,10 +16,10 @@ model <- cmdstan_model("../models/normal.stan")
 n <- 20
 
 # tall
-y1 <- rnorm(20, 180, 20)
+y1 <- rnorm(n, 180, 20)
 
 # not so tall
-y2 <- rnorm(20, 170, 20)
+y2 <- rnorm(n, 170, 20)
 
 # merge
 y <- c(y1, y2)
