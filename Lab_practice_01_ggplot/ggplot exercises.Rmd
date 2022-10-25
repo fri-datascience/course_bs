@@ -48,7 +48,7 @@ For the sake of this exercise, assume that we read a paper that claims that the 
 
 $$t = -17 + \beta x,$$
 
-where $t$ is the temperature, $x$ a given year and $\beta \sim N(0.01, 0.02)$. Visualize these findings in a suitable manner.
+where $t$ is the temperature, $x$ a given year and $\beta \sim N(0.01, 0.002)$. Visualize these findings in a suitable manner.
 
 Hint:
 
@@ -63,4 +63,4 @@ Construct the following visualization:
 1. Visualize the distribution of reaction times for each participant for each of the two conditions.
 2. Add a vertical line that denotes the mean reaction time.
 3. Add a label on top of, or next to the vertical line that shows the mean reaction time.
-4. Sort the visualization so the participant with the shortest reaction time is on top and the one with the slowest is on the bottom (sort by one of the two conditions).
+4. Sort the visualization so the participant with the mean shortest reaction time is on top and the one with the slowest is on the bottom (calculate the mean by using reaction times from both conditions).
