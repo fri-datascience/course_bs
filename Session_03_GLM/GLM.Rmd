@@ -456,7 +456,7 @@ An alternative, and arguably more elegant way of calculating shot type probabili
 
 Gamma regression is useful when our dependent variable resides on the positive side of real numbers. However, using the gamma distribution in a GLM is a bit trickier because it's two default parameters $\nu$ (shape) and $\lambda$ (rate) do not directly represent the mean and the variance. The two parameters of the gamma distribution are traditionally called $\alpha$ and $\beta$, here we are using $\nu$ and $\lambda$ to distinguish them from the intercept and $\beta$ coefficients that will come into play later on:
 
-$$y \; | \; \nu, \lambda \sim \text{gamma}(\nu, \lambda)),$$
+$$y \; | \; \nu, \lambda \sim \text{gamma}(\nu, \lambda),$$
 $$E[y] = \mu = \frac{\nu}{\lambda},$$
 $$\text{Var}(y) = \phi = \frac{\nu}{\lambda^2}.$$
 As you can see we cannot directly map the linear predictor to a gamma parameter. Fear not, we can fix this with some simple calculus. We can reparametrize the gamma distribution to fit our needs:
