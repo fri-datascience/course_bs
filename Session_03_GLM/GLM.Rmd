@@ -331,7 +331,7 @@ The blue histogram in the background visualizes the posterior distribution of ou
 Categorical (or multinomial logistic) regression is the first choice model for nominal independent variables. It can be used for unordered and ordered nominal variables, although ordinal regression is more suitable in the latter case. The formulation of binary logistic regression as a log-linear model can be directly extended to categorical regression. In categorical regression the categorical distribution generalizes the Bernoulli and the softmax function generalizes the inverse logit:
 
 $$y \; | \; X, \beta \sim \text{categorical}(\text{softmax}(X \beta)),$$
-$$\text{softmax}(k, x_1, x_2, \ldots, x_n) = \frac{e^{x_k}}{\sum_{i=1}^{n} e^{x_i}}.$$
+$$\text{softmax}(j, x_1, x_2, \ldots, x_k) = \frac{e^{x_k}}{\sum_{i=1}^{k} e^{x_i}}, j \in [1, k].$$
 
 Note here that $\beta$ is not a vector (or a scalar) but a matrix. If we have $k$ outcomes of our dependent variable $y$ and $n$ observations of $m$ independent variables, then $\beta$ will be a matrix with $k$ rows and $m$ columns.
 
@@ -381,7 +381,7 @@ Once our variable types are properly set, we can easily prepare matrices with in
 
 
 ```{R, warning=FALSE, message=FALSE}
-# library needed for distinct_n
+# library needed for n_distinct
 library(dplyr)
 
 # contrasts

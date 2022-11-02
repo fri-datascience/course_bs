@@ -772,8 +772,8 @@ regression. In categorical regression the categorical distribution
 generalizes the Bernoulli and the softmax function generalizes the
 inverse logit:</p>
 <p><span class="math display">\[y \; | \; X, \beta \sim
-\text{categorical}(\text{softmax}(X \beta)),\]</span> <span class="math display">\[\text{softmax}(k, x_1, x_2, \ldots, x_n) =
-\frac{e^{x_k}}{\sum_{i=1}^{n} e^{x_i}}.\]</span></p>
+\text{categorical}(\text{softmax}(X \beta)),\]</span> <span class="math display">\[\text{softmax}(j, x_1, x_2, \ldots, x_k) =
+\frac{e^{x_k}}{\sum_{i=1}^{k} e^{x_i}}, j \in [1, k].\]</span></p>
 <p>Note here that <span class="math inline">\(\beta\)</span> is not a
 vector (or a scalar) but a matrix. If we have <span class="math inline">\(k\)</span> outcomes of our dependent variable
 <span class="math inline">\(y\)</span> and <span class="math inline">\(n\)</span> observations of <span class="math inline">\(m\)</span> independent variables, then <span class="math inline">\(\beta\)</span> will be a matrix with <span class="math inline">\(k\)</span> rows and <span class="math inline">\(m\)</span> columns.</p>
@@ -843,7 +843,7 @@ data, with the successive columns corresponding to the variables and
 their specific values for that object. To encode nominal variables model
 matrices use something called contrasts, you can think of contrasts as
 encoding of variables.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library needed for distinct_n</span></span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library needed for n_distinct</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># contrasts</span></span>
