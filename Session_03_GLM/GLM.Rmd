@@ -611,15 +611,15 @@ To compare various regularization techniques we will use multiple linear regress
 
 To evaluate Bayesian regression models we compared them with a popular machine learning model (random forests) and three linear regression models. Traditional linear regression does not incorporate any regularization and thus its loss function does not have a penalty term:
 
-$$\underset{\beta}{\operatorname{argmax}} \sum_{i=1}^n (y_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij})^2.$$
+$$\underset{\beta}{\operatorname{argmax}} \sum_{i=1}^n (y_i - \beta_0 - \sum_{j=1}^m \beta_j x_{ij})^2.$$
 
 Lasso regression (L1) uses a loss function that includes a penalty term for model complexity, the penalty term is based on absolute values of $\beta$ coefficients:
 
-$$\underset{\beta}{\operatorname{argmax}} \sum_{i=1}^n (y_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij})^2 + \lambda \sum_{j=1}^p |\beta_j|.$$
+$$\underset{\beta}{\operatorname{argmax}} \sum_{i=1}^n (y_i - \beta_0 - \sum_{j=1}^m \beta_j x_{ij})^2 + \lambda \sum_{j=1}^p |\beta_j|.$$
 
 Similarly, ridge regression (L2) facilitates a penalty term that is based on squared $\beta$ coefficients:
 
-$$\underset{\beta}{\operatorname{argmax}} \sum_{i=1}^n (y_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij})^2 + \lambda \sum_{j=1}^p \beta_j^2.$$
+$$\underset{\beta}{\operatorname{argmax}} \sum_{i=1}^n (y_i - \beta_0 - \sum_{j=1}^m \beta_j x_{ij})^2 + \lambda \sum_{j=1}^p \beta_j^2.$$
 
 On the Bayesian side our comparison implements five different Bayesian linear regression models:
 
