@@ -67,7 +67,7 @@ df_player1 <- rbind(df_default, df_special)
 # plot
 ggplot(data = df_player1, aes(x = theta, group = Rim, fill = Rim)) +
   geom_density(alpha = 0.5, color = NA) +
-  scale_fill_brewer(type='qual', palette = 3) +
+  scale_fill_brewer(type = "qual", palette = 3) +
   xlim(0, 1) +
   theme_minimal()
 

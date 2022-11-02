@@ -5,6 +5,7 @@ library(bayesplot)
 library(posterior)
 library(arm) # for logit and inverse logit functions
 library(tidyverse)
+library(mcmcse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
