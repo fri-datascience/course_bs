@@ -774,10 +774,9 @@ inverse logit:</p>
 <p><span class="math display">\[y \; | \; X, \beta \sim
 \text{categorical}(\text{softmax}(X \beta)),\]</span> <span class="math display">\[\text{softmax}(j, x_1, x_2, \ldots, x_k) =
 \frac{e^{x_j}}{\sum_{i=1}^{k} e^{x_i}}, j \in [1, k].\]</span></p>
-<p>wjere <span class="math inline">\(j \in [1 .. k]\)</span>. Note here
-that <span class="math inline">\(\beta\)</span> is not a vector (or a
-scalar) but a matrix. If we have <span class="math inline">\(k\)</span>
-outcomes of our dependent variable <span class="math inline">\(y\)</span> and <span class="math inline">\(n\)</span> observations of <span class="math inline">\(m\)</span> independent variables, then <span class="math inline">\(\beta\)</span> will be a matrix with <span class="math inline">\(k\)</span> rows and <span class="math inline">\(m\)</span> columns.</p>
+<p>Note here that <span class="math inline">\(\beta\)</span> is not a
+vector (or a scalar) but a matrix. If we have <span class="math inline">\(k\)</span> outcomes of our dependent variable
+<span class="math inline">\(y\)</span> and <span class="math inline">\(n\)</span> observations of <span class="math inline">\(m\)</span> independent variables, then <span class="math inline">\(\beta\)</span> will be a matrix with <span class="math inline">\(k\)</span> rows and <span class="math inline">\(m\)</span> columns.</p>
 <p>The classical categorical regression can have problems with
 identifiability (two or more parametrizations are observationally
 equivalent). Identifiablity problems arise because softmax is invariant
