@@ -490,7 +490,7 @@ $$\text{Pr}(y \leq j)) = \frac{1}{1 + e^{-(\alpha_j - X \beta)}},$$
 
 where $\alpha_j$ is a cutpoint (threshold, "intercept") unique to each possible outcome value $j$. Since outcomes are ordered $\alpha_1 < \alpha_2 < \ldots < \alpha_{k-1}$ and the cumulative log odds of the largest variable are always infinity $(\text{log}(1 / (1 - 1)))$ we do not need a parameter for it, which is why we need only $k-1$ cutpoints. In the above equation $X \beta$ is a traditional linear model.
 
-Notice that we are subtracting the linear model from each cutpoint, the reason being that when we decrease the log cumulative odds of every outcome value $j$ below the maximum ($k$), this shifts probability mass upwards towards higher outcome variables, which is the desired outcome if $\beta$ coefficients are positive. Finally, the probability that the outcome of $y$ equals $j$ is calculated as:
+Notice that we are subtracting the linear term from each cutpoint, the reason being that when we decrease the log cumulative odds of every outcome value $j$ below the maximum ($k$), this shifts probability mass upwards towards higher outcome variables, which is the desired outcome if $\beta$ coefficients are positive. Finally, the probability that the outcome of $y$ equals $j$ is calculated as:
 
 $$\text{Pr}(y = j) = F_y(j) - F_y(j-1) = \text{Pr}(y \leq j) - \text{Pr}(y \leq j - 1).$$
 
