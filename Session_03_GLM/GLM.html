@@ -1205,13 +1205,13 @@ term for model complexity, the penalty term is based on absolute values
 of <span class="math inline">\(\beta\)</span> coefficients:</p>
 <p><span class="math display">\[\underset{\beta}{\operatorname{argmax}}
 \sum_{i=1}^n (y_i - \beta_0 - \sum_{j=1}^m \beta_j x_{ij})^2 + \lambda
-\sum_{j=1}^p |\beta_j|.\]</span></p>
+\sum_{j=1}^m |\beta_j|.\]</span></p>
 <p>Similarly, ridge regression (L2) facilitates a penalty term that is
 based on squared <span class="math inline">\(\beta\)</span>
 coefficients:</p>
 <p><span class="math display">\[\underset{\beta}{\operatorname{argmax}}
 \sum_{i=1}^n (y_i - \beta_0 - \sum_{j=1}^m \beta_j x_{ij})^2 + \lambda
-\sum_{j=1}^p \beta_j^2.\]</span></p>
+\sum_{j=1}^m \beta_j^2.\]</span></p>
 <p>On the Bayesian side our comparison implements five different
 Bayesian linear regression models:</p>
 <ul>
