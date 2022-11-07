@@ -33,6 +33,6 @@ generated quantities {
   // rad to deg converter
   real sigma_degrees = sigma * 180 / pi();
   
-  // recalculate and return probs
+  // recalculate and return probabilities
   vector[N] p = 2*Phi(threshold_angle / sigma) - 1;
 }

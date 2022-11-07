@@ -46,8 +46,7 @@ generated quantities {
     // rad to deg converter
   real sigma_a_degrees = sigma_a * 180 / pi();
   
-  // recalculate and return probs
-  // probabilities
+  // recalculate and return probabilities
   vector[N] p = (2*Phi(threshold_angle / sigma_a) - 1) .*
                 (Phi((d_t - o) ./ ((x + o)*sigma_d)) -
                 Phi((- o) ./ ((x + o)*sigma_d)));
