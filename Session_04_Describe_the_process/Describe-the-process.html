@@ -327,8 +327,8 @@ generated quantities {
 }
 </code></pre>
 <p>The fitting process executed without any issues and the diagnostics
-look fine, so we can continue with our analysis. The <span class="math inline">\(\sigma\)</span> parameters equals 0.22 <span class="math inline">\(\pm\)</span> 0.8 <span class="math inline">\(\cdot\)</span> 10<sup>-5</sup> in radians and 1.23
-<span class="math inline">\(\pm\)</span> 0.5 <span class="math inline">\(\cdot\)</span> 10<sup>-4</sup> in degrees. Meaning
+look fine, so we can continue with our analysis. The <span class="math inline">\(\sigma\)</span> parameters equals 0.022 <span class="math inline">\(\pm\)</span> 7 <span class="math inline">\(\cdot\)</span> 10<sup>-6</sup> in radians and 1.23
+<span class="math inline">\(\pm\)</span> 4 <span class="math inline">\(\cdot\)</span> 10<sup>-4</sup> in degrees. Meaning
 that the standard deviation of golf putting angular errors in pro
 golfers is just above a degree. Which is very impressive.</p>
 <p>The figure below visualizes the model’s fit (the dark blue line) the
@@ -464,8 +464,7 @@ generated quantities {
     // rad to deg converter
   real sigma_a_degrees = sigma_a * 180 / pi();
   
-  // recalculate and return probs
-  // probabilities
+  // recalculate and return probabilities
   vector[N] p = (2*Phi(threshold_angle / sigma_a) - 1) .*
                 (Phi((d_t - o) ./ ((x + o)*sigma_d)) -
                 Phi((- o) ./ ((x + o)*sigma_d)));
@@ -473,12 +472,13 @@ generated quantities {
 <p>No issues were found in fitting and diagnostics processes.</p>
 <p>The <span class="math inline">\(\sigma_a\)</span> parameters equals
 0.018 <span class="math inline">\(\pm\)</span> 1.2 <span class="math inline">\(\cdot\)</span> 10<sup>-5</sup> in radians and in
-1.03 <span class="math inline">\(\pm\)</span> 0.0007 in degrees. You can
+1.03 <span class="math inline">\(\pm\)</span> 7 <span class="math inline">\(\cdot\)</span> 10<sup>-4</sup> in degrees. You can
 see that the angular error is now lower, this makes sense as the total
 error is now spread between two sources (error in the angle and in the
 distance), in the previous model all error was attributed to a single
-source (error in the angle). The <span class="math inline">\(\sigma_d\)</span> parameters equals 0.065 <span class="math inline">\(\pm\)</span> 0.0001, this means that there is a
-standard deviation of 6% in the distance errors pro golfers make.</p>
+source (error in the angle). The <span class="math inline">\(\sigma_d\)</span> parameters equals 0.065 <span class="math inline">\(\pm\)</span> 1 <span class="math inline">\(\cdot\)</span> 10<sup>-4</sup>, this means that
+there is a standard deviation of 6% in the distance errors pro golfers
+make.</p>
 <p>The figure below visualizes the performance of this model (the green
 color) in comparison with both previous models and the underlying
 data.</p>

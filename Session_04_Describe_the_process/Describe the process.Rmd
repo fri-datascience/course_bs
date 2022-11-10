@@ -11,7 +11,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 ```
 
-
 # Summary
 
 When developing Bayesian models we can quickly fall into the habit where we do not really think about the underlying data generating process. Instead, we are merely trying to fit distributions to our data. This lecture outlines why this is not good and suboptimal. As you will see on an example of golf putting, such Bayesian modeling does not only provide extremely good results, but can be also fun!
@@ -50,7 +49,6 @@ $$\beta \sim \text{Cauchy}(0, 2.5).$$
 
 Binomial logistic regression is a very common GLM, it is so common that it is already fully implemented in Stan:
 
-
 ```
 data {
   int N;             // number of data points
@@ -85,7 +83,7 @@ As we can see the model does not really fit our data that well. Can we do better
 
 # Modelling the error in aiming (error in the putting angle)
 
-In our first modeling attempt, we did not really think about the data generating process. We just used a distribution that looked like a good fit to our data and as you can see the results are not spectacular. Let us now try and think what is actually going on. In golf putting the player tries to hit the ball towards the cup in a certain direction. Since the ball is smaller than the cup (the ball has a radius of of 2.135 cm, while the cup has the radius of 5.398 cm), there is some margin of error. In other words, even if the player does not hit the ball exactly in the desired direction, it might still go in. We can think of this error threshold as an angle, the closer we are to the cup the more margin for error we have. This concept is visualized on the figure below. 
+In our first modeling attempt, we did not really think about the data generating process. We just used a distribution that looked like a good fit to our data and as you can see the results are not spectacular. Let us now try and think what is actually going on. In golf putting the player tries to hit the ball towards the cup in a certain direction. Since the ball is smaller than the cup (the ball has a radius of of 2.135 cm, while the cup has the radius of 5.398 cm), there is some margin of error. In other words, even if the player does not hit the ball exactly in the desired direction, it might still go in. We can think of this error threshold as an angle, the closer we are to the cup the more margin for error we have. This concept is visualized on the figure below.
 
 <center>
   ![](./figs/angle_explanation.png)
@@ -171,7 +169,7 @@ generated quantities {
 
 ```
 
-The fitting process executed without any issues and the diagnostics look fine, so we can continue with our analysis. The $\sigma$ parameters equals 0.22 $\pm$ 8 $\cdot$ 10^-6^ in radians and 1.23 $\pm$ 5 $\cdot$ 10^-5^ in degrees. Meaning that the standard deviation of golf putting angular errors in pro golfers is just above a degree. Which is very impressive.
+The fitting process executed without any issues and the diagnostics look fine, so we can continue with our analysis. The $\sigma$ parameters equals 0.022 $\pm$ 7 $\cdot$ 10^-6^ in radians and 1.23 $\pm$ 4 $\cdot$ 10^-4^ in degrees. Meaning that the standard deviation of golf putting angular errors in pro golfers is just above a degree. Which is very impressive.
 
 The figure below visualizes the model's fit (the dark blue line) the ribbon behind it estimates its uncertainty with a 90% high density interval. The light blue line visualizes the binomial logistic model, while black points visualize the underlying data.
 
@@ -180,7 +178,6 @@ The figure below visualizes the model's fit (the dark blue line) the ribbon behi
 </center>
 
 At short putting distances this model fits the data much better than the binomial one. However, it has some issues at longer distances, it greatly overestimates success of golfers there. The question is again, can we do better? As you will see, we can!
-
 
 # Modelling the error in power (error in the putting distance)
 
