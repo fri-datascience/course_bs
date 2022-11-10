@@ -31,6 +31,7 @@ df_golf <- data.frame(x = numeric(),
                       p = numeric(),
                       hdi5 = numeric(),
                       hdi95 = numeric())
+
 for (i in seq_len(nrow(data))) {
   # get row
   row <- data[i, ]
