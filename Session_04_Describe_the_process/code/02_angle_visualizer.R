@@ -13,7 +13,7 @@ sigmas <- c(0.001, 0.003, 0.01, 0.03)
 # angle thresholds
 r <- 2.135 / 100
 R <- 5.398 / 100
-threshold_angle <- asin((R - r) / distances)
+threshold_angle <- atan((R - r) / distances)
 
 # first one is NaN, lets fix it
 threshold_angle[1] <- pi
