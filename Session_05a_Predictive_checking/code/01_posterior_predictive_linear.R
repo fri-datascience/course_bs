@@ -5,6 +5,7 @@ library(bayesplot)
 library(posterior)
 library(tidyverse)
 library(mcmcse)
+library(HDInterval)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
