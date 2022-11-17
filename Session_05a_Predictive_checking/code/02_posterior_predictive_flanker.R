@@ -43,7 +43,7 @@ fit_normal$summary()
 # extract draws
 df_normal <- as_draws_df(fit_normal$draws())
 
-# remove unused column
+# remove unused columns
 df_normal <- df_normal %>% select(-lp__, -.chain, -.iteration, -.draw)
 
 # generate 100 distributions
@@ -99,7 +99,7 @@ fit_exp_i$summary()
 # extract draws
 df_exp_i <- as_draws_df(fit_exp_i$draws())
 
-# remove unused column
+# remove unused columns
 df_exp_i <- df_exp_i %>% select(-lp__, -.chain, -.iteration, -.draw)
 
 # generate 100 distributions
