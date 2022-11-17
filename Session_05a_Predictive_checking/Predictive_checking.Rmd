@@ -74,7 +74,7 @@ The figure above visualizes our findings, when we do not have many predictors (t
 
 In the second example we will use Stan to investigate prior predictive distributions that can be generated with our model. Let us say that we are interested in predicting height of a human from her/his weight. Here, we will do this with linear regression:
 
-$$y \; | \; x, \beta, \sigma \sim N(\alpha + \beta x, \sigma).$$
+$$y \; | \; x, \alpha, \beta, \sigma \sim N(\alpha + \beta x, \sigma).$$
 
 With the following priors:
 
@@ -162,7 +162,6 @@ As you can see from the figure above our priors can generate many different prio
 ![](./figs/prior_predictive_cauchy.png)
 
 If results of your prior predictive checking do not make sense, this is a surefire sign that you should revisit your prior definitions.
-
 
 # Posterior predictive checking
 
