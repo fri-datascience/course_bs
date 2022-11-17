@@ -56,7 +56,7 @@ mcse(df$b)
 hdi(df$b, credMass = 0.90)
 
 # visualize data points and regression lines
-# plot only 200 random regression lines
+# plot only 100 random regression lines
 df_100 <- data.frame(alpha = df$a, beta = df$b)
 df_100 <- sample_n(df_100, 100)
 
