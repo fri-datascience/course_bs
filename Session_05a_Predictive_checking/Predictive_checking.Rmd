@@ -170,9 +170,17 @@ If results of your prior predictive checking do not make sense, this is a surefi
 
 Posterior predictive checking is analogous to prior predictive checking but this time around used parameter draws come from the posterior distribution. If prior predictive checking was a technique for understanding implications of priors on the model, the intent of posterior predictive checking is to investigate how our model fits to the real data or to investigate the limitations of our model by using simulated data.
 
-## Using replicated datasets
+## Visualizing the model's fit
 
-The most common posterior predictive check compares simulated datasets from the posterior predictive distribution against the actual data. Once we fit the model, we use the posterior distribution to create several replicate datasets. To create a replicate dataset we draw as many samples from the posterior distribution as there are in the original dataset. Once we create several such replicate datasets we compare whether the quantities we are interested in match between replicated dataset and the real dataset. If they do then we can proceed with our analysis, if they do not we have to revisit our model. It is important to emphasize here that if we are interested only in some quantites (e.g. means) then we are usually satisfied if our model does a good job at estimating only the quantities we are interested in.
+Since a picture is worth more than a thousand words it is often a very good practice to plot your posterior distribution against real data and look for any discrepancies. As you saw in almost all of our previous lectures, when possible we should always prepare such a visualization. Below is a simple example that visualizes our simple linear regression model (`/model/simple_linear.stan`) for predicting the rise of average temperature in Slovenia through time against the actual data (average temperature for years 1901--2015). See `/code/posterior_predictive_linear.R` for our implementation. As you can see that at a glance the fit looks quite OK (we will try to improve it during our next session). Based on this visualization one might argue that the model has issues with capturing the seemingly increasing rise in temperature over the last couple of years, (unfortunately) this trend does not look linear, so it is completely reasonable that our model fails at capturing it. Since our model looks OK, we can can use it to do some simple analysis. Our only predictor were years and its $\beta$ coefficient is 0.013 (90\% HDI 0.01--0.016), meaning that we are very confident that temperature has been rising for the last 100 years or so.
+
+![](./figs/posterior_predictive_linear.png)
+
+In more complex models (e.g. highly dimensional posterior distributions, complicated hierarchical models ...) visualizing our fits is often unfeasible. There, we can use the fit model in a generative manner to create the so-called replicate datasets. Next, we use these datasets for comparison with real data, for example through some summary statistics. But we have to be careful here since summary statistics can sometimes be misleading.
+
+## Using replicate datasets
+
+Since our models are often complex and high dimensional the visual comparison is hard to execute. Therefore, the most common posterior predictive check compares replicate datasets from the posterior predictive distribution against the actual data. Once we fit the model, we use the posterior distribution to create several replicate datasets. To create a replicate dataset we usually draw as many samples from the posterior distribution as there are in the original dataset. Once we create several such replicate datasets we compare whether the quantities we are interested in match between replicate dataset and the real dataset. If they do then we can proceed with our analysis, if they do not we have to revisit our model. It is important to emphasize here that if we are interested only in some quantites (e.g. means) then we are usually satisfied if our model does a good job at estimating only the quantities we are interested in.
 
 In the example below we are interested in the mean temperature in Slovenia after the year 2000. We fit a normal model to our data and then generate 16 replicate datasets from our posterior samples. Visualization below visualizes replicate datasets (gray histograms) along with their means (gray vertical lines), while the black vertical line visualizes the sample mean. Since it seems like our model does a good job at estimating the mean temperature in Slovenia we can proceed with our analysis (whatever that might be). If we are interested in other quantities (e.g. variance) then we need to check whether our model does a good job at estimating those as well.
 
@@ -218,7 +226,7 @@ fit$summary()
 # extract draws
 df <- as_draws_df(fit$draws())
 
-# 16 replicated datasets (4x4 grid for visualizations)
+# 16 replicate datasets (4x4 grid for visualizations)
 n <- 16
 df_16 <- sample_n(df, 16)
 df_ppc <- data.frame(temperature = numeric(), iteration = factor())
@@ -250,12 +258,6 @@ ggplot(data = df_ppc, aes(x = temperature)) +
   facet_wrap(iteration ~ ., nrow = 4) +
   xlab("T [°C]")
 ```
-
-## A simple linear model for temperature prediction
-
-Since a picture is worth more than a thousand words it is often a very good practice to plot your posterior distribution against real data and look for any discrepancies. As you saw in almost all of our previous lectures, when possible we should always prepare such a visualization. Below is a simple example that visualizes our simple linear regression model (`/model/simple_linear.stan`) for predicting the rise of average temperature in Slovenia through time against the actual data (average temperature for years 1901--2015). See `/code/posterior_predictive_linear.R` for our implementation. As you can see that at a glance the fit looks quite OK (we will try to improve it during our next session). Based on this visualization one might argue that the model has issues with capturing the seemingly increasing rise in temperature over the last couple of years, (unfortunately) this trend does not look linear, so it is completely reasonable that our model fails at capturing it. Since our model looks OK, we can can use it to do some simple analysis. Our only predictor were years and its $\beta$ coefficient is 0.013 (90\% HDI 0.01--0.016), meaning that we are very confident that temperature has been rising for the last 100 years or so.
-
-![](./figs/posterior_predictive_linear.png)
 
 ### Modeling reaction times
 
@@ -292,9 +294,7 @@ Below you can see that this distribution is indeed a much better fit for reactio
 
 ![](./figs/posterior_predictive_flanker_exp_normal.png)
 
-In more complex models (e.g. highly dimensional posterior distributions, complicated hierarchical models ...) visualizing our fits is often unfeasible. There, we can use the fit model in a generative manner and compare generated data with the real one, for example through some summary statistics. But we have to be careful here since summary statistics can be misleading.
-
-In the case of reaction times, if we calculate the sample mean and compare it to means of both of our fits they are practically equal (0.78 s). By now you should know that if we are interested only in means than the normal distribution is usually a perfectly viable choice. Furthermore, if we compare variances, we also get a similar result in all cases (0.08). However, if we take a look at a more descriptive statistics, such as 90% HDI (highest density interval) of the underlying distribution, we can see that the normal model is indeed not the best fit. 90% HDI of the underlying distribution equals 0.32--1.27 s for the normal model and 0.41--1.19 s for EMG model, this is already a significant difference! If we check HDI for our sample we get 0.42--1.21 s. If for some reason we were unable to plot the fit distribution against the data, exploring HDIs would also confirm that the EMG model is indeed a better fit.
+Like mentioned in more complex models visualizing our fits is often hard to do, in that case we resort to replicate datasets and comparison through summary statistics. In the case of reaction times, if we calculate the sample mean and compare it to means of both of our fits they are practically equal (0.78 s). By now you should know that if we are interested only in means than the normal distribution is usually a perfectly viable choice. Furthermore, if we compare variances, we also get a similar result in all cases (0.08). However, if we take a look at a more descriptive statistics, such as 90% HDI (highest density interval) of the underlying distribution, we can see that the normal model is indeed not the best fit. 90% HDI of the underlying distribution equals 0.32--1.27 s for the normal model and 0.41--1.19 s for EMG model, this is already a significant difference! If we check HDI for our sample we get 0.42--1.21 s. If for some reason we were unable to plot the fit distribution against the data, exploring HDIs would also confirm that the EMG model is indeed a better fit.
 
 Like we said, if we were interested in means the normal model would suffice, but if our questions are more complex than the normal model would most likely provide us with erroneous answers. For example, let us say that we are interested in the percentage of responses where reaction time was slower than one second (marked with a dashed vertical line in both visualizations above). With the normal model 21.66% (90% HDI 20.18--23.09%) of responses were slower than one second, while in the case of EMG model 16.95% (90% HDI 15.76--18.24%) were slower, we again have a discrepancy between results from both models. If we look at the fit we can confidently say that the inferences made with the EMG model are much more credible here (in our sample 17.82% of reactions were slower than 1 s).
 
