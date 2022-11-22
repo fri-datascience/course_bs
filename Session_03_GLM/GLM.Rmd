@@ -194,6 +194,7 @@ model {
   // bernoulli logit
   y ~ bernoulli_logit(alpha + beta * x);
 }
+
 ```
 
 Alternatively `y ~ bernoulli_logit(alpha + beta * x);` could be replaced with
@@ -288,6 +289,7 @@ generated quantities {
     pred[i] = poisson_rng(lambda[i]);
   }
 }
+
 ```
 
 We will use this for predicting the amount of goals scored on a football match (`data/football.csv`). The dataset contains names of the home and away team, the date of the match, name of the league, home and away goals scored and parameters that describe properties of the two clashing teams. We will use the parameters that describe the play-style of the two teams to predict the number of goals scored by the home team. Complete and commented code for this example can be found in `code/poisson.R`, in this document we will touch only the most interesting parts of this analysis.
@@ -366,6 +368,7 @@ model {
     y[i] ~ categorical_logit(beta * x[i]);
     // or y[i] ~ categorical(softmax(beta * x[i]));
 }
+
 ```
 
 In this case every generated sample of the $\beta$ parameter will be a matrix with $m$ rows and $k$ columns. Each value in that matrix will denote how a particular independent variable (out of $m$ independent variables) relates to a particular outcome (out of $k$ outcomes). Our code sample (`code/categorical.R`) analyses how a basketball's players role on the field and the distance from the rim influence player's shot selection. Some of the steps in data preparation might be somewhat new to you, so let us briefly explain our rationale behind them.
@@ -439,9 +442,11 @@ x <- c(1, 0.5, 0, 0)
 c_probs <- softmax(betas %*% x)
 c_probs
 ```
+
 ```
 ## [1] 0.1995179 0.3513283 0.4491538
 ```
+
 When a center is shooting from 0.5 m there is a 0.2 probability of an above head shot, 0.35 of a hook shot and 0.45 of a layup. The visualization below shows how probabilities of a shot type for each player type change with distance from the rim.
 
 <center>
@@ -517,6 +522,7 @@ model {
   for (i in 1:n)
     y[i] ~ ordered_logistic(x[i] * beta, c);
 }
+
 ```
 
 See `code/ordered.R` for a practical example of the ordered logistic regression. There we analyze how religion (yes/no), sex, college degree (yes/no) and country of residence (USA/Sweden) influence people's beliefs whether their country does enough to fight poverty.
@@ -526,7 +532,6 @@ See `code/ordered.R` for a practical example of the ordered logistic regression.
 There are many more GLMs out there that might come in handy when tackling a particular problem (e.g probit regression, ordered probit regression, binomial regression, inverse Gaussian regression, exponential regression ...). Luckily the core concepts are the same in all of them, so equipped with the knowledge you gained today you should not have too many issues when implementing them. Some of the mentioned GLMs are already implemented in Stan, to take a look at all readily available regression models in Stan consult https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html.
 
 An alternative to coding your own models is an R package called `rstanarm` that emulates other R model-fitting functions but uses Stan (via the `rstan` package) for the back-end estimation. The primary target audience is people who would be open to Bayesian inference if using Bayesian software were easier but would use frequentist software otherwise.
-
 
 # Regularization
 
@@ -561,6 +566,7 @@ model {
 
   y ~ normal(X * beta + alpha, sigma);
 }
+
 ```
 
 Regularizing priors are not only helpful to prevent overfitting, but can also help out the sampler by narrowing down plausible ranges of parameters, which usually results in a faster and more stable sampling process. 
@@ -597,6 +603,7 @@ model {
   
   y ~ normal(X * beta + alpha, sigma);
 }
+
 ```
 
 The figure below visualizes the normal and Laplace distributions which are used as $\beta$ priors in the case of the Bayesian L1 and L2 regression. In this case the spread parameter for both was set to 1. 

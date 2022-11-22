@@ -48,7 +48,7 @@ simulation <- function(n_x) {
 }
 
 # data frame for storing results
-df <- data.frame(x=numeric(), n=factor())
+df <- data.frame(x = numeric(), n = factor())
 
 # simulations
 for (n_x in c(2, 8, 32)) {
@@ -56,17 +56,18 @@ for (n_x in c(2, 8, 32)) {
   result <- simulation(n_x)
 
   # store
-  df <- rbind(df, data.frame(x=result,
-                             n=paste0(n_x, " predictors")))
+  df <- rbind(df, data.frame(x = result,
+                             n = paste0(n_x, " predictors")))
 }
 
 # set levels for proper ordering of sub graphs
-df$n <- factor(df$n, levels = c("2 predictors", "8 predictors", "32 predictors"))
+df$n <- factor(df$n,
+               levels = c("2 predictors", "8 predictors", "32 predictors"))
 
 # plot
-ggplot(data=df, aes(x=x)) +
-  geom_histogram(bins=30) +
-  facet_grid( ~ n) +
+ggplot(data = df, aes(x = x)) +
+  geom_histogram(bins = 30) +
+  facet_grid(~ n) +
   xlab("theta")
 ```
 
@@ -103,6 +104,7 @@ generated quantities {
   // simulated data
   real y_sim[n] = normal_rng(alpha + beta * x, sigma);
 }
+
 ```
 
 Because you are already familiar with Stan and with the way Stan and R interact these code snippets should be easy to understand. The only novel thing is the `fixed_param = TRUE` setting in the model's sampling function in R. This tells Stan that we are not using it in the traditional way where we are interested in estimating parameters. Our parameters are known (fixed) and we will essentially use them merely for random number generation.
@@ -123,12 +125,12 @@ model <- cmdstan_model("./models/prior_predictive.stan")
 #model <- cmdstan_model("./models/prior_predictive_cauchy.stan")
 
 # generate data
-n = 100
+n <- 100
 weights <- runif(n, 50, 90)
 weights <- weights - min(weights)
 
 # stan data
-stan_data <- list(n=n, x=weights)
+stan_data <- list(n = n, x = weights)
 
 # fit
 fit <- model$sample(
@@ -144,16 +146,17 @@ df <- as_draws_df(fit$draws())
 df <- df %>% select(-alpha, -beta, -sigma, -.chain, -.draw, -.iteration)
 
 # prep df for plotting
-df_plot <- data.frame(x=numeric(), y=factor())
+df_plot <- data.frame(x = numeric(), y = factor())
 
 # plot 10
 for (i in 1:10) {
-  df_plot <- rbind(df_plot, data.frame(x=as.numeric(df[i,]), y=as.factor(i)))
+  df_plot <- rbind(df_plot,
+                   data.frame(x = as.numeric(df[i, ]), y = as.factor(i)))
 }
 
 # simulated distributions of heights
-ggplot(df_plot, aes(x=x, y=y)) +
-  stat_halfeye(fill="skyblue", alpha=0.75) +
+ggplot(df_plot, aes(x = x, y = y)) +
+  stat_halfeye(fill = "skyblue", alpha = 0.75) +
   xlim(-300, 300)
 ```
 
@@ -181,20 +184,18 @@ library(bayesplot)
 library(posterior)
 library(tidyverse)
 
-
 # data prep --------------------------------------------------------------------
 # load the data
-data <- read.csv("./data/temperature.csv", sep=";")
+data <- read.csv("./data/temperature.csv", sep = ";")
 
 # after 2000
 data <- data %>% filter(year >= 2000)
 
 # prep the data for stan
 stan_data <- list(
-  n=nrow(data),
-  y=data$temperature
+  n = nrow(data),
+  y = data$temperature
 )
-
 
 # modeling ------- -------------------------------------------------------------
 # compile
@@ -213,7 +214,6 @@ mcmc_trace(fit$draws())
 # summary
 fit$summary()
 
-
 # posterior predictive check ---------------------------------------------------
 # extract draws
 df <- as_draws_df(fit$draws())
@@ -221,29 +221,33 @@ df <- as_draws_df(fit$draws())
 # 16 replicated datasets (4x4 grid for visualizations)
 n <- 16
 df_16 <- sample_n(df, 16)
-df_ppc <- data.frame(temperature=numeric(), iteration=factor())
+df_ppc <- data.frame(temperature = numeric(), iteration = factor())
 
 for (i in 1:n) {
   # generate n_sample observations
-  temperatures <- rnorm(nrow(data), mean=df_16[i,]$mu, sd=df_16[i,]$sigma)
-  
+  temperatures <- rnorm(nrow(data), mean = df_16[i, ]$mu, sd = df_16[i, ]$sigma)
+
   # store
   df_ppc <- rbind(df_ppc,
-                  data.frame(temperature=temperatures, iteration=as.factor(i)))
+                  data.frame(temperature = temperatures,
+                             iteration = as.factor(i)))
 }
 
 # means
-df_ppc_means <- df_ppc %>% 
-  group_by(iteration) %>% summarize(mean_temperature=mean(temperature))
+df_ppc_means <- df_ppc %>%
+  group_by(iteration) %>%
+  summarize(mean_temperature = mean(temperature))
 
 # plot
-ggplot(data=df_ppc, aes(x=temperature)) +
-  geom_histogram(bins=30, alpha=0.5) +
-  geom_vline(data=df_ppc_means,
-             aes(xintercept=mean_temperature),
-             size=1, alpha=0.5) +
-  geom_vline(xintercept=mean(data$temperature), size=1, linetype="dashed") +
-  facet_wrap(iteration ~ ., nrow=4) +
+ggplot(data = df_ppc, aes(x = temperature)) +
+  geom_histogram(bins = 30, alpha = 0.5) +
+  geom_vline(data = df_ppc_means,
+             aes(xintercept = mean_temperature),
+             size = 1, alpha = 0.5) +
+  geom_vline(xintercept = mean(data$temperature),
+             size = 1,
+             linetype = "dashed") +
+  facet_wrap(iteration ~ ., nrow = 4) +
   xlab("T [°C]")
 ```
 
@@ -281,6 +285,7 @@ parameters {
 model {
   y ~ exp_mod_normal(mu, sigma, lambda);
 }
+
 ```
 
 Below you can see that this distribution is indeed a much better fit for reaction times.

@@ -69,6 +69,7 @@ model {
   
   y ~ binomial_logit(n, a + b*x);
 }
+
 ```
 
 We also put some weakly informative priors on our regression parameters, mainly to help out the sampling process and avoid any warnings in the warmup phase. All diagnostics show no reasons for concern, the mean value of the alpha (a) parameter equals 1.74 $\pm$ 0.001, while the mean value of the beta (b) parameter equals -0.54 $\pm$ 0.0002. The negative beta parameters means that probability of making a putt decreases with distance, which is obviously correct.
@@ -265,6 +266,7 @@ generated quantities {
                 (Phi((d_t - o) ./ ((x + o)*sigma_d)) -
                 Phi((- o) ./ ((x + o)*sigma_d)));
 }
+
 ```
 
 No issues were found in fitting and diagnostics processes.

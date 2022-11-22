@@ -84,7 +84,7 @@ library(ggplot2)
 resolution <- 100
 
 # create the grid
-grid <- seq(from=0, to=1, length.out=resolution)
+grid <- seq(from = 0, to = 1, length.out = resolution)
 
 # prior
 prior <- rep(1, resolution)
@@ -94,7 +94,7 @@ n <- 30
 z <- 20
 
 # likelihood
-likelihood <- dbinom(z, n, prob=grid)
+likelihood <- dbinom(z, n, prob = grid)
 
 # posterior
 posterior <- likelihood * prior
@@ -105,7 +105,10 @@ posterior <- posterior / sum(posterior)
 # visualize
 df <- data.frame(x = grid, y = posterior)
 ggplot(data = df, aes(x = x, y = y)) +
-  geom_bar(stat="identity", color="#67a9cf", fill="#67a9cf", alpha = 0.5) +
+  geom_bar(stat = "identity",
+           color = "#67a9cf",
+           fill = "#67a9cf",
+           alpha = 0.5) +
   xlim(0, 1) +
   xlab("") +
   ylab("density") +
@@ -206,7 +209,7 @@ When we talk about programming languages we traditionally think about imperative
 bernoulli <- function(n, p) {
   # Create an empty vector
   x <- c()
-  
+
   # Loop n times
   for (i in 1:n) {
     # Draw from uniform(1) and append 0 or 1
@@ -216,7 +219,7 @@ bernoulli <- function(n, p) {
       x <- c(x, 1)
     }
   }
-  
+
   # return the vector
   return(x)
 }
@@ -260,22 +263,22 @@ Let us emphasize the point that all models are interpretations on a "practical" 
 
 ```{r eval=FALSE}
 # Generate a sequence of 0, 1 values
-01_sequence <- function(n) {
+zero_one_sequence <- function(n) {
   # Create and empty vector
   x <- c()
-  
+
   # Loop n times
   for (i in 1:n) {
     # get temperature in LJ
     t_lj <- get_lj_temp()
-    
+
     if (t_lj > 15) {
       # output 0
       x <- c(x, 0)
     } else {
       # get air pressure in LJ
       p_lj <- get_air_pressure_lj()
-      
+
       if (p_lj < 1000) {
         # flip a coin for output 0 or 1
           if (runif(1) > 0.5) {
@@ -289,7 +292,7 @@ Let us emphasize the point that all models are interpretations on a "practical" 
       }
     }
   }
-  
+
   # return the vector
   return(x)
 }
@@ -489,7 +492,6 @@ while (condition) {
   // if above is true, while loop will exit
   sum += x[n];
 }
-
 ```
 
 ## The coin toss example in Stan
@@ -513,6 +515,7 @@ model {
   // the model
   y ~ bernoulli(theta);
 }
+
 ```
 
 One thing to note here is that Stan supports vector operations, `y` in the sentence `y ~ bernoulli(theta);` is a vector of 0 and 1 and the sentence means that each datum in this vector is Bernoulli distributed. Alternatively you can unwrap this vectored operation, the $\texttt{model}$ block below is technically the same as the one above.
@@ -521,7 +524,7 @@ One thing to note here is that Stan supports vector operations, `y` in the sente
 model {
   // uniform prior from 0 to 1
   theta ~ beta(1,1);
-  
+
   // the model
   for (i in 1:n) {
     y[i] ~ bernoulli(theta);
@@ -735,8 +738,12 @@ df_100 <- sample_n(df, 100)
 
 # visualize data points with regression lines in the background
 ggplot() + 
-  geom_point(data=data, aes(x=x, y=y), shape=16, color="#67a9cf") +
-  geom_abline(data=df_100, aes(slope=b, intercept=a), alpha=0.05, size=1, color="#67a9cf") +
+  geom_point(data = data, aes(x = x, y = y), shape = 16, color = "#67a9cf") +
+  geom_abline(data=df_100,
+              aes(slope = b, intercept = a),
+              alpha = 0.05,
+              size = 1,
+              color = "#67a9cf") +
   theme_minimal()
 ```
 
@@ -761,7 +768,7 @@ x <- rgamma(n, alpha, beta)
 cred_mass <- 0.9
 
 # sort our samples
-x <- sort.int(x, method='quick')
+x <- sort.int(x, method = "quick")
 
 # number of total values to exclude (10% of all data)
 exclude <- n - floor(n * cred_mass)
@@ -786,18 +793,24 @@ q5 <- quantile(x, 0.05)
 q95 <- quantile(x, 0.95)
 
 # report
-cat(paste0("90% HDI: [", round(result[1],3), ", ", round(result[2],3), "]"))
-cat(paste0("90% CI: [", round(q5,3), ", ", round(q95,3), "]"))
+cat(paste0("90% HDI: [", round(result[1], 3), ", ", round(result[2], 3), "]"))
+cat(paste0("90% CI: [", round(q5, 3), ", ", round(q95, 3), "]"))
 
 # plot
 df <- data.frame(x=x)
 ggplot(data = df) +
   geom_density(aes(x=x), color=NA, fill="skyblue", alpha=0.75) +
   xlab("difference") +
-  geom_vline(xintercept = q5, linetype="dashed", color = "grey80", size=1) +
-  geom_vline(xintercept = q95, linetype="dashed", color = "grey80", size=1) +
-  geom_vline(xintercept = result[1], color = "grey40", size=1) +
-  geom_vline(xintercept = result[2], color = "grey40", size=1)
+  geom_vline(xintercept = q5,
+             linetype = "dashed",
+             color = "grey80",
+             size = 1) +
+  geom_vline(xintercept = q95,
+             linetype = "dashed",
+             color = "grey80",
+             size = 1) +
+  geom_vline(xintercept = result[1], color = "grey40", size = 1) +
+  geom_vline(xintercept = result[2], color = "grey40", size = 1)
 ```
 
 # Presenting our models

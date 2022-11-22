@@ -11,7 +11,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 ```
 
-
 # Summary
 
 Cross-validation is a widely spread technique for estimating how well our models generalize (how they fare when encountering unknown data). Since in Bayesian statistics we are always working with probability distributions we can use log-score as our go-to model evaluation measure. This allows us to resort to information theory for calculating good cross-validation approximations without actually performing the actual (often very time consuming) cross-validation. An important point to emphasize here is that cross-validation and regularization are not mutually exclusive, they go hand in hand and traditionally we use both at the same time.
@@ -82,7 +81,6 @@ As you can see more complex models fit the data better, this is expected behavio
   ![](./figs/out_of_sample_mse.png)
 </center>
 
-
 Indeed, it seems like the 4^th^ order polynomial regression overfits, as you can see its out-of-sample error is higher than that of the 3^rd^ order polynomial regression. In our case, 3^rd^ order polynomial regression seems to be the best model. The table below confirms this finding.
 
 | $p$ | Mean MSE        | HDI5%  | HDI95% |
@@ -92,7 +90,6 @@ Indeed, it seems like the 4^th^ order polynomial regression overfits, as you can
 | 2   | 2.61 $\pm$ 0.02 | 1.22   | 4.51   |
 | 3   | 1.48 $\pm$ 0.02 | 0.67   | 3.16   |
 | 4   | 7.47 $\pm$ 0.17 | 1.00   | 20.5   |
-
 
 # Approximating cross-validation
 
@@ -122,22 +119,27 @@ library(ggplot2)
 # truth - rain and sun probabilities for tomorrow
 p <- c(0.4, 0.6)
 
-# D_KL function
-D_KL <- function(p, q) {
+# d_kl function
+d_kl <- function(p, q) {
   sum(p * (log(p) - log(q)))
 }
 
 # q sequence
-q_seq <- seq(from=0.01, to=0.99, by=0.01)
+q_seq <- seq(from = 0.01, to = 0.99, by = 0.01)
 
-# D_KL
-D_KL_seq <- sapply(q_seq, function(q) { D_KL(p, c(q, 1-q)) })
+# d_kl
+d_kl_seq <- sapply(
+    q_seq,
+    function(q) {
+        d_kl(p, c(q, 1 - q))
+    }
+)
 
 # plot
-df <- data.frame(q=q_seq, D_KL=D_KL_seq)
-                 
-ggplot(data=df, aes(x=q, y=D_KL)) +
-  geom_line(color="skyblue", size=1) +
+df <- data.frame(q = q_seq, d_kl = d_kl_seq)
+
+ggplot(data = df, aes(x = q, y = d_kl)) +
+  geom_line(color = "skyblue", size = 1) +
   theme_minimal() +
   ylab("K-L divergence")
 ```
@@ -188,7 +190,6 @@ As you see, this is not a truly Bayesian approach, but nevertheless gives good r
 <center>
   ![](./figs/aic.png)
 </center>
-
 
 ## Widely applicable information criterion
 
