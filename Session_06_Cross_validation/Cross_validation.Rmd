@@ -17,7 +17,7 @@ Cross-validation is a widely spread technique for estimating how well our models
 
 # Cross-validation
 
-Cross-validation (CV) is a procedure for estimating the generalization error of our models. To evaluate model's generalization CV tests our models against unknown data in order to find out how well our model generalizes (e.g is our model overfitting, do we have selection bias ...). Since you should be already familiar with the majority of CV techniques (leave-one-out cross-validation, leave-p-out cross-validation, k-fold cross-validation, holdout ...) we will sift through them relatively quickly. The gist of CV is to split the dataset into two subsets -- the train set and the test set. The train set is then used for building the model and the test set is used for evaluating it. This way we are evaluation our model on data it has never seen before. Note that the same methods apply when we have to split the data into three sets (the train set, the validation set and the test set), for example for hyper parameter tuning. CV methods are split into two groups -- exhaustive and non-exhaustive.
+Cross-validation (CV) is a procedure for estimating the generalization error of our models. To evaluate model's generalization CV tests our models against unknown data in order to find out how well our model generalizes (e.g is our model overfitting, do we have selection bias ...). Since you should be already familiar with the majority of CV techniques (leave-one-out cross-validation, leave-p-out cross-validation, k-fold cross-validation, holdout ...) we will sift through them relatively quickly. The gist of CV is to split the dataset into two subsets -- the train set and the test set. The train set is then used for building the model and the test set is used for evaluating it. This way we are evaluating our model on data it has never seen before. Note that the same methods apply when we have to split the data into three sets (the train set, the validation set and the test set), for example for hyper parameter tuning. CV methods are split into two groups -- exhaustive and non-exhaustive.
 
 Exhaustive CV methods split the original dataset (containing $n$ observations) into train and test sets in all possible ways. The most exhaustive and consequently the most computationally intensive and time consuming is leave-$p$-out cross-validation (LpO CV). In it we use $p$ observations as the test set and the remaining $n - p$ as the train set. We use this split in order to train and test our model. We repeat this process until we exhaust all possible test sets -- all subsets of size $p$ in our whole dataset. This means that we need to repeat the process $n \choose p$ times. As you might imagine, this is more often than not unfeasible.
 
@@ -43,7 +43,7 @@ The nested CV approach uses a constant size of the test set and increases the tr
 
 ## Example
 
-We will use cross-validation to try and find a good regression model for predicting temperature from years. We will evaluate several polynomial regressions with a different order of the polynomial term:
+We will use cross-validation to try and find a good regression model for predicting temperature given a year. We will evaluate several polynomial regressions with a different order of the polynomial term:
 
 $$y \; | \; x, \beta, \sigma \sim N(\sum_{i=1}^{p}{\beta_i x^{i-1}}, \sigma),$$
 
@@ -100,7 +100,7 @@ With really complex models or when we have large amounts of data exhausting cros
 Information is the reduction in uncertainty caused by learning an outcome. Uncertainty arises from frequency distributions of events. For example, the uncertainty about what the weather will be like tomorrow in Ljubljana is much higher than it is for Los Angeles (high chance of sunny weather) or Glasgow (high chance of rain). A formal way to deal with uncertainty is through information entropy ($H$). The formulation was developed by Claude Shannon in 1948, it essentially says that uncertainty in a probability distribution is the average (minus) log-probability of an event.
 
 $$H(p) = - E [log(p_i)] = - \sum_{i=1}^n p_i \; log(p_i).$$
-You can also think of the information entropy as the potential surprise. If entropy is low the potential of surprise is higher. For example, we are not often surprised by wehater in Los Angeles as it is almost always sunny, we are much more often surprised by rain in Ljubljana.
+You can also think of the information entropy as the potential of surprise. If entropy is low the potential of surprise is higher. For example, we are not often surprised by wehater in Los Angeles as it is almost always sunny, we are much more often surprised by rain in Ljubljana.
 
 Information entropy plays a pivotal role in model evaluation, we can use it to evaluate how far our model is from the target (the truth). The key lies in the Kullback-Leibler divergence (also known as K-L divergence):
 
@@ -144,7 +144,7 @@ ggplot(data = df, aes(x = q, y = d_kl)) +
   ylab("K-L divergence")
 ```
 
-The problem in practice is that we do not know the truth $p$, we only have the model $q$. It turns out that we do not need the truth part in the $D_{KL}$ since it is in its essence merely an additive term. We can get a relative difference from the truth without knowing the truth. In other words, we do not know what the truth is, but we do know how far away from it we are with a particular model. What comes in handy for us Bayesians is the fact that we can estimate divergence with log-score (sum of log likelihoods of each observation):
+The problem in practice is that we usually do not know the truth $p$, we only have the model $q$. It turns out that, for model comparison, we do not need the truth part in the $D_{KL}$ since it is in its essence merely an additive term. We can get a relative difference from the truth without knowing the truth. In other words, we do not know what the truth is, but we do know how far away from it we are with a particular model. What comes in handy for us Bayesians is the fact that we can estimate divergence with log-score (sum of log likelihoods of each observation):
 
 $$\text{LS} = -2 \sum_{i=1}^n log(p(y_i \; | \; \theta)).$$
 
@@ -214,18 +214,6 @@ where $V(y_i)$ is the variance of log-likelihood in observation $i$. To get $V(y
   ![](./figs/waic.png)
 </center>
 
-## Model weights and averaging
-
-So far we were only interested in finding out which model is the best (model selection). When making such decisions we are often faced with multiple models that all perform fairly well. In this case we can use Akaike weights to determine how decisions made by multiple models should be mixed together (averaged). The Akaike weight of model $i$ is:
-
-$$w_i = \frac{e^{-\frac{1}{2} \Delta \text{WAIC}_i}}{\sum_{j=1}^m e^{-\frac{1}{2} \Delta \text{WAIC}_j}},$$
-
-where $m$ is the number of models we are evaluating and $\Delta \text{WAIC}_i$ is the difference in WAIC between model $i$ and the best model. The equation might look a bit funky, but all it is doing is reversing the -2 multiplication followed by reversing the log transformation -- it is putting WAIC on the probability scale. In the equation above we used WAIC ($\Delta \text{WAIC}$) to calculate weights, in practice you can use any other measure as well (e.g. $\Delta \text{AIC}$ or $\Delta \text{LOOIC}$). Akaike weights can be interpreted as estimates of the probability that a model will make the best prediction on new data conditional on the set of models considered. The figure below visualizes Akaike weights for our toy example.
-
-<center>
-  ![](./figs/weights.png)
-</center>
-
 ## Leave one out information criterion
 
 Leave one out information criterion (LOOIC) is currently considered as the state-of-the-art Bayesian cross validation approximation technique. In the literature the method is sometimes called PSIS LOO, since at its core lies Pareto smoothed importance sampling (PSIS).
@@ -245,6 +233,18 @@ Just like in the case of WAIC, LOOIC is readily implemented in the loo R library
 </center>
 
 There are several other methods for estimating out-of-sample deviance, for example the deviance information criterion (DIC) and Bayesian information criterion (BIC). Since these methods are a bit older and have been replaced by newer and better methods we decided to omit them in this document.
+
+## Model weights and averaging
+
+So far we were only interested in finding out which model is the best (model selection). When making such decisions we are often faced with multiple models that all perform fairly well. In this case we can use Akaike weights to determine how decisions made by multiple models should be mixed together (averaged). The Akaike weight of model $i$ is:
+
+$$w_i = \frac{e^{-\frac{1}{2} \Delta \text{WAIC}_i}}{\sum_{j=1}^m e^{-\frac{1}{2} \Delta \text{WAIC}_j}},$$
+
+where $m$ is the number of models we are evaluating and $\Delta \text{WAIC}_i$ is the difference in WAIC between model $i$ and the best model. The equation might look a bit funky, but all it is doing is reversing the -2 multiplication followed by reversing the log transformation -- it is putting WAIC on the probability scale. In the equation above we used WAIC ($\Delta \text{WAIC}$) to calculate weights, in practice you can use any other measure as well (e.g. $\Delta \text{AIC}$ or $\Delta \text{LOOIC}$). Akaike weights can be interpreted as estimates of the probability that a model will make the best prediction on new data conditional on the set of models considered. The figure below visualizes Akaike weights for our toy example.
+
+<center>
+  ![](./figs/weights.png)
+</center>
 
 # Recommended readings
 
