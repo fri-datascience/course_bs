@@ -66,7 +66,7 @@ for (m in 0:m_max) {
   # traceplot
   #mcmc_trace(fit$draws(c("b", "sigma")))
   # summary
-  fit$summary(c("b", "sigma"))
+  #fit$summary(c("b", "sigma"))
 
   # extract
   df_ll_train <- as_draws_df(fit$draws(c("log_lik_train")))
