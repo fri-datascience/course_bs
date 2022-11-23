@@ -58,7 +58,7 @@ for (m in 0:m_max) {
   # traceplot
   #mcmc_trace(fit$draws(c("b", "sigma")))
   # summary
-  fit$summary(c("b", "sigma"))
+  #fit$summary(c("b", "sigma"))
 
   # extract
   log_lik[[m + 1]] <- fit$draws(c("log_lik"))
@@ -106,37 +106,40 @@ ggplot(data = df_waic, aes(x = Order, y = WAIC)) +
   xlab("Number of predictors") +
   ylab("WAIC")
 
-# Akaike weights for model combination -----------------------------------------
-# calculate delta_waic
-df_waic$delta_waic <- abs(df_waic$WAIC - min(df_waic$WAIC))
+# LOOIC ------------------------------------------------------------------------
+df_looic <- data.frame(looic = numeric(), SE = numeric(), Order = factor())
 
-# calculate weights
-df_waic$weight <-
-  exp(-0.5 * df_waic$delta_waic) / sum(exp(-0.5 * df_waic$delta_waic))
-df_waic$weight <- round(df_waic$weight, 2)
+for (i in 0:m_max) {
+  r_eff <- relative_eff(log_lik[[i + 1]])
+  loo <- loo(log_lik[[i + 1]], r_eff = r_eff)
+  df_looic <- rbind(df_looic, data.frame(looic = loo$estimates[3, 1],
+                                       SE = loo$estimates[3, 2],
+                                       Order = as.factor(i)))
+}
 
 # plot
-ggplot(data = df_waic, aes(x = Order, y = weight)) +
+ggplot(data = df_looic, aes(x = Order, y = looic)) +
+  geom_point(shape = 16, size = 2) +
+  geom_linerange(aes(ymin = (looic - SE), ymax = (looic + SE)), alpha = 0.3) +
+  xlab("Number of predictors") +
+  ylab("LOOIC")
+
+# Akaike weights for model combination -----------------------------------------
+# calculate delta_looic
+df_looic$delta_looic <- abs(df_looic$looic - min(df_looic$looic))
+
+# calculate weights
+df_looic$weight <-
+  exp(-0.5 * df_looic$delta_looic) / sum(exp(-0.5 * df_looic$delta_looic))
+df_looic$weight <- round(df_looic$weight, 2)
+
+# plot
+ggplot(data = df_looic, aes(x = Order, y = weight)) +
   geom_bar(stat = "identity", fill = "skyblue") +
   xlab("Number of predictors") +
   ylab("Akaike weight") +
   theme_minimal() +
   ylim(0, 1)
 
-# LOOIC ------------------------------------------------------------------------
-df_loo <- data.frame(loo = numeric(), SE = numeric(), Order = factor())
-
-for (i in 0:m_max) {
-  r_eff <- relative_eff(log_lik[[i + 1]])
-  loo <- loo(log_lik[[i + 1]], r_eff = r_eff)
-  df_loo <- rbind(df_loo, data.frame(loo = loo$estimates[3, 1],
-                                     SE = loo$estimates[3, 2],
-                                     Order = as.factor(i)))
-}
-
-# plot
-ggplot(data = df_loo, aes(x = Order, y = loo)) +
-  geom_point(shape = 16, size = 2) +
-  geom_linerange(aes(ymin = (loo - SE), ymax = (loo + SE)), alpha = 0.3) +
-  xlab("Number of predictors") +
-  ylab("LOOIC")
+# print
+df_looic

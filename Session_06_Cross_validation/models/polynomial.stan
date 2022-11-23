@@ -14,7 +14,7 @@ transformed data {
 }
 
 parameters {
-  vector[p_order] b;     // poly terms
+  vector[p_order] b;   // poly terms
   real<lower=0> sigma; // stdev
 }
 
