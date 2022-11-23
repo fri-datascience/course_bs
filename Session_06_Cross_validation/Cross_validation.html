@@ -287,7 +287,7 @@ for predicting temperature given a year. We will evaluate several
 polynomial regressions with a different order of the polynomial
 term:</p>
 <p><span class="math display">\[y \; | \; x, \beta, \sigma \sim
-N(\sum_{i=1}^{p}{\beta_i x^{i-1}}, \sigma),\]</span></p>
+N(\sum_{i=0}^{p}{\beta_i x^i}, \sigma),\]</span></p>
 <p><span class="math display">\[\beta_2, \beta_3, ... , \beta_{p} \sim
 Cauchy(0, 1).\]</span></p>
 <p>Above, <span class="math inline">\(y\)</span> represents our
@@ -295,11 +295,11 @@ dependent variable (average yearly temperature in °C), <span class="math inline
 <span class="math inline">\(p\)</span> the order of our polynomial
 regression. We set <span class="math inline">\(p\)</span> to 4, thus our
 simplest model is a traditional normal model:</p>
-<p><span class="math display">\[y \sim N(\beta_1, \sigma)\]</span></p>
+<p><span class="math display">\[y \sim N(\beta_0, \sigma)\]</span></p>
 <p>and our most complex model is a 4<sup>th</sup> order polynomial
 regression:</p>
-<p><span class="math display">\[y \; | \; x, \beta \sim N(\beta_1 +
-\beta_2 x^1 + \beta_3 x^2 + \beta_4 x^3 + \beta_5 x^4,
+<p><span class="math display">\[y \; | \; x, \beta \sim N(\beta_0 +
+\beta_1 x^1 + \beta_2 x^2 + \beta_3 x^3 + \beta_4 x^4,
 \sigma).\]</span></p>
 <p>Source code for this experiment can be found in
 <code>/code/cross_validation.R</code>. The figure below visualizes how
@@ -416,12 +416,12 @@ with uncertainty is through information entropy (<span class="math inline">\(H\)
 Claude Shannon in 1948, it essentially says that uncertainty in a
 probability distribution is the average (minus) log-probability of an
 event.</p>
-<p><span class="math display">\[H(p) = - E [log(p_i)] = - \sum_{i=1}^n
-p_i \; log(p_i).\]</span> You can also think of the information entropy
-as the potential of surprise. If entropy is low the potential of
-surprise is higher. For example, we are not often surprised by wehater
-in Los Angeles as it is almost always sunny, we are much more often
-surprised by rain in Ljubljana.</p>
+<p><span class="math display">\[H(p) = - \sum_{i=1}^n p_i \;
+log(p_i).\]</span> You can also think of the information entropy as the
+potential of surprise. If entropy is low the potential of surprise is
+higher. For example, we are not often surprised by wehater in Los
+Angeles as it is almost always sunny, we are much more often surprised
+by rain in Ljubljana.</p>
 <p>Information entropy plays a pivotal role in model evaluation, we can
 use it to evaluate how far our model is from the target (the truth). The
 key lies in the Kullback-Leibler divergence (also known as K-L
@@ -634,7 +634,7 @@ nicely this algorithm uses it to smooth out the tails. As we saw, the
 core element of WAIC is lppd (log-pointwise-predictive-density), with
 LOOIC the core element is elpd
 (expected-log-pointwise-predictive-density):</p>
-<p><span class="math display">\[\text{elpd} = -2 \sum_{i=1}^N log \left(
+<p><span class="math display">\[\text{elpd} = \sum_{i=1}^N log \left(
 \frac{1}{\frac{1}{s} \sum_{j=1}^s \frac{1}{p(y_i \; | \; \theta_j)}}
 \right).\]</span></p>
 <p>Just like in the case of WAIC, LOOIC is readily implemented in the

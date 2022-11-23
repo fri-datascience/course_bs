@@ -45,17 +45,17 @@ The nested CV approach uses a constant size of the test set and increases the tr
 
 We will use cross-validation to try and find a good regression model for predicting temperature given a year. We will evaluate several polynomial regressions with a different order of the polynomial term:
 
-$$y \; | \; x, \beta, \sigma \sim N(\sum_{i=1}^{p}{\beta_i x^{i-1}}, \sigma),$$
+$$y \; | \; x, \beta, \sigma \sim N(\sum_{i=0}^{p}{\beta_i x^i}, \sigma),$$
 
 $$\beta_2, \beta_3, ... , \beta_{p} \sim Cauchy(0, 1).$$
 
 Above, $y$ represents our dependent variable (average yearly temperature in °C), $x$ our independent variable (years) and $p$ the order of our polynomial regression. We set $p$ to 4, thus our simplest model is a traditional normal model:
 
-$$y \sim N(\beta_1, \sigma)$$
+$$y \sim N(\beta_0, \sigma)$$
 
 and our most complex model is a 4^th^ order polynomial regression:
 
-$$y \; | \; x, \beta \sim N(\beta_1 + \beta_2 x^1 + \beta_3 x^2 + \beta_4 x^3 + \beta_5 x^4, \sigma).$$
+$$y \; | \; x, \beta \sim N(\beta_0 + \beta_1 x^1 + \beta_2 x^2 + \beta_3 x^3 + \beta_4 x^4, \sigma).$$
 
 Source code for this experiment can be found in `/code/cross_validation.R`. The figure below visualizes how our models of varying complexity (numbers above graphs denote order of the used polynomial) fit the underlying data.
 
@@ -99,7 +99,7 @@ With really complex models or when we have large amounts of data exhausting cros
 
 Information is the reduction in uncertainty caused by learning an outcome. Uncertainty arises from frequency distributions of events. For example, the uncertainty about what the weather will be like tomorrow in Ljubljana is much higher than it is for Los Angeles (high chance of sunny weather) or Glasgow (high chance of rain). A formal way to deal with uncertainty is through information entropy ($H$). The formulation was developed by Claude Shannon in 1948, it essentially says that uncertainty in a probability distribution is the average (minus) log-probability of an event.
 
-$$H(p) = - E [log(p_i)] = - \sum_{i=1}^n p_i \; log(p_i).$$
+$$H(p) = - \sum_{i=1}^n p_i \; log(p_i).$$
 You can also think of the information entropy as the potential of surprise. If entropy is low the potential of surprise is higher. For example, we are not often surprised by wehater in Los Angeles as it is almost always sunny, we are much more often surprised by rain in Ljubljana.
 
 Information entropy plays a pivotal role in model evaluation, we can use it to evaluate how far our model is from the target (the truth). The key lies in the Kullback-Leibler divergence (also known as K-L divergence):
@@ -224,7 +224,7 @@ $$\frac{1}{p(y_i \; | \; \theta_j)}.$$
 
 Importance sampling is very noisy, the sampling weights are very heavy tailed and it often happens that a single posterior sample is assigned a very low probability and as a result dominates the importance sample adjusted posterior. This is where Pareto smoothing comes in. Since it turns out that the importance weights fit a Pareto distribution nicely this algorithm uses it to smooth out the tails. As we saw, the core element of WAIC is lppd (log-pointwise-predictive-density), with LOOIC the core element is elpd (expected-log-pointwise-predictive-density):
 
-$$\text{elpd} = -2 \sum_{i=1}^N log \left( \frac{1}{\frac{1}{s} \sum_{j=1}^s \frac{1}{p(y_i \; | \; \theta_j)}} \right).$$
+$$\text{elpd} = \sum_{i=1}^N log \left( \frac{1}{\frac{1}{s} \sum_{j=1}^s \frac{1}{p(y_i \; | \; \theta_j)}} \right).$$
 
 Just like in the case of WAIC, LOOIC is readily implemented in the loo R library which, as you can see in the code examples (`./code/deviance.R`), is quite easy to use. In the figure below we used LOOIC (mean and SE) to compare our models from the toy example.
 
