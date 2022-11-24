@@ -12,7 +12,8 @@ model <- cmdstan_model("../models/linear_deviance_cv.stan")
 
 # modeling ---------------------------------------------------------------------
 # number of observations
-n <- 200
+n <- 20
+#n <- 200
 
 # max number of independent variables
 m_max <- 6
