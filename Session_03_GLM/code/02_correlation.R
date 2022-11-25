@@ -77,7 +77,7 @@ for (i in 1:n_lines) {
 ggplot() +
   geom_line(data = lines,
             aes(x = x, y = y, group = line),
-            color = "skyblue", alpha = 0.2, size = 1) +
+            color = "skyblue", alpha = 0.2, linewidth = 1) +
   geom_point(data = data,
              aes(x = x, y = y),
              shape = 16) +

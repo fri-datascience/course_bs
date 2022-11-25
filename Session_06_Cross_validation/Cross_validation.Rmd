@@ -139,7 +139,7 @@ d_kl_seq <- sapply(
 df <- data.frame(q = q_seq, d_kl = d_kl_seq)
 
 ggplot(data = df, aes(x = q, y = d_kl)) +
-  geom_line(color = "skyblue", size = 1) +
+  geom_line(color = "skyblue", linewidth = 1) +
   theme_minimal() +
   ylab("K-L divergence")
 ```

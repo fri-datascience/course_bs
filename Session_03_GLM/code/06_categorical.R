@@ -118,7 +118,7 @@ for (i in 1:precision) {
 
 # plot
 ggplot(data = df_thetas, aes(x = Distance, y = Probability, fill = Type)) +
-  geom_area(size = 1, ) +
+  geom_area(linewidth = 1) +
   ggtitle("Shot selection by player type") +
   scale_fill_brewer(palette = "Blues") +
   facet_grid(Player ~ .) +

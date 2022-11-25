@@ -78,7 +78,7 @@ ggplot() +
              alpha = 0.2, size = 3, shape = 16) +
   geom_line(data = lines,
             aes(x = x, y = y, group = line),
-            color = "skyblue", alpha = 0.2, size = 1) +
+            color = "skyblue", alpha = 0.2, linewidth = 1) +
   ylab("p(male)")
 
 # beta interpretations ---------------------------------------------------------

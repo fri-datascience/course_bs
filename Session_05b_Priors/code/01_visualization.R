@@ -24,7 +24,7 @@ for (i in 1:n) {
 
 # plot -------------------------------------------------------------------------
 ggplot(data = df, aes(x = x, y = Density, color = Distribution)) +
-  geom_line(size = 1) +
+  geom_line(linewidth = 1) +
   theme_minimal() +
   scale_color_manual(values = c("#9ebcda",
                                 "tomato",

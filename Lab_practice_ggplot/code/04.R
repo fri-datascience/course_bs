@@ -25,5 +25,5 @@ ggplot() +
   facet_grid(subject ~ congruency) +
   geom_segment(data = df_mean,
                aes(x = mean_rt, xend = mean_rt, y = 0, yend = 3.9),
-               size = 1, color = "grey25", linetype = "dashed") +
+               linewidth = 1, color = "grey25", linetype = "dashed") +
   geom_text(data = df_mean, aes(x = mean_rt, y = 4, label = mean_rt))

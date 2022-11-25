@@ -251,9 +251,9 @@ ggplot(data = df_ppc, aes(x = temperature)) +
   geom_histogram(bins = 30, alpha = 0.5) +
   geom_vline(data = df_ppc_means,
              aes(xintercept = mean_temperature),
-             size = 1, alpha = 0.5) +
+             linewidth = 1, alpha = 0.5) +
   geom_vline(xintercept = mean(data$temperature),
-             size = 1,
+             linewidth = 1,
              linetype = "dashed") +
   facet_wrap(iteration ~ ., nrow = 4) +
   xlab("T [°C]")

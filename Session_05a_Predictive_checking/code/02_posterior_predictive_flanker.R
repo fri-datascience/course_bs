@@ -66,9 +66,9 @@ ggplot() +
   geom_density(data = df_incongruent, aes(x = rt),
                fill = "skyblue", alpha = 0.75, color = NA) +
   geom_line(data = df_generated_normal,
-            aes(x = x, y = y, group = id), alpha = 0.05, size = 1) +
+            aes(x = x, y = y, group = id), alpha = 0.05, linewidth = 1) +
   geom_vline(xintercept = 1,
-             size = 2,
+             linewidth = 2,
              color = "grey75",
              linetype = "dashed") +
   theme_minimal() +
@@ -130,9 +130,9 @@ ggplot() +
   geom_line(data = df_generated_exp_i,
             aes(x = x, y = y, group = id),
             alpha = 0.05,
-            size = 1) +
+            linewidth = 1) +
   geom_vline(xintercept = 1,
-             size = 2,
+             linewidth = 2,
              color = "grey75",
              linetype = "dashed") +
   theme_minimal() +

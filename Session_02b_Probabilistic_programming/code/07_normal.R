@@ -67,4 +67,4 @@ ggplot(data = df) +
   geom_density(aes(x = diff), color = NA, fill = "skyblue", alpha = 0.75) +
   xlab("difference") +
   geom_vline(xintercept = q95, linetype = "dashed",
-             color = "grey75", size = 1.5)
+             color = "grey75", linewidth = 1.5)

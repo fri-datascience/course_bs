@@ -35,6 +35,6 @@ df$sigma <- as.factor(df$sigma)
 
 # plot
 ggplot(data = df, aes(x = distance, y = p, group = sigma, color = sigma)) +
-  geom_line(size = 1) +
+  geom_line(linewidth = 1) +
   scale_discrete_manual("color", values = c("grey80", "grey60", "grey40", "grey20")) +
   theme_minimal()

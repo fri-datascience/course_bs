@@ -49,6 +49,6 @@ ggplot() +
   geom_abline(data = df_100,
               aes(slope = b, intercept = a),
               alpha = 0.05,
-              size = 1,
+              linewidth = 1,
               color = "skyblue") +
   theme_minimal()

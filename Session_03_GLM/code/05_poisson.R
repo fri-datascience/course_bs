@@ -109,11 +109,11 @@ for (i in 1:9) {
   p <- ggplot(data = df_counts, aes(x = x, y = n)) +
     geom_bar(stat = "identity", color = "skyblue",
              fill = "skyblue", alpha = 0.75) +
-    geom_vline(xintercept = df_am[i, ]$Y_FTHG, color = "grey50", size = 2) +
+    geom_vline(xintercept = df_am[i, ]$Y_FTHG, color = "grey50", linewidth = 2) +
     geom_vline(xintercept = hdi50[1], color = "grey25",
-               size = 1, linetype = "dashed") +
+               linewidth = 1, linetype = "dashed") +
     geom_vline(xintercept = hdi50[2], color = "grey25",
-               size = 1, linetype = "dashed") +
+               linewidth = 1, linetype = "dashed") +
     scale_x_continuous("Goals", breaks = df_counts$x,
                        labels = df_counts$x, limits = c(-0.5, 6.5)) +
     ylim(0, 1500) +

@@ -42,7 +42,7 @@ ggplot(df, aes(x = probability)) +
     geom_vline(xintercept = 50, linetype = "dashed") +
     geom_segment(data = df_mean,
                  aes(x = mean_p, xend = mean_p, y = 0, yend = y_offset),
-                 size = 1, color = "grey50") +
+                 linewidth = 1, color = "grey50") +
     geom_text(data = df_mean, aes(x = mean_p, y = y_offset + 0.03,
               label = mean_p)) +
     facet_wrap(expression ~ ., ncol = 1) +

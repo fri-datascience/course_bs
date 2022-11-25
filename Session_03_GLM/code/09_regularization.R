@@ -257,7 +257,7 @@ tmp <- rbind(data.frame(res_te, Data = "test"),
 # plot
 ggplot(tmp, aes(x = Method, y = (Predicted - True)^2, colour = Method)) + 
   facet_wrap(~Data) +
-  stat_summary(fun.data = "mean_cl_boot", size = 0.75)
+  stat_summary(fun.data = "mean_cl_boot", linewidth = 0.75)
 
 # compare coefficients ---------------------------------------------------------
 coeff_lm  <- my_lm$coefficients[-1]

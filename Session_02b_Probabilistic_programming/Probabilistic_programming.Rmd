@@ -742,7 +742,7 @@ ggplot() +
   geom_abline(data=df_100,
               aes(slope = b, intercept = a),
               alpha = 0.05,
-              size = 1,
+              linewidth = 1,
               color = "#67a9cf") +
   theme_minimal()
 ```
@@ -804,13 +804,13 @@ ggplot(data = df) +
   geom_vline(xintercept = q5,
              linetype = "dashed",
              color = "grey80",
-             size = 1) +
+             linewidth = 1) +
   geom_vline(xintercept = q95,
              linetype = "dashed",
              color = "grey80",
-             size = 1) +
-  geom_vline(xintercept = result[1], color = "grey40", size = 1) +
-  geom_vline(xintercept = result[2], color = "grey40", size = 1)
+             linewidth = 1) +
+  geom_vline(xintercept = result[1], color = "grey40", linewidth = 1) +
+  geom_vline(xintercept = result[2], color = "grey40", linewidth = 1)
 ```
 
 # Presenting our models
