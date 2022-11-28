@@ -154,7 +154,7 @@ $$y \sim N(1 + 1.5x_1 - 2.5x_2, 1).$$
 
 We will fit multiple linear regression models of varying complexity to our toy data:
 
-$$y \; | \; x, \beta, \sigma \sim N \left(\alpha + \sum_{i=1}^m \beta_i x_i, \sigma \right),$$
+$$y \; | \; x, \alpha, \beta, \sigma \sim N \left(\alpha + \sum_{i=1}^m \beta_i x_i, \sigma \right),$$
 
 where $\alpha$ is the intercept, $\beta$ are the beta coefficients, $\sigma$ the standard deviation and $m$ the parameter that determines the model's complexity. We expect to get the best results when $m = 2$ since that is the complexity of the data generating process. If we use a lower value of $m$ we expect underfitting, while with larger value we expect overfitting -- the model will also fit to predictors that are nothing but noise. The most complex model that we used had $m = 6$. The figure below visualizes in-sample and out-of-sample approximated deviance (means and 90% HDI) when models were trained and tested on 20 observations.
 
