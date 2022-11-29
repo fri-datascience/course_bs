@@ -11,11 +11,9 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 ```
 
-
 # Summary
 
 In Bayesian modeling hierarchical models (also called multilevel models) are an extremely powerful tool. As already emphasized a couple of times now, when modeling we should try to describe the data generating process (and not fit some distributions to some data). Since data generating processes often have a hierarchical structure (e.g. groups of students, multiple repetitions of an experiment ...), hierarchical models enable us to efficiently describe such data generating processes.
-
 
 # Piglets
 
@@ -68,7 +66,7 @@ To summarize, we now have both group level parameters ($\mu_g$, $\sigma$) to wor
 The figure is very similar to the one made by the group normal model. There are a couple of subtle but important differences between the two figures. This differences are even more prominent on the visualization below, which compares means and 90% HDI between both models (group and hierarchical normal models) and our sample means.
 
 ![](./figs/means_group.png)
-The most important thing to notice is the fact that mean estimates for groups in the case of the hierarchical model are closer to the population mean (the gray horizontal line) than the mean estimates for groups from the group normal model. This phenomenon is called Bayesian shrinkage and is a desired effect in hierarchical models (if we do not want this, then we do not use a hierarchical model). Bayesian shrinkage is the result of model's information sharing, in hierarchical modeling information about one group influences inferences for all other groups. This way groups with very little data are empowered by all other groups. This effect will be more prominent in outliers, if one groups sticks out from the rest then our model will be correctly skeptical about its data and will nudge the inferences about it towards other groups. Indeed, in our case you see it best with mama pigs #3 and #7, these are the two mamas that gave birth to the fattest and the slimmest piglets, and with those two the difference in parameter estimates between the group and the hierarchical normal models is the most prominent. If you remember, we already saw how Bayesian shrinkage is useful -- we used hierarchical priors for regularization of beta coefficients in GLMs. As you can see, Bayesian regularization in GLMs is actually hierarchical modeling! In Bayesian regularization, we link beta coefficients together with a normal (in L2, ridge regularization) or with a Laplace/double exponential (in L1, lasso regularization) hyperprior.
+The most important thing to notice is the fact that mean estimates for groups in the case of the hierarchical model are closer to the population mean (the gray horizontal line) than the mean estimates for groups from the group normal model. This phenomenon is called Bayesian shrinkage and is a desired effect in hierarchical models (if we do not want this, then we do not use a hierarchical model). Bayesian shrinkage is the result of model's information pooling or sharing, in hierarchical modeling information about one group influences inferences for all other groups. This way groups with very little data are empowered by all other groups. This effect will be more prominent in outliers, if one groups sticks out from the rest then our model will be correctly skeptical about its data and will nudge the inferences about it towards other groups. Indeed, in our case you see it best with mama pigs #3 and #7, these are the two mamas that gave birth to the fattest and the slimmest piglets, and with those two the difference in parameter estimates between the group and the hierarchical normal models is the most prominent. If you remember, we already saw how Bayesian shrinkage is useful -- we used hierarchical priors for regularization of beta coefficients in GLMs. As you can see, Bayesian regularization in GLMs is actually hierarchical modeling! In Bayesian regularization, we link beta coefficients together with a normal (in L2, ridge regularization) or with a Laplace/double exponential (in L1, lasso regularization) hyperprior.
 
 Another thing you can see on the image above is that the group level uncertainty in the case of a hierarchical normal model is lower than in the case of a group normal model. The reason behind this is the same, more information means less uncertainty -- in the hierarchical normal model we are using information from other groups, while in the group normal model we are not.
 
@@ -77,7 +75,6 @@ There are some key differences when comparing models on the top level as well. F
 <center>
 ![](./figs/means_top.png)
 </center>
-
 
 # The adaptation level experiment
 

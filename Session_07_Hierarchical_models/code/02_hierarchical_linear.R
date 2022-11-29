@@ -7,7 +7,6 @@ library(tidyverse)
 library(mcmcse)
 library(cowplot)
 
-
 # data prep and model compilation ----------------------------------------------
 # load data
 data <- read.csv("../data/adaptation_level.csv")
@@ -18,17 +17,16 @@ group1_part2 <- data %>% filter(group == 1 & part == 2)
 group2_part1 <- data %>% filter(group == 2 & part == 1)
 group2_part2 <- data %>% filter(group == 2 & part == 2)
 
-# model 
+# model
 model <- cmdstan_model("../models/hierarchical_linear.stan")
-
 
 # fit all four models ----------------------------------------------------------
 # group1_part1
-stan_data <- list(n=nrow(group1_part1),
-                  m=max(group1_part1$subject),
-                  x=group1_part1$sequence,
-                  y=group1_part1$response,
-                  s=group1_part1$subject)
+stan_data <- list(n = nrow(group1_part1),
+                  m = max(group1_part1$subject),
+                  x = group1_part1$sequence,
+                  y = group1_part1$response,
+                  s = group1_part1$subject)
 
 fit11 <- model$sample(
   data = stan_data,
@@ -37,11 +35,11 @@ fit11 <- model$sample(
 )
 
 # group1_part2
-stan_data <- list(n=nrow(group1_part2),
-                  m=max(group1_part2$subject),
-                  x=group1_part2$sequence,
-                  y=group1_part2$response,
-                  s=group1_part2$subject)
+stan_data <- list(n = nrow(group1_part2),
+                  m = max(group1_part2$subject),
+                  x = group1_part2$sequence,
+                  y = group1_part2$response,
+                  s = group1_part2$subject)
 
 # fit
 fit12 <- model$sample(
@@ -51,11 +49,11 @@ fit12 <- model$sample(
 )
 
 # group2_part1
-stan_data <- list(n=nrow(group2_part1),
-                  m=max(group2_part1$subject),
-                  x=group2_part1$sequence,
-                  y=group2_part1$response,
-                  s=group2_part1$subject)
+stan_data <- list(n = nrow(group2_part1),
+                  m = max(group2_part1$subject),
+                  x = group2_part1$sequence,
+                  y = group2_part1$response,
+                  s = group2_part1$subject)
 
 # fit
 fit21 <- model$sample(
@@ -65,11 +63,11 @@ fit21 <- model$sample(
 )
 
 # group2_part2
-stan_data <- list(n=nrow(group2_part2),
-                  m=max(group2_part2$subject),
-                  x=group2_part2$sequence,
-                  y=group2_part2$response,
-                  s=group2_part2$subject)
+stan_data <- list(n = nrow(group2_part2),
+                  m = max(group2_part2$subject),
+                  x = group2_part2$sequence,
+                  y = group2_part2$response,
+                  s = group2_part2$subject)
 
 # fit
 fit22 <- model$sample(
@@ -90,7 +88,6 @@ fit12$summary(c("mu_a", "sigma_a", "mu_b", "sigma_b", "mu_s", "sigma_s"))
 fit21$summary(c("mu_a", "sigma_a", "mu_b", "sigma_b", "mu_s", "sigma_s"))
 fit22$summary(c("mu_a", "sigma_a", "mu_b", "sigma_b", "mu_s", "sigma_s"))
 
-
 # visual posterior check -------------------------------------------------------
 # number of lines
 n_lines <- 20
@@ -109,39 +106,38 @@ df_check <- sample_n(df_check, n_lines)
 n_subjects <- ncol(df_check) / 2
 
 # prep for plotting
-df_subjects <- data.frame(subject=numeric(),
-                          iteration=factor(),
-                          alpha=numeric(),
-                          beta=numeric())
+df_subjects <- data.frame(subject = numeric(),
+                          iteration = factor(),
+                          alpha = numeric(),
+                          beta = numeric())
 
 for (i in 1:n_subjects) {
   # get beta column indexes
   b <- i + n_subjects
-  
+
   # [[1]] because df_check[,i] is a list with values at [[1]]
   # in a way weird but that is how tidyverse tibbles work
-  df_subjects <- rbind(df_subjects, data.frame(subject=i,
-                                               iteration=as.factor(seq(1,n_lines)),
-                                               alpha=df_check[,i][[1]],
-                                               beta=df_check[,b][[1]]))
+  df_subjects <- rbind(df_subjects, data.frame(subject = i,
+                                               iteration = as.factor(seq(1, n_lines)),
+                                               alpha = df_check[, i][[1]],
+                                               beta = df_check[, b][[1]]))
 }
 
 # plot
 ggplot() +
-  geom_jitter(data=data,
-             aes(x=sequence, y=response),
-             shape=16, alpha=0.2) +
-  geom_abline(data=df_subjects,
-              aes(slope=beta,
-                  intercept=alpha),
-              alpha=0.1,
-              size=1) +
-  facet_wrap(. ~ subject, ncol=5) +
+  geom_jitter(data = data,
+             aes(x = sequence, y = response),
+             shape = 16, alpha = 0.2) +
+  geom_abline(data = df_subjects,
+              aes(slope = beta,
+                  intercept = alpha),
+              alpha = 0.1,
+              size = 1) +
+  facet_wrap(. ~ subject, ncol = 5) +
   ylab("Response") +
   xlab("Question index") +
-  scale_x_continuous(breaks=seq(1,10)) +
+  scale_x_continuous(breaks = seq(1, 10)) +
   ylim(0, 10)
-
 
 # analysis ---------------------------------------------------------------------
 # extract group level parameters
@@ -156,11 +152,11 @@ df_22_full <- df_22_full %>% select(-.draw, -.chain, -.iteration)
 
 # compare intercepts
 mcse(df_12_full$mu_a > df_22_full$mu_a)
-df_compare <- data.frame(diff=df_12_full$mu_a-df_22_full$mu_a)
+df_compare <- data.frame(diff = df_12_full$mu_a - df_22_full$mu_a)
 
 # plot
-ggplot(data=df_compare, aes(x=diff)) +
-  geom_histogram(bins=100, alpha=0.75) +
+ggplot(data = df_compare, aes(x = diff)) +
+  geom_histogram(bins = 100, alpha = 0.75) +
   xlim(-4, 4) +
   xlab("Difference")
 
@@ -191,36 +187,35 @@ df_2$group <- as.factor(df_2$group)
 
 # plot
 g1 <- ggplot() +
-  geom_abline(data=df_1,
-              aes(slope=mu_b,
-                  intercept=mu_a,
-                  colour=group),
-              alpha=0.5,
-              size=1) +
+  geom_abline(data = df_1,
+              aes(slope = mu_b,
+                  intercept = mu_a,
+                  colour = group),
+              alpha = 0.5,
+              size = 1) +
   ylab("Response") +
   xlab("Question index") +
-  scale_x_continuous(breaks=seq(1,10), limits=c(1,10)) +
+  scale_x_continuous(breaks = seq(1, 10), limits = c(1, 10)) +
   ylim(0, 10) +
-  scale_color_manual(values=c("skyblue", "tomato")) +
+  scale_color_manual(values = c("skyblue", "tomato")) +
   ggtitle("Part I") +
   theme(legend.position = "none")
 
 # plot
 g2 <- ggplot() +
-  geom_abline(data=df_2,
-              aes(slope=mu_b,
-                  intercept=mu_a,
-                  colour=group),
-              alpha=0.5,
-              size=1) +
+  geom_abline(data = df_2,
+              aes(slope = mu_b,
+                  intercept = mu_a,
+                  colour = group),
+              alpha = 0.5,
+              size = 1) +
   ylab("Response") +
   xlab("Question index") +
-  scale_x_continuous(breaks=seq(1,10), limits=c(1,10)) +
+  scale_x_continuous(breaks = seq(1, 10), limits = c(1, 10)) +
   ylim(0, 10) +
-  scale_color_manual(values=c("skyblue", "tomato")) +
+  scale_color_manual(values = c("skyblue", "tomato")) +
   ggtitle("Part II") +
   theme(legend.position = "none")
 
 # cowplot
-plot_grid(g1, g2, scale=0.9, ncol=2)
-
+plot_grid(g1, g2, scale = 0.9, ncol = 2)
