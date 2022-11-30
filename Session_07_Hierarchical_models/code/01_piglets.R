@@ -186,41 +186,41 @@ ggplot() +
   xlab("Weight") +
   ylab("Density")
 
-# compare top level means ------------------------------------------------------
-df_top <- data.frame(Mean = numeric(),
-                     HDI5 = numeric(),
-                     HDI95 = numeric(),
-                     Model = character())
+# compare group level means ----------------------------------------------------
+df_group <- data.frame(Mean = numeric(),
+                       HDI5 = numeric(),
+                       HDI95 = numeric(),
+                       Model = character())
 
 # sample
 sample_mean <- mean(data$piglet_weight)
-df_top <- rbind(df_top, data.frame(Mean = sample_mean,
-                                   HDI5 = sample_mean,
-                                   HDI95 = sample_mean,
-                                   Model = "Sample"))
+df_group <- rbind(df_group, data.frame(Mean = sample_mean,
+                                       HDI5 = sample_mean,
+                                       HDI95 = sample_mean,
+                                       Model = "Sample"))
 
 # normal model
 normal_mean <- mean(df_n$mu)
-normal_90HDI <- hdi(df_n$mu, credMass = 0.9)
-df_top <- rbind(df_top, data.frame(Mean = normal_mean,
-                                   HDI5 = normal_90HDI[1],
-                                   HDI95 = normal_90HDI[2],
-                                   Model = "Normal"))
+normal_90_hdi <- hdi(df_n$mu, credMass = 0.9)
+df_group <- rbind(df_group, data.frame(Mean = normal_mean,
+                                       HDI5 = normal_90_hdi[1],
+                                       HDI95 = normal_90_hdi[2],
+                                       Model = "Normal"))
 
 # hierarchical model
 hierarchical_mean <- mean(df_h$mu_mu)
-hierarchical_90HDI <- hdi(df_h$mu_mu, credMass = 0.9)
-df_top <- rbind(df_top, data.frame(Mean = hierarchical_mean,
-                                   HDI5 = hierarchical_90HDI[1],
-                                   HDI95 = hierarchical_90HDI[2],
-                                   Model = "Hierarchical"))
+hierarchical_90_hdi <- hdi(df_h$mu_mu, credMass = 0.9)
+df_group <- rbind(df_group, data.frame(Mean = hierarchical_mean,
+                                       HDI5 = hierarchical_90_hdi[1],
+                                       HDI95 = hierarchical_90_hdi[2],
+                                       Model = "Hierarchical"))
 
 # plot
 # set model factors so the colors are the same
-df_top$Model <- factor(df_top$Model,
-                       levels = c("Normal", "Hierarchical", "Sample"))
+df_group$Model <- factor(df_group$Model,
+                         levels = c("Normal", "Hierarchical", "Sample"))
 
-ggplot(data = df_top,
+ggplot(data = df_group,
        aes(x = Model,
            y = Mean,
            ymin = HDI5,
@@ -232,46 +232,45 @@ ggplot(data = df_top,
   ylim(0, 6) +
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
 
-
-# compare group level means ----------------------------------------------------
-df_group <- data.frame(Mean = numeric(),
-                       Q5 = numeric(),
-                       Q95 = numeric(),
-                       Model = character(),
-                       mama_pig = numeric())
+# compare subject level means --------------------------------------------------
+df_subject <- data.frame(Mean = numeric(),
+                         Q5 = numeric(),
+                         Q95 = numeric(),
+                         Model = character(),
+                         mama_pig = numeric())
 
 # sample means
 df_mu_sample <- data %>%
   group_by(mama_pig) %>%
   summarise(mean_weight = mean(piglet_weight))
-df_group <- rbind(df_group, data.frame(Mean = df_mu_sample$mean_weight,
-                                       HDI5 = df_mu_sample$mean_weight,
-                                       HDI95 = df_mu_sample$mean_weight,
-                                       Model = "Sample",
-                                       mama_pig = seq(1:n_mamas)))
+df_subject <- rbind(df_subject, data.frame(Mean = df_mu_sample$mean_weight,
+                                           HDI5 = df_mu_sample$mean_weight,
+                                           HDI95 = df_mu_sample$mean_weight,
+                                           Model = "Sample",
+                                           mama_pig = seq(1:n_mamas)))
 
-# group means
-df_mu_g <- df_g %>% select(2:(1 + n_mamas))
-g_means <- colMeans(df_mu_g)
-g_hdi90 <- apply(df_mu_g, 2, hdi, credMass = 0.9)
-df_group <- rbind(df_group, data.frame(Mean = g_means,
-                                       HDI5 = g_hdi90[1, ],
-                                       HDI95 = g_hdi90[2, ],
-                                       Model = "Group",
-                                       mama_pig = seq(1:n_mamas)))
+# subject means
+df_mu_s <- df_g %>% select(2:(1 + n_mamas))
+s_means <- colMeans(df_mu_s)
+s_90_hdi <- apply(df_mu_s, 2, hdi, credMass = 0.9)
+df_subject <- rbind(df_subject, data.frame(Mean = s_means,
+                                           HDI5 = s_90_hdi[1, ],
+                                           HDI95 = s_90_hdi[2, ],
+                                           Model = "Group",
+                                           mama_pig = seq(1:n_mamas)))
 
 # hierarchical means
 df_mu_h <- df_h %>% select(2:(1 + n_mamas))
 h_means <- colMeans(df_mu_h)
 h_hdi90 <- apply(df_mu_h, 2, hdi, credMass = 0.9)
-df_group <- rbind(df_group, data.frame(Mean = h_means,
-                                       HDI5 = h_hdi90[1, ],
-                                       HDI95 = h_hdi90[2, ],
-                                       Model = "Hierarchical",
-                                       mama_pig = seq(1:n_mamas)))
+df_subject <- rbind(df_subject, data.frame(Mean = h_means,
+                                           HDI5 = h_hdi90[1, ],
+                                           HDI95 = h_hdi90[2, ],
+                                           Model = "Hierarchical",
+                                           mama_pig = seq(1:n_mamas)))
 
 # plot
-ggplot(data = df_group,
+ggplot(data = df_subject,
        aes(x = Model,
            y = Mean,
            ymin = HDI5,

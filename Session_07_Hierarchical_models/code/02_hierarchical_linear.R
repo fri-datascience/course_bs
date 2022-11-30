@@ -117,10 +117,11 @@ for (i in 1:n_subjects) {
 
   # [[1]] because df_check[,i] is a list with values at [[1]]
   # in a way weird but that is how tidyverse tibbles work
-  df_subjects <- rbind(df_subjects, data.frame(subject = i,
-                                               iteration = as.factor(seq(1, n_lines)),
-                                               alpha = df_check[, i][[1]],
-                                               beta = df_check[, b][[1]]))
+  df_subjects <- rbind(df_subjects,
+                       data.frame(subject = i,
+                                  iteration = as.factor(seq(1, n_lines)),
+                                  alpha = df_check[, i][[1]],
+                                  beta = df_check[, b][[1]]))
 }
 
 # plot
