@@ -1,8 +1,8 @@
 data {
   int<lower=0> n; // number of observations
-  int<lower=0> m; // number of groups
+  int<lower=0> m; // number of subjects
   vector[n] y;    // observations
-  array[n] int g; // group indexes
+  array[n] int s; // subject indexes
 }
 
 parameters {
@@ -13,6 +13,6 @@ parameters {
 model {
   // normal model for each group
   for (i in 1:n) {
-      y[i] ~ normal(mu[g[i]], sigma);
+      y[i] ~ normal(mu[s[i]], sigma);
   }
 }

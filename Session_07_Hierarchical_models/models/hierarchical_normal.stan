@@ -1,8 +1,8 @@
 data {
   int<lower=0> n; // number of observations
-  int<lower=0> m; // number of groups
+  int<lower=0> m; // number of subjects
   vector[n] y;    // observations
-  array[n] int g; // group indexes
+  array[n] int g; // subject indexes
 }
 
 parameters {

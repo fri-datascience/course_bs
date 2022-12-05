@@ -65,39 +65,39 @@ ggplot() +
   xlab("Weight") +
   ylab("Density")
 
-# group normal model -----------------------------------------------------------
-model_g <- cmdstan_model("../models/groups_normal.stan")
+# subjects normal model --------------------------------------------------------
+model_s <- cmdstan_model("../models/subjects_normal.stan")
 
 # data prep
 stan_data <- list(n = nrow(data),
                   m = max(data$mama_pig),
                   y = data$piglet_weight,
-                  g = data$mama_pig)
+                  s = data$mama_pig)
 
 # fit
-fit_g <- model_g$sample(
+fit_s <- model_s$sample(
   data = stan_data,
   parallel_chains = 4,
   seed = 1
 )
 
 # diagnostics
-mcmc_trace(fit_g$draws())
-fit_g$summary()
+mcmc_trace(fit_s$draws())
+fit_s$summary()
 
 # samples
-df_g <- as_draws_df(fit_g$draws(c("sigma", "mu")))
-df_g <- df_g %>% select(-.draw, -.chain, -.iteration)
+df_s <- as_draws_df(fit_s$draws(c("sigma", "mu")))
+df_s <- df_s %>% select(-.draw, -.chain, -.iteration)
 
 # visual posterior check
 # use only n_dist distributions
-df_sample_g <- sample_n(df_g, n_dist)
+df_sample_s <- sample_n(df_s, n_dist)
 
 # number of mama pigs
 n_mamas <- max(data$mama_pig)
 
 # prep for plotting
-df_generated_g <- data.frame(x = numeric(),
+df_generated_s <- data.frame(x = numeric(),
                              y = factor(),
                              iteration = numeric(),
                              mama_pig = numeric())
@@ -107,10 +107,10 @@ for (i in 1:n_mamas) {
     # mu for piglet i is in column i+1
     # sigma is always in the first column
     y <- dnorm(x,
-               mean = df_sample_g[j, i + 1][[1]],
-               sd = df_sample_g[j, ]$sigma)
+               mean = df_sample_s[j, i + 1][[1]],
+               sd = df_sample_s[j, ]$sigma)
 
-    df_generated_g <- rbind(df_generated_g,
+    df_generated_s <- rbind(df_generated_s,
                             data.frame(x = x, y = y,
                                        iteration = j, mama_pig = i))
   }
@@ -120,7 +120,7 @@ for (i in 1:n_mamas) {
 ggplot() +
   geom_density(data = data, aes(x = piglet_weight),
                fill = "skyblue", alpha = 0.75, color = NA) +
-  geom_line(data = df_generated_g,
+  geom_line(data = df_generated_s,
             aes(x = x, y = y, group = iteration), alpha = 0.1, size = 1) +
   facet_wrap(. ~ mama_pig, ncol = 4) +
   xlim(0, 6) +
@@ -199,7 +199,7 @@ df_group <- rbind(df_group, data.frame(Mean = sample_mean,
                                        HDI95 = sample_mean,
                                        Model = "Sample"))
 
-# normal model
+# simple normal model
 normal_mean <- mean(df_n$mu)
 normal_90_hdi <- hdi(df_n$mu, credMass = 0.9)
 df_group <- rbind(df_group, data.frame(Mean = normal_mean,
@@ -250,7 +250,7 @@ df_subject <- rbind(df_subject, data.frame(Mean = df_mu_sample$mean_weight,
                                            mama_pig = seq(1:n_mamas)))
 
 # subject means
-df_mu_s <- df_g %>% select(2:(1 + n_mamas))
+df_mu_s <- df_s %>% select(2:(1 + n_mamas))
 s_means <- colMeans(df_mu_s)
 s_90_hdi <- apply(df_mu_s, 2, hdi, credMass = 0.9)
 df_subject <- rbind(df_subject, data.frame(Mean = s_means,
