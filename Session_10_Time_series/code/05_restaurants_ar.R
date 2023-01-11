@@ -6,7 +6,6 @@ library(posterior)
 library(tidyverse)
 library(HDInterval)
 
-
 # data prep and exploratory analysis -------------------------------------------
 df <- read.csv("../data/restaurants.csv")
 
@@ -14,8 +13,7 @@ df <- read.csv("../data/restaurants.csv")
 df <- df %>% filter(month > (nrow(df) - 120))
 
 # reindex months
-df$month <- 1:nrow(df)
-
+df$month <- seq_len(nrow(df))
 
 # ar ---------------------------------------------------------------------------
 model <- cmdstan_model("../models/ar.stan")
@@ -24,10 +22,10 @@ model <- cmdstan_model("../models/ar.stan")
 pacf(df$spending)
 
 # set p
-p = 13
+p <- 13
 
 # prep data for stan
-stan_data <- list(y = df$spending, 
+stan_data <- list(y = df$spending,
                   n = nrow(df),
                   p = p)
 
@@ -46,12 +44,11 @@ fit$summary()
 df_s <- as_draws_df(fit$draws())
 df_s <- df_s %>% select(-lp__, -.draw, -.chain, -.iteration)
 
-
 # plot fit ---------------------------------------------------------------------
 # get a subsample of 20 random samples
-df_ss <- df_s[sample(1:nrow(df_s), 20, rep = F), ]
+df_ss <- df_s[sample(seq_len(nrow(df_s)), 20, rep = FALSE), ]
 
-df_plot <-data.frame(idx = character(),
+df_plot <- data.frame(idx = character(),
                      Month = integer(),
                      S = numeric())
 
@@ -60,24 +57,24 @@ n_f <- 6
 n_t <- nrow(df)
 t <- 1:(n_t + n_f)
 
-for (i in 1:nrow(df_ss)) {
+for (i in seq_len(nrow(df_ss))) {
   # alpha and betas
   alpha <- as.numeric(df_ss[i, ]$alpha)
-  betas <- as.numeric(df_ss[i,2:(2+p-1)])
-  
+  betas <- as.numeric(df_ss[i, 2:(2 + p - 1)])
+
   # init spending
   s <- df$spending
-  
+
   # model
-  for (j in (p+1):n_t) {
-    s[j] <- alpha + sum(betas * df$spending[(j-p):(j-1)])
+  for (j in (p + 1):n_t) {
+    s[j] <- alpha + sum(betas * df$spending[(j - p):(j - 1)])
   }
-  
+
   # forecast
-  for (j in (n_t+1):(n_t+n_f)) {
-    s[j] <- alpha + sum(betas * s[(j-p):(j-1)])
+  for (j in (n_t + 1):(n_t + n_f)) {
+    s[j] <- alpha + sum(betas * s[(j - p):(j - 1)])
   }
-  
+
   df_plot <- df_plot %>%
     add_row(data.frame(idx = as.character(i),
                        Month = t,
@@ -87,13 +84,13 @@ for (i in 1:nrow(df_ss)) {
 # get mean and HDI
 df_plot <- df_plot %>%
   group_by(Month) %>%
-  summarize(Spending=mean(S),
-            hdi5=hdi(S, credMass=0.90)[1],
-            hdi95=hdi(S, credMass=0.90)[2])
+  summarize(Spending = mean(S),
+            hdi5 = hdi(S, credMass = 0.90)[1],
+            hdi95 = hdi(S, credMass = 0.90)[2])
 
 # plot
-ggplot(data=df_plot, aes(x=Month, y=Spending), group=ix) +
-  geom_line(data=df, aes(x=month, y=spending), color="skyblue") +
+ggplot(data = df_plot, aes(x = Month, y = Spending), group = ix) +
+  geom_line(data = df, aes(x = month, y = spending), color = "skyblue") +
   geom_line() +
-  geom_ribbon(aes(ymin=hdi5, ymax=hdi95), alpha=0.25) +
+  geom_ribbon(aes(ymin = hdi5, ymax = hdi95), alpha = 0.25) +
   theme_minimal()

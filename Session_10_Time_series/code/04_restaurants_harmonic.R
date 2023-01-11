@@ -6,7 +6,6 @@ library(posterior)
 library(tidyverse)
 library(HDInterval)
 
-
 # data prep and exploratory analysis -------------------------------------------
 df <- read.csv("../data/restaurants.csv")
 
@@ -14,16 +13,15 @@ df <- read.csv("../data/restaurants.csv")
 df <- df %>% filter(month > (nrow(df) - 120))
 
 # reindex months
-df$month <- 1:nrow(df)
+df$month <- seq_len(nrow(df))
 
 # cast to date
 df$date <- as.Date(df$date)
 
 # plot
-ggplot(df, aes(x=date, y=spending)) +
+ggplot(df, aes(x = date, y = spending)) +
   geom_line() +
   theme_minimal()
-
 
 # decomposition with harmonic regression ---------------------------------------
 model <- cmdstan_model("../models/harmonic_basic.stan")
@@ -32,9 +30,9 @@ model <- cmdstan_model("../models/harmonic_basic.stan")
 omega <- (2 * pi) / 12
 
 # prep data for stan
-stan_data <- list(y = df$spending, 
-                  t = df$month, 
-                  n = nrow(df), 
+stan_data <- list(y = df$spending,
+                  t = df$month,
+                  n = nrow(df),
                   omega = omega)
 
 # fit
@@ -53,7 +51,7 @@ df_s <- as_draws_df(fit$draws())
 df_s <- df_s %>% select(-lp__, -.draw, -.chain, -.iteration)
 
 # plot 5 random samples
-idx <- sample(1:nrow(df_s), 5, rep = F)
+idx <- sample(seq_len(nrow(df_s)), 5, rep = FALSE)
 
 # our time stamps
 t <- df$month
@@ -69,7 +67,7 @@ for (i in idx) {
   df_decomposed <- df_decomposed %>%
     add_row(data.frame(idx = as.character(i),
                        Type = "Original",
-                       Month = t, 
+                       Month = t,
                        Spending = df$spending))
 
   # ssn
@@ -77,7 +75,7 @@ for (i in idx) {
   df_decomposed <- df_decomposed %>%
     add_row(data.frame(idx = as.character(i),
                        Type = "Seasonality",
-                       Month = t, 
+                       Month = t,
                        Spending = ssn))
 
   # trend
@@ -85,7 +83,7 @@ for (i in idx) {
   df_decomposed <- df_decomposed %>%
     add_row(data.frame(idx = as.character(i),
                        Type = "Trend",
-                       Month = t, 
+                       Month = t,
                        Spending = trend))
 
   # reminder
@@ -93,22 +91,21 @@ for (i in idx) {
   df_decomposed <- df_decomposed %>%
     add_row(data.frame(idx = as.character(i),
                        Type = "Reminder",
-                       Month = t, 
+                       Month = t,
                        Spending = reminder))
 }
 
 # plot
-ggplot(df_decomposed, aes(x=Month,
-                          y=Spending,
-                          group=idx,
-                          colour=idx)) +
+ggplot(df_decomposed, aes(x = Month,
+                          y = Spending,
+                          group = idx,
+                          colour = idx)) +
   geom_path() +
-  facet_wrap( ~ Type, ncol=1, scales="free_y")
-
+  facet_wrap(. ~ Type, ncol = 1, scales = "free_y")
 
 # plot fit ---------------------------------------------------------------------
 # get a subsample of 20 random samples
-df_ss <- df_s[sample(1:nrow(df_s), 20, rep = F), ]
+df_ss <- df_s[sample(seq_len(nrow(df_s)), 20, rep = FALSE), ]
 
 df_plot <- data.frame(idx = character(),
                       Month = integer(),
@@ -119,27 +116,27 @@ n_f <- 6
 n_t <- nrow(df)
 t <- 1:(n_t + n_f)
 
-for (i in 1:nrow(df_ss)) {
+for (i in seq_len(nrow(df_ss))) {
   # seasonality and trend
   ssn <- df_ss$beta_cos[i] * cos(omega * t) + df_ss$beta_sin[i] * sin(omega * t)
   trend <- df_ss$beta[i] * t + df_ss$alpha[i]
-  
+
   df_plot <- df_plot %>%
     add_row(data.frame(idx = as.character(i),
-                       Month = t, 
+                       Month = t,
                        S = ssn + trend))
 }
 
 # get mean and HDI
 df_plot <- df_plot %>%
   group_by(Month) %>%
-  summarize(Spending=mean(S),
-            hdi5=hdi(S, credMass=0.90)[1],
-            hdi95=hdi(S, credMass=0.90)[2])
+  summarize(Spending = mean(S),
+            hdi5 = hdi(S, credMass = 0.90)[1],
+            hdi95 = hdi(S, credMass = 0.90)[2])
 
 # plot
-ggplot(data=df_plot, aes(x=Month, y=Spending), group=ix) +
-  geom_line(data=df, aes(x=month, y=spending), color="skyblue") +
+ggplot(data = df_plot, aes(x = Month, y = Spending), group = ix) +
+  geom_line(data = df, aes(x = month, y = spending), color = "skyblue") +
   geom_line() +
-  geom_ribbon(aes(ymin=hdi5, ymax=hdi95), alpha=0.25) +
+  geom_ribbon(aes(ymin = hdi5, ymax = hdi95), alpha = 0.25) +
   theme_minimal()

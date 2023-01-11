@@ -11,7 +11,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 ```
 
-
 # Summary
 
 In this lecture we will learn about the basics of time-series modelling. We will first learn how to use harmonic regression to decompose a time-series into its subcomponents (trend, seasonality and remainder). By decomposing the time-series and looking at its components we can gain a better understanding of our data. Next, we will acknowledge the fact that past data can help us with predicting new data and build models that facilitate this finding. The models that do this are usually called auto-regressive and moving average models.
@@ -61,8 +60,13 @@ To inspect how ACF's can be used for better understanding the components of our 
   ![](./figs/acf_combinations.png)
 </center>
 
-The grey bars represent autocorrelation given a certain lag. A rule of thumb says that if the majority of autocorrelation values are close to 0 then the time-series is stationary. As we can see a time-series without the seasonality and noise components is indeed stationary. The trend component can be observed as a steady increase or decline in the ACF as the lag increases, while the seasonality can be seen in sinus-like oscillations of ACF. If a a signal is composed of multiple components then the visual properties defining them are joined together. For example the ACF visualization with both trend and seasonality components has a decline in ACF as well as a sinusoidal component.
+The grey bars represent autocorrelation given a certain lag. A rule of thumb says that if the majority of autocorrelation values are close to 0 then the time-series is stationary. As we can see a time-series without the seasonality and noise components is indeed stationary. The trend component can be observed as a steady increase or decline in the ACF as the lag increases, while the seasonality can be seen in sinus-like oscillations of ACF. If a signal is composed of multiple components then the visual properties defining them are joined together. For example the ACF visualization with both trend and seasonality components has a decline in ACF as well as a sinusoidal component.
 
+# Partial autocorrelation
+
+ACF is a simple (also called complete or total) correlation between the time-series and its copy lagged by $k$. Partial autocorrelation function (PACF) is different in one aspect as it finds the correlation of the residuals with the next lag value after removing the effects which are already explained by the earlier lags. In other words, before calculating PACF($k$), we take out the effect of all the previous lags (1, 2, ..., $k-1$) and work with residuals. So if there is any hidden information in the residual which can be modelled by the next lag, we might get a good correlation and we will keep that next lag as a feature while modelling.
+
+More formally, PACF of time series $y_t$ is the autocorrelation between $y_t$ and $y_{t+k}$ with the linear dependence of $y_t$ on $y_{t+1}$ through $y_{t+k-1}$ removed. Equivalently, it is the autocorrelation between $y_t$ and $y_{t+k}$ that is not accounted for by lags 1 through $k-1$. It is usually calculated via the Durbin-Levinson algorithm. Interested readers can find more details in additional references of this lecture.
 
 # Harmonic regression
 
@@ -122,7 +126,7 @@ So the model is relatively simple, a regression model with an intercept $\alpha$
 $$y_t \; | \; \alpha, \beta, \sigma \sim N \left( \alpha + \beta y_{t-1}, \sigma \right).$$
 As you can see this is essentially a very simple regressive model that uses a single beta coefficient to determine the amount of influence the previous time point has on the current one.
 
-We usually determine the order ($p$) of the autoregressive model by looking at the the partial autocorrelation function (PACF). ACF is a simple (also called complete) correlation between the time-series and its copy lagged by $k$. PACF is different in one aspect as it finds the correlation of the residuals with the next lag value after removing the effects which are already explained by the earlier lags. In other words, before calculating PACF($k$), we take out the effect of all the previous lags (1, 2, ..., $k$) and work with residuals. So if there is any hidden information in the residual which can be modelled by the next lag, we might get a good correlation and we will keep that next lag as a feature while modelling. Below is the PACF plot for our time-series.
+We usually determine the order ($p$) of the autoregressive model by looking at the the partial autocorrelation function (PACF). ACF is not suitable because in autoregressive processes, previous time points also have an indirect impact on the current time point, which means that even with an AR(1) process, autocorrelation will still be relatively high for lags larger than 1. PACF does not have this problem as it removes the indirect effects, which is why we can use it to determine the order of an autoregressive model. Below is the PACF plot for our time-series.
 
 <center>
   ![](./figs/pacf.png)
@@ -231,4 +235,4 @@ There are also alternative approaches that do not fall into the category of AR o
 
 * UPenn. Time Series Analysis Course, Chapter 6 -- Harmonic Regression. (http://www-stat.wharton.upenn.edu/~stine/stat910/index.html).
 
-* Wiki pages on AR, MA, ARMA, ARIMA.
+* Wiki pages on Autocorrelation, Partial autocorrelation, AR, MA, ARMA, ARIMA.

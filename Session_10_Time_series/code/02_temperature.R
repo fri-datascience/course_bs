@@ -6,9 +6,8 @@ library(posterior)
 library(tidyverse)
 library(HDInterval)
 
-
 # data prep and exploratory analysis -------------------------------------------
-df <- read.csv("../data/temperature.csv", sep=";")
+df <- read.csv("../data/temperature.csv", sep = ";")
 
 # select only newer data so it runs faster
 df <- df %>% filter(year > 1980)
@@ -17,26 +16,25 @@ df <- df %>% filter(year > 1980)
 df$date <- as.Date(paste0(df$year, "-", df$month, "-01"))
 
 # add month ix
-df$ix <- 1:nrow(df)
+df$ix <- seq_len(nrow(df))
 
 # plot
-ggplot(df, aes(x=date, y=temperature)) +
+ggplot(df, aes(x = date, y = temperature)) +
   geom_line()
 
 # fft can be useful with seasonality to get important frequencies
 n <- nrow(df)
 I <- abs(fft(df$temperature))^2 / n
-P <- (4/n)*I[1:(n/2+1)]
-f <- 0:(n/2)/(n)
+P <- (4 / n) * I[1:(n / 2 + 1)]
+f <- 0 : (n / 2) / (n)
 
 # merge
-df_fft <- data.frame(P=P[-1], f=f[-1])
+df_fft <- data.frame(P = P[-1], f = f[-1])
 
 # power spectrum
-ggplot(df_fft, aes(x=f, y=P)) +
-  geom_bar(stat="identity") +
+ggplot(df_fft, aes(x = f, y = P)) +
+  geom_bar(stat = "identity") +
   xlim(0, 0.2)
-
 
 # decomposition with harmonic regression ---------------------------------------
 model <- cmdstan_model("../models/harmonic_basic.stan")
@@ -44,9 +42,9 @@ model <- cmdstan_model("../models/harmonic_basic.stan")
 # seasonality frequency
 omega <- (2 * pi) / 12
 
-stan_data <- list(y = df$temperature, 
-                  t = df$ix, 
-                  n = nrow(df), 
+stan_data <- list(y = df$temperature,
+                  t = df$ix,
+                  n = nrow(df),
                   omega = omega)
 
 # fit
@@ -65,7 +63,7 @@ df_s <- as_draws_df(fit$draws())
 df_s <- df_s %>% select(-lp__, -.draw, -.chain, -.iteration)
 
 # plot 5 random samples
-idx <- sample(1:nrow(df_s), 5, rep = F)
+idx <- sample(seq_len(nrow(df_s)), 5, rep = FALSE)
 
 # our time stamps
 t <- df$ix
@@ -81,7 +79,7 @@ for (i in idx) {
   df_decomposed <- df_decomposed %>%
     add_row(data.frame(idx = as.character(i),
                        Type = "Original",
-                       Month = t, 
+                       Month = t,
                        Temperature = df$temperature))
 
   # ssn
@@ -89,7 +87,7 @@ for (i in idx) {
   df_decomposed <- df_decomposed %>%
     add_row(data.frame(idx = as.character(i),
                        Type = "Seasonality",
-                       Month = t, 
+                       Month = t,
                        Temperature = ssn))
 
   # trend
@@ -97,7 +95,7 @@ for (i in idx) {
   df_decomposed <- df_decomposed %>%
     add_row(data.frame(idx = as.character(i),
                        Type = "Trend",
-                       Month = t, 
+                       Month = t,
                        Temperature = trend))
 
   # reminder
@@ -105,14 +103,14 @@ for (i in idx) {
   df_decomposed <- df_decomposed %>%
     add_row(data.frame(idx = as.character(i),
                        Type = "Reminder",
-                       Month = t, 
+                       Month = t,
                        Temperature = reminder))
 }
 
 # plot
-ggplot(df_decomposed, aes(x=Month,
-                          y=Temperature,
-                          group=idx,
-                          colour=idx)) +
+ggplot(df_decomposed, aes(x = Month,
+                          y = Temperature,
+                          group = idx,
+                          colour = idx)) +
   geom_line() +
-  facet_wrap( ~ Type, ncol=1, scales="free_y")
+  facet_wrap(. ~ Type, ncol = 1, scales = "free_y")
