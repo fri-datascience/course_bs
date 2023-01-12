@@ -17,7 +17,7 @@ trend <- t * 0.25
 df <- df %>% add_row(data.frame(t = t, y = trend, type = "Trend"))
 
 # seasonality
-seasonality <- sin(t / 12) * 50
+seasonality <- 50 * sin(t / 12)
 df <- df %>% add_row(data.frame(t = t, y = seasonality, type = "Seasonality"))
 
 # noise
