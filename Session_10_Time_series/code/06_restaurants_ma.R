@@ -77,8 +77,8 @@ for (i in seq_len(nrow(df_ss))) {
     # spending
     s[j] <- mu + sum(thetas * epsilons[(j - q):(j - 1)])
 
-    # epsilon
-    epsilons[j] <- s[j] - (mu + sum(thetas * epsilons[(j - 1 - q):(j - 2)]))
+    # assume no error (prediction == truth)
+    epsilons[j] <- 0
   }
 
   df_plot <- df_plot %>%
