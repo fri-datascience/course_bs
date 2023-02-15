@@ -6,14 +6,13 @@ library(tidyverse) # for data prep
 library(posterior) # for extracting samples
 library(bayesplot) # for some quick MCMC visualizations
 library(mcmcse)    # for comparing samples and calculating MCSE
-library(shinystan) # for visual diagnostics
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
 model <- cmdstan_model("../models/bernoulli_beta.stan")
 
 # prepare the data
-y <- c(0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1)
+y <- c(0, 1, 1, 0, 1, 1, 1, 0)
 n <- length(y)
 
 # prepare input data

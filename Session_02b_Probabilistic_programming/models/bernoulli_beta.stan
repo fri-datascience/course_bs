@@ -1,6 +1,6 @@
 data {
   int<lower=1> n; // number of tosses
-  array[n] int y; // toss results
+  array[n] int<lower=0,upper=1> y; // toss results
 }
 
 parameters {

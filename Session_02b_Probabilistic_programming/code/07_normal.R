@@ -58,6 +58,7 @@ mcse(df$diff)
 
 # probability mu1 > mu2
 mcse(df$diff < 0)
+mcse(df$mu1 > df$mu2)
 
 # q95
 q95 <- quantile(df$diff, 0.95)
