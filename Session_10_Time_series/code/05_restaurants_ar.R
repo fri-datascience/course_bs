@@ -25,9 +25,11 @@ pacf(df$spending)
 p <- 13
 
 # prep data for stan
-stan_data <- list(y = df$spending,
-                  n = nrow(df),
-                  p = p)
+stan_data <- list(
+  y = df$spending,
+  n = nrow(df),
+  p = p
+)
 
 # fit
 fit <- model$sample(
@@ -43,17 +45,18 @@ fit$summary()
 # samples
 df_s <- as_draws_df(fit$draws())
 df_s <- df_s %>% select(-lp__, -.draw, -.chain, -.iteration)
-
 # plot fit ---------------------------------------------------------------------
 # get a subsample of 20 random samples
 df_ss <- df_s[sample(seq_len(nrow(df_s)), 20, rep = FALSE), ]
 
-df_plot <- data.frame(idx = character(),
-                     Month = integer(),
-                     S = numeric())
+df_plot <- data.frame(
+  idx = character(),
+  Month = integer(),
+  S = numeric()
+)
 
 # forecast n_f months
-n_f <- 6
+n_f <- 12
 n_t <- nrow(df)
 t <- 1:(n_t + n_f)
 
@@ -76,17 +79,21 @@ for (i in seq_len(nrow(df_ss))) {
   }
 
   df_plot <- df_plot %>%
-    add_row(data.frame(idx = as.character(i),
-                       Month = t,
-                       S = s))
+    add_row(data.frame(
+      idx = as.character(i),
+      Month = t,
+      S = s
+    ))
 }
 
 # get mean and HDI
 df_plot <- df_plot %>%
   group_by(Month) %>%
-  summarize(Spending = mean(S),
-            hdi5 = hdi(S, credMass = 0.90)[1],
-            hdi95 = hdi(S, credMass = 0.90)[2])
+  summarize(
+    Spending = mean(S),
+    hdi5 = hdi(S, credMass = 0.90)[1],
+    hdi95 = hdi(S, credMass = 0.90)[2]
+  )
 
 # plot
 ggplot(data = df_plot, aes(x = Month, y = Spending), group = ix) +
