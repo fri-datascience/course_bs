@@ -15,8 +15,8 @@ transformed data {
   vector[N] threshold_angle = atan((R-r) ./ x);
   
   // distance parameters
-  real d_t = 0.75;  // distance tolerance
-  real o = d_t / 2; // overshot
+  real d_t = 0.75; // distance tolerance
+  real o = 0.2;    // overshot
 }
 
 parameters {
