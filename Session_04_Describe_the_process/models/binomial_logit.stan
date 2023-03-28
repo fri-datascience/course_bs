@@ -12,7 +12,6 @@ parameters {
 
 model {
   // priors
-  a ~ cauchy(0, 2.5);
   b ~ cauchy(0, 2.5);
   
   y ~ binomial_logit(n, a + b*x);
