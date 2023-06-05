@@ -52,7 +52,7 @@ $$p(n,z|\theta) = \theta^z(1-\theta)^{n-z}$$
 and we will use a beta distribution as our prior. The first reason for picking the beta distribution is that it forms a conjugate pair with the Bernoulli distribution, meaning that we can solve the problem at hand analytically. The second reason is that the beta distribution's support is [0, 1] which makes it handy for asserting any prior knowledge of parameters that are associated with probability. Our prior will be thus based on beta distribution's PDF:
 
 $$p(\theta) = \frac{\theta^{\alpha-1}(1-\theta)^{\beta-1}}{B(\alpha, \beta)} \propto \theta^{\alpha-1}(1-\theta)^{\beta-1}.$$
-If we insert the above Bernolli likelihood and beta prior into the Bayes' rule we get:
+If we insert the above Bernoulli likelihood and beta prior into the Bayes' rule we get:
 
 $$p(\theta|n,z) \propto \theta^z(1-\theta)^{n-z} \theta^{\alpha-1}(1-\theta)^{\beta-1},$$
 
@@ -198,11 +198,11 @@ ggplot(data = df_samples, aes(x = theta)) +
   theme_minimal()
 ```
 
-For illustrative purposes the above code is the most basic variant of the algorithm. In practice the implementations use a number of improvements, e.g. using log-likelihood for the purposes of numerical stability, adaptive configuration of the step size, etc. It is also worth mentioning that modern tools for Bayesian inference facilitate approaches that are more sophisticated than Metropolis-Hastings, such as the No-U-Turn Sampler (NUTS) in Stan. A detailed discussion about particular MCMC algorithms is outside of the scope of this course. If you are interested in these details you can find some good references here https://chi-feng.github.io/mcmc-demo/. Even if you are not interested in reading very demanding scientific papers, check out the neat sampling visualizations of MCMC sampling that can be found on that same page. To determine how the posterior is calculated we can use probabilistic models defined through probabilistic programming languages.
+For illustrative purposes the above code is the most basic variant of the algorithm. In practice the implementations use a number of improvements, e.g. using log-likelihood for the purposes of numerical stability, adaptive configuration of the step size, etc. It is also worth mentioning that modern tools for Bayesian inference facilitate approaches that are more sophisticated than Metropolis-Hastings, such as the No-U-Turn Sampler (NUTS) in Stan. A detailed discussion about particular MCMC algorithms is outside of the scope of this course. If you are interested in these details you can find some good references here <https://chi-feng.github.io/mcmc-demo/>. Even if you are not interested in reading very demanding scientific papers, check out the neat sampling visualizations of MCMC sampling that can be found on that same page. To determine how the posterior is calculated we can use probabilistic models defined through probabilistic programming languages.
 
 # Probabilistic programming languages
 
-When we talk about programming languages we traditionally think about imperative programming. Indeed, the majority of programming languages that we use (e.g. Python, Java, R, C, C++ ...) are imperative. In imperative programming we are given a set of inputs (input parameters or input data) and our goal is to develop an algorithm (define a step-by-step procedure) that uses given inputs to produce desired outputs. Below is an example of a typical imperative algorithm. 
+When we talk about programming languages we traditionally think about imperative programming. Indeed, the majority of programming languages that we use (e.g. Python, Java, R, C, C++ ...) are imperative. In imperative programming we are given a set of inputs (input parameters or input data) and our goal is to develop an algorithm (define a step-by-step procedure) that uses given inputs to produce desired outputs. Below is an example of a typical imperative algorithm.
 
 ```{r eval=FALSE}
 # Generate n Bernoulli variables
@@ -247,7 +247,7 @@ $$y_1, ..., y_n | \theta \sim_{iid} Bernoulli(\theta).$$
 
 $$\theta \sim Beta(1,1).$$
 
-As you will see later on, this is basically all you have to do with probabilistic programming. Obviously coin tossing is a simple process which results in a simple statistical model, but the process is essentially the same even for extremely complex models. 
+As you will see later on, this is basically all you have to do with probabilistic programming. Obviously coin tossing is a simple process which results in a simple statistical model, but the process is essentially the same even for extremely complex models.
 
 With imperative (traditional) programming your task is to develop an algorithm (a set of steps) that generates some outputs based on given inputs. So we are developing a process that generates some data. With probabilistic programming we are going the other way, we are given the "output" (some data) and our task is to "reverse engineer" the process (or algorithm) that generated the data.
 
@@ -598,7 +598,7 @@ Stan implements the most common diagnostics, such as the traceplots, $\hat{R}$, 
 fit_special$summary()
 ```
 
-The fit's $\texttt{summary()}$ function prints some summary statistics about the model's parameters along with some basic diagnostic parameters (e.g. $\hat{R}$ and ESS). $\hat{R}$ ($\texttt{rhat}$) is convergence diagnostic which compares the between- and within-chain estimates for model parameters and other univariate quantities of interest. If chains have not mixed well (i.e. the between- and within-chain estimates don't agree), $\hat{R}$ is larger than 1. So we want $\hat{R}$ to be equal, or close to, 1. 
+The fit's $\texttt{summary()}$ function prints some summary statistics about the model's parameters along with some basic diagnostic parameters (e.g. $\hat{R}$ and ESS). $\hat{R}$ ($\texttt{rhat}$) is convergence diagnostic which compares the between- and within-chain estimates for model parameters and other univariate quantities of interest. If chains have not mixed well (i.e. the between- and within-chain estimates don't agree), $\hat{R}$ is larger than 1. So we want $\hat{R}$ to be equal, or close to, 1.
 
 The $\texttt{ess_bulk}$ estimates the bulk effective sample size using rank normalized draws. $\texttt{ess_bulk}$ is a useful measure for sampling efficiency in the bulk of the distribution (related e.g. to efficiency of mean and median estimates), and is well defined even if the chains do not have finite mean or variance. The $\texttt{ess_tail}$ function produces an estimated tail effective sample size by computing the minimum of effective sample sizes for 5% and 95% percentiles. $\texttt{ess_tail}$ is a useful measure for sampling efficiency in the tails of the distribution (related e.g. to efficiency of variance and tail percentile estimates). A good rule of thumb is that both $\texttt{ess_bulk}$ and $\texttt{ess_tail}$ should be at least 100 (approximately) per Markov Chain in order to be reliable and indicate that estimates of respective posterior percentiles are reliable.
 
@@ -833,21 +833,21 @@ Just like with other things the easiest solution is usually not the best, it is 
 
 # Additional readings
 
-* Meredith M. and Kruschke K. (2020). HDInterval, (https://cran.r-project.org/web/packages/HDInterval/index.html, https://github.com/mikemeredith/HDInterval).
+* Meredith M. and Kruschke K. (2020). HDInterval, (<https://cran.r-project.org/web/packages/HDInterval/index.html>, <https://github.com/mikemeredith/HDInterval>).
 
-* van de Meent J-W., Paige B., Yang H., Wood F. (2021). An Introduction to Probabilistic Programming (https://arxiv.org/pdf/1809.10756.pdf).
+* van de Meent J-W., Paige B., Yang H., Wood F. (2021). An Introduction to Probabilistic Programming (<https://arxiv.org/pdf/1809.10756.pdf>).
 
 * **Chapters 3 (Sampling the Imaginary) and 8 (Markov Chain Monte carlo)** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
 
 * **Chapter 7 (Markov Chain Monte Carlo)** in Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
 
-* A visualization of MCMC methods (https://chi-feng.github.io/mcmc-demo/).
+* A visualization of MCMC methods (<https://chi-feng.github.io/mcmc-demo/>).
 
 * Getting started with CmdStanR
- (https://mc-stan.org/cmdstanr/articles/cmdstanr.html).
+ (<https://mc-stan.org/cmdstanr/articles/cmdstanr.html>).
 
-* Stan's documentation (https://mc-stan.org/users/documentation/index.html).
+* Stan's documentation (<https://mc-stan.org/users/documentation/index.html>).
 
-* Wiki page about probabilistic programming (https://en.wikipedia.org/wiki/Probabilistic_programming).
+* Wiki page about probabilistic programming (<https://en.wikipedia.org/wiki/Probabilistic_programming>).
 
-* Wiki page about statistical models (https://en.wikipedia.org/wiki/Statistical_model).
+* Wiki page about statistical models (<https://en.wikipedia.org/wiki/Statistical_model>).
