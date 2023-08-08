@@ -45,7 +45,7 @@
 \maketitle
 
 % Removes page numbering from the first page
-\thispagestyle{empty} 
+\thispagestyle{empty}
 
 
 %----------------------------------------------------------------------------------------
@@ -54,11 +54,11 @@
 
 \section*{Course summary}
 
-We will start this course by going through some basics about how scientific studies should be prepared and executed. Here, we will also learn why statistics play such an important part in science. The main goal of this course is for you to learn how to execute modern state-of-the-art Bayesian statistics. To get there, we will learn how to perform probabilistic programming and use it to build and apply Bayesian statistical models. With the gained knowledge you should be able to execute your own statistical analyses or provide support to researchers and professionals.
+We will start this course by going through some basics about how scientific studies should be prepared and executed. Here, we will also learn why statistics play such an important part in science and our everyday lives. The main goal of this course is for you to learn about the importance of statistics and how to execute modern state-of-the-art Bayesian statistics. To get there, we will learn how to do probabilistic programming and use it to build and apply Bayesian statistical models. With the gained knowledge you should be able to execute your own statistical analyses or provide support to other researchers and professionals.
 
 \section*{Grading}
 
-The final grade is composed of two parts, the first 50\% comes from the homework and the other 50\% from an oral exam. We expect there will be around 8 homework assignments. Unless otherwise noted, all homework will be due in two weeks and should be submitted as a short pdf report (from half a page to two pages, depending on the homework). General feedback to your homework will be provided on the group level via the course forum. If some of you will want more detailed, individual feedback about your work, we will happily provide it on request. Each homework will be graded on a scale from 1 to 5:
+The final grade is composed of two parts, the first 50\% comes from the homework and the other 50\% from an oral exam. We expect there will be around 7 ($\pm$ 1) homework assignments. Unless otherwise noted, all homework will be due in two weeks and should be submitted as a short pdf report (from half a page to two pages, depending on the homework). The submitted file should be named following this pattern: \texttt{surname\_name\_HW\_number.pdf}. Therefore, Janez Novak should name the file \texttt{Novak\_Janez\_HW\_4.pdf} when submitting homework 4. General feedback to your homework will be provided on the group level via the course forum. If some of you will want more detailed, individual feedback about your work, we will happily provide it on request. Each homework will be graded on a scale from 1 to 5:
 
 \begin{itemize}
 	\item 5 -- perfect or nearly perfect submissions,
@@ -68,7 +68,7 @@ The final grade is composed of two parts, the first 50\% comes from the homework
 	\item 0 -- unacceptable.
 \end{itemize}
 
-Your submission that receives the worst grade will be discarded when calculating the final homework grade. Meaning that you can skip one homework without any major repercussions. To finish the course you need to take an oral exam at the end of the semester. Only students that gathered at least 50\% of points from the homework are allowed to take the exam. The oral exam will be used to test your knowledge both in the theoretical and in the practical aspects of Bayesian statistics that we covered during lectures.
+To finish the course you need to take an oral exam at the end of the semester. Only students that gathered at least 50\% of points from the homework are allowed to take the exam. The oral exam will be used to test your knowledge both in the theoretical and in the practical aspects of Bayesian statistics that we covered during lectures.
 
 \section*{Reports}
 
@@ -105,13 +105,18 @@ Stan is probably the most widespread probabilistic programming language. It coup
 
 The intercept and slope parameters in simple linear regression are easy to interpret and can as such provide key insight into our data generating process. When modeling the relationship between independent and dependent variables, simple linear regression often gives suboptimal results. We need a more powerful tool, especially so in cases where the dependent variable is not metric. Generalized linear model (GLM) is a powerful tool capable of working with dependent variables of various scale types (metric, ordinal, nominal and count) and error distributions other than normal. The simple linear model is actually the simplest of all GLMs. In the GLM, beta coefficients are usually not as easy to interpret as in the case of simple linear regression. Fortunately, we only need some relatively easy math to make them understandable!
 
-\subsection*{Describe the Process}
+\subsection*{Priors}
 
-When developing statistical models we often fall into the habit of merely fitting some distributions onto our data. In this lecture we will show why this is bad an suboptimal. We should do our best to try and understand the actual data generating process and model it!
+Defining priors is an integral part in Bayesian statistics. The main purpose of priors is to introduce prior expert knowledge about the domain into our models. As we know by now, this is not the only usage of priors, they are also useful for regularization and can be of help during the sampling process which can lead to stabilization of inferences in certain models. Based on the amount of information priors provide they are commonly categorized into three groups: non-informative priors, weakly informative priors and informative priors. This document briefly explains the differences between these groups and provides some guidance about when to use certain priors. Since one of the main advantages of Bayesian statistics is its ability to facilitate existing knowledge to empower our models the second part of this document talks about approaches for eliciting relevant information from experts.
 
 \subsection*{Predictive Checking}
 
 Bayesian modeling is an iterative process, we start by picking an initial model and settings its priors. To investigate whether our priors have undesirable effects that contradict domain knowledge we start by performing prior predictive checks. Once we are happy with our priors, we fit the model and diagnose the fitting process (traceplot, convergence, diagnostics ...). If all is good, we then execute posterior predictive checks to evaluate whether our model is suitable for answering the questions we are asking.
+
+
+\subsection*{Describe the Process}
+
+When developing statistical models we often fall into the habit of merely fitting some distributions onto our data. In this lecture we will show why this is bad an suboptimal. We should do our best to try and understand the actual data generating process and model it!
 
 \subsection*{Bayesian Cross-Validation}
 
@@ -128,10 +133,6 @@ Measuring things accurately and precisely is difficult to start with, but even m
 \subsection*{Sampling}
 
 This lecture will revolve around the basics of sampling in the context of survey sampling. We will cover three of the most common probability sampling approaches: simple random sampling, stratified sampling, and cluster sampling. We will also briefly discuss non-probability sampling methods: convenience sampling, judgment sampling, quota sampling, and snowball sampling.
-
-\subsection*{Priors}
-
-Defining priors is an integral part in Bayesian statistics. The main purpose of priors is to introduce prior expert knowledge about the domain into our models. As we know by now, this is not the only usage of priors, they are also useful for regularization and can be of help during the sampling process which can lead to stabilization of inferences in certain models. Based on the amount of information priors provide they are commonly categorized into three groups: non-informative priors, weakly informative priors and informative priors. This document briefly explains the differences between these groups and provides some guidance about when to use certain priors. Since one of the main advantages of Bayesian statistics is its ability to facilitate existing knowledge to empower our models the second part of this document talks about approaches for eliciting relevant information from experts.
 
 \subsection*{Modelling time-series}
 
