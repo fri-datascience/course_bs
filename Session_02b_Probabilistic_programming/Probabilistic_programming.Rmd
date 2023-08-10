@@ -598,9 +598,21 @@ Stan implements the most common diagnostics, such as the traceplots, $\hat{R}$, 
 fit_special$summary()
 ```
 
-The fit's $\texttt{summary()}$ function prints some summary statistics about the model's parameters along with some basic diagnostic parameters (e.g. $\hat{R}$ and ESS). $\hat{R}$ ($\texttt{rhat}$) is convergence diagnostic which compares the between- and within-chain estimates for model parameters and other univariate quantities of interest. If chains have not mixed well (i.e. the between- and within-chain estimates don't agree), $\hat{R}$ is larger than 1. So we want $\hat{R}$ to be equal, or close to, 1.
+The fit's $\texttt{summary()}$ function prints some summary statistics about the model's parameters along with some basic diagnostic parameters (e.g. $\hat{R}$ and ESS). $\hat{R}$ ($\texttt{rhat}$) is convergence diagnostic which compares the between- and within-chain estimates for model parameters and other univariate quantities of interest. If chains have not mixed well (i.e. the between- and within-chain estimates don't agree), $\hat{R}$ is larger than 1. So we want $\hat{R}$ to be equal, or close to, 1. $\hat{R}$ is calculated as
 
-The $\texttt{ess_bulk}$ estimates the bulk effective sample size using rank normalized draws. $\texttt{ess_bulk}$ is a useful measure for sampling efficiency in the bulk of the distribution (related e.g. to efficiency of mean and median estimates), and is well defined even if the chains do not have finite mean or variance. The $\texttt{ess_tail}$ function produces an estimated tail effective sample size by computing the minimum of effective sample sizes for 5% and 95% percentiles. $\texttt{ess_tail}$ is a useful measure for sampling efficiency in the tails of the distribution (related e.g. to efficiency of variance and tail percentile estimates). A good rule of thumb is that both $\texttt{ess_bulk}$ and $\texttt{ess_tail}$ should be at least 100 (approximately) per Markov Chain in order to be reliable and indicate that estimates of respective posterior percentiles are reliable.
+$$\hat{R} = \sqrt{\frac{W}{B}},$$
+
+where $W$ is the average within-chain variance over all chains and $B$ is the between-chain variance (variance of the chain means across all chains).
+
+The $\texttt{ess_bulk}$ estimates the bulk effective sample size using rank normalized draws. $\texttt{ess_bulk}$ is a useful measure for sampling efficiency in the bulk of the distribution (related e.g. to efficiency of mean and median estimates), and is well defined even if the chains do not have finite mean or variance. The $\texttt{ess_tail}$ function produces an estimated tail effective sample size by computing the minimum of effective sample sizes for 5% and 95% percentiles. $\texttt{ess_tail}$ is a useful measure for sampling efficiency in the tails of the distribution (related e.g. to efficiency of variance and tail percentile estimates). A good rule of thumb is that both $\texttt{ess_bulk}$ and $\texttt{ess_tail}$ should be at least 100 (approximately) per Markov Chain in order to be reliable and indicate that estimates of respective posterior percentiles are reliable. Effective sample size is calculated as
+
+$$ESS = \frac{SS}{1 + 2 \sum{acf}},$$
+
+where $SS$ is the total sample size, if we are using 4 chains where each one of the produces 1000 samples then $SS = 4 * 1000$$, and $acf$ is the auto correlation function that measures the autocorrelation of gerenated samples. We will talk about $acf$ in detail in the time-series lecture.
+
+n is the total number of MCMC samples (including all chains).
+m is the number of chains.
+acf is a vector of autocorrelations at different lags, typically up to a reasonable lag where the autocorrelation becomes negligible.
 
 The above diagnostics will be enough for the majority of our use cases, Stan also offers a function ($\texttt{cmdstan_diagnose()}$) that automatically performs some essential checks and lets you know if some things are not in order. Furthermore, you acn use the $\texttt{shinystan}$ package to open up a web interface in which you can interactively explore your fits.
 
