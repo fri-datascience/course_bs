@@ -47,7 +47,7 @@ fit$summary()
 # convert samples to data frame
 df <- as_draws_df(fit$draws())
 
-# compare mu1 with mu2
+# 1. What is the probability that group 1 is on average taller than group 2?
 ggplot(data = df) +
   geom_density(aes(x = mu1), color = NA, fill = "skyblue", alpha = 0.5) +
   geom_density(aes(x = mu2), color = NA, fill = "tomato", alpha = 0.5) +
@@ -67,5 +67,21 @@ q95 <- quantile(df$diff, 0.95)
 ggplot(data = df) +
   geom_density(aes(x = diff), color = NA, fill = "skyblue", alpha = 0.75) +
   xlab("difference") +
-  geom_vline(xintercept = q95, linetype = "dashed",
-             color = "grey75", linewidth = 1.5)
+  geom_vline(
+    xintercept = q95, linetype = "dashed",
+    color = "grey75", linewidth = 1.5
+  )
+
+# 2. What is the probability that a random person from group 1 is taller than a
+#    random person from group 2?
+taller <- vector()
+for (i in 1:n) {
+  next_1 <- rnorm(1, df$mu1[i], df$sigma[i])
+  next_2 <- rnorm(1, df$mu2[i], df$sigma[i])
+  if (next_1 > next_2) {
+    taller <- c(taller, 1)
+  } else {
+    taller <- c(taller, 0)
+  }
+}
+mcse(taller)
