@@ -29,6 +29,117 @@ In the previous lecture we said that as Bayesian statisticians we choose to repr
 
 Since you already listened to the Introduction to statistical learning and decision theory course all this should sound somewhat familiar to you. There you used the notation $h : \mathcal{X} \rightarrow \mathcal{Y}$ to denote a model (function), where $\mathcal{X}$ and $\mathcal{Y}$ represent the dependent (input) and independent (output) variable spaces, respectively. A learning algorithm $\mathcal{A}$ given a dataset thus produces a model $A(D_n) = h_n$. Let $\mathcal{H}$ denote the set of all possible models for a particular learning algorithm. In statistical modelling outputs ($\mathcal{Y}$) are not point estimates but probability distributions, meaning that $\mathcal{H}$ represents a family of probability distributions from which the model ($h$) is trained.
 
+## The Bayes' rule
+
+At the core of Bayesian statistics is the Bayes' rule:
+
+$$p(\theta|y) = \frac{p(y | \theta) \ p(\theta)}{p(y)} \propto p(y | \theta) \ p(\theta),$$
+where $p(\theta|y)$ is usually called the posterior, $p(y | \theta)$ the likelihood, $p(\theta)$ the prior and $p(y)$ the evidence. Luckily, we can get rid of the $p(y)$ component as it is hard to calculate. We can get rid of it because its main purpose is normalization and as such does not influence the shape of the posterior distribution. In other words, from the parameter's standpoint (we are interested in estimating the parameters) $p(y)$ is a constant.
+
+To better understand the Bayes' rule let us write it down a bit more informally:
+
+$$\text{(new beliefs)} \propto \text{(new data/information)} \cdot \text{(prior beliefs)}.$$
+
+The informal equation above shows why Bayesian staticits is very intuitive, at its core is the same logic that we use to reason and update our beliefs in everyday lives. We update our beliefs about the world and the environment by merging previous (prior) beliefs with new data (information) that comes along.
+
+Let us solidify this concepct through a simple example. Assume that we are an alien that just landed on earth and is interested in figuring out what proportion of earth is covered by water. We have a special device for doing this, we fire the device into the air, it lands on a random location on earth and lets us know whether it landed on earth or in the water.
+
+```{r, warning = FALSE, message = FALSE}
+# library
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+
+# x axis
+x <- seq(0, 1, 0.1)
+
+# water
+water <- x * 2
+
+# land
+land <- 2 - water
+
+# prior
+prior <- rep(1, 11) / 11
+
+# plots storage
+plots <- list()
+
+# plot our initial belief
+df <- data.frame(x, prior)
+p <- ggplot(df, aes(x, prior)) +
+    geom_bar(stat = "identity") +
+    xlab("Water percentage") +
+    ylab("Belief") +
+    ylim(0, 1)
+
+# store
+plots[[1]] <- p
+
+# set posterior
+our_belief <- NULL
+
+saw_land <- function(our_belief, plots) {
+    # calculate the posterior
+    if (is.null(our_belief)) {
+        posterior <- prior * land
+    } else {
+        posterior <- our_belief * land
+    }
+    posterior <- posterior / sum(posterior)
+
+    # plot
+    df <- data.frame(x, posterior)
+    plot <- ggplot(df, aes(x, posterior)) +
+        geom_bar(stat = "identity") +
+        xlab("Water percentage") +
+        ylab("Belief") +
+        ylim(0, 1)
+
+    return(list(posterior, plot))
+}
+
+saw_water <- function(our_belief, plots) {
+    # calculate the posterior
+    if (is.null(our_belief)) {
+        posterior <- prior * water
+    } else {
+        posterior <- our_belief * water
+    }
+    posterior <- posterior / sum(posterior)
+
+    # plot
+    df <- data.frame(x, posterior)
+    plot <- ggplot(df, aes(x, posterior)) +
+        geom_bar(stat = "identity") +
+        xlab("Water percentage") +
+        ylab("Belief") +
+        ylim(0, 1)
+
+    return(list(posterior, plot))
+}
+
+# sample location from https://www.realrandom.net/location.html
+# 11 samples gave us (1 - water, 0 - land)
+y <- c(1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1)
+
+for (observation in y) {
+    if (observation == 1) {
+        result <- saw_water(our_belief, plots)
+    } else {
+        result <- saw_land(our_belief, plots)
+    }
+
+    # update our belief and store the plot
+    our_belief <- result[[1]]
+    plots[[length(plots) + 1]] <- result[[2]]
+}
+
+plot_grid(plotlist = plots, ncol = 3, nrow = 4, scale = 0.9)
+```
+
+At the beginning we had no (prior) knowledge about what lies on the surface of the earth but as we got more and more data, our beliefs became more certain and got closer to the truth (~70%).
+
 ## A simple example
 
 To get some feel about what statistical models really are, let us develop a simple Bayesian model. In this example we are interested in modelling a coin that when flipped lands either on its head (1) or its tail (0). We are interested in modelling the probability that the coin lands on its head, let us denote this probability with $\theta$. We observed 30 flips:
@@ -39,7 +150,7 @@ To get some feel about what statistical models really are, let us develop a simp
 
 , as you can see the flipping resulted in 20 heads (ones) and 10 tails (zeros). We will solve this problem analytically by using the Bayes' rule:
 
-$$p(\theta|y) = \frac{p(y | \theta) \ p(\theta)}{p(y)} \propto p(y | \theta) \ p(\theta).$$
+$$p(\theta|y) \propto p(y | \theta) \ p(\theta).$$
 Or in our case:
 
 $$p(\theta|n,z) \propto p(n,z|\theta)p(\theta),$$
@@ -608,7 +719,7 @@ The $\texttt{ess_bulk}$ estimates the bulk effective sample size using rank norm
 
 $$ESS = \frac{SS}{1 + 2 \sum{acf}},$$
 
-where $SS$ is the total sample size, if we are using 4 chains where each one of the produces 1000 samples then $SS = 4 * 1000$$, and $acf$ is the auto correlation function that measures the autocorrelation of gerenated samples. We will talk about $acf$ in detail in the time-series lecture.
+where $SS$ is the total sample size, if we are using 4 chains where each one of the produces 1000 samples then $SS = 4 * 1000$$, and $acf$ is the auto correlation function that measures the autocorrelation of generated samples. We will talk about $acf$ in detail in the time-series lecture.
 
 n is the total number of MCMC samples (including all chains).
 m is the number of chains.
