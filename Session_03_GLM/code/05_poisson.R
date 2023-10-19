@@ -103,7 +103,8 @@ df_pred <- df_pred[, df_am$ID]
 # create plots
 plots <- NULL
 for (i in 1:9) {
-  df_preds <- data.frame(x = df_pred %>% nth(i))
+  df_preds <- df_pred[, i]
+  colnames(df_preds) <- "x"
   df_counts <- df_preds %>% count(x)
 
   hdi50 <- hdi(df_preds$x, credMass = 0.75)
