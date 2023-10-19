@@ -902,7 +902,7 @@ exclude <- n - floor(n * cred_mass)
 upper_bound <- x[(n - exclude + 1):n]
 lower_bound <- x[1:exclude]
 
-# in order to discard 10% of data we need to use a pair from our bound vectors
+# in order to discard 10% of data we need to use a pair from the bounds vectors
 # find the lower/upper pair with minimum distance between them
 # smaller the difference higher the density of that chunk
 # this is then our solution
