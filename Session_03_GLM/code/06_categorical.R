@@ -76,10 +76,12 @@ precision <- 100
 distance <- seq(0, 10, length.out = precision)
 
 # calculate thetas from distance
-df_thetas <- data.frame(Distance = numeric(),
-                        Type = factor(),
-                        Probability = numeric(),
-                        Player = factor())
+df_thetas <- data.frame(
+  Distance = numeric(),
+  Type = factor(),
+  Probability = numeric(),
+  Player = factor()
+)
 
 # types
 types <- levels(data$ShotType)
@@ -90,28 +92,34 @@ for (i in 1:precision) {
   x <- c(1, distance[i], 0, 1)
   thetas <- softmax(betas %*% x)
 
-  df_guard <- data.frame(Distance = distance[i],
-                         Type = types,
-                         Probability = thetas,
-                         Player = "Guard")
+  df_guard <- data.frame(
+    Distance = distance[i],
+    Type = types,
+    Probability = thetas,
+    Player = "Guard"
+  )
 
   # intercept, distance, forward, guard)
   x <- c(1, distance[i], 1, 0)
   thetas <- softmax(betas %*% x)
 
-  df_forward <- data.frame(Distance = distance[i],
-                         Type = types,
-                         Probability = thetas,
-                         Player = "Forward")
+  df_forward <- data.frame(
+    Distance = distance[i],
+    Type = types,
+    Probability = thetas,
+    Player = "Forward"
+  )
 
   # intercept, distance, forward, guard)
   x <- c(1, distance[i], 0, 0)
   thetas <- softmax(betas %*% x)
 
-  df_centre <- data.frame(Distance = distance[i],
-                           Type = types,
-                           Probability = thetas,
-                           Player = "Centre")
+  df_centre <- data.frame(
+    Distance = distance[i],
+    Type = types,
+    Probability = thetas,
+    Player = "Centre"
+  )
 
   df_thetas <- rbind(df_thetas, df_guard, df_forward, df_centre)
 }

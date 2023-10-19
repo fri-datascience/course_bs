@@ -42,13 +42,17 @@ df_100 <- sample_n(df, 100)
 
 # visualize data points with regression lines in the background
 ggplot() +
-  geom_point(data = data,
-             aes(x = x, y = y),
-             shape = 16,
-             color = "skyblue") +
-  geom_abline(data = df_100,
-              aes(slope = b, intercept = a),
-              alpha = 0.05,
-              linewidth = 1,
-              color = "skyblue") +
+  geom_point(
+    data = data,
+    aes(x = x, y = y),
+    shape = 16,
+    color = "skyblue"
+  ) +
+  geom_abline(
+    data = df_100,
+    aes(slope = b, intercept = a),
+    alpha = 0.05,
+    linewidth = 1,
+    color = "skyblue"
+  ) +
   theme_minimal()

@@ -47,12 +47,16 @@ df_100 <- sample_n(df_100, 100)
 
 # plot
 ggplot() +
-  geom_point(data = data,
-             aes(x = Height, y = SexNumeric),
-             alpha = 0.2, size = 3, shape = 16) +
-  geom_abline(data = df_100,
-              aes(slope = beta, intercept = alpha),
-              color = "skyblue", alpha = 0.2, linewidth = 1) +
+  geom_point(
+    data = data,
+    aes(x = Height, y = SexNumeric),
+    alpha = 0.2, size = 3, shape = 16
+  ) +
+  geom_abline(
+    data = df_100,
+    aes(slope = beta, intercept = alpha),
+    color = "skyblue", alpha = 0.2, linewidth = 1
+  ) +
   theme_minimal() +
   xlim(145, 195) +
   ylim(-0.5, 1.5) +

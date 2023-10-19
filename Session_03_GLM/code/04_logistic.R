@@ -51,8 +51,10 @@ n_lines <- 100
 # precision
 precision <- 100
 # heights sequence
-height <- seq(from = min(data$Height), to = max(data$Height),
-              length.out = precision)
+height <- seq(
+  from = min(data$Height), to = max(data$Height),
+  length.out = precision
+)
 # draw only n_lines
 df_subsample <- sample_n(df, n_lines)
 
@@ -73,12 +75,16 @@ for (i in 1:n_lines) {
 
 # plot weight/sex
 ggplot() +
-  geom_point(data = data,
-             aes(x = Height, y = SexNumeric),
-             alpha = 0.2, size = 3, shape = 16) +
-  geom_line(data = lines,
-            aes(x = x, y = y, group = line),
-            color = "skyblue", alpha = 0.2, linewidth = 1) +
+  geom_point(
+    data = data,
+    aes(x = Height, y = SexNumeric),
+    alpha = 0.2, size = 3, shape = 16
+  ) +
+  geom_line(
+    data = lines,
+    aes(x = x, y = y, group = line),
+    color = "skyblue", alpha = 0.2, linewidth = 1
+  ) +
   ylab("p(male)")
 
 # beta interpretations ---------------------------------------------------------

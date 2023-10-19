@@ -1,11 +1,11 @@
 # libraries --------------------------------------------------------------------
-library(cmdstanr)  # for interfacing Stan
-library(ggplot2)   # for visualizations
-library(ggdist)    # for distribution visualizations
+library(cmdstanr) # for interfacing Stan
+library(ggplot2) # for visualizations
+library(ggdist) # for distribution visualizations
 library(tidyverse) # for data prep
 library(posterior) # for extracting samples
 library(bayesplot) # for some quick MCMC visualizations
-library(mcmcse)    # for comparing samples and calculating MCSE
+library(mcmcse) # for comparing samples and calculating MCSE
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
@@ -55,10 +55,11 @@ cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
 # plot
 ggplot(data = df, aes(x = theta)) +
   stat_slab(aes(fill = stat(x < bottom_cut | x > top_cut)),
-               alpha = 0.75,
-               show.legend = FALSE,
-               normalize = "none",
-               scale = 1) +
+    alpha = 0.75,
+    show.legend = FALSE,
+    normalize = "none",
+    scale = 1
+  ) +
   xlim(0, 1) +
   ylim(0, 3) +
   ylab("density") +

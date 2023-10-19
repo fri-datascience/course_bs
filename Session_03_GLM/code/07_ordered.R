@@ -32,7 +32,8 @@ levels(data$poverty)
 
 # fix ordering
 data$poverty <- factor(data$poverty,
-                       levels = c("Too Little", "About Right", "Too Much"))
+  levels = c("Too Little", "About Right", "Too Much")
+)
 
 # check poverty levels again
 levels(data$poverty)

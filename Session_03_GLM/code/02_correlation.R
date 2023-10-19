@@ -1,11 +1,11 @@
 # libraries --------------------------------------------------------------------
-library(cmdstanr)  # for interfacing Stan
-library(ggplot2)   # for visualizations
+library(cmdstanr) # for interfacing Stan
+library(ggplot2) # for visualizations
 library(posterior) # for extracting samples
 library(bayesplot) # for some quick MCMC visualizations
-library(mcmcse)    # for comparing samples and calculating MCSE
+library(mcmcse) # for comparing samples and calculating MCSE
 library(tidyverse) # for data manipulations
-library(psych)     # for independent variables correlation plot
+library(psych) # for independent variables correlation plot
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
@@ -23,10 +23,10 @@ X <- data %>% select(-y)
 # correlation
 # plot correlation of independent variables
 pairs.panels(X,
-             method = "pearson", # correlation method
-             hist.col = "skyblue",
-             density = TRUE,  # show density plots
-             ellipses = TRUE # show correlation ellipses
+  method = "pearson", # correlation method
+  hist.col = "skyblue",
+  density = TRUE, # show density plots
+  ellipses = TRUE # show correlation ellipses
 )
 
 # prepare data for stan
@@ -75,10 +75,14 @@ for (i in 1:n_lines) {
 
 # visualize data points with regression lines in the background
 ggplot() +
-  geom_line(data = lines,
-            aes(x = x, y = y, group = line),
-            color = "skyblue", alpha = 0.2, linewidth = 1) +
-  geom_point(data = data,
-             aes(x = x, y = y),
-             shape = 16) +
+  geom_line(
+    data = lines,
+    aes(x = x, y = y, group = line),
+    color = "skyblue", alpha = 0.2, linewidth = 1
+  ) +
+  geom_point(
+    data = data,
+    aes(x = x, y = y),
+    shape = 16
+  ) +
   theme_minimal()
