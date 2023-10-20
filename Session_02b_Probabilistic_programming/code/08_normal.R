@@ -13,7 +13,7 @@ model <- cmdstan_model("../models/normal.stan")
 
 # prepare the data
 # number of measurements
-n <- 20
+n <- 200
 
 # tall
 y1 <- rnorm(n, 180, 20)
@@ -70,7 +70,8 @@ ggplot(data = df) +
   geom_vline(
     xintercept = q95, linetype = "dashed",
     color = "grey75", linewidth = 1.5
-  )
+  ) +
+  xlim(-15, 5)
 
 # 2. What is the probability that a random person from group 1 is taller than a
 #    random person from group 2?
