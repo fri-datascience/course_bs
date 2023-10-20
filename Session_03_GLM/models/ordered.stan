@@ -1,7 +1,7 @@
 data {
   int n;                           // number of observations
   int m;                           // number of independent variables
-  row_vector[m] x[n];              // independent variables
+  matrix[n, m] x;                  // independent variables
   int k;                           // number of outcomes
   array[n] int<lower=1,upper=k> y; // dependent variables
 }
