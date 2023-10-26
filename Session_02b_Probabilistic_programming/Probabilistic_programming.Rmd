@@ -798,7 +798,7 @@ In Stan the keyword target is actually not a variable, and may not be accessed a
 
 ## A linear normal model
 
-In the following example we will use Bayesian linear regression to model some data from a toy (`toy.csv`) dataset. The dataset contains two columns, `x` denotes the independent and `y` the dependent variable. We will use a linear normal model (or linear normal regression) to model this dependency. At the same time we will see how one would build a model for normally distributed data. This is the Stan model we will use:
+In the following example we will use Bayesian linear regression to model temperature data through ages (the data is stored in `temperature.csv`). The dataset contains three columns, `temperature` denotes the average temperature, while `year` and `month` depict the time of the measurement. As we are interested in the yearly average temperature through ages, we will average the temperature over months. As a result, our dependent variable (`y`) will be the average yearly temperature and our independent variable (`x`) will be the year. We will use a linear normal model (or linear normal regression) to model the dependency between `x` and `y`. At the same time we will see how one would build a model for normally distributed data. This is the Stan model we will use:
 
 ```
 data {
@@ -832,10 +832,23 @@ The $\texttt{data}$ block contains three variables, `n` stores the total number 
 model <- cmdstan_model("./models/linear.stan")
 
 # prepare the data
-data <- read.csv("./data/toy.csv")
+data <- read.csv("./data/temperature.csv", sep = ";")
+
+# remove month
+data <- data %>% select(-month)
+
+# mean per year
+data <- data %>%
+  group_by(year) %>%
+  summarise(temperature = mean(temperature))
+
+# x shift for numerical stability
+min_year <- min(data$year)
+x <- data$year - min_year
+y <- data$temperature
 
 # prepare input for Stan
-stan_data <- list(n = nrow(data), x = data$x, y = data$y)
+stan_data <- list(n = nrow(data), x = x, y = y)
 
 # fit
 fit <- model$sample(
@@ -850,24 +863,44 @@ mcmc_trace(fit$draws())
 fit$summary()
 ```
 
-The `traceplot` and `summary` both show no reasons for any concerns, we will skip them here for brevity, but in practice you should always start your analysis by inspecting the outputs of these two functions. Whenever possible you should also always visually inspect how fitted distributions match the underlying data. With more complex and highly dimensional models this most likely will not be possible but here we can easily do this.
+The `traceplot` and `summary` both show no reasons for any concerns, we will skip them here for brevity, but in practice you should always start your analysis by inspecting the outputs of these two functions. Whenever possible you should also always visually inspect how fitted distributions match the underlying data. With more complex and highly dimensional models this most likely will not be possible but here we can easily do this. Let us take a peek at the value of our model's parameters (the intercept, `a` and the slope `b`).
 
 ```{R message=FALSE}
-# lines and uncertainty
+# params
 df <- as_draws_df(fit$draws())
+mcse(df$a)
+mcse(df$b)
+mcse(df$b > 0)
+```
 
+The intercept ($\alpha$ or `a` in our case) denotes the value of `y` when `x` equals zero. For the purpose of numerical stability and to make life easier for Stan, we have shifted our data, this now means that `a` denotes the temperature at the minimum year in our dataset (1901). The slope parameter ($\beta$ or `b` in our case) denotes how `y` changes with `x`, in our case how temperature changes through ages. You can see that we are extremelly confident (P ≈ 1) that value of `b` is positive. This means that the temperature has been rising over the last 120 years, in fact it has been rising on average by 0.013 $\pm$ 0.0004 °C per year.
+
+```{R message=FALSE}
 # plot only 100 random regression lines
 df_100 <- sample_n(df, 100)
 
+# x axis
+x_breaks <- seq(from = 0, to = 120, length.out = 5)
+x_labels <- x_breaks + min_year
+
 # visualize data points with regression lines in the background
-ggplot() + 
-  geom_point(data = data, aes(x = x, y = y), shape = 16, color = "#67a9cf") +
-  geom_abline(data=df_100,
-              aes(slope = b, intercept = a),
-              alpha = 0.05,
-              linewidth = 1,
-              color = "#67a9cf") +
-  theme_minimal()
+ggplot() +
+  geom_point(
+    data = data,
+    aes(x = x, y = y),
+    shape = 16,
+    color = "skyblue"
+  ) +
+  geom_abline(
+    data = df_100,
+    aes(slope = b, intercept = a),
+    alpha = 0.05,
+    linewidth = 1,
+    color = "skyblue"
+  ) +
+  theme_minimal() +
+  labs(x = "Year", y = "Temperature") +
+  scale_x_continuous(breaks = x_breaks, labels = x_labels)
 ```
 
 # High density intervals

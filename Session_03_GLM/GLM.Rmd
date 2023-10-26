@@ -25,7 +25,7 @@ Typically linear regression models have several parameters, the number of parame
 
 The gist of our problem is to figure out how we should distribute our resources if we just opened a startup company, in other words we are interested it the ratio between funds spent for research, administration and marketing that is expected go generate the most profit. We will use Bayesian multiple linear regression (we use the term simple linear regression when there is only one independent variable and the term multiple linear regression if we have more than one independent variable):
 
-$$y_i \; | \; x_i, \alpha, \beta_r, \beta_a, \beta_m, \sigma \sim N(\alpha + \beta_r x_{r,i} + \beta_a x_{a,i} + \beta_m x_{m,i}, \sigma),$$ 
+$$y_i \; | \; x_i, \alpha, \beta_r, \beta_a, \beta_m, \sigma \sim N(\alpha + \beta_r x_{r,i} + \beta_a x_{a,i} + \beta_m x_{m,i}, \sigma),$$
 $$\beta_r, \beta_a, \beta_n \sim N(0, 1).$$
 
 ## The intercept
@@ -75,7 +75,7 @@ On the other hand, if we are interested in developing a model that is capable of
 
 As you can image, we have a lot of freedom when designing our regression models. We could model our data whit this model:
 
-$$y_i \; | \; x_i, \beta_3, \beta_2, \beta_1, \sigma \sim N(\beta_3 x_{r,i}^3 + \beta_2 x_{r,i}^2 + \beta_1 x_{r,i}, \sigma).$$ 
+$$y_i \; | \; x_i, \beta_3, \beta_2, \beta_1, \sigma \sim N(\beta_3 x_{r,i}^3 + \beta_2 x_{r,i}^2 + \beta_1 x_{r,i}, \sigma).$$
 
 This is called polynomial regression and still falls in the category of linear models, we achieved non-linearity by transforming independent variables (something we will do a lot). This could be a completely valid model and might even fit our input data better than the one we used previously. However, making sense of this model's outputs would be very hard since the $\beta$ coefficients are now much harder to interpret. It is important to always have in mind that in Bayesian analysis we are (usually) trying to devise models that provide us with useful insights about the data generating processes in question! While complex models might fit the data extremely well they are often too hard to understand and do not provide any new insights into the data generating process. In fact, in several sensible scientific fields (such as clinical medicine and trials ...) regulative agencies enforce the use of interpretable models only.
 
@@ -300,7 +300,7 @@ When preparing the input data we decided to standardize it. This often results i
   ![](./figs/scale.png)
 </center>
 
-Once we standardize our independent variables we can check their distributions and correlations. The figure below shows no reason for concern so we can continue with our analysis. 
+Once we standardize our independent variables we can check their distributions and correlations. The figure below shows no reason for concern so we can continue with our analysis.
 
 <center>
   ![](./figs/correlations.png)
@@ -318,7 +318,7 @@ To inspect the quality of our model, we can compare how the estimated $\lambda$ 
   ![](./figs/poisson_lambdas_goals.png)
 </center>
 
-This figure suggests that there is a positive correlation between the $\lambda$ parameter and the amount of goals scored by the home team. However, it seems like our model is a little conservative in its predictions -- it will rarely predict games with a lot of scored goals. As also seen on the graph above such games are quite uncommon (in the majority of games the home team scored at most 2 goals). 
+This figure suggests that there is a positive correlation between the $\lambda$ parameter and the amount of goals scored by the home team. However, it seems like our model is a little conservative in its predictions -- it will rarely predict games with a lot of scored goals. As also seen on the graph above such games are quite uncommon (in the majority of games the home team scored at most 2 goals).
 
 To get a better understanding of our model let us compare a couple of predictions against the actual results of those games. To do this, we will compare the predictions and the actual amount of goals scored by the home team on the last 9 Atletico Madrid games that we have in our database.
 
@@ -380,8 +380,7 @@ We start by loading our dataset, it has 3 columns -- PlayerType, Distance, ShotT
 data <- read.csv("./data/shot_types.csv", stringsAsFactors = TRUE)
 ```
 
-Once our variable types are properly set, we can easily prepare matrices with independent and dependent variables. The `model.matrix()` function can be used to create the so called model matrix (https://en.wikipedia.org/wiki/Design_matrix). In model matrices (or design matrices) each row represents an observation of our data, with the successive columns corresponding to the variables and their specific values for that object. To encode nominal variables model matrices use something called contrasts, you can think of contrasts as encoding of variables.
-
+Once our variable types are properly set, we can easily prepare matrices with independent and dependent variables. The `model.matrix()` function can be used to create the so called model matrix (<https://en.wikipedia.org/wiki/Design_matrix>). In model matrices (or design matrices) each row represents an observation of our data, with the successive columns corresponding to the variables and their specific values for that object. To encode nominal variables model matrices use something called contrasts, you can think of contrasts as encoding of variables.
 
 ```{R, warning=FALSE, message=FALSE}
 # library needed for n_distinct
@@ -464,20 +463,29 @@ Gamma regression is useful when our dependent variable resides on the positive s
 $$y \; | \; \nu, \lambda \sim \text{gamma}(\nu, \lambda),$$
 $$E[y] = \mu = \frac{\nu}{\lambda},$$
 $$\text{Var}(y) = \phi = \frac{\nu}{\lambda^2}.$$
-As you can see we cannot directly map the linear predictor to a gamma parameter. Fear not, we can fix this with some simple calculus. We can reparametrize the gamma distribution to fit our needs:
+As you can see we cannot directly map the linear predictor to a gamma parameter. Fear not, we can fix this with some simple calculus. We can reparametrize the gamma distribution to fit our needs. There are two ways this is commonly done in the literature. The first:
 
 $$\mu = \frac{\nu}{\lambda},$$
+$$\nu = \mu\lambda.$$
+Now we have an expected value parameter $\mu$. Since gamma distribution resides on the positive real scale we can use a log link function. Putting everything together gets us:
 
+$$y \; | \; \nu, \lambda \sim \text{gamma}(\mu\lambda, \lambda),$$
+$$\text{log}(\mu) = \beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k,$$
+$$\mu = e^{\beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k}.$$
+
+And the second way is:
+
+$$\mu = \frac{\nu}{\lambda},$$
 $$\phi = \frac{\nu}{\lambda^2} = \frac{\nu}{\lambda} \frac{1}{\lambda} = \frac{\mu}{\lambda},$$
 $$\lambda = \frac{\mu}{\phi},$$
 $$\nu = \mu \lambda = \mu \frac{\mu}{\phi} = \frac{\mu^2}{\phi}.$$
-Now we have an expected value parameter $\mu$ and a variance parameter $\phi$. Since gamma distribution resides on the positive real scale we can use a log link linear predictor and put everything together:
+Here, we again have an expected value parameter $\mu$ and also a variance parameter $\phi$. We can again use a log link:
 
 $$y \; | \; \mu, \phi \sim \text{gamma}(\frac{\mu^2}{\phi}, \frac{\mu}{\phi}),$$
 $$\text{log}(\mu) = \beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k,$$
 $$\mu = e^{\beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k}.$$
 
-Based on the above, you should be able to develop a gamma regression model in Stan. We will not provide the model code here, since this is a part of your next homework.
+Based on the above, you should be able to develop a gamma regression model in Stan.
 
 ## Ordered logistic regression
 
@@ -529,7 +537,7 @@ See `code/ordered.R` for a practical example of the ordered logistic regression.
 
 ## And many more
 
-There are many more GLMs out there that might come in handy when tackling a particular problem (e.g probit regression, ordered probit regression, binomial regression, inverse Gaussian regression, exponential regression ...). Luckily the core concepts are the same in all of them, so equipped with the knowledge you gained today you should not have too many issues when implementing them. Some of the mentioned GLMs are already implemented in Stan, to take a look at all readily available regression models in Stan consult https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html.
+There are many more GLMs out there that might come in handy when tackling a particular problem (e.g probit regression, ordered probit regression, binomial regression, inverse Gaussian regression, exponential regression ...). Luckily the core concepts are the same in all of them, so equipped with the knowledge you gained today you should not have too many issues when implementing them. Some of the mentioned GLMs are already implemented in Stan, to take a look at all readily available regression models in Stan consult <https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html>.
 
 An alternative to coding your own models is an R package called `rstanarm` that emulates other R model-fitting functions but uses Stan (via the `rstan` package) for the back-end estimation. The primary target audience is people who would be open to Bayesian inference if using Bayesian software were easier but would use frequentist software otherwise.
 
@@ -569,7 +577,7 @@ model {
 
 ```
 
-Regularizing priors are not only helpful to prevent overfitting, but can also help out the sampler by narrowing down plausible ranges of parameters, which usually results in a faster and more stable sampling process. 
+Regularizing priors are not only helpful to prevent overfitting, but can also help out the sampler by narrowing down plausible ranges of parameters, which usually results in a faster and more stable sampling process.
 
 ## Using a hyper-prior
 
@@ -606,7 +614,7 @@ model {
 
 ```
 
-The figure below visualizes the normal and Laplace distributions which are used as $\beta$ priors in the case of the Bayesian L1 and L2 regression. In this case the spread parameter for both was set to 1. 
+The figure below visualizes the normal and Laplace distributions which are used as $\beta$ priors in the case of the Bayesian L1 and L2 regression. In this case the spread parameter for both was set to 1.
 
 <center>
   ![](./figs/priors.png)
@@ -652,7 +660,7 @@ The figure below compares absolute values of $\beta$ coefficients between all of
 
 # Recommended readings
 
-* **Regression Models** in Stan User's Guide (https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html). 
+* **Regression Models** in Stan User's Guide (<https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html>).
 
 * **Chapter 6 (Overfitting, Regularization and Information Criteria) and 10 (Counting and Classification)** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
 
@@ -666,6 +674,6 @@ The figure below compares absolute values of $\beta$ coefficients between all of
 
 * **Part III** of Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
 
-* Wiki page about the generalized linear model (https://en.wikipedia.org/wiki/Generalized_linear_model).
+* Wiki page about the generalized linear model (<https://en.wikipedia.org/wiki/Generalized_linear_model>).
 
-* Wiki page about the linear regression (https://en.wikipedia.org/wiki/Linear_regression).
+* Wiki page about the linear regression (<https://en.wikipedia.org/wiki/Linear_regression>).

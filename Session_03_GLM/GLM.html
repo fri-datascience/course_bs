@@ -569,7 +569,8 @@ model {
  
   // bernoulli logit
   y ~ bernoulli_logit(alpha + beta * x);
-}</code></pre>
+}
+</code></pre>
 <p>Alternatively <code>y ~ bernoulli_logit(alpha + beta * x);</code>
 could be replaced with</p>
 <pre><code>y ~ bernoulli(inv_logit(alpha + beta * x));</code></pre>
@@ -691,7 +692,8 @@ generated quantities {
     lambda[i] = exp(alpha + X[i] * beta);
     pred[i] = poisson_rng(lambda[i]);
   }
-}</code></pre>
+}
+</code></pre>
 <p>We will use this for predicting the amount of goals scored on a
 football match (<code>data/football.csv</code>). The dataset contains
 names of the home and away team, the date of the match, name of the
@@ -816,7 +818,8 @@ model {
   for (i in 1:n)
     y[i] ~ categorical_logit(beta * x[i]);
     // or y[i] ~ categorical(softmax(beta * x[i]));
-}</code></pre>
+}
+</code></pre>
 <p>In this case every generated sample of the <span class="math inline">\(\beta\)</span> parameter will be a matrix with
 <span class="math inline">\(m\)</span> rows and <span class="math inline">\(k\)</span> columns. Each value in that matrix will
 denote how a particular independent variable (out of <span class="math inline">\(m\)</span> independent variables) relates to a
@@ -956,22 +959,32 @@ that will come into play later on:</p>
 \frac{\nu}{\lambda^2}.\]</span> As you can see we cannot directly map
 the linear predictor to a gamma parameter. Fear not, we can fix this
 with some simple calculus. We can reparametrize the gamma distribution
-to fit our needs:</p>
-<p><span class="math display">\[\mu = \frac{\nu}{\lambda},\]</span></p>
-<p><span class="math display">\[\phi = \frac{\nu}{\lambda^2} =
+to fit our needs. There are two ways this is commonly done in the
+literature. The first:</p>
+<p><span class="math display">\[\mu = \frac{\nu}{\lambda},\]</span>
+<span class="math display">\[\nu = \mu\lambda.\]</span> Now we have an
+expected value parameter <span class="math inline">\(\mu\)</span>. Since
+gamma distribution resides on the positive real scale we can use a log
+link function. Putting everything together gets us:</p>
+<p><span class="math display">\[y \; | \; \nu, \lambda \sim
+\text{gamma}(\mu\lambda, \lambda),\]</span> <span class="math display">\[\text{log}(\mu) = \beta_0 + \beta_1 x_1 + \ldots
++ \beta_k x_k,\]</span> <span class="math display">\[\mu = e^{\beta_0 +
+\beta_1 x_1 + \ldots + \beta_k x_k}.\]</span></p>
+<p>And the second way is:</p>
+<p><span class="math display">\[\mu = \frac{\nu}{\lambda},\]</span>
+<span class="math display">\[\phi = \frac{\nu}{\lambda^2} =
 \frac{\nu}{\lambda} \frac{1}{\lambda} = \frac{\mu}{\lambda},\]</span>
 <span class="math display">\[\lambda = \frac{\mu}{\phi},\]</span> <span class="math display">\[\nu = \mu \lambda = \mu \frac{\mu}{\phi} =
-\frac{\mu^2}{\phi}.\]</span> Now we have an expected value parameter
-<span class="math inline">\(\mu\)</span> and a variance parameter <span class="math inline">\(\phi\)</span>. Since gamma distribution resides on
-the positive real scale we can use a log link linear predictor and put
-everything together:</p>
+\frac{\mu^2}{\phi}.\]</span> Here, we again have an expected value
+parameter <span class="math inline">\(\mu\)</span> and also a variance
+parameter <span class="math inline">\(\phi\)</span>. We can again use a
+log link:</p>
 <p><span class="math display">\[y \; | \; \mu, \phi \sim
 \text{gamma}(\frac{\mu^2}{\phi}, \frac{\mu}{\phi}),\]</span> <span class="math display">\[\text{log}(\mu) = \beta_0 + \beta_1 x_1 + \ldots
 + \beta_k x_k,\]</span> <span class="math display">\[\mu = e^{\beta_0 +
 \beta_1 x_1 + \ldots + \beta_k x_k}.\]</span></p>
 <p>Based on the above, you should be able to develop a gamma regression
-model in Stan. We will not provide the model code here, since this is a
-part of your next homework.</p>
+model in Stan.</p>
 </div>
 <div id="ordered-logistic-regression" class="section level2">
 <h2>Ordered logistic regression</h2>
@@ -1046,7 +1059,8 @@ model {
 
   for (i in 1:n)
     y[i] ~ ordered_logistic(x[i] * beta, c);
-}</code></pre>
+}
+</code></pre>
 <p>See <code>code/ordered.R</code> for a practical example of the
 ordered logistic regression. There we analyze how religion (yes/no),
 sex, college degree (yes/no) and country of residence (USA/Sweden)
@@ -1123,7 +1137,8 @@ model {
   beta ~ normal(0, sigma_beta);
 
   y ~ normal(X * beta + alpha, sigma);
-}</code></pre>
+}
+</code></pre>
 <p>Regularizing priors are not only helpful to prevent overfitting, but
 can also help out the sampler by narrowing down plausible ranges of
 parameters, which usually results in a faster and more stable sampling
@@ -1173,7 +1188,8 @@ model {
   //beta ~ double_exponential(0, sigma_beta); 
   
   y ~ normal(X * beta + alpha, sigma);
-}</code></pre>
+}
+</code></pre>
 <p>The figure below visualizes the normal and Laplace distributions
 which are used as <span class="math inline">\(\beta\)</span> priors in
 the case of the Bayesian L1 and L2 regression. In this case the spread

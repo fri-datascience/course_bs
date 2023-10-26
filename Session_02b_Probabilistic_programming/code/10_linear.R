@@ -11,10 +11,23 @@ library(tidyverse)
 model <- cmdstan_model("../models/linear.stan")
 
 # prepare the data
-data <- read.csv("../data/toy.csv")
+data <- read.csv("../data/temperature.csv", sep = ";")
+
+# remove month
+data <- data %>% select(-month)
+
+# mean per year
+data <- data %>%
+  group_by(year) %>%
+  summarise(temperature = mean(temperature))
+
+# x shift for numerical stability
+min_year <- min(data$year)
+x <- data$year - min_year
+y <- data$temperature
 
 # prepare input for Stan
-stan_data <- list(n = nrow(data), x = data$x, y = data$y)
+stan_data <- list(n = nrow(data), x = x, y = y)
 
 # fit
 fit <- model$sample(
@@ -30,15 +43,18 @@ mcmc_trace(fit$draws())
 fit$summary()
 
 # analysis ---------------------------------------------------------------------
-# lines and uncertainty
-df <- as_draws_df(fit$draws())
-
 # params
+df <- as_draws_df(fit$draws())
 mcse(df$a)
 mcse(df$b)
+mcse(df$b > 0)
 
 # plot only 100 random regression lines
 df_100 <- sample_n(df, 100)
+
+# x axis
+x_breaks <- seq(from = 0, to = 120, length.out = 5)
+x_labels <- x_breaks + min_year
 
 # visualize data points with regression lines in the background
 ggplot() +
@@ -55,4 +71,6 @@ ggplot() +
     linewidth = 1,
     color = "skyblue"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  labs(x = "Year", y = "Temperature") +
+  scale_x_continuous(breaks = x_breaks, labels = x_labels)
