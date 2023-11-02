@@ -62,15 +62,21 @@ df_100 <- sample_n(df_100, 100)
 
 # plot
 ggplot() +
-  geom_point(data = data,
-             aes(x = year0, y = temperature),
-             alpha = 0.3, linewidth = 1.5, shape = 16) +
-  geom_abline(data = df_100,
-              aes(slope = beta, intercept = alpha),
-              alpha = 0.05, linewidth = 1) +
+  geom_point(
+    data = data,
+    aes(x = year0, y = temperature),
+    alpha = 0.3, linewidth = 1.5, shape = 16
+  ) +
+  geom_abline(
+    data = df_100,
+    aes(slope = beta, intercept = alpha),
+    alpha = 0.05, linewidth = 1
+  ) +
   ylim(6, 12) +
-  scale_x_continuous(breaks = c(0, 40, 80, 120),
-                     labels = c(1900, 1940, 1980, 2020),
-                     limits = c(0, 120)) +
+  scale_x_continuous(
+    breaks = c(0, 40, 80, 120),
+    labels = c(1900, 1940, 1980, 2020),
+    limits = c(0, 120)
+  ) +
   xlab("Year") +
   ylab("T [°C]")
