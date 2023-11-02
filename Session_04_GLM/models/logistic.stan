@@ -10,9 +10,6 @@ parameters {
 }
 
 model {
-  // beta priors
-  beta ~ cauchy(0, 2.5);
- 
   // bernoulli logit
   y ~ bernoulli_logit(alpha + beta * x);
  

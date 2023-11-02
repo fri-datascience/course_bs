@@ -188,9 +188,6 @@ parameters {
 }
 
 model {
-  // beta prior
-  beta ~ cauchy(0, 2.5);
- 
   // bernoulli logit
   y ~ bernoulli_logit(alpha + beta * x);
 }
@@ -268,9 +265,6 @@ parameters {
 }
 
 model {
-  // prior on beta
-  beta ~ cauchy(0, 2.5);
-  
   // poisson model
   for (i in 1:n) {
     y[i] ~ poisson(exp(alpha + X[i] * beta));
@@ -524,9 +518,6 @@ parameters {
 }
 
 model {
-  // beta prior
-  beta ~ cauchy(0, 2.5);
-
   for (i in 1:n)
     y[i] ~ ordered_logistic(x[i] * beta, c);
 }

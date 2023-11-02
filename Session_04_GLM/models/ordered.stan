@@ -12,9 +12,6 @@ parameters {
 }
 
 model {
-  // beta prior
-  beta ~ cauchy(0, 2.5);
-
   for (i in 1:n)
     y[i] ~ ordered_logistic(x[i] * beta, c);
 }

@@ -11,9 +11,6 @@ parameters {
 }
 
 model {
-  // prior on betas
-  beta ~ cauchy(0, 2.5);
-
   // poisson model
   for (i in 1:n) {
     y[i] ~ poisson(exp(alpha + X[i] * beta));

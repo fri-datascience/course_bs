@@ -11,9 +11,6 @@ parameters {
 }
 
 model {
-  // beta prior
-  b ~ normal(0, 1);
-  
   // model
   y ~ normal(a + x * b, sigma);
 }

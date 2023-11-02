@@ -11,9 +11,6 @@ parameters {
 }
 
 model {
-  // priors
-  b ~ cauchy(0, 2.5);
-  
   // model
   y ~ normal(a + x * b, sigma);
 }
