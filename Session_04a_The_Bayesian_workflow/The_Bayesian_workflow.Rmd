@@ -15,6 +15,12 @@ knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 
 Bayesian modeling is an iterative process, we start by picking an initial model and settings its priors. To investigate whether our priors have undesirable effects that contradict domain knowledge we start by performing prior predictive checks. Once we are happy with our priors, we fit the model and diagnose the fitting process (traceplot, convergence, diagnostics ...). If all is good, we then execute posterior predictive checks to evaluate whether our model is suitable for answering the questions we are asking.
 
+# The Bayesian workflow
+
+![](./figs/the_bayesian_workflow.png)
+
+The Bayesian workflow denotes the steps that are traditionally involved in a Bayesian statistical analysis. A simplified version of the workflow is visualized in the figure above. Solid lines denote the typical traversal through the workflow, while dotted lines denote issues that force us to reconsider and finetune our models. Up to this point, we mainly tackled model development, model fitting, diagnostics and inferences. During this lecture, we will take a look at prior and posterior predictive checking. While model comparison, a very important part when figuring out which model is the most suitable for our analysis, is covered in one of the future lectures.
+
 # Prior predictive checking
 
 Prior predictive checking generates data according to a given choice of priors to assess whether the priors we have chosen are appropriate for the task at hand. Prior predictive checks are very useful for understanding the implications of prior choices on our model. When doing so we use data we generate ourselves, note that this data should be representative for the process we are trying to analyze. Meaning that we require at least some domain knowledge to execute this, if we are generating our own data that does not make any sense, there is a good chance that neither will our priors.
@@ -298,11 +304,11 @@ Like mentioned in more complex models visualizing our fits is often hard to do, 
 
 Like we said, if we were interested in means the normal model would suffice, but if our questions are more complex than the normal model would most likely provide us with erroneous answers. For example, let us say that we are interested in the percentage of responses where reaction time was slower than one second (marked with a dashed vertical line in both visualizations above). With the normal model 21.66% (90% HDI 20.18--23.09%) of responses were slower than one second, while in the case of EMG model 16.95% (90% HDI 15.76--18.24%) were slower, we again have a discrepancy between results from both models. If we look at the fit we can confidently say that the inferences made with the EMG model are much more credible here (in our sample 17.82% of reactions were slower than 1 s).
 
-Depending on the situation and the type of time measurements some other distribution might also come in handy. See http://lindeloev.net/shiny/rt/ for a list of suitable distributions (along with their weaknesses and strengths) and a very nice interactive visualization of all of them.
+Depending on the situation and the type of time measurements some other distribution might also come in handy. See <http://lindeloev.net/shiny/rt/> for a list of suitable distributions (along with their weaknesses and strengths) and a very nice interactive visualization of all of them.
 
 ### Comparing two groups and the region of practical equivalence
 
-Finally, let us compare reaction times between incongruent and congruent conditions. In the incongruent case the mean reaction time equaled 0.78 s (90% HDI 0.77--0.79 s) and 0.62 s (90% HDI 0.61--0.63 s) in the congruent case. We are as sure as we can be ("100%") that reaction times in the congruent condition are faster than in the incongruent one. 
+Finally, let us compare reaction times between incongruent and congruent conditions. In the incongruent case the mean reaction time equaled 0.78 s (90% HDI 0.77--0.79 s) and 0.62 s (90% HDI 0.61--0.63 s) in the congruent case. We are as sure as we can be ("100%") that reaction times in the congruent condition are faster than in the incongruent one.
 
 Next, we will learn how we can use something called a region of practical equivalence (ROPE) to show whether some samples are equal or to take into account the measurement error of our experiment. For this illustration, let us assume that we used a really poor measuring instrument, maybe reaction times were measured manually via a stopwatch -- overseer of the experiment was watching the participant and measured her/his reaction times manually by pressing the start and stop buttons on his watch. Through some black magic we deduced that this approach has a measurement error of 0.15 s. As a result, reaction times with a difference smaller than 0.15 s should be treated as equal. In more technical terms, we will use a 0.15 s ROPE in our comparison. With this ROPE we are only 80.32% sure that reaction times are faster in the case of the congruent condition. Now, there is a 19.68% chance that due to our measurement error reaction times in both conditions are equal.
 
@@ -314,12 +320,12 @@ Another important technique in posterior predictive checking is fitting our mode
 
 # Recommended readings
 
-* Gelman A. et al. (2020). Bayesian workflow (https://arxiv.org/abs/2011.01808).
+* Gelman A. et al. (2020). Bayesian workflow (<https://arxiv.org/abs/2011.01808>).
 
-* Lindeløv J. K. (2021). Reaction time distributions: an interactive overview  (http://lindeloev.net/shiny/rt/).
+* Lindeløv J. K. (2021). Reaction time distributions: an interactive overview  (<http://lindeloev.net/shiny/rt/>).
 
 # Additional readings
 
-* Betancourt M. (2020). Towards A Principled Bayesian Workflow (https://betanalpha.github.io/assets/case_studies/).
+* Betancourt M. (2020). Towards A Principled Bayesian Workflow (<https://betanalpha.github.io/assets/case_studies/>).
 
-* Gnabry J. et al. (2018). Visualization in Bayesian workflow (https://arxiv.org/abs/1709.01449).
+* Gnabry J. et al. (2018). Visualization in Bayesian workflow (<https://arxiv.org/abs/1709.01449>).
