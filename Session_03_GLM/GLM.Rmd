@@ -25,7 +25,7 @@ Typically linear regression models have several parameters, the number of parame
 
 The gist of our problem is to figure out how we should distribute our resources if we just opened a startup company, in other words we are interested it the ratio between funds spent for research, administration and marketing that is expected go generate the most profit. We will use Bayesian multiple linear regression (we use the term simple linear regression when there is only one independent variable and the term multiple linear regression if we have more than one independent variable):
 
-$$y_i \; | \; x_i, \alpha, \beta_r, \beta_a, \beta_m, \sigma \sim N(\alpha + \beta_r x_{r,i} + \beta_a x_{a,i} + \beta_m x_{m,i}, \sigma),$$ 
+$$y_i \; | \; x_i, \alpha, \beta_r, \beta_a, \beta_m, \sigma \sim N(\alpha + \beta_r x_{r,i} + \beta_a x_{a,i} + \beta_m x_{m,i}, \sigma),$$
 $$\beta_r, \beta_a, \beta_n \sim N(0, 1).$$
 
 ## The intercept
@@ -75,7 +75,7 @@ On the other hand, if we are interested in developing a model that is capable of
 
 As you can image, we have a lot of freedom when designing our regression models. We could model our data whit this model:
 
-$$y_i \; | \; x_i, \beta_3, \beta_2, \beta_1, \sigma \sim N(\beta_3 x_{r,i}^3 + \beta_2 x_{r,i}^2 + \beta_1 x_{r,i}, \sigma).$$ 
+$$y_i \; | \; x_i, \beta_3, \beta_2, \beta_1, \sigma \sim N(\beta_3 x_{r,i}^3 + \beta_2 x_{r,i}^2 + \beta_1 x_{r,i}, \sigma).$$
 
 This is called polynomial regression and still falls in the category of linear models, we achieved non-linearity by transforming independent variables (something we will do a lot). This could be a completely valid model and might even fit our input data better than the one we used previously. However, making sense of this model's outputs would be very hard since the $\beta$ coefficients are now much harder to interpret. It is important to always have in mind that in Bayesian analysis we are (usually) trying to devise models that provide us with useful insights about the data generating processes in question! While complex models might fit the data extremely well they are often too hard to understand and do not provide any new insights into the data generating process. In fact, in several sensible scientific fields (such as clinical medicine and trials ...) regulative agencies enforce the use of interpretable models only.
 
@@ -300,7 +300,7 @@ When preparing the input data we decided to standardize it. This often results i
   ![](./figs/scale.png)
 </center>
 
-Once we standardize our independent variables we can check their distributions and correlations. The figure below shows no reason for concern so we can continue with our analysis. 
+Once we standardize our independent variables we can check their distributions and correlations. The figure below shows no reason for concern so we can continue with our analysis.
 
 <center>
   ![](./figs/correlations.png)
@@ -318,7 +318,7 @@ To inspect the quality of our model, we can compare how the estimated $\lambda$ 
   ![](./figs/poisson_lambdas_goals.png)
 </center>
 
-This figure suggests that there is a positive correlation between the $\lambda$ parameter and the amount of goals scored by the home team. However, it seems like our model is a little conservative in its predictions -- it will rarely predict games with a lot of scored goals. As also seen on the graph above such games are quite uncommon (in the majority of games the home team scored at most 2 goals). 
+This figure suggests that there is a positive correlation between the $\lambda$ parameter and the amount of goals scored by the home team. However, it seems like our model is a little conservative in its predictions -- it will rarely predict games with a lot of scored goals. As also seen on the graph above such games are quite uncommon (in the majority of games the home team scored at most 2 goals).
 
 To get a better understanding of our model let us compare a couple of predictions against the actual results of those games. To do this, we will compare the predictions and the actual amount of goals scored by the home team on the last 9 Atletico Madrid games that we have in our database.
 
@@ -380,8 +380,7 @@ We start by loading our dataset, it has 3 columns -- PlayerType, Distance, ShotT
 data <- read.csv("./data/shot_types.csv", stringsAsFactors = TRUE)
 ```
 
-Once our variable types are properly set, we can easily prepare matrices with independent and dependent variables. The `model.matrix()` function can be used to create the so called model matrix (https://en.wikipedia.org/wiki/Design_matrix). In model matrices (or design matrices) each row represents an observation of our data, with the successive columns corresponding to the variables and their specific values for that object. To encode nominal variables model matrices use something called contrasts, you can think of contrasts as encoding of variables.
-
+Once our variable types are properly set, we can easily prepare matrices with independent and dependent variables. The `model.matrix()` function can be used to create the so called model matrix (<https://en.wikipedia.org/wiki/Design_matrix>). In model matrices (or design matrices) each row represents an observation of our data, with the successive columns corresponding to the variables and their specific values for that object. To encode nominal variables model matrices use something called contrasts, you can think of contrasts as encoding of variables.
 
 ```{R, warning=FALSE, message=FALSE}
 # library needed for n_distinct
@@ -529,130 +528,13 @@ See `code/ordered.R` for a practical example of the ordered logistic regression.
 
 ## And many more
 
-There are many more GLMs out there that might come in handy when tackling a particular problem (e.g probit regression, ordered probit regression, binomial regression, inverse Gaussian regression, exponential regression ...). Luckily the core concepts are the same in all of them, so equipped with the knowledge you gained today you should not have too many issues when implementing them. Some of the mentioned GLMs are already implemented in Stan, to take a look at all readily available regression models in Stan consult https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html.
+There are many more GLMs out there that might come in handy when tackling a particular problem (e.g probit regression, ordered probit regression, binomial regression, inverse Gaussian regression, exponential regression ...). Luckily the core concepts are the same in all of them, so equipped with the knowledge you gained today you should not have too many issues when implementing them. Some of the mentioned GLMs are already implemented in Stan, to take a look at all readily available regression models in Stan consult <https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html>.
 
 An alternative to coding your own models is an R package called `rstanarm` that emulates other R model-fitting functions but uses Stan (via the `rstan` package) for the back-end estimation. The primary target audience is people who would be open to Bayesian inference if using Bayesian software were easier but would use frequentist software otherwise.
 
-# Regularization
-
-A Bayesian approach can also overfit the training data, although it is less likely to do so, because it uses distributions over parameters instead of point estimates. In this section we will get familiar with two ways of incorporating regularization into Bayesian models.
-
-## Using a regularizing (skeptical) prior
-
-Bayesian learning combines prior knowledge with data (facts) to update model's beliefs about the data generating process. If priors are completely uninformative (e.g. $U(-\infty, \infty)$) then updated beliefs will be based completely on the input data which can lead to overfitting. To prevent this we can put a more strict prior on model's of our parameter. This way the model will be less excited by the input data. In a way, priors make the model skeptical about the input data. Since such priors achieve the effect of regularization, we often call them regularization priors.
-
-As you already saw by now, we commonly put such priors on $\beta$ coefficients in our regression models, now you know that the main goal of this is to avoid overfitting. But be careful here, if we are too skeptical (we provide too strict priors) then our model will not pay enough attention to the input data and will underfit! If we standardize our input variables then $\beta$ coefficients should be close to 0. In our previous models we put a $N(0, 1)$ (or similar) prior on our $\beta$ coefficients. Below is a more flexible way, in this example of a multiple linear regression model we put a $N(0, \sigma_\beta)$ prior on our $\beta$ coefficients, where $\sigma_\beta$ is a hyper-parameter that we can provide as input to the model. Finding the optimal value of this parameter is usually done in the same way as with hyper-parameters in any other machine learning model -- with cross validation or some other approach to model parameter selection.
-
-```
-data {
-  int<lower=0> n;           // train set size
-  int<lower=0> m;           // test set size
-  int<lower=0> k;           // number of independent variables
-  matrix[n, k] X;           // train set
-  matrix[m, k] X_test;      // test set
-  vector[n] y;              // dependent variable
-  real<lower=0> sigma_beta; // regularization parameter
-}
-
-parameters {
-  real alpha;                // intercept
-  vector[k] beta;            // beta coefficients
-  real<lower=0> sigma;       // sd
-}
-
-model {
-  // regularization
-  beta ~ normal(0, sigma_beta);
-
-  y ~ normal(X * beta + alpha, sigma);
-}
-
-```
-
-Regularizing priors are not only helpful to prevent overfitting, but can also help out the sampler by narrowing down plausible ranges of parameters, which usually results in a faster and more stable sampling process. 
-
-## Using a hyper-prior
-
-By using a hyper-prior we jointly estimate the $\sigma_\beta$ parameter along with our $\beta$ coefficients. We can think of this as a hierarchical Bayesian model (more about those in one of the future lectures) where $\sigma_\beta$ is interpreted as a group-level scaling parameters that is estimated from pooled information across individual $\beta$ coefficients. In other words, $\beta$ coefficients are linked together through a shared hyper parameter $\sigma_\beta$ which can be interpreted as a "penalty" term. If some $\beta$ coefficients are close to 0, this will pull others towards 0 as well (through the $\sigma_\beta$ parameter). We will encounter this phenomena several times, it is quite common and even has its own name -- Bayesian shrinkage. So, if $\sigma_\beta$ is close to zero then all $\beta$ coefficients will be shrunk towards 0 and as $\sigma_\beta \rightarrow \infty$ our prior on $\beta$ becomes uniform.
-
-```
-data {
-  int<lower=0> n;      // train set size
-  int<lower=0> m;      // test set size
-  int<lower=0> k;      // number of independent variables
-  matrix[n, k] X;      // train set
-  matrix[m, k] X_test; // test set
-  vector[n] y;         // dependent variable
-}
-
-parameters {
-  real alpha;               // intercept
-  vector[k] beta;           // beta coefficients
-  real<lower=0> sigma;      // sd
-  real<lower=0> sigma_beta; // hierarchical sd across betas
-}
-
-model {
-  // penalized regression - Bayesian L2
-  // per Erp et al. 2019 - Shrinkage priors for Bayesian penalized regression
-  sigma_beta ~ cauchy(0, 1);
-  beta ~ normal(0, sigma_beta);
-
-  // for Bayesian L1 use Laplace or double_exponential prior
-  //beta ~ double_exponential(0, sigma_beta); 
-  
-  y ~ normal(X * beta + alpha, sigma);
-}
-
-```
-
-The figure below visualizes the normal and Laplace distributions which are used as $\beta$ priors in the case of the Bayesian L1 and L2 regression. In this case the spread parameter for both was set to 1. 
-
-<center>
-  ![](./figs/priors.png)
-</center>
-
-## Comparison
-
-To compare various regularization techniques we will use multiple linear regression on an air pollution dataset (`data/ozone.csv`). We will use 300 independent variables to estimate tomorrow's ozone level (O^3^). Our dataset has 1353 observations, we used 500 of them for the training set and the rest for the test set. The split is intentionally skewed in order to emphasize the problem of overfitting.
-
-To evaluate Bayesian regression models we compared them with a popular machine learning model (random forests) and three linear regression models. Traditional linear regression does not incorporate any regularization and thus its loss function does not have a penalty term:
-
-$$\underset{\beta}{\operatorname{argmax}} \sum_{i=1}^n (y_i - \beta_0 - \sum_{j=1}^m \beta_j x_{ij})^2.$$
-
-Lasso regression (L1) uses a loss function that includes a penalty term for model complexity, the penalty term is based on absolute values of $\beta$ coefficients:
-
-$$\underset{\beta}{\operatorname{argmax}} \sum_{i=1}^n (y_i - \beta_0 - \sum_{j=1}^m \beta_j x_{ij})^2 + \lambda \sum_{j=1}^m |\beta_j|.$$
-
-Similarly, ridge regression (L2) facilitates a penalty term that is based on squared $\beta$ coefficients:
-
-$$\underset{\beta}{\operatorname{argmax}} \sum_{i=1}^n (y_i - \beta_0 - \sum_{j=1}^m \beta_j x_{ij})^2 + \lambda \sum_{j=1}^m \beta_j^2.$$
-
-On the Bayesian side our comparison implements five different Bayesian linear regression models:
-
-* Bayesian regression (without regularization, `models/regularization_none.stan`),
-* Bayesian regression with a regularizing prior ($\sigma_\beta = 0.1$, `models/regularization_parameter.stan`),
-* Bayesian regression with a regularizing prior ($\sigma_\beta = 1$, `models/regularization_parameter.stan`),
-* Bayesian lasso regression (regularization through a hyper-prior, `models/regularization_hyperprior_l1.stan`),
-* Bayesian ridge regression (regularization through a hyper-prior, `models/regularization_hyperprior_l2.stan`).
-
-The figure below visualizes results of the comparison.
-
-<center>
-  ![](./figs/regularization_comparison.png)
-</center>
-
-We can see that when the model has many $\beta$ coefficients it will overfit if no regularization is implemented. If we are using a too strict regularizing prior (`lmBayes[0.1]`) then our model underfits (the model's prior knowledge is very strict and new facts do not change it too much). We can see that the best results were achieved when we unleashed the full power of Bayesian modeling by putting a hyper-prior distribution on the spread parameter of $\beta$ coefficients.
-
-The figure below compares absolute values of $\beta$ coefficients between all of used regression models.
-
-<center>
-  ![](./figs/regularization_coefficients.png)
-</center>
-
 # Recommended readings
 
-* **Regression Models** in Stan User's Guide (https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html). 
+* **Regression Models** in Stan User's Guide (<https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html>).
 
 * **Chapter 6 (Overfitting, Regularization and Information Criteria) and 10 (Counting and Classification)** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
 
@@ -666,6 +548,6 @@ The figure below compares absolute values of $\beta$ coefficients between all of
 
 * **Part III** of Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
 
-* Wiki page about the generalized linear model (https://en.wikipedia.org/wiki/Generalized_linear_model).
+* Wiki page about the generalized linear model (<https://en.wikipedia.org/wiki/Generalized_linear_model>).
 
-* Wiki page about the linear regression (https://en.wikipedia.org/wiki/Linear_regression).
+* Wiki page about the linear regression (<https://en.wikipedia.org/wiki/Linear_regression>).
