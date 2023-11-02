@@ -1,5 +1,5 @@
 ---
-title: "Predictive checking"
+title: "The Bayesian workflow"
 author: Jure Demšar and Erik Štrumbelj, University of Ljubljana
 output:
     prettydoc::html_pretty:
