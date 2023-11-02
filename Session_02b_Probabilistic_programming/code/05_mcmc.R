@@ -53,15 +53,17 @@ metropolis <- function(z, n, steps = 1000, init = 0.5, step = 0.2) {
 
 # MCMC based inference ---------------------------------------------------------
 z <- 7
-n <- 13
+n <- 17
 
 chain1 <- metropolis(z, n)
 chain2 <- metropolis(z, n, init = 0.25)
 chain3 <- metropolis(z, n, init = 0.75)
 
 # plot samples through time
-df_samples <- data.frame(x = seq_len(length(chain1)),
-                        theta = chain1, chain = "1")
+df_samples <- data.frame(
+  x = seq_len(length(chain1)),
+  theta = chain1, chain = "1"
+)
 
 df_samples <- df_samples %>%
   add_row(data.frame(x = seq_len(length(chain2)), theta = chain2, chain = "2"))
@@ -76,8 +78,10 @@ ggplot(df_samples, aes(x = x, y = theta, color = chain)) +
 
 # visualize
 ggplot(data = df_samples, aes(x = theta)) +
-  geom_histogram(bins = 50, color = "skyblue",
-                 fill = "skyblue", alpha = 0.75) +
+  geom_histogram(
+    bins = 50, color = "skyblue",
+    fill = "skyblue", alpha = 0.75
+  ) +
   xlim(0, 1) +
   xlab("") +
   ylab("density") +
@@ -93,12 +97,13 @@ cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
 # fairness visualization -------------------------------------------------------
 ggplot(data = df_samples, aes(x = theta)) +
   stat_dist_slab(aes(fill = stat(x < bottom_cut | x > top_cut)),
-                    alpha = 0.75,
-                    show.legend = FALSE,
-                    normalize = "none",
-                    scale = 1) +
+    alpha = 0.75,
+    show.legend = FALSE,
+    normalize = "none",
+    scale = 1
+  ) +
   xlim(0, 1) +
-  ylim(0, 3) +
+  ylim(0, 4) +
   xlab("") +
   ylab("density") +
   theme_minimal() +

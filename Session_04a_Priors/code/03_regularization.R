@@ -4,7 +4,7 @@ library(cmdstanr)
 library(tidyverse)
 library(posterior)
 library(randomForest) # for random forest
-library(glmnet)       # for L2 (ridge) and L1 (lasso) regressions
+library(glmnet) # for L2 (ridge) and L1 (lasso) regressions
 
 # load and prepare data --------------------------------------------------------
 data <- read.csv("../data/ozone.csv")

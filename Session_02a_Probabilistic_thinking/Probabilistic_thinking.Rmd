@@ -14,13 +14,42 @@ knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 ### In preparation for this lecture
 
 * Revise the definition of probability.
-* Revise the pmf/pdf, support, parameters, mean, and variance for all univariate distributions from Principles of uncertainty (https://fri-datascience.github.io/course_pou/probability-distributions.html). You should also have an rough understanding of the shapes they can take.
+* Revise the pmf/pdf, support, parameters, mean, and variance for all univariate distributions from Principles of uncertainty (<https://fri-datascience.github.io/course_pou/probability-distributions.html>). You should also have an rough understanding of the shapes they can take.
 
 ### Summary
 
 *Uncertainty refers to epistemic situations involving imperfect or unknown information.* ~ Wikipedia
 
 The main goal of this handout is to illustrate how uncertainty is part of our everyday lives but in order to deal with it in a systematic way we require the rigor of probability theory. The language of probability theory allows us not only to express uncertainty but also to provide probabilistic interpretations of processes of interest, which then allows us to infer their properties from the data they generate. That is, probability theory is the very foundation of applied statistics.
+
+### Statistics is just counting
+
+A very good definition of statistics states that
+
+> *Statistics offers us a framework for reasoning in the presence of uncertainty.*
+
+The fact that uncertainty is almost omnipresent makes statistics one of the most important sciences out there. Even though a lot of what we will do is fairly complex, the main idea is quite simple -- outcomes that can occur in many different ways are more probable than the ones that cannot occur in so many ways. In other words, statistics in its essence is mainly counting.
+
+This concept can be explained through a simple example. Let us say that we have a bag with 3 marbles in it, the marbles are of two colors -- red or blue. We draw 2 marbles with replacement and they are both red. Our statistical task now is to figure out what is in the bag. There are 4 options:
+
+<center>
+![](./figs/marbles_options.png){width=20%}
+</center>
+
+To get to the bottom of this, we have to simply count the number of ways each of the above bags can generate our dataset (2 red marbles). This process is visualized on the figure below.
+
+<center>
+![](./figs/marbles_outcomes.png){width=100%}
+</center>
+
+So, with the first option (3 blue marbles) we cannot generate our dataset (2 red marbles). In the second case, we can generate it one way, in the third case we can generate it in 4 different ways and in the fourth case, we can generate it in 9 different ways. The fact that we can generate our dataset in the most ways with the last options makes it the most plausible. But not the only one possible! Below are probabilites about what can lie in the bag, getting the probabilities is quite simple, we divide the number of ways a given option can generate the dataset with the amount of ways that all possible bags can generate the dataset ($1 + 4 + 9 = 14$)
+
+1. P(3 blue) = 0
+2. P(2 blue, 1 red) = 1/14,
+3. P(1 blue, 2 red) = 4/14,
+4. P(3 red) = 9/14.
+
+Counting is of course unfeasible with more complex problems, but the rationale remains the same there. As you will see later on we will use Markov Chain Monte Carlo to generate plausible solutions to our problem and in the end we will do the counting on these plausible solutions.
 
 ### Uncertainty in everyday life
 

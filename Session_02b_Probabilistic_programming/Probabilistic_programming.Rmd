@@ -29,6 +29,117 @@ In the previous lecture we said that as Bayesian statisticians we choose to repr
 
 Since you already listened to the Introduction to statistical learning and decision theory course all this should sound somewhat familiar to you. There you used the notation $h : \mathcal{X} \rightarrow \mathcal{Y}$ to denote a model (function), where $\mathcal{X}$ and $\mathcal{Y}$ represent the dependent (input) and independent (output) variable spaces, respectively. A learning algorithm $\mathcal{A}$ given a dataset thus produces a model $A(D_n) = h_n$. Let $\mathcal{H}$ denote the set of all possible models for a particular learning algorithm. In statistical modelling outputs ($\mathcal{Y}$) are not point estimates but probability distributions, meaning that $\mathcal{H}$ represents a family of probability distributions from which the model ($h$) is trained.
 
+## The Bayes' rule
+
+At the core of Bayesian statistics is the Bayes' rule:
+
+$$p(\theta|y) = \frac{p(y | \theta) \ p(\theta)}{p(y)} \propto p(y | \theta) \ p(\theta),$$
+where $p(\theta|y)$ is usually called the posterior, $p(y | \theta)$ the likelihood, $p(\theta)$ the prior and $p(y)$ the evidence. Luckily, we can get rid of the $p(y)$ component as it is hard to calculate. We can get rid of it because its main purpose is normalization and as such does not influence the shape of the posterior distribution. In other words, from the parameter's standpoint (we are interested in estimating the parameters) $p(y)$ is a constant.
+
+To better understand the Bayes' rule let us write it down a bit more informally:
+
+$$\text{(new beliefs)} \propto \text{(new data/information)} \cdot \text{(prior beliefs)}.$$
+
+The informal equation above shows why Bayesian staticits is very intuitive, at its core is the same logic that we use to reason and update our beliefs in everyday lives. We update our beliefs about the world and the environment by merging previous (prior) beliefs with new data (information) that comes along.
+
+Let us solidify this concepct through a simple example. Assume that we are an alien that just landed on earth and is interested in figuring out what proportion of earth is covered by water. We have a special device for doing this, we fire the device into the air, it lands on a random location on earth and lets us know whether it landed on earth or in the water.
+
+```{r, warning = FALSE, message = FALSE}
+# library
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+
+# x axis
+x <- seq(0, 1, 0.1)
+
+# water
+water <- x * 2
+
+# land
+land <- 2 - water
+
+# prior
+prior <- rep(1, 11) / 11
+
+# plots storage
+plots <- list()
+
+# plot our initial belief
+df <- data.frame(x, prior)
+p <- ggplot(df, aes(x, prior)) +
+    geom_bar(stat = "identity") +
+    xlab("Water percentage") +
+    ylab("Belief") +
+    ylim(0, 1)
+
+# store
+plots[[1]] <- p
+
+# set posterior
+our_belief <- NULL
+
+saw_land <- function(our_belief, plots) {
+    # calculate the posterior
+    if (is.null(our_belief)) {
+        posterior <- prior * land
+    } else {
+        posterior <- our_belief * land
+    }
+    posterior <- posterior / sum(posterior)
+
+    # plot
+    df <- data.frame(x, posterior)
+    plot <- ggplot(df, aes(x, posterior)) +
+        geom_bar(stat = "identity") +
+        xlab("Water percentage") +
+        ylab("Belief") +
+        ylim(0, 1)
+
+    return(list(posterior, plot))
+}
+
+saw_water <- function(our_belief, plots) {
+    # calculate the posterior
+    if (is.null(our_belief)) {
+        posterior <- prior * water
+    } else {
+        posterior <- our_belief * water
+    }
+    posterior <- posterior / sum(posterior)
+
+    # plot
+    df <- data.frame(x, posterior)
+    plot <- ggplot(df, aes(x, posterior)) +
+        geom_bar(stat = "identity") +
+        xlab("Water percentage") +
+        ylab("Belief") +
+        ylim(0, 1)
+
+    return(list(posterior, plot))
+}
+
+# sample location from https://www.realrandom.net/location.html
+# 11 samples gave us (1 - water, 0 - land)
+y <- c(1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1)
+
+for (observation in y) {
+    if (observation == 1) {
+        result <- saw_water(our_belief, plots)
+    } else {
+        result <- saw_land(our_belief, plots)
+    }
+
+    # update our belief and store the plot
+    our_belief <- result[[1]]
+    plots[[length(plots) + 1]] <- result[[2]]
+}
+
+plot_grid(plotlist = plots, ncol = 3, nrow = 4, scale = 0.9)
+```
+
+At the beginning we had no (prior) knowledge about what lies on the surface of the earth but as we got more and more data, our beliefs became more certain and got closer to the truth (~70%).
+
 ## A simple example
 
 To get some feel about what statistical models really are, let us develop a simple Bayesian model. In this example we are interested in modelling a coin that when flipped lands either on its head (1) or its tail (0). We are interested in modelling the probability that the coin lands on its head, let us denote this probability with $\theta$. We observed 30 flips:
@@ -39,7 +150,7 @@ To get some feel about what statistical models really are, let us develop a simp
 
 , as you can see the flipping resulted in 20 heads (ones) and 10 tails (zeros). We will solve this problem analytically by using the Bayes' rule:
 
-$$p(\theta|y) = \frac{p(y | \theta) \ p(\theta)}{p(y)} \propto p(y | \theta) \ p(\theta).$$
+$$p(\theta|y) \propto p(y | \theta) \ p(\theta).$$
 Or in our case:
 
 $$p(\theta|n,z) \propto p(n,z|\theta)p(\theta),$$
@@ -608,7 +719,7 @@ The $\texttt{ess_bulk}$ estimates the bulk effective sample size using rank norm
 
 $$ESS = \frac{SS}{1 + 2 \sum{acf}},$$
 
-where $SS$ is the total sample size, if we are using 4 chains where each one of the produces 1000 samples then $SS = 4 * 1000$$, and $acf$ is the auto correlation function that measures the autocorrelation of gerenated samples. We will talk about $acf$ in detail in the time-series lecture.
+where $SS$ is the total sample size, if we are using 4 chains where each one of the produces 1000 samples then $SS = 4 * 1000$$, and $acf$ is the auto correlation function that measures the autocorrelation of generated samples. We will talk about $acf$ in detail in the time-series lecture.
 
 n is the total number of MCMC samples (including all chains).
 m is the number of chains.
@@ -687,7 +798,7 @@ In Stan the keyword target is actually not a variable, and may not be accessed a
 
 ## A linear normal model
 
-In the following example we will use Bayesian linear regression to model some data from a toy (`toy.csv`) dataset. The dataset contains two columns, `x` denotes the independent and `y` the dependent variable. We will use a linear normal model (or linear normal regression) to model this dependency. At the same time we will see how one would build a model for normally distributed data. This is the Stan model we will use:
+In the following example we will use Bayesian linear regression to model temperature data through ages (the data is stored in `temperature.csv`). The dataset contains three columns, `temperature` denotes the average temperature, while `year` and `month` depict the time of the measurement. As we are interested in the yearly average temperature through ages, we will average the temperature over months. As a result, our dependent variable (`y`) will be the average yearly temperature and our independent variable (`x`) will be the year. We will use a linear normal model (or linear normal regression) to model the dependency between `x` and `y`. At the same time we will see how one would build a model for normally distributed data. This is the Stan model we will use:
 
 ```
 data {
@@ -721,10 +832,23 @@ The $\texttt{data}$ block contains three variables, `n` stores the total number 
 model <- cmdstan_model("./models/linear.stan")
 
 # prepare the data
-data <- read.csv("./data/toy.csv")
+data <- read.csv("./data/temperature.csv", sep = ";")
+
+# remove month
+data <- data %>% select(-month)
+
+# mean per year
+data <- data %>%
+  group_by(year) %>%
+  summarise(temperature = mean(temperature))
+
+# x shift for numerical stability
+min_year <- min(data$year)
+x <- data$year - min_year
+y <- data$temperature
 
 # prepare input for Stan
-stan_data <- list(n = nrow(data), x = data$x, y = data$y)
+stan_data <- list(n = nrow(data), x = x, y = y)
 
 # fit
 fit <- model$sample(
@@ -739,24 +863,44 @@ mcmc_trace(fit$draws())
 fit$summary()
 ```
 
-The `traceplot` and `summary` both show no reasons for any concerns, we will skip them here for brevity, but in practice you should always start your analysis by inspecting the outputs of these two functions. Whenever possible you should also always visually inspect how fitted distributions match the underlying data. With more complex and highly dimensional models this most likely will not be possible but here we can easily do this.
+The `traceplot` and `summary` both show no reasons for any concerns, we will skip them here for brevity, but in practice you should always start your analysis by inspecting the outputs of these two functions. Whenever possible you should also always visually inspect how fitted distributions match the underlying data. With more complex and highly dimensional models this most likely will not be possible but here we can easily do this. Let us take a peek at the value of our model's parameters (the intercept, `a` and the slope `b`).
 
 ```{R message=FALSE}
-# lines and uncertainty
+# params
 df <- as_draws_df(fit$draws())
+mcse(df$a)
+mcse(df$b)
+mcse(df$b > 0)
+```
 
+The intercept ($\alpha$ or `a` in our case) denotes the value of `y` when `x` equals zero. For the purpose of numerical stability and to make life easier for Stan, we have shifted our data, this now means that `a` denotes the temperature at the minimum year in our dataset (1901). The slope parameter ($\beta$ or `b` in our case) denotes how `y` changes with `x`, in our case how temperature changes through ages. You can see that we are extremelly confident (P ≈ 1) that value of `b` is positive. This means that the temperature has been rising over the last 120 years, in fact it has been rising on average by 0.013 $\pm$ 0.0004 °C per year.
+
+```{R message=FALSE}
 # plot only 100 random regression lines
 df_100 <- sample_n(df, 100)
 
+# x axis
+x_breaks <- seq(from = 0, to = 120, length.out = 5)
+x_labels <- x_breaks + min_year
+
 # visualize data points with regression lines in the background
-ggplot() + 
-  geom_point(data = data, aes(x = x, y = y), shape = 16, color = "#67a9cf") +
-  geom_abline(data=df_100,
-              aes(slope = b, intercept = a),
-              alpha = 0.05,
-              linewidth = 1,
-              color = "#67a9cf") +
-  theme_minimal()
+ggplot() +
+  geom_point(
+    data = data,
+    aes(x = x, y = y),
+    shape = 16,
+    color = "skyblue"
+  ) +
+  geom_abline(
+    data = df_100,
+    aes(slope = b, intercept = a),
+    alpha = 0.05,
+    linewidth = 1,
+    color = "skyblue"
+  ) +
+  theme_minimal() +
+  labs(x = "Year", y = "Temperature") +
+  scale_x_continuous(breaks = x_breaks, labels = x_labels)
 ```
 
 # High density intervals
@@ -791,7 +935,7 @@ exclude <- n - floor(n * cred_mass)
 upper_bound <- x[(n - exclude + 1):n]
 lower_bound <- x[1:exclude]
 
-# in order to discard 10% of data we need to use a pair from our bound vectors
+# in order to discard 10% of data we need to use a pair from the bounds vectors
 # find the lower/upper pair with minimum distance between them
 # smaller the difference higher the density of that chunk
 # this is then our solution

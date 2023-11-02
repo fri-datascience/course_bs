@@ -11,9 +11,11 @@ dfl <- data.frame(dist = "laplace")
 dfn <- data.frame(dist = "norm")
 
 p1 <- ggplot() +
-  stat_dist_slab(data = dfn, aes(y = 0, dist = dist, arg1 = 0, arg2 = 1),
-                 alpha = 0.75, fill = "skyblue",
-                 normalize = "none", scale = 1) +
+  stat_dist_slab(
+    data = dfn, aes(y = 0, dist = dist, arg1 = 0, arg2 = 1),
+    alpha = 0.75, fill = "skyblue",
+    normalize = "none", scale = 1
+  ) +
   xlim(-5, 5) +
   xlab("") +
   ylab("density") +
@@ -23,9 +25,11 @@ p1 <- ggplot() +
   theme(plot.title = element_text(hjust = 0.5))
 
 p2 <- ggplot() +
-  stat_dist_slab(data = dfl, aes(y = 0, dist = dist, arg1 = 0, arg2 = 1),
-                 alpha = 0.75, fill = "skyblue",
-                 normalize = "none", scale = 1) +
+  stat_dist_slab(
+    data = dfl, aes(y = 0, dist = dist, arg1 = 0, arg2 = 1),
+    alpha = 0.75, fill = "skyblue",
+    normalize = "none", scale = 1
+  ) +
   xlim(-5, 5) +
   xlab("") +
   ylab("density") +

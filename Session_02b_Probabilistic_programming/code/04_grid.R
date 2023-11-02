@@ -12,7 +12,7 @@ grid <- seq(from = 0, to = 1, length.out = resolution)
 prior <- rep(1, resolution)
 
 # data
-n <- 13
+n <- 17
 z <- 7
 
 # likelihood
@@ -33,8 +33,10 @@ cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
 # fairness visualization -------------------------------------------------------
 df <- data.frame(x = grid, y = posterior)
 ggplot(data = df, aes(x = x, y = y)) +
-  geom_bar(stat = "identity", color = "skyblue",
-           fill = "skyblue", alpha = 0.75) +
+  geom_bar(
+    stat = "identity", color = "skyblue",
+    fill = "skyblue", alpha = 0.75
+  ) +
   xlim(0, 1) +
   xlab("") +
   ylab("density") +

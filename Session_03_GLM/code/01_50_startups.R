@@ -1,11 +1,11 @@
 # libraries --------------------------------------------------------------------
-library(cmdstanr)
-library(ggplot2)
-library(tidyverse)
-library(bayesplot)
-library(posterior)
-library(mcmcse)
-library(ggdist)
+library(cmdstanr) # for interfacing Stan
+library(ggplot2) # for visualizations
+library(tidyverse) # for data manipulations
+library(posterior) # for extracting samples
+library(bayesplot) # for some quick MCMC visualizations
+library(mcmcse) # for comparing samples and calculating MCSE
+library(ggdist) # for visualizing distributions
 
 # modelling and data prep ------------------------------------------------------
 # model
@@ -19,13 +19,13 @@ data <- data %>% select(research, administration, marketing, profit)
 
 # normalized columns
 data$r <- (data$research - min(data$research)) /
-            (max(data$research) - min(data$research))
+  (max(data$research) - min(data$research))
 data$a <- (data$administration - min(data$administration)) /
-            (max(data$administration) - min(data$administration))
+  (max(data$administration) - min(data$administration))
 data$m <- (data$marketing - min(data$marketing)) /
-            (max(data$marketing) - min(data$marketing))
+  (max(data$marketing) - min(data$marketing))
 data$p <- (data$profit - min(data$profit)) /
-            (max(data$profit) - min(data$profit))
+  (max(data$profit) - min(data$profit))
 
 # fit without normalization
 # prep for Stan
@@ -77,15 +77,19 @@ mcse(df_normalized$`b[3]`)
 # compare default vs normalized ------------------------------------------------
 # calculate ratios
 df_ratios_default <- df %>%
-  mutate(Research = `b[1]` / (`b[1]` + `b[2]` + `b[3]`),
-         Administration = `b[2]` / (`b[1]` + `b[2]` + `b[3]`),
-         Marketing = `b[3]` / (`b[1]` + `b[2]` + `b[3]`)) %>%
+  mutate(
+    Research = `b[1]` / (`b[1]` + `b[2]` + `b[3]`),
+    Administration = `b[2]` / (`b[1]` + `b[2]` + `b[3]`),
+    Marketing = `b[3]` / (`b[1]` + `b[2]` + `b[3]`)
+  ) %>%
   select(Research, Administration, Marketing)
 
 df_ratios_normalized <- df_normalized %>%
-  mutate(Research = `b[1]` / (`b[1]` + `b[2]` + `b[3]`),
-         Administration = `b[2]` / (`b[1]` + `b[2]` + `b[3]`),
-         Marketing = `b[3]` / (`b[1]` + `b[2]` + `b[3]`)) %>%
+  mutate(
+    Research = `b[1]` / (`b[1]` + `b[2]` + `b[3]`),
+    Administration = `b[2]` / (`b[1]` + `b[2]` + `b[3]`),
+    Marketing = `b[3]` / (`b[1]` + `b[2]` + `b[3]`)
+  ) %>%
   select(Research, Administration, Marketing)
 
 # column means
@@ -104,9 +108,11 @@ df_ratios_normalized$Type <- "Normalized"
 df_ratios <- rbind(df_ratios_default, df_ratios_normalized)
 
 # to long format
-df_ratios <- df_ratios %>% gather(Variable,
-                                  Value,
-                                  c(Research, Administration, Marketing))
+df_ratios <- df_ratios %>% gather(
+  Variable,
+  Value,
+  c(Research, Administration, Marketing)
+)
 # plot
 ggplot(data = df_ratios, aes(x = Value, y = Variable)) +
   stat_eye(fill = "skyblue", alpha = 0.75) +

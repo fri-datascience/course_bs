@@ -6,7 +6,7 @@ library(distributional)
 # coin fairness calculator -----------------------------------------------------
 # set parameters
 alpha <- 8
-beta <- 7
+beta <- 11
 
 # bottom and top cuts for fairness
 bottom_cut <- 0.3
@@ -20,12 +20,13 @@ cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
 df <- data.frame(dist = "beta")
 ggplot(data = df, aes(y = 0, dist = dist, arg1 = alpha, arg2 = beta)) +
   stat_dist_slab(aes(fill = stat(x < bottom_cut | x > top_cut)),
-                    alpha = 0.75,
-                    show.legend = FALSE,
-                    normalize = "none",
-                    scale = 1) +
+    alpha = 0.75,
+    show.legend = FALSE,
+    normalize = "none",
+    scale = 1
+  ) +
   xlim(0, 1) +
-  ylim(0, 3) +
+  ylim(0, 4) +
   xlab("") +
   ylab("density") +
   theme_minimal() +

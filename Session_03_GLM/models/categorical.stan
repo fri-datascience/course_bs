@@ -1,7 +1,7 @@
 data {
   int<lower=0> n;                  // number of observations
   int<lower=0> m;                  // number of independent variables
-  vector[m] x[n];                  // independent variables
+  matrix[n, m] x;                  // independent variables
   int<lower=0> k;                  // number of outcomes
   array[n] int<lower=1,upper=k> y; // dependent variables
 }
@@ -22,7 +22,8 @@ transformed parameters {
 
 model {
   // fit
+  matrix[n, k] x_beta = x * beta';
   for (i in 1:n)
-    y[i] ~ categorical_logit(beta * x[i]);
-    // or y[i] ~ categorical(softmax(beta * x[i]));
+    y[i] ~ categorical_logit(x_beta[i]');
+    // or y[i] ~ categorical(softmax(x_beta[n]'));
 }

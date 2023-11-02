@@ -37,21 +37,28 @@ df$expression <- factor(df$expression, levels = df_mean$expression)
 y_offset <- 0.07
 ggplot(df, aes(x = probability)) +
     geom_density(color = NA, fill = "skyblue", alpha = 0.75) +
-    geom_point(aes(y = 0, x = probability), shape = 16,
-                   color = "grey50", alpha = 0.25) +
+    geom_point(aes(y = 0, x = probability),
+        shape = 16,
+        color = "grey50", alpha = 0.25
+    ) +
     geom_vline(xintercept = 50, linetype = "dashed") +
-    geom_segment(data = df_mean,
-                 aes(x = mean_p, xend = mean_p, y = 0, yend = y_offset),
-                 linewidth = 1, color = "grey50") +
-    geom_text(data = df_mean, aes(x = mean_p, y = y_offset + 0.03,
-              label = mean_p)) +
+    geom_segment(
+        data = df_mean,
+        aes(x = mean_p, xend = mean_p, y = 0, yend = y_offset),
+        linewidth = 1, color = "grey50"
+    ) +
+    geom_text(data = df_mean, aes(
+        x = mean_p, y = y_offset + 0.03,
+        label = mean_p
+    )) +
     facet_wrap(expression ~ ., ncol = 1) +
     xlim(0, 100) +
     xlab("probability [%]") +
     theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
 
 ggsave("../figs/expressions2022.png",
-       width = 1280,
-       height = 2560,
-       dpi = 200,
-       units = "px")
+    width = 1280,
+    height = 2560,
+    dpi = 200,
+    units = "px"
+)
