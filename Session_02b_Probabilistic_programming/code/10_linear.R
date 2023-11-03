@@ -74,3 +74,12 @@ ggplot() +
   theme_minimal() +
   labs(x = "Year", y = "Temperature") +
   scale_x_continuous(breaks = x_breaks, labels = x_labels)
+
+# prediction 2100
+predictions <- vector()
+for (i in 1:4000) {
+  predictions[i] <- df$a[i] + df$b[i] * (2100 - min_year)
+}
+
+library(HDInterval)
+hdi(predictions, prob = 0.9)

@@ -68,10 +68,12 @@ df_normalized <- as_draws_df(fit_normalized$draws())
 
 # mcse
 mcse(df$`b[1]`)
-mcse(df$`b[2]`)
-mcse(df$`b[3]`)
 mcse(df_normalized$`b[1]`)
+
+mcse(df$`b[2]`)
 mcse(df_normalized$`b[2]`)
+
+mcse(df$`b[3]`)
 mcse(df_normalized$`b[3]`)
 
 # compare default vs normalized ------------------------------------------------
