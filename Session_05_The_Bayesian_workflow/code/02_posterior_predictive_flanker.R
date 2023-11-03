@@ -171,7 +171,7 @@ mean(df_exp_i$sigma^2 + (1 / df_exp_i$lambda^2))
 hdi(df_incongruent$rt, credMass = 0.90)
 hdi(
   rnorm(
-    n = 10000,
+    n = 1000,
     mean = mean(df_normal$mu),
     sd = mean(df_normal$sigma)
   ),
