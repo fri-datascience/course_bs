@@ -5,6 +5,7 @@ library(ggdist)
 library(bayesplot)
 library(posterior)
 library(tidyverse)
+library(mcmcse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
@@ -80,22 +81,27 @@ ggplot(data = df_beta_long, aes(x = Value, y = Beta)) +
   xlim(-1.6, 1.6)
 
 # calculate an example probability ---------------------------------------------
-mean_beta <- colMeans(df_beta)
-mean_c <- colMeans(df_cutpoints)
+F_1 <- NULL
+F_2 <- NULL
+F_3 <- 1
 
 # x <- (religion, degree, USA, male)
 # a non religious educated female from Sweden
 x <- c(0, 1, 0, 0)
 
-# Get all three cumulative probabilities
-F_1 <- 1 / (1 + exp(-(mean_c[1] - as.numeric(mean_beta %*% x))))
-F_2 <- 1 / (1 + exp(-(mean_c[2] - as.numeric(mean_beta %*% x))))
-F_3 <- 1
+for (i in seq_len(nrow(df_beta))) {
+  beta <- as.numeric(df_beta[i, ])
+  cutpoints <- as.numeric(df_cutpoints[i, ])
 
-# Pr(y = j) = Pr(y <= j) - Pr(y <= j - 1)
-Pr_1 <- F_1
-Pr_1
-Pr_2 <- F_2 - F_1
-Pr_2
-Pr_3 <- F_3 - F_2
-Pr_3
+  # cumulative probabilities
+  F_1[i] <- 1 / (1 + exp(-(cutpoints[1] - as.numeric(beta %*% x))))
+  F_2[i] <- 1 / (1 + exp(-(cutpoints[2] - as.numeric(beta %*% x))))
+}
+
+# P(y = j) = P(y <= j) - P(y <= j - 1)
+P_1 <- F_1
+mcse(P_1)
+P_2 <- F_2 - F_1
+mcse(P_2)
+P_3 <- F_3 - F_2
+mcse(P_3)

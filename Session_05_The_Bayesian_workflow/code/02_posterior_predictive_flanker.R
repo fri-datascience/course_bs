@@ -268,28 +268,37 @@ hdi(df_exp_c$mu + 1 / df_exp_c$lambda, credMass = 0.9)
 mcse(df_exp_c$mu < df_exp_i$mu)
 
 # compare with ROPE
-comparison <- data.frame(equal = 0, c = 0, i = 0)
+c <- NULL
+i <- NULL
+equal <- NULL
+
 # measurement error 0.15 s
 ROPE <- 0.15
+
 for (i in seq_len(nrow(df_exp_i))) {
-  mean_i <- mean(df_exp_i[i, ]$mu + 1 / df_exp_i[i, ]$lambda)
-  mean_c <- mean(df_exp_c[i, ]$mu + 1 / df_exp_c[i, ]$lambda)
+  mean_i <- df_exp_i[i, ]$mu + 1 / df_exp_i[i, ]$lambda
+  mean_c <- df_exp_c[i, ]$mu + 1 / df_exp_c[i, ]$lambda
 
   diff <- abs(mean_i - mean_c)
 
   if (diff > ROPE) {
     if (mean_c < mean_i) {
-      comparison$c <- comparison$c + 1
+      c <- c(c, 1)
+      i <- c(i, 0)
+      equal <- c(equal, 0)
     } else {
-      comparison$i <- comparison$i + 1
+      c <- c(c, 0)
+      i <- c(i, 1)
+      equal <- c(equal, 0)
     }
   } else {
-    comparison$equal <- comparison$equal + 1
+    c <- c(c, 0)
+    i <- c(i, 0)
+    equal <- c(equal, 1)
   }
 }
 
 # normalize
-comparison$equal <- comparison$equal / nrow(df_exp_i)
-comparison$c <- comparison$c / nrow(df_exp_i)
-comparison$i <- comparison$i / nrow(df_exp_i)
-comparison
+mcse(c)
+mcse(i)
+mcse(equal)
