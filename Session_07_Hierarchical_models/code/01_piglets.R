@@ -159,7 +159,7 @@ stan_data <- list(
   n = nrow(data),
   m = max(data$mama_pig),
   y = data$piglet_weight,
-  g = data$mama_pig
+  s = data$mama_pig
 )
 
 # fit
