@@ -28,7 +28,7 @@ for (i in seq_len(nrow(gammas))) {
 
 # plot -------------------------------------------------------------------------
 ggplot(data = df, aes(x = salary)) +
-  geom_density(color = NA, fill = "skyblue", alpha = 0.5) +
+  geom_density(color = NA, fill = "skyblue") +
   geom_line(data = df_gamma, aes(x = x, y = y, color = group), linewidth = 2) +
   xlim(0, x_max) +
   scale_color_brewer(type = "qual", palette = 2)

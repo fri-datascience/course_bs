@@ -338,17 +338,18 @@ tmp <- data.frame(
     (abs(coeff_L2)),
     (abs(coeff_L2b))
   ),
-  Method = rep(c(
-    "lm",
-    "lmBayes",
-    "lmBayes[1]",
-    "lmBayes[0.1]",
-    "L1",
-    "L1Bayes",
-    "L2",
-    "L2Bayes"
-  ),
-  each = 300
+  Method = rep(
+    c(
+      "lm",
+      "lmBayes",
+      "lmBayes[1]",
+      "lmBayes[0.1]",
+      "L1",
+      "L1Bayes",
+      "L2",
+      "L2Bayes"
+    ),
+    each = 300
   )
 )
 
