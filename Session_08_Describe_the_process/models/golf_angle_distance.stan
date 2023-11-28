@@ -13,7 +13,7 @@ transformed data {
   
   // trehshold angle
   vector[N] threshold_angle = atan((R-r) ./ x);
-  
+
   // distance parameters
   real d_t = 0.75; // distance tolerance
   real o = 0.2;    // overshot
@@ -30,7 +30,7 @@ model {
 
   // distance probabilities
   vector[N] p_distance = Phi((d_t - o) ./ ((x + o)*sigma_d)) -
-               Phi((- o) ./ ((x + o)*sigma_d));
+                         Phi((- o) ./ ((x + o)*sigma_d));
                
   // probabilities
   vector[N] p = p_angle .* p_distance;

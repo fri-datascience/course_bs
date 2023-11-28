@@ -51,10 +51,10 @@ Binomial logistic regression is a very common GLM, it is so common that it is al
 
 ```
 data {
-  int N;             // number of data points
-  array[N] int n;    // number of puts at each data point
-  vector[N] x;       // distance for each data point
-  array[N] int y;    // number of hits at each data point
+  int N;          // number of data points
+  array[N] int n; // number of putts at each data point
+  vector[N] x;    // distance for each data point
+  array[N] int y; // number of successful hits at each data point
 }
 
 parameters {
@@ -64,7 +64,6 @@ parameters {
 
 model {
   // priors
-  a ~ cauchy(0, 2.5);
   b ~ cauchy(0, 2.5);
   
   y ~ binomial_logit(n, a + b*x);
@@ -130,10 +129,10 @@ Below is the full model code in Stan. We use the \texttt{transformed data} to ca
 
 ```
 data {
-  int N;             // number of data points
-  array[N] int n;    // number of puts at each data point
-  vector[N] x;       // distance for each data point
-  array[N] int y;    // number of hits at each data point
+  int N;          // number of data points
+  array[N] int n; // number of putts at each data point
+  vector[N] x;    // distance for each data point
+  array[N] int y; // number of successful hits at each data point
 }
 
 transformed data {
@@ -164,7 +163,7 @@ generated quantities {
   // rad to deg converter
   real sigma_degrees = sigma * 180 / pi();
   
-  // recalculate and return probs
+  // recalculate and return probabilities
   vector[N] p = 2*Phi(threshold_angle / sigma) - 1;
 }
 
@@ -200,7 +199,66 @@ The distance ($\mu$) is acceptable if $\mu \in [x, x + d_t]$ which has a probabi
 
 $$Pr(\mu \in [x, x + d_t]) = Pr(\mu < (x + d_t)) - Pr(\mu < x) = \Phi \left ( \frac{d_t - o}{(x + o) \sigma_d} \right ) - \Phi \left ( \frac{- o}{(x + o) \sigma_d} \right ).$$
 
-To summarize, the golfers are aiming to hit the ball so it will travel exactly $x + o$. The hit will end up in the cup if the ball stops on the $[x, x + d_t]$ interval. The probability of that is calculated with the above equation. Putting everything together we get the following Bayesian model:
+To summarize, the golfers are aiming to hit the ball so it will travel exactly $x + o$. The hit will end up in the cup if the ball stops on the $[x, x + d_t]$ interval. The probability of that is calculated with the above equation. By acknowledging the error in the putting distance, we get the following Bayesian model:
+
+$$y_i \; | \; x_i, n_i, p_i \sim \text{binomial}(n_i, p_i),$$
+
+$$p_i = \Phi \left ( \frac{d_t - o}{(x_i + o) \sigma_d} \right ) - \Phi \left ( \frac{- o}{(x_i + o) \sigma_d} \right ),$$
+
+$$\sigma \sim \text{Cauchy}(0, 2.5).$$
+
+We set the distance threshold, $d_t = 0.75 m$, and the overshot, $o = 0.2 m$.
+
+```
+data {
+  int N;          // number of data points
+  array[N] int n; // number of putts at each data point
+  vector[N] x;    // distance for each data point
+  array[N] int y; // number of successful hits at each data point
+}
+
+transformed data {
+  // distance parameters
+  real d_t = 0.75; // distance tolerance
+  real o = 0.2;    // overshot
+}
+
+parameters {
+  real<lower=0> sigma;
+}
+
+model {
+  // probabilities
+  vector[N] p = Phi((d_t - o) ./ ((x + o)*sigma)) -
+                Phi((- o) ./ ((x + o)*sigma));
+  
+  // priors
+  sigma ~ cauchy(0, 2.5);
+  
+  y ~ binomial(n, p);
+}
+
+generated quantities {
+  // recalculate and return probabilities
+  vector[N] p = (Phi((d_t - o) ./ ((x + o)*sigma)) -
+                Phi((- o) ./ ((x + o)*sigma)));
+}
+
+```
+
+The fitting process again executed without any issues and the diagnostics look fine, so we can continue with our analysis. The $\sigma$ parameters equals 0.21 $\pm$ 9 $\cdot$ 10^-5^. Meaning that the standard deviation of golf putting distance errors in pro golfers is around 20 cm.
+
+The figure below visualizes the model's fit (the yellow line) the ribbon behind it estimates its uncertainty with a 90% high density interval. The light blue line visualizes the binomial logistic model, the dark blue line the angular error model, while black points visualize the underlying data.
+
+<center>
+  ![](./figs/distance.png)
+</center>
+
+Again the model is better than the binomial one, but it seems like a worst fit tan the angular error model, so we did not make much progress hwere. The question is again, can we do better? As you will see, we can by ackonwledging both error sourcers simultaneously!
+
+# Putting everything together
+
+Putting everything together (the angular and the putting distance errors) we get the following Bayesian model:
 
 $$y_i \; | \; x_i, n_i, p_i \sim \text{binomial}(n_i, p_i),$$
 $$p_{i,a} = 2 \Phi \left ( \frac{tan^{-1} \left ( \frac{R-r}{x_i} \right )}{\sigma_a}  \right ) - 1,$$
@@ -214,10 +272,10 @@ $$\sigma_d \sim \text{Cauchy}(0, 2.5).$$
 
 ```
 data {
-  int N;             // number of data points
-  array[N] int n;    // number of puts at each data point
-  vector[N] x;       // distance for each data point
-  array[N] int y;    // number of hits at each data point
+  int N;          // number of data points
+  array[N] int n; // number of putts at each data point
+  vector[N] x;    // distance for each data point
+  array[N] int y; // number of successful hits at each data point
 }
 
 transformed data {
@@ -228,10 +286,10 @@ transformed data {
   
   // trehshold angle
   vector[N] threshold_angle = atan((R-r) ./ x);
-  
+
   // distance parameters
-  real o = 0.25;  // overshot
   real d_t = 0.75; // distance tolerance
+  real o = 0.2;    // overshot
 }
 
 parameters {
@@ -245,7 +303,7 @@ model {
 
   // distance probabilities
   vector[N] p_distance = Phi((d_t - o) ./ ((x + o)*sigma_d)) -
-               Phi((- o) ./ ((x + o)*sigma_d));
+                         Phi((- o) ./ ((x + o)*sigma_d));
                
   // probabilities
   vector[N] p = p_angle .* p_distance;
@@ -273,10 +331,10 @@ No issues were found in fitting and diagnostics processes.
 
 The $\sigma_a$ parameters equals 0.018 $\pm$ 1.2 $\cdot$ 10^-5^ in radians and in 1.03 $\pm$ 7 $\cdot$ 10^-4^ in degrees. You can see that the angular error is now lower, this makes sense as the total error is now spread between two sources (error in the angle and in the distance), in the previous model all error was attributed to a single source (error in the angle). The $\sigma_d$ parameters equals 0.065 $\pm$ 1 $\cdot$ 10^-4^, this means that there is a standard deviation of 6% in the distance errors pro golfers make.
 
-The figure below visualizes the performance of this model (the green color) in comparison with both previous models and the underlying data.
+The figure below visualizes the performance of this model (the green color) in comparison with all previous models and the underlying data.
 
 <center>
-  ![](./figs/distance.png)
+  ![](./figs/angle_distance.png)
 </center>
 
 As you can see the final model fits the data extremely well. And the model is easy to defend and argument as it is based on the actual physical processes that occur during golfing. Development of such bespoke models is one of the strongest points of Bayesian statistics and one of the main reason for the rapid growth of the field over the last couple of years.
@@ -285,6 +343,6 @@ The goal of this lecture was to emphasize that, if possible, in statistical mode
 
 # Recommended readings
 
-* Gelman A. & Broadie M. (2019). Model building and expansion for golf putting (https://mc-stan.org/users/documentation/case-studies/golf.html).
+* Gelman A. & Broadie M. (2019). Model building and expansion for golf putting (<https://mc-stan.org/users/documentation/case-studies/golf.html>).
 
-* Gelman A. & Nolan D. (2002). A Probability Model for Golf Putting, Teaching Statistics, 50, 151-153 (http://www.stat.columbia.edu/~gelman/research/published/golf.pdf).
+* Gelman A. & Nolan D. (2002). A Probability Model for Golf Putting, Teaching Statistics, 50, 151-153 (<http://www.stat.columbia.edu/~gelman/research/published/golf.pdf>).
