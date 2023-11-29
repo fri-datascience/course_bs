@@ -1,4 +1,4 @@
-# course_bs
+# Bayesian Statistics for Computer Scientists
 
 Official materials for the Bayesian Statistics course of the Data Science track at the Faculty of Computer and Information Science, University of Ljubljana.
 
