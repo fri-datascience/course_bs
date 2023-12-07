@@ -12,7 +12,6 @@ model <- cmdstan_model("../models/linear_deviance_cv.stan")
 
 # modeling ---------------------------------------------------------------------
 # number of observations
-#n <- 20
 n <- 200
 
 # max number of independent variables
@@ -39,12 +38,14 @@ y_train <- rnorm(n, 1 + 1.5 * X_train[, 2] - 2.5 * X_train[, 3], 1)
 y_test <- rnorm(n, 1 + 1.5 * X_test[, 2] - 2.5 * X_test[, 3], 1)
 
 # stan_data
-stan_data <- list(n = n,
-                  m_max = m_max,
-                  X_train = X_train,
-                  X_test = X_test,
-                  y_train = y_train,
-                  y_test = y_test)
+stan_data <- list(
+  n = n,
+  m_max = m_max,
+  X_train = X_train,
+  X_test = X_test,
+  y_train = y_train,
+  y_test = y_test
+)
 
 # log-score storage
 df_s_train <- data.frame(s = numeric(), Order = factor())
@@ -65,9 +66,9 @@ for (m in 0:m_max) {
 
   # uncomment lines below for diagnostic purposes
   # traceplot
-  #mcmc_trace(fit$draws(c("b", "sigma")))
+  # mcmc_trace(fit$draws(c("b", "sigma")))
   # summary
-  #fit$summary(c("b", "sigma"))
+  # fit$summary(c("b", "sigma"))
 
   # extract
   df_ll_train <- as_draws_df(fit$draws(c("log_lik_train")))
@@ -81,12 +82,20 @@ for (m in 0:m_max) {
     data.frame(df_ll_test %>% select(-.chain, -.iteration, -.draw))
 
   # average per row and store
-  df_s_train <- rbind(df_s_train,
-                      data.frame(s = -2 * rowSums(df_ll_train),
-                                 Order = as.factor(m)))
-  df_s_test <- rbind(df_s_test,
-                     data.frame(s = -2 * rowSums(df_ll_test),
-                                Order = as.factor(m)))
+  df_s_train <- rbind(
+    df_s_train,
+    data.frame(
+      s = -2 * rowSums(df_ll_train),
+      Order = as.factor(m)
+    )
+  )
+  df_s_test <- rbind(
+    df_s_test,
+    data.frame(
+      s = -2 * rowSums(df_ll_test),
+      Order = as.factor(m)
+    )
+  )
 }
 
 # plot -------------------------------------------------------------------------
@@ -97,9 +106,11 @@ df <- rbind(df_s_train, df_s_test)
 
 df_summary <- df %>%
   group_by(Type, Order) %>%
-  summarize(mean_s = mean(s),
-            hdi5 = hdi(s, credMass = 0.9)[1],
-            hdi95 = hdi(s, credMass = 0.9)[2])
+  summarize(
+    mean_s = mean(s),
+    hdi5 = hdi(s, credMass = 0.9)[1],
+    hdi95 = hdi(s, credMass = 0.9)[2]
+  )
 
 # plot
 ggplot(data = df_summary, aes(x = Order, y = mean_s)) +

@@ -32,10 +32,12 @@ for (i in 2:(m_max + 1)) {
 y <- rnorm(n, 1 + 1.5 * X[, 2] - 2.5 * X[, 3], 1)
 
 # stan_data
-stan_data <- list(n = n,
-                  m_max = m_max,
-                  X = X,
-                  y = y)
+stan_data <- list(
+  n = n,
+  m_max = m_max,
+  X = X,
+  y = y
+)
 
 # storages
 log_lik <- list()
@@ -56,9 +58,9 @@ for (m in 0:m_max) {
 
   # uncomment lines below for diagnostic purposes
   # traceplot
-  #mcmc_trace(fit$draws(c("b", "sigma")))
+  # mcmc_trace(fit$draws(c("b", "sigma")))
   # summary
-  #fit$summary(c("b", "sigma"))
+  # fit$summary(c("b", "sigma"))
 
   # extract
   log_lik[[m + 1]] <- fit$draws(c("log_lik"))
@@ -78,9 +80,11 @@ for (m in 0:m_max) {
 # AIC --------------------------------------------------------------------------
 df_aic_summary <- df_aic %>%
   group_by(Order) %>%
-  summarize(mean_AIC = mean(AIC),
-            hdi5 = hdi(AIC, credMass = 0.9)[1],
-            hdi95 = hdi(AIC, credMass = 0.9)[2])
+  summarize(
+    mean_AIC = mean(AIC),
+    hdi5 = hdi(AIC, credMass = 0.9)[1],
+    hdi95 = hdi(AIC, credMass = 0.9)[2]
+  )
 
 # plot
 ggplot(data = df_aic_summary, aes(x = Order, y = mean_AIC)) +
@@ -94,9 +98,11 @@ df_waic <- data.frame(WAIC = numeric(), SE = numeric(), Order = factor())
 
 for (i in 0:m_max) {
   waic <- waic(log_lik[[i + 1]])
-  df_waic <- rbind(df_waic, data.frame(WAIC = waic$estimates[3, 1],
-                                       SE = waic$estimates[3, 2],
-                                       Order = as.factor(i)))
+  df_waic <- rbind(df_waic, data.frame(
+    WAIC = waic$estimates[3, 1],
+    SE = waic$estimates[3, 2],
+    Order = as.factor(i)
+  ))
 }
 
 # plot
@@ -112,9 +118,11 @@ df_looic <- data.frame(looic = numeric(), SE = numeric(), Order = factor())
 for (i in 0:m_max) {
   r_eff <- relative_eff(log_lik[[i + 1]])
   loo <- loo(log_lik[[i + 1]], r_eff = r_eff)
-  df_looic <- rbind(df_looic, data.frame(looic = loo$estimates[3, 1],
-                                       SE = loo$estimates[3, 2],
-                                       Order = as.factor(i)))
+  df_looic <- rbind(df_looic, data.frame(
+    looic = loo$estimates[3, 1],
+    SE = loo$estimates[3, 2],
+    Order = as.factor(i)
+  ))
 }
 
 # plot
