@@ -13,7 +13,7 @@ model <- cmdstan_model("../models/linear_deviance.stan")
 
 # modeling ---------------------------------------------------------------------
 # number of observations
-n <- 200
+n <- 100
 
 # max number of independent variables
 m_max <- 6
@@ -27,6 +27,9 @@ X[, 1] <- 1
 for (i in 2:(m_max + 1)) {
   X[, i] <- runif(n, -1, 1)
 }
+
+# set seed
+set.seed(1)
 
 # generate data
 y <- rnorm(n, 1 + 1.5 * X[, 2] - 2.5 * X[, 3], 1)

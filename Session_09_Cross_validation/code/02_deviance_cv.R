@@ -12,7 +12,7 @@ model <- cmdstan_model("../models/linear_deviance_cv.stan")
 
 # modeling ---------------------------------------------------------------------
 # number of observations
-n <- 200
+n <- 20
 
 # max number of independent variables
 m_max <- 6
@@ -26,6 +26,9 @@ X_train[, 1] <- 1
 
 # test set
 X_test <- X_train
+
+# set seed
+set.seed(1)
 
 # other terms
 for (i in 2:(m_max + 1)) {
