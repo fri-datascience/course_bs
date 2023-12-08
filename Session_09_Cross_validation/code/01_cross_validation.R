@@ -20,8 +20,9 @@ data <- data %>%
   summarise(temperature = mean(temperature))
 
 # scale
+min_temperature <- min(data$temperature)
 data <- data %>% mutate(year_s = as.vector(scale(year)),
-                        temperature_s = as.vector(scale(temperature)))
+                        temperature_0 = (temperature - min_temperature))
 
 # train/test split
 train <- data %>% filter(year < 1995)
@@ -30,10 +31,10 @@ test <- data %>% filter(year >= 1995)
 # stan_data
 n_train <- nrow(train)
 x_train <- train$year_s
-y_train <- train$temperature_s
+y_train <- train$temperature_0
 n_test <- nrow(test)
 x_test <- test$year_s
-y_test <- test$temperature_s
+y_test <- test$temperature_0
 
 stan_data <- list(n_train = n_train,
                   x_train = x_train,
@@ -58,8 +59,6 @@ years_s <- seq(from = min_year_s, to = max_year_s, length.out = 200)
 # required for unscaling
 mean_year <- mean(data$year)
 sd_year <- sd(data$year)
-mean_temperature <- mean(data$temperature)
-sd_temperature <- sd(data$temperature)
 
 # mse storage
 df_mse_train <- data.frame(mse = numeric(), order = factor())
@@ -79,7 +78,7 @@ for (p in 0:max_order) {
   fit <- model$sample(
     data = stan_data,
     parallel_chains = 4,
-  seed = 1
+    seed = 1
   )
 
   # uncomment lines below for diagnostic purposes
@@ -107,16 +106,15 @@ for (p in 0:max_order) {
 
   for (i in 1:n) {
     for (j in years_s) {
-      # scaled temperature
+      # 0 shifted temperature
       x <- betas[i, 1]
       for (k in 2:p + 1) {
         x <- c(x, j^(k - 1) * betas[i, k])
       }
+      temperature_0 <- sum(x)
 
-      temperature_s <- sum(x)
-
-      # unscale
-      temperature <- (temperature_s * sd_temperature) + mean_temperature
+      # unshift
+      temperature <- temperature_0 + min_temperature
       year <- (j * sd_year) + mean_year
 
       # store
@@ -141,6 +139,8 @@ ggplot() +
   xlab("Year") +
   ylab("T [°C]") +
   ylim(6, 14)
+
+ggsave("../figs/cross_validation_posterior.png", width = 12, height = 4)
 
 # compare ----------------------------------------------------------------------
 # plot
