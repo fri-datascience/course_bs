@@ -108,8 +108,8 @@ for (p in 0:max_order) {
   for (i in 1:n) {
     for (j in years_s) {
       # scaled temperature
-      x <- vector()
-      for (k in 1:p + 1) {
+      x <- betas[i, 1]
+      for (k in 2:p + 1) {
         x <- c(x, j^(k - 1) * betas[i, k])
       }
 
