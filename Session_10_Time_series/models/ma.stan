@@ -12,8 +12,8 @@ parameters {
 
 transformed parameters {
   // error term at time t
-  vector[n] epsilon;    
-  
+  vector[n] epsilon;
+
   // calculate
   for (t in 1:n) {
     epsilon[t] = y[t] - mu;
@@ -41,7 +41,7 @@ model {
       eta[t] = eta[t] + theta[i] * epsilon[t - i];
     }
   }
-  
+
   // likelihood
   y ~ normal(eta, sigma);
 }

@@ -36,7 +36,7 @@ fit <- model$sample(
   data = stan_data,
   parallel_chains = 4,
   seed = 1,
-  adapt_delta = 0.9
+  adapt_delta = 0.99
 )
 
 # diagnostics

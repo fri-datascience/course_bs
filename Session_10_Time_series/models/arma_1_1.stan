@@ -15,7 +15,7 @@ transformed parameters {
   vector[n] nu; 
   // error for time t
   vector[n] epsilon;
-  
+
   // arma(1, 1)
   nu[1] = mu;
   epsilon[1] = y[1] - nu[1];

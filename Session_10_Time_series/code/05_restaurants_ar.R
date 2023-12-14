@@ -45,6 +45,7 @@ fit$summary()
 # samples
 df_s <- as_draws_df(fit$draws())
 df_s <- df_s %>% select(-lp__, -.draw, -.chain, -.iteration)
+
 # plot fit ---------------------------------------------------------------------
 # get a subsample of 20 random samples
 df_ss <- df_s[sample(seq_len(nrow(df_s)), 20, rep = FALSE), ]

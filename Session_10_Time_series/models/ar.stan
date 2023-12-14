@@ -12,13 +12,12 @@ parameters {
 
 model {
   for (t in (p+1):n) {
-    
     // the autoregressive part
     real mu = alpha;
     for (i in 1:p) {
       mu += beta[i] * y[t-i];
     }
-    
+
     // likelihood
     y[t] ~ normal(mu, sigma);
   }

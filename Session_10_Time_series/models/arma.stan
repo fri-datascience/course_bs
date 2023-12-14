@@ -20,7 +20,7 @@ transformed parameters {
   // storages
   real ar;
   real ma;
-  
+
   for (t in 1:n) {
     // ar
     ar = 0;
@@ -37,7 +37,7 @@ transformed parameters {
         ma = ma + theta[j] * epsilon[t - j];
       }
     }
-    
+
     nu[t] = mu + ar + ma;
     epsilon[t] = y[t] - nu[t];
   }
@@ -49,7 +49,7 @@ model {
   beta ~ normal(0, 2);
   theta ~ normal(0, 2);
   sigma ~ cauchy(0, 5);
-  
+
   // likelihood
   epsilon ~ normal(0, sigma);
 }

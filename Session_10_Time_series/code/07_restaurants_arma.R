@@ -21,10 +21,12 @@ model <- cmdstan_model("../models/arma.stan")
 # prep data for stan
 p <- 13
 q <- 12
-stan_data <- list(y = df$spending,
-                  n = nrow(df),
-                  p = p,
-                  q = q)
+stan_data <- list(
+  y = df$spending,
+  n = nrow(df),
+  p = p,
+  q = q
+)
 
 # fit
 fit <- model$sample(
@@ -55,10 +57,12 @@ hdi95 <- function(x) {
   return(hdi(x, credMass = 0.90)[2])
 }
 
-df_plot <- data.frame(Month = df$month,
-                      Spending = colMeans(df_nu),
-                      hdi5 = apply(df_nu, hdi5, MARGIN = 2),
-                      hdi95 = apply(df_nu, hdi95, MARGIN = 2))
+df_plot <- data.frame(
+  Month = df$month,
+  Spending = colMeans(df_nu),
+  hdi5 = apply(df_nu, hdi5, MARGIN = 2),
+  hdi95 = apply(df_nu, hdi95, MARGIN = 2)
+)
 
 # add predictions
 df_ss <- df_s[sample(seq_len(nrow(df)), 20, rep = FALSE), ]
@@ -66,8 +70,10 @@ df_ss <- df_s[sample(seq_len(nrow(df)), 20, rep = FALSE), ]
 # forecast n_f months
 n_f <- 6
 n_t <- nrow(df)
-df_forecast <- data.frame(Month = numeric(),
-                          S = numeric())
+df_forecast <- data.frame(
+  Month = numeric(),
+  S = numeric()
+)
 
 for (i in seq_len(nrow(df_ss))) {
   # get params
@@ -99,16 +105,20 @@ for (i in seq_len(nrow(df_ss))) {
 
   # store
   df_forecast <- df_forecast %>%
-    add_row(Month = (n_t + 1):(n_t + n_f),
-            S = s[(n_t + 1):(n_t + n_f)])
+    add_row(
+      Month = (n_t + 1):(n_t + n_f),
+      S = s[(n_t + 1):(n_t + n_f)]
+    )
 }
 
 # add forecasts to the plotting data frame
 df_plot_forecast <- df_forecast %>%
   group_by(Month) %>%
-  summarize(Spending = mean(S),
-            hdi5 = hdi5(S),
-            hdi95 = hdi95(S))
+  summarize(
+    Spending = mean(S),
+    hdi5 = hdi5(S),
+    hdi95 = hdi95(S)
+  )
 
 # bind
 df_plot <- df_plot %>% add_row(df_plot_forecast)
