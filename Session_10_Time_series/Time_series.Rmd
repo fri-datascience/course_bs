@@ -86,7 +86,7 @@ where $M$ represents the period of seasonality. For example, if our time-series 
 
 Note that the seasonality component in the above model describes seasonality with only a single period, if the seasonality in our time-series is composed of multiple fluctuations we need a more complex model. We can easily upgrade the seasonality component to allow fluctiations with different values for the $\omega$ parameter:
 
-$$s_t = \sum_{i=1}^k \beta_{cos,i} \cos(\omega_i t) + \beta_{sin,i} \sin(\omega_i t).$$ 
+$$s_t = \sum_{i=1}^k \beta_{cos,i} \cos(\omega_i t) + \beta_{sin,i} \sin(\omega_i t).$$
 
 Above, the seasonality component is now a sum of multiple sub-components, each of them has its own period (defined through $\omega_i$) and each own beta coefficients. The simple model implemented in Stan can be found in the *harmonic_basic.stan* model file, while the upgraded model is implemented in *harmonic.stan* file, you can find both in the official repository for this course.
 
@@ -182,7 +182,7 @@ To define a suitable value for the $q$ parameter, we usually take a look at the 
   ![](./figs/acf.png)
 </center>
 
-Based on this plot a suitable value for $q$ would be around 35. Note that this number is way to high and would probably cause all kinds of problems, such as over-fitting and issues with convergence. Based on the above visualization MA model is most likely not suitable for modelling our time-series. For illustrative purposes we decided to use a value 12 for the $q$ parameter. Below is a visualization of this model's fit.
+Based on this plot a suitable value for $q$ would be around 35. Note that this number is way too high and would probably cause all kinds of problems, such as over-fitting and issues with convergence. Based on the above visualization MA model is most likely not suitable for modelling our time-series. For illustrative purposes we decided to use a value 12 for the $q$ parameter. Below is a visualization of this model's fit.
 
 <center>
   ![](./figs/restaurants_ma.png)
@@ -199,7 +199,6 @@ $$\epsilon_t \; | \; \sigma \sim N(0, \sigma),$$
 $$\epsilon_t = y_t - (\mu + ar_t + ma_t) ,$$
 
 where $\epsilon$ represents the error term, $\mu$ the mean parameter, $ar$ the autoregressive component and $ma$ the moving average component. The autoregressive component is calculated as:
-
 
 $$ar_t = \sum_{i=1}^k \beta_i y_{t-i}.$$
 
@@ -229,10 +228,10 @@ There are also alternative approaches that do not fall into the category of AR o
 
 # References
 
-* Esprabens J., Arango A., Kim J., (2020). Time Series for Beginners. (https://bookdown.org/JakeEsprabens/431-Time-Series/).
+* Esprabens J., Arango A., Kim J., (2020). Time Series for Beginners. (<https://bookdown.org/JakeEsprabens/431-Time-Series/>).
 
-* Stan Documentation. (2021). Time-Series Models. (https://mc-stan.org/docs/2_21/stan-users-guide/time-series-chapter.html).
+* Stan Documentation. (2021). Time-Series Models. (<https://mc-stan.org/docs/2_21/stan-users-guide/time-series-chapter.html>).
 
-* UPenn. Time Series Analysis Course, Chapter 6 -- Harmonic Regression. (http://www-stat.wharton.upenn.edu/~stine/stat910/index.html).
+* UPenn. Time Series Analysis Course, Chapter 6 -- Harmonic Regression. (<http://www-stat.wharton.upenn.edu/~stine/stat910/index.html>).
 
 * Wiki pages on Autocorrelation, Partial autocorrelation, AR, MA, ARMA, ARIMA.
