@@ -6,7 +6,7 @@ data {
 
 parameters {
   real mu;                            // mean
-  vector<lower=-1, upper=1>[q] theta; // error coeffifcients
+  vector<lower=-1, upper=1>[q] theta; // error coefficients
   real<lower=0> sigma;                // error scale
 }
 
