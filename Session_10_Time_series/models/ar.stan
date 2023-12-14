@@ -2,7 +2,7 @@ data {
   int<lower=1> n; // number of observations
   vector[n] y;    // time-series
   int<lower=1> p; // the p parameter
-} 
+}
 
 parameters {
   real alpha;
