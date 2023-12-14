@@ -101,7 +101,7 @@ ggplot(df_decomposed, aes(x = Month,
                           group = idx,
                           colour = idx)) +
   geom_path() +
-  facet_wrap(. ~ Type, ncol = 1, scales = "free_y")
+  facet_wrap(. ~ Type, ncol = 1)
 
 # plot fit ---------------------------------------------------------------------
 # get a subsample of 20 random samples
