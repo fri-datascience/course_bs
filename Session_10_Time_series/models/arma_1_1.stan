@@ -12,7 +12,7 @@ parameters {
 
 transformed parameters {
   // prediction for time t
-  vector[n] nu; 
+  vector[n] nu;
   // error for time t
   vector[n] epsilon;
 
@@ -31,7 +31,7 @@ model {
   beta ~ normal(0, 2);
   theta ~ normal(0, 2);
   sigma ~ cauchy(0, 5);
-  
+
   // likelihood
   epsilon ~ normal(0, sigma);
 }
