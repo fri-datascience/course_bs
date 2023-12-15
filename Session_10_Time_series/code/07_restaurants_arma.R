@@ -68,7 +68,7 @@ df_plot <- data.frame(
 df_ss <- df_s[sample(seq_len(nrow(df)), 20, rep = FALSE), ]
 
 # forecast n_f months
-n_f <- 6
+n_f <- 12
 n_t <- nrow(df)
 df_forecast <- data.frame(
   Month = numeric(),
@@ -128,5 +128,5 @@ ggplot(data = df_plot, aes(x = Month, y = Spending), group = ix) +
   geom_line(data = df, aes(x = month, y = spending), color = "skyblue") +
   geom_line() +
   geom_ribbon(aes(ymin = hdi5, ymax = hdi95), alpha = 0.25) +
-  theme_minimal() +
-  ylim(2, 4.2)
+  geom_vline(xintercept = max(df$month), linetype = "dashed", size = 1, color = "grey75") +
+  theme_minimal()

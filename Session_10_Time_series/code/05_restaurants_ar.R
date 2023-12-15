@@ -101,4 +101,7 @@ ggplot(data = df_plot, aes(x = Month, y = Spending), group = ix) +
   geom_line(data = df, aes(x = month, y = spending), color = "skyblue") +
   geom_line() +
   geom_ribbon(aes(ymin = hdi5, ymax = hdi95), alpha = 0.25) +
+  geom_vline(xintercept = max(df$month), linetype = "dashed", size = 1, color = "grey75") +
   theme_minimal()
+
+ggsave("../figs/restaurants_ar.png", width = 1920, height = 1080, units = "px", dpi = 300)
