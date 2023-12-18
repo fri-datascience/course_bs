@@ -17,11 +17,11 @@ In this chapter we focus on the basics of sampling in the context of survey samp
 
 # Introduction
 
-Sampling consists of selecting a subset of units from our study population (or data generating process) for the purpose of generalizing the results obtained on this subset to the entire study population. 
+Sampling consists of selecting a subset of units from our study population (or data generating process) for the purpose of generalizing the results obtained on this subset to the entire study population.
 
-Even those of us not familiar with survey sampling are likely to have encountered sampling in randomized algorithms, for example, random forests, or resampling methods, such as cross-validation and bootstrap. The underlying principles are the same as in survey sampling, as is the main reason for applying sampling - sampling is typically used as a means to reduce the resources required for the enquiry. In random forests and bootstrap the resources we are trying to reduce are computational, but survey sampling is more complex, because time, money, human, and other resources have to be considered.
+Even those of us not familiar with survey sampling are likely to have encountered sampling in randomized algorithms, for example, random forests, or resampling methods, such as cross-validation and bootstrap. The underlying principles are the same as in survey sampling, as is the main reason for applying sampling -- sampling is typically used as a means to reduce the resources required for the enquiry. In random forests and bootstrap the resources we are trying to reduce are computational, but survey sampling is more complex, because time, money, human, and other resources have to be considered.
 
-Sampling methods can be divided into two fundamentally different groups: **probability sampling** and **non-probability sampling**. In probability sampling every unit population has a non-zero probability of being selected and that probability is known. Non-probability sampling approaches violate at least one of those two criteria, some units can't be selected or are selected in a way such that the probability of their selection is not known. Simple random sampling is an example of probability sampling, while convenience sampling - for example, selecting units that are close at hand - is an example of non-probability sampling.
+Sampling methods can be divided into two fundamentally different groups: **probability sampling** and **non-probability sampling**. In probability sampling every unit population has a non-zero probability of being selected and that probability is known. Non-probability sampling approaches violate at least one of those two criteria, some units can't be selected or are selected in a way such that the probability of their selection is not known. Simple random sampling is an example of probability sampling, while convenience sampling -- for example, selecting units that are close at hand -- is an example of non-probability sampling.
 
 The main characteristic of these two groups of approaches to sampling is that in probability sampling we can, using the laws of probability, derive the uncertainty in our results. In other words, we can quantify how representative the sample is of our population. In non-probability sampling, however, that is not possible, at least not without making additional assumptions.
 
@@ -37,7 +37,7 @@ Both coverage and non-response introduce bias into our results. In general, deal
 
 # Probability sampling schemes
 
-Probability sampling approaches can be further subdivided into fixed-size/random-sized sample approaches and equal-probability/unequal-probability approaches. Equal-probability approaches are those where every unit has the same probability of being selected (simple random sampling) as opposed to having different inclusion probabilities (stratified sampling, cluster sampling). A fixed-size sample approach is, as the name suggests, one where the sample size is fixed and known. In this chapter we will only discuss fixed-size sample approaches. A prototypical random-sized sample approach is Poisson sampling, where each unit has a non-zero and potentially different probability of being selected. Poisson sampling is not common in practice, with the exception of surveys where there is a need to coordinate between samples - for example, where we want less or more overlap between two samples drawn from the same population. Poisson sampling is also introduced indirectly by non-response.
+Probability sampling approaches can be further subdivided into fixed-size/random-sized sample approaches and equal-probability/unequal-probability approaches. Equal-probability approaches are those where every unit has the same probability of being selected (simple random sampling) as opposed to having different inclusion probabilities (stratified sampling, cluster sampling). A fixed-size sample approach is, as the name suggests, one where the sample size is fixed and known. In this chapter we will only discuss fixed-size sample approaches. A prototypical random-sized sample approach is Poisson sampling, where each unit has a non-zero and potentially different probability of being selected. Poisson sampling is not common in practice, with the exception of surveys where there is a need to coordinate between samples -- for example, where we want less or more overlap between two samples drawn from the same population. Poisson sampling is also introduced indirectly by non-response.
 
 In all of our analyses we will focus on estimating the mean. The basic principles are the same for other quantities of interest, but each requires a different model.
 
@@ -59,7 +59,7 @@ true_mean <- mean(df$PenaltyTaking)
 true_sd   <- sd(df$PenaltyTaking)
 ```
 
-The dataset contains basic player information and ability estimates for `r nrow(df)` footballers. We will use only a subset of the columns and we will focus on estimating the mean of the Penalty Taking ability of footballers (between 1 - worst and 20 - best):
+The dataset contains basic player information and ability estimates for `r nrow(df)` footballers. We will use only a subset of the columns and we will focus on estimating the mean of the Penalty Taking ability of footballers (between 1 -- worst and 20 -- best):
 
 ```{r echo = FALSE}
 print(head(df, 10))
@@ -165,9 +165,9 @@ $$
 $$
 Ignoring finite population size (or assuming that $n$ is relatively small wrt $N$), we can recognize the idealized $Var[\overline{x}] = \sigma^2$ and  $Var[\overline{x}_\text{strat}] =  \sum_{i=1}^k \frac{N_i}{N}\sigma_i^2$, with $w_i = \frac{N_i}{N}$, which completes the proof.
 
-So, unless all the strata means are exactly the same as the grand mean of the entire population, then the difference between the variances will be positive, otherwise it will be 0. This implies that proportional stratified sampling is expected to be at least as good as simple random sampling regardless of the data or how we stratify them. This also highlights how to stratify optimally - we need strata whose means differ as much as possible from the grand mean. In other words, we should aim for strata with low within-strata variability and high between-strata variability.
+So, unless all the strata means are exactly the same as the grand mean of the entire population, then the difference between the variances will be positive, otherwise it will be 0. This implies that proportional stratified sampling is expected to be at least as good as simple random sampling regardless of the data or how we stratify them. This also highlights how to stratify optimally -- we need strata whose means differ as much as possible from the grand mean. In other words, we should aim for strata with low within-strata variability and high between-strata variability.
 
-### Proportional sampling - simulation
+### Proportional sampling -- simulation
 
 Let us simulate the process of drawing our $n =$ `r n` samples `r m` times to check if that is indeed the case. We believe that Penalty Taking is more in the domain of attacking footballers, so we will stratify based on Best Position:
 
@@ -221,7 +221,7 @@ where $\sigma_0$ is the grand standard deviation and $\sigma_i$ are the strata s
 
 Even though optimal location is at least as good as proportional allocation in theory, we might still prefer proportional allocation in practice. Optimal allocation requires a good estimate of the within strata variability $\sigma_i$ which is often unknown, although it can be estimated by preliminary sampling. Also, if we are estimating more than one quantity, the $\sigma_i$ will be different for each quantity and it will be impossible to find an allocation that is optimal for all quantities.
 
-### Optimal allocation - simulation
+### Optimal allocation -- simulation
 
 Let us simulate the process of drawing our $n =$ `r n` samples `r m` times, this time for optimal weights:
 
@@ -422,14 +422,13 @@ ggplot(res, aes(x = se_bayes)) + geom_histogram(bins = 15) +
 
 In all of our reasoning in this chapter we have assumed that we are sampling from an infinite population or, equivalently, sampling from a finite population with replacement. The same principles also apply if the sample size is small relative to the population size.
 
-However, when sampling without replacement from a finite population, increasing the sample size decreases the uncertainty in the estimates not only due to more units being observed, but also due to fewer units remaining unobserved. We can intuit this from the extreme case of observing all units in a population without measurement error - there is no uncertainty in such an estimate!
+However, when sampling without replacement from a finite population, increasing the sample size decreases the uncertainty in the estimates not only due to more units being observed, but also due to fewer units remaining unobserved. We can intuit this from the extreme case of observing all units in a population without measurement error -- there is no uncertainty in such an estimate!
 
 While classical statistics has well-developed procedures for estimating in a finite population setting, Bayesian statistics does not. The two main reasons are that Bayesian statistics is still young and that developing such Bayesian procedures typically requires the use of relatively complicated models that were until recently very difficult to infer from (2nd generation tools based on HMC, such as Stan, have mitigated this issue). If we find ourselves in a situation where we want to use a Bayesian approach and we have a large sample from a finite population, then this paper is a good starting point:
 
 * Mendoza, M., Contreras-Cristán, A., & Gutiérrez-Peña, E. (2021). Bayesian Analysis of Finite Populations under Simple Random Sampling. Entropy, 23(3), 318.
 
-
-# Non-probability sampling schemes 
+# Non-probability sampling schemes
 
 We have already defined non-probability sampling as a sampling approach where some elements of the population have no chance of selection or where we cannot determine the probability of selection. Another way of looking at non-probability sampling is as the sampling approach that we use when no probability sampling approach is feasible. This is typically due to not being able to create a sampling frame. For example, it is impossible to create a sampling frame for all dung beetles and some subpopulations, such as drug additcs are difficult to reach. Instead of random sampling, we select elements based on other criteria and assumptions regarding the study population. This gives rise to exclusion bias, placing limits on the representativeness of the sample. While the results of non-probability sample might be useful in some cases, it is in most cases impossible to make any scientifically sound generalizations to the study population.
 
@@ -449,7 +448,7 @@ Judgement sampling is also known as purposive sampling or authoritative sampling
 
 ## Quota sampling
 
-Quota sampling is similar to stratified sampling in that we first partition the study population into non-overlapping partitions based on characteristics we believe are good at explaining the variability in the variates of interest. For each strata we then determine the number of samples we require for that strata - that is, the quota. This might be based on known or approximate proportions of those strata in the study population. The difference between quota and stratified sampling is that in quota sampling we then proceed by meeting the quota of samples by non-probability approaches such as convenience or judgement sampling.
+Quota sampling is similar to stratified sampling in that we first partition the study population into non-overlapping partitions based on characteristics we believe are good at explaining the variability in the variates of interest. For each strata we then determine the number of samples we require for that strata -- that is, the quota. This might be based on known or approximate proportions of those strata in the study population. The difference between quota and stratified sampling is that in quota sampling we then proceed by meeting the quota of samples by non-probability approaches such as convenience or judgement sampling.
 
 For example, if we were interested in some characteristic of University of Ljubljana students, we might stratify the students based on faculty, gender, and year of study and then try to find at least 3 students from each strata.
 
