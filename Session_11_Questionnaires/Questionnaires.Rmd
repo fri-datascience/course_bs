@@ -38,12 +38,11 @@ Over the course of the chapter we will recognize these overarching themes, which
 * Research is scarce and most design recommendations are at least a bit controversial -- they should be taken as guidelines and not as absolute truths.
 * So, when in doubt, the best approach is to test the questions and the questionnaire.
 
-
 ## A cognitive model of the response process
 
 > *The longer people think, the more confused they get.*
 
-In order to develop a better understanding of what is a good and what is a bad question or questionnaire, we must have a good understanding of the participant's experience when answering questions. 
+In order to develop a better understanding of what is a good and what is a bad question or questionnaire, we must have a good understanding of the participant's experience when answering questions.
 
 For a more systematic treatment we will adopt Tourangeau’s four-stage psychological model of survey response. The four stages are comprehension, retrieval, judgement, and response.
 
@@ -120,13 +119,13 @@ A **filter question** (or screening question) is a question that is used to avoi
 
 The introduction is the respondent's first contact with the questionnaire is thus very important. While this might vary from study to study, the introduction should:
 
-- provide the subject of the survey,
-- identify the surveyer,
-- explain the purpose of the survey,
-- request the respondent’s co-operation,
-- explain how much time it will take,
-- establish confidence,
-- inform the respondent about confidentiality issues, the status of the survey (voluntary or mandatory), and any existing data-sharing agreements with other organizations.
+* provide the subject of the survey,
+* identify the surveyer,
+* explain the purpose of the survey,
+* request the respondent’s co-operation,
+* explain how much time it will take,
+* establish confidence,
+* inform the respondent about confidentiality issues, the status of the survey (voluntary or mandatory), and any existing data-sharing agreements with other organizations.
 
 Respondents frequently question the value of the gathered information to themselves and to others. Therefore, be sure to explain why it is important to complete the questionnaire, how the information will be used, and how respondents can access the results. Ensuring that respondents understand the value of their information is vital in undertaking a survey.
 
@@ -134,7 +133,7 @@ Respondents frequently question the value of the gathered information to themsel
 
 <b>Exercise: </b>
 
-Below is an example of an introduction from the 2021 internal survey at UL-FRI. What does the introduction do well? Could it be improved and how? 
+Below is an example of an introduction from the 2021 internal survey at UL-FRI. What does the introduction do well? Could it be improved and how?
 
 <b>Satisfaction with faculty services -- students</b>
 
@@ -169,9 +168,9 @@ There are two main types of questions: **open** and **closed**. Open questions g
 
 Open questions:
 
-- Allow the respondent to interpret the question and answer how they choose.
-- Their use has been declining over time.
-- Common criticism (without empirical support): results depend on articulation ability of respondent, susceptible to salience effects.
+* Allow the respondent to interpret the question and answer how they choose.
+* Their use has been declining over time.
+* Common criticism (without empirical support): results depend on articulation ability of respondent, susceptible to salience effects.
 
 **Salience** = the quality of being particularly noticeable or important. **Salience bias** = our tendency to focus on items or information that are more noteworthy while ignoring those that do not grab our attention. However, literature shows it's not that different for open or closed questions.
 
@@ -183,12 +182,12 @@ Suppose we ask the respondent what they think the most important problem facing 
 
 Closed questions:
 
-- Provide some consistency across respondents.
-- Easier and faster for the respondent to answer. Typically twice as much time.
-- Easier and faster for the researcher to code and analyze.
-- Problems with *non-attitudes*: Non-attitude refers to the mental state of having no attitude or opinion toward some object, concept, or other type of stimulus. In survey research, this is manifested by an overt no opinion or don't know response to an attitude question, but it may also be hidden by a random or guesswork choice of answers to avoid appearing ignorant. Additionally, it is likely that not all *no opinion* or *don't know* responses reflect non-attitudes. This makes it hard to estimate how many respondents have non-attitudes toward the object.
-- Gravitation towards positive.
-- Incomplete universe problem: "Other" does not solve the incomplete universe problem, offering that other option does almost nothing (people almost never select it).
+* Provide some consistency across respondents.
+* Easier and faster for the respondent to answer. Typically twice as much time.
+* Easier and faster for the researcher to code and analyze.
+* Problems with *non-attitudes*: Non-attitude refers to the mental state of having no attitude or opinion toward some object, concept, or other type of stimulus. In survey research, this is manifested by an overt no opinion or don't know response to an attitude question, but it may also be hidden by a random or guesswork choice of answers to avoid appearing ignorant. Additionally, it is likely that not all *no opinion* or *don't know* responses reflect non-attitudes. This makes it hard to estimate how many respondents have non-attitudes toward the object.
+* Gravitation towards positive.
+* Incomplete universe problem: "Other" does not solve the incomplete universe problem, offering that other option does almost nothing (people almost never select it).
 
 In practice, open-ended questions should be asked when we are not sure about the universe of possible answers to a categorical questions. Alternatively, we can pre-test to obtain a universe.
 
@@ -196,7 +195,7 @@ In practice, open-ended questions should be asked when we are not sure about the
 
 ###### Sensitive questions
 
-*Sensitive questions* is an umbrella term for questions where there is a substantially higher probability that respondents will be untruthful with their response. Typically, these are questions that could make people feel ashamed, stupid, ignorant, afraid, or some other negative emotion. It is also possible to get untruthful responses due to invoking positive emotions. 
+*Sensitive questions* is an umbrella term for questions where there is a substantially higher probability that respondents will be untruthful with their response. Typically, these are questions that could make people feel ashamed, stupid, ignorant, afraid, or some other negative emotion. It is also possible to get untruthful responses due to invoking positive emotions.
 
 Sensitive questions can be as simple as establishing questions (age, race, income), they can be an invasion of privacy (politics, sexual activities), they may put the respondent in a position where they might reveal illegal or socially undesirable behavior and thus pose a risk (drug use, cheating on tests, tax fraud), or they can put the respondent in an emotionally stressful situation (grief, disability). Note that people are more inclined to provide socially desirable answers, so questions that endorse unpopular behaviors or attitudes (anti-vaccine, racism) or socially desireable (mask wearing, inclusion) are more likely to be answered untruthfully.
 
@@ -219,12 +218,12 @@ Are you vaccinated against COVID-19?
 
 There are several ways of dealing with sensitive questions:
 
-- Provide an *"out"* answer, such as *I prefer not to answer.*.
-- Anonymity or at least confidentiality of the study might increase response rates. Of course, respondents must be made aware of this in the frontmatter.
-- Indirect questioning: What do you believe other people think about *insert sensitive topic*?
-- Move the sensitive questions towards the end: This serves two purposes. First, you lead up to sensitive questions with less sensitive questions thus establishing a rapport with the respondent. Second, when respondents has already invested some time in the survey they are often more likely to complete the survey.
-- Use of ranges instead of specific numbers, where appropriate (age, salary).
-- Use of question loading to normalize behavior. That is, prefix the question with text that removes at least some of the judgement associated with the negative or sensitive response. 
+* Provide an *"out"* answer, such as *I prefer not to answer*.
+* Anonymity or at least confidentiality of the study might increase response rates. Of course, respondents must be made aware of this in the frontmatter.
+* Indirect questioning: What do you believe other people think about *insert sensitive topic*?
+* Move the sensitive questions towards the end: This serves two purposes. First, you lead up to sensitive questions with less sensitive questions thus establishing a rapport with the respondent. Second, when respondents has already invested some time in the survey they are often more likely to complete the survey.
+* Use of ranges instead of specific numbers, where appropriate (age, salary).
+* Use of question loading to normalize behavior. That is, prefix the question with text that removes at least some of the judgement associated with the negative or sensitive response.
 
 <div style="padding: 10px; border: 1px solid transparent; border-color: transparent; margin-bottom: 5px; border-radius: 4px; color: #000000; background-color: #f5f7f7; border-color: #000000;">
 <b>Examples of question loading for normalization:</b>
@@ -236,7 +235,7 @@ Recent studies have shown that people often have to much work to exercise regula
 Most UL-FRI students fail at least one exam and it is not uncommon for a student to perform poorly on an exam even though they were well prepared and are knowledgeable. What was your exam score?
 </div>
 
-Related to sensitive questions is the use of emotionally charged words that can stir up unnecessary emotion in the participant. For example, words such as elite, patriotic, horrible, crisis, joy, fear, sadness, etc. The use of such words is appropriate in literary works, advertising campaign, etc., but should be avoided in questionnaires. A special kind of emotionally charged words are prestige names -- names of people, companies, locations, etc. 
+Related to sensitive questions is the use of emotionally charged words that can stir up unnecessary emotion in the participant. For example, words such as elite, patriotic, horrible, crisis, joy, fear, sadness, etc. The use of such words is appropriate in literary works, advertising campaign, etc., but should be avoided in questionnaires. A special kind of emotionally charged words are prestige names -- names of people, companies, locations, etc.
 
 <div style="padding: 10px; border: 1px solid transparent; border-color: transparent; margin-bottom: 5px; border-radius: 4px; color: #000000; background-color: #f5f7f7; border-color: #000000;">
 <b>Examples of emotionally charged words:</b>
@@ -288,7 +287,7 @@ Are you worried about the danger of war? -- Yes
 Are you worried about the growth of armaments? -- Yes
 Do you think there's a danger in giving young people guns and teaching them how to kill? -- Yes
 Do you think it's wrong to force people to take up arms against their will? -- Yes
-Would you oppose the reintroduction of national service? -- ??? 
+Would you oppose the reintroduction of national service? -- ???
 </div>
 
 ###### Loaded questions
@@ -311,7 +310,7 @@ What other benefits do you see for having a dog, other than for food?
 
 ##### Negatively worded questions
 
-A negative worded question has is defined as a question in which disagreement would be a positive answer. Evidence shows that negatively worded questions take longer to process, can lead to more negative responses, and can confuse the respondents into making mistakes.
+A negative worded question is defined as a question in which disagreement would be a positive answer. Evidence shows that negatively worded questions take longer to process, can lead to more negative responses, and can confuse the respondents into making mistakes.
 
 <div style="padding: 10px; border: 1px solid transparent; border-color: transparent; margin-bottom: 5px; border-radius: 4px; color: #000000; background-color: #f5f7f7; border-color: #000000;">
 <b>Examples of negatively worded questions:</b>
@@ -327,7 +326,7 @@ Do you think the government should not be so uncooperative?
 
 In practice, scales can vary from 2 to even 100 points. In general, more items lead to more expressiveness but potentially more confusion, because at some point it becomes more difficult to discern, for example, what is the difference between 65 and 67 on a 100 point scale.
 
-Shorter scales have less information and responses have to be treated as ordinal or even as categorical. As the scales lengthen, we are more and more able to analyze them as numerical, even if they are discrete. Research shows that there might be very little gain from as few as 4 points onwards and almost consensus that 6 is enough, because information that pertains to internal consistency doesn't grow anymore. 
+Shorter scales have less information and responses have to be treated as ordinal or even as categorical. As the scales lengthen, we are more and more able to analyze them as numerical, even if they are discrete. Research shows that there might be very little gain from as few as 4 points onwards. A general consensus is that 6 should be enough, because information that pertains to internal consistency doesn't grow anymore.
 
 For respondents with more relative cognitive ability, more points may lead to more information. For the general public, 5 points should be enough in most cases.
 
@@ -339,7 +338,7 @@ In most cases a longer scale leads to longer response times. There is one notabl
 
 We want to avoid inflation of responses on the upper or lower bound of the scale. If we anticipate a skewed distribution, we should transform the scale. Note that respondents have a tendency to avoid negative answers when grading things, in particular people.
 
-There isn't a lot of concrete evidence that mid-points (odd number scales) are bad. It turns out that offering mid-points is a good thing, the majority of people who select them do so because they’re indeed neutral and they are not doing so to satisfice. **To satisfice* is to decide on and pursue a course of action that will satisfy the minimum requirements necessary to achieve a particular goal.
+There isn't a lot of concrete evidence that mid-points (odd number scales) are bad. It turns out that offering mid-points is a good thing, the majority of people who select them do so because they’re indeed neutral and they are not doing so to satisfice. *To satisfice* is to decide on and pursue a course of action that will satisfy the minimum requirements necessary to achieve a particular goal.
 
 #### Branching
 
@@ -368,7 +367,7 @@ Q2b: Was it a little positive, positive, or very positive? (assuming answer to Q
 
 ## Questionnaire pretesting/testing
 
-Testing is a fundamental step in developing a questionnaire. It helps us, among other things, to discover poor wording or ordering of questions, identify errors in the layout and instructions, determine the respondent’s inability or unwillingness to answer the questions, suggest additional response categories that can be pre-coded on the questionnaire, and provide a preliminary indication of the time necessary to complete the questionnaire. 
+Testing is a fundamental step in developing a questionnaire. It helps us, among other things, to discover poor wording or ordering of questions, identify errors in the layout and instructions, determine the respondent’s inability or unwillingness to answer the questions, suggest additional response categories that can be pre-coded on the questionnaire, and provide a preliminary indication of the time necessary to complete the questionnaire.
 
 Testing can include the complete questionnaire or only a particular part of it. Ideally, the complete questionnaire will at some point also be tested. Because there are so few absolute truths about designing a questionnaire, testing is even more important.
 
@@ -381,7 +380,7 @@ A textbook example is a clock that doesn't run. It is absolutely reliable, but n
 
 Measuring tape is a relatively reliable (plus-minus a few milimeters) device and it is a valid measurement of length. Measuring tape is also a valid tool for measuring the circumference of a person's skull. But, contrary to what a lot of people thought 150 years ago, the circumference of the skull is not a valid measurement of intelligence.
 
-University professors' grades are by definition a valid measurement of the student's performance in a particular course However, they are in most cases very unreliable, because choice of exam questions, *daily form*, professors' error and bias, etc. can have a strong effect. Furthermore, it can be argued that grades are not a valid measurement of the student's academic ability.
+University professors' grades are by definition a valid measurement of the student's performance in a particular course. However, they are in most cases very unreliable, because choice of exam questions, *daily form*, professors' error and bias, etc. can have a strong effect. Furthermore, it can be argued that grades are not a valid measurement of the student's academic ability.
 </div>
 
 #### Testing reliability
@@ -400,9 +399,9 @@ Even the most reliable measuring tool is useless if it doesn't measure what we a
 
 The overarching term in testing validity is **construct validity**. Construct validity is the approximate truth of the conclusion that your operationalization accurately reflects its construct. Evidence of construct validity must be accummulated over time. There are several aspects of construct validity, but we will name just three of the most general ones:
 
-- **Face validity:** Respondents think that the questions measure what we want to measure. That is, the questionnaire makes sense at *face value*.
-- **Content validity:** To simplify, experts agree that the questionnaire measures all aspects of the construct. Both face and content validity can be tested only qualitatively.
-- **Criterion validity:** The construct measurements should correlate with survey questions or external data about the respondents (*concurrent validity*) or with data gathered in the future (*predictive validity*). For example, two of the most commonly used constructs, intelligence and personality type, have been thouroughly validated by showing that the measurements correlate with and are able to predict future behavior, business success, graduation rates, etc.
+* **Face validity:** Respondents think that the questions measure what we want to measure. That is, the questionnaire makes sense at *face value*.
+* **Content validity:** To simplify, experts agree that the questionnaire measures all aspects of the construct. Both face and content validity can be tested only qualitatively.
+* **Criterion validity:** The construct measurements should correlate with survey questions or external data about the respondents (*concurrent validity*) or with data gathered in the future (*predictive validity*). For example, two of the most commonly used constructs, intelligence and personality type, have been thouroughly validated by showing that the measurements correlate with and are able to predict future behavior, business success, graduation rates, etc.
 
 #### Types of pretesting
 
@@ -424,7 +423,6 @@ The overarching term in testing validity is **construct validity**. Construct va
 **Translating questionnaires:** The two main sets of issues with translating questionnaires are the issues with the translation itself, which is not unique. The main techniques are to use multiple translators and to use backtranslation (translating and then translating back) to gauge the appropriateness of the translation. The second main issue is that psychological constructs and questionnaire design choices regarding scales, etc. don't necessarily transfer to other languages and cultures.
 
 We will cover some other survey methodology topics that are closely related to questionnaires, such as survey mode (online, in-person, etc.) and non-response bias in the Sampling chapter.
-
 
 ## Tools for questionnaires
 
@@ -450,11 +448,3 @@ We will cover some other survey methodology topics that are closely related to q
     18. Tourangeau, R.: Maintaining respondent trust and protecting their data.
     53. Krosnick, J. A.: Questionnaire design.
     54. Willis, G.: Cognitive evaluation of survey instruments.
-    
-## Practical 1: Analying inter-rater reliability
-
-*under construction*
-
-## Practical 2: Analying the internal consistency of a questionnaire
-
-*under construction*
