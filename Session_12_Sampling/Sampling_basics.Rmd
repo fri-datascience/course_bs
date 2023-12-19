@@ -33,11 +33,11 @@ In practice, if resources permit, probability sampling is always preferred over 
 
 * **Non-response:** In practice, not all units can be measured. In particular, when dealing with human participants, not all participants will respond. Non-response is essentially a missing values problem.
 
-Both coverage and non-response introduce bias into our results. In general, dealing with these issues requires careful consideration and the gathering of additional information. We will discuss non-response bias in more detail in a later chapter. In this chapter we will, unless noted otherwise, assume that there are no coverage or non-response issues. In other words, the only source of uncertainty will be the sampling itself.
+Both coverage and non-response introduce bias into our results. In general, dealing with these issues requires careful consideration and the gathering of additional information. In this chapter we will, unless noted otherwise, assume that there are no coverage or non-response issues. In other words, the only source of uncertainty will be the sampling itself.
 
 # Probability sampling schemes
 
-Probability sampling approaches can be further subdivided into fixed-size/random-sized sample approaches and equal-probability/unequal-probability approaches. Equal-probability approaches are those where every unit has the same probability of being selected (simple random sampling) as opposed to having different inclusion probabilities (stratified sampling, cluster sampling). A fixed-size sample approach is, as the name suggests, one where the sample size is fixed and known. In this chapter we will only discuss fixed-size sample approaches. A prototypical random-sized sample approach is Poisson sampling, where each unit has a non-zero and potentially different probability of being selected. Poisson sampling is not common in practice, with the exception of surveys where there is a need to coordinate between samples -- for example, where we want less or more overlap between two samples drawn from the same population. Poisson sampling is also introduced indirectly by non-response.
+Probability sampling approaches can be further subdivided into fixed-size/random-sized sample approaches and equal-probability/unequal-probability approaches. Equal-probability approaches are those where every unit has the same probability of being selected (simple random sampling) as opposed to having different inclusion probabilities (stratified sampling, cluster sampling). A fixed-size sample approach is (as the name suggests), an approach where the sample size is fixed and known. In this chapter we will only discuss fixed-size sample approaches. A prototypical random-sized sample approach is Poisson sampling, where each unit has a non-zero and potentially different probability of being selected. Poisson sampling is not common in practice, with the exception of surveys where there is a need to coordinate between samples -- for example, where we want less or more overlap between two samples drawn from the same population. Poisson sampling is also introduced indirectly by non-response.
 
 In all of our analyses we will focus on estimating the mean. The basic principles are the same for other quantities of interest, but each requires a different model.
 
@@ -56,7 +56,7 @@ df$BestPosition[df$BestPosition == "WingBackLeft"] <- "DefenderLeft"
 df$BestPosition[df$BestPosition == "WingBackRight"] <- "DefenderRight"
 df$BestPosition[df$BestPosition == "Sweeper"] <- "DefenderCentral"
 true_mean <- mean(df$PenaltyTaking)
-true_sd   <- sd(df$PenaltyTaking)
+true_sd <- sd(df$PenaltyTaking)
 ```
 
 The dataset contains basic player information and ability estimates for `r nrow(df)` footballers. We will use only a subset of the columns and we will focus on estimating the mean of the Penalty Taking ability of footballers (between 1 -- worst and 20 -- best):
@@ -75,7 +75,7 @@ True to its name, this is the simplest probability sampling scheme and when inte
 
 Let us simulate the process of drawing our $n =$ `r n` samples `r m` times to check if that is indeed the case:
 
-```{r echo=FALSE, warning=FALSE, fig.width=2, fig.height=2}
+```{r echo=FALSE, warning=FALSE, fig.width=4, fig.height=4}
 library(ggplot2)
 
 # simple random sampling
@@ -86,7 +86,7 @@ for (i in 1:m) {
   mus <- c(mus, mean(df$PenaltyTaking[idx]))
 }
 
-ggplot(data.frame(mu = mus), aes(x = mu)) + geom_histogram(bins = 15) + 
+ggplot(data.frame(mu = mus), aes(x = mu)) + geom_histogram(bins = 15) +
   ylab("freq") + xlab("estimate")
 ```
 
@@ -98,13 +98,13 @@ Simple random sampling is indeed simple but also very effective. The main reason
 
 Because of the CLT, we can, when the sample was obtained via simple random sampling, estimate the mean using a simple normal-likelihood model, even though the data might not be normally distributed. Here is the model in Stan:
 
-```{r comment='', echo = F}
-cat(readLines("./models/simple.stan"), sep = '\n')
+```{r comment="", echo = FALSE}
+cat(readLines("./models/simple.stan"), sep = "\n")
 ```
 
 Note that results obtained with this approach will be for all but the smallest sample sizes very similar to those obtained with bootstrapping or a simple normal asymptotic argument of taking the average and quantifying uncertainty with sample standard deviation divided by the squared root of the sample size.
 
-```{r echo=FALSE, warning=FALSE, message=FALSE, results = 'hide'}
+```{r echo=FALSE, warning=FALSE, message=FALSE, results = "hide"}
 library(cmdstanr)
 library(posterior)
 
@@ -121,18 +121,17 @@ if (file.exists("./saved_results/001.rds")) {
     fit_base <- model1$sample(data = stan_data, chains = 1, iter_sampling = 1000, iter_warmup = 200)
     mus <- as_draws_matrix(fit_base$draws("mu"))
     res001 <- rbind(res001, data.frame(mu = mean(mus[,1]), sd = sd(mus[,1])))
-  }  
+  }
   saveRDS(res001, file = "./saved_results/001.rds")
 }
-
 ```
 
 We simulated 50 different samples and fit the model separately to each. The posterior mean of course varies from sample to sample. The average over all estimates is `r round(mean(res001$mu), 2)` and their standard deviation across simulations is `r round(sd(res001$mu), 3)`. Both of these are in line with theory.
 
 In practice we typically aren't able to simulate many samples. Instead, we one sample of size $n$ from our population. So we have to rely on t. Below is a histogram of the posterior means for standard deviation for our 50 simulations. We can see how in practice we will sometimes underestimate, sometimes underestimate the variance (why?), but on average, it will be close to the true variance. Of course, the problem gets worse with smaller sample sizes and better with larger sample sizes.
 
-```{r echo=FALSE, warning=FALSE, fig.width=2, fig.height=2}
-ggplot(res001, aes(x = sd)) + geom_histogram(bins = 15) + 
+```{r echo=FALSE, warning=FALSE, fig.width=3, fig.height=3}
+ggplot(res001, aes(x = sd)) + geom_histogram(bins = 15) +
   ylab("freq") + xlab("estimate")
 ```
 
@@ -177,13 +176,12 @@ table(df$BestPosition)
 
 Note that in order to do this, we need information about the size of each strata, in our case the number of players by type. This information might not always be available!
 
-```{r echo=FALSE, warning=FALSE, fig.width=2, fig.height=2}
+```{r echo=FALSE, warning=FALSE, fig.width=4, fig.height=4}
 weights <- round(table(df$BestPosition) / nrow(df) * n)
 weights[12] <- weights[12] + 2 # a bit of a hack to get exact n
 
 mus002 <- c()
 set.seed(0)
-
 
 if (file.exists("./saved_results/002.rds")) {
   mus002 <- readRDS("./saved_results/002.rds")
@@ -202,14 +200,13 @@ if (file.exists("./saved_results/002.rds")) {
 
 ggplot(data.frame(mu = mus002), aes(x = mu)) + geom_histogram(bins = 30) + 
   ylab("freq") + xlab("estimate")
-
 ```
 
 The average over all estimates is `r round(mean(mus002), 2)` and their standard deviation is `r round(sd(mus002), 3)`. This is better than simple random sampling.
 
 ### Optimal allocation
 
-*Optimal allocation*, also known as Neyman allocation, is the solution to the optimization problem of finding $n_i$ that minimize the variance of the estimator $\overline{x}_\text{strat}$ estimator:
+*Optimal allocation*, also known as Neyman allocation, is the solution to the optimization problem of finding $n_i$ that minimizes the variance of the $\overline{x}_\text{strat}$ estimator:
 
 $$w_i = \frac{n_i}{n} = \frac{N_i\sigma_i}{\sum_{i=1}^k N_i\sigma_i}.$$
 
@@ -225,7 +222,7 @@ Even though optimal location is at least as good as proportional allocation in t
 
 Let us simulate the process of drawing our $n =$ `r n` samples `r m` times, this time for optimal weights:
 
-```{r echo=FALSE, warning=FALSE, fig.width=2, fig.height=2}
+```{r echo=FALSE, warning=FALSE, fig.width=4, fig.height=4}
 # stratified sampling - optimal
 sds <- tapply(df$PenaltyTaking, df$BestPosition, sd)
 weights_opt <- round(n * weights * sds / sum(weights * sds))
@@ -257,11 +254,11 @@ The average over all estimates is `r round(mean(mus003), 2)` and their standard 
 
 A simple but effective way of modeling data that arise from stratified sampling is to model each strata separately according to the sampling procedure used for that strata (in our case, a simple random sample). The estimate of the grand mean is a weighted sum of the individual means, where the weights are derived from the proportion of each strata in the entire population:
 
-```{r comment='', echo = F}
-cat(readLines("./models/stratified.stan"), sep = '\n')
+```{r comment="", echo = FALSE}
+cat(readLines("./models/stratified.stan"), sep = "\n")
 ```
 
-```{r echo=FALSE, warning=FALSE, message=FALSE, results = 'hide'}
+```{r echo=FALSE, warning=FALSE, message=FALSE, results = "hide"}
 model2 <- cmdstan_model("./models/stratified.stan")
 
 weights <- round(table(df$BestPosition) / nrow(df) * n)
@@ -291,14 +288,12 @@ if (file.exists("./saved_results/004.rds")) {
                                  sd = sd(mus), 
                                  w_mus = w_mus,
                                  mu_obs = mean(obs$y)))
-  
   }
-  
+
   saveRDS(res004, file = "./saved_results/004.rds")
 }
 
 print(summary(res004))
-
 ```
 
 ## Cluster sampling
@@ -343,15 +338,13 @@ h_bootstrap <- function(x, group, w, m = 100) {
 
 Finally, we will use a Bayesian model that models the two-level strucure. Similarly, we will estimate the mean of each cluster separately and the grand mean by sampling with replacement from the clusters:
 
-```{r comment='', echo = F}
-cat(readLines("./models/clustered.stan"), sep = '\n')
+```{r comment="", echo = FALSE}
+cat(readLines("./models/clustered.stan"), sep = "\n")
 ```
-
-Note that
 
 Now we are ready to simulate:
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, results="hide", fig.width=2, fig.height=2}
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="hide", fig.width=4, fig.height=4}
 model3 <- cmdstan_model("./models/clustered.stan")
 
 # cluster sampling
@@ -378,7 +371,6 @@ if (file.exists("./saved_results/005.rds")) {
       x_total <- x_total + weights[idw] * mean(tmp[idx])
       w_total <- w_total + weights[idw]
     }
-  
 
     bts <- h_bootstrap(all_y, all_g, all_w)
     
@@ -400,20 +392,19 @@ if (file.exists("./saved_results/005.rds")) {
 
 ggplot(data.frame(mu = res$mu), aes(x = mu)) + geom_histogram(bins = 30) + 
   ylab("freq") + xlab("estimate")
-
 ```
 
 The average over all estimates is `r round(mean(res$mu), 2)` and their standard deviation is `r round(sd(res$mu), 3)`. This is worse than simple random sampling.
 
 Looking at the averages across all iterations of the simulation, we can see that the naive simple approach underestimates the standard error by a factor of 2! The bootstrap and the Bayesian approach provide us with a good estimate of uncertainty:
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, results="hide", fig.width=2, fig.height=2}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 colMeans(res)
 ```
 
 Again, the quality of the estimate of standard error also varies. For some unfortunate sample of clusters and units withing those clusters, it can be far away from the true standard error. Here is the distribution of posterior means of standard error for the Bayesian model across all iterations of the simulation:
 
-```{r echo=FALSE, warning=FALSE, fig.width=2, fig.height=2}
+```{r echo=FALSE, warning=FALSE, fig.width=4, fig.height=4}
 ggplot(res, aes(x = se_bayes)) + geom_histogram(bins = 15) + 
   ylab("freq") + xlab("estimate")
 ```
