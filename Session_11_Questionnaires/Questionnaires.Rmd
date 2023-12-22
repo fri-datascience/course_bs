@@ -283,10 +283,15 @@ Do you think young people could use more authority and leadership in their lives
 Would you be in favor of reintroducing the national service? -- ???
 
 <b>Now consider Sequence 2:</b>
+
 Are you worried about the danger of war? -- Yes
+
 Are you worried about the growth of armaments? -- Yes
+
 Do you think there's a danger in giving young people guns and teaching them how to kill? -- Yes
+
 Do you think it's wrong to force people to take up arms against their will? -- Yes
+
 Would you oppose the reintroduction of national service? -- ???
 </div>
 
