@@ -144,20 +144,28 @@ df_looic$weight <-
   exp(-0.5 * df_looic$delta_looic) / sum(exp(-0.5 * df_looic$delta_looic))
 df_looic$weight <- round(df_looic$weight, 2)
 
-# calculate worst and best case for each model in terms of +/- SE
+# calculate worst and best case scenario for each model in terms of +/- SE
+# worst case: looic + SE for the choosen model, looic - SE for the rest
+# best case: looic - SE for the choosen model, looic + SE for the rest
 df_looic$weight_plus_se <- 0
 df_looic$weight_minus_se <- 0
 for (i in seq_len(nrow(df_looic))) {
-  # weights + SE
-  looic_plus_se <- df_looic$looic
-  looic_plus_se[i] <- looic_plus_se[i] + df_looic$SE[i]
+  # worst case
+  # best variant of other models
+  looic_plus_se <- df_looic$looic - df_looic$SE
+  # worst of current model
+  looic_plus_se[i] <- df_looic$looic[i] + df_looic$SE[i]
+  # weights
   delta_looic <- abs(looic_plus_se - min(looic_plus_se))
   weights <- exp(-0.5 * delta_looic) / sum(exp(-0.5 * delta_looic))
   df_looic$weight_plus_se[i] <- round(weights[i], 2)
 
-  # weights - SE
-  looic_minuse_se <- df_looic$looic
-  looic_minuse_se[i] <- looic_minuse_se[i] - df_looic$SE[i]
+  # best case
+  # worst variant of other models
+  looic_minuse_se <- df_looic$looic + df_looic$SE
+  # best of current model
+  looic_minuse_se[i] <- df_looic$looic[i] - df_looic$SE[i]
+  # weights
   delta_looic <- abs(looic_minuse_se - min(looic_minuse_se))
   weights <- exp(-0.5 * delta_looic) / sum(exp(-0.5 * delta_looic))
   df_looic$weight_minus_se[i] <- round(weights[i], 2)

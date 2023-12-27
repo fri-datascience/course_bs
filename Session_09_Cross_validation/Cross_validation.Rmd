@@ -112,6 +112,7 @@ $D_{KL}$ measures the distance from $q$ to $p$ and this distance is not symmetri
 Lower divergence means better model, the best model is the one where truth and the model are the same, in that case $D_{KL}$ equals zero:
 
 $$D_{KL}(p, q) = D_{KL}(p, p) = \sum_{i=1}^n p_i (log(p_i) - log(p_i)) = 0.$$
+
 ```{r fig.width=6, fig.height=4}
 # libraries
 library(ggplot2)
@@ -254,8 +255,8 @@ where $m$ is the number of models we are evaluating and $\Delta \text{WAIC}_i$ i
 
 # Additional readings
 
-* Vehtari A., Simpson D., Gelman A., Yao Y., Gnabry J. (2015). Pareto Smoothed Importance Sampling, https://arxiv.org/abs/1507.02646.
+* Vehtari A., Simpson D., Gelman A., Yao Y., Gnabry J. (2015). Pareto Smoothed Importance Sampling, <https://arxiv.org/abs/1507.02646>.
 
-* Vehtari A., Gelman A., Gnabry J. (2015). Practical Bayesian model evaluation using leave-one-out cross-validation and WAIC, https://arxiv.org/abs/1507.04544.
+* Vehtari A., Gelman A., Gnabry J. (2015). Practical Bayesian model evaluation using leave-one-out cross-validation and WAIC, <https://arxiv.org/abs/1507.04544>.
 
 * Gelman A., Jessica H., Vehtari A. (2014). Understanding predictive information criteria for Bayesian models, Statistics and computing, 24, 997--1016.
