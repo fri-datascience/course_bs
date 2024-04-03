@@ -291,3 +291,6 @@ TSWLatexianTemp*
 
 # xwatermark package
 *.xwm
+
+# mac stuff
+.DS_Store
