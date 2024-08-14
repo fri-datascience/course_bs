@@ -1,15 +1,20 @@
 # libraries --------------------------------------------------------------------
+library(bayesplot)
+library(cowplot)
 library(cmdstanr)
 library(ggplot2)
-library(bayesplot)
+library(HDInterval)
+library(mcmcse)
 library(posterior)
 library(tidyverse)
-library(HDInterval)
-library(cowplot)
+
 
 # data prep and model compilation ----------------------------------------------
 # load data
-data <- read.csv("../data/piglets.csv")
+data_all <- read.csv("../data/piglets.csv")
+
+# work with farm 1 only for now
+data <- data_all %>% filter(farm == 1)
 
 # normal model -----------------------------------------------------------------
 model_n <- cmdstan_model("../models/normal.stan")
@@ -351,3 +356,88 @@ ggplot(
   ylim(0, 6) +
   facet_wrap(. ~ mama_pig, ncol = 4) +
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+
+# fit the hierarchical model for farm 2 as well --------------------------------
+data2 <- data_all %>% filter(farm == 2)
+
+min_mama_ix <- min(data2$mama_pig)
+max_mama_ix <- max(data2$mama_pig)
+
+# data prep
+stan_data <- list(
+  n = nrow(data2),
+  m = max_mama_ix - min_mama_ix + 1,
+  y = data2$piglet_weight,
+  s = data2$mama_pig - min_mama_ix + 1
+)
+
+# fit
+fit_h2 <- model_h$sample(
+  data = stan_data,
+  parallel_chains = 4,
+  seed = 1
+)
+
+# diagnostics
+mcmc_trace(fit_h2$draws())
+fit_h2$summary()
+
+# samples
+df_h2 <- as_draws_df(fit_h2$draws(c("sigma", "mu", "mu_mu", "sigma_mu")))
+df_h2 <- df_h2 %>% select(-.draw, -.chain, -.iteration)
+
+# compare farm 2 vs farm 1 -----------------------------------------------------
+mcse(df_h2$mu_mu > df_h$mu_mu)
+
+
+# find the best pig out of all mama pigs ---------------------------------------
+# select only subject level mus
+df_mu_mamas <- df_h %>% select(-sigma, -mu_mu, -sigma_mu)
+df_mu_mamas <- cbind(df_mu_mamas, df_h2 %>% select(-sigma, -mu_mu, -sigma_mu))
+
+# name columns from 1 to n
+n_mamas <- ncol(df_mu_mamas)
+colnames(df_mu_mamas) <- c(1:n_mamas)
+
+# number of samples
+n_samples <- nrow(df_mu_mamas)
+
+# repeat 100 times
+n_repeats <- 100
+
+# storage
+best_mama_counts <- NULL
+
+for (i in 1:n_repeats) {
+  # bootstrap df_mu_mamas
+  df_boot <- df_mu_mamas[sample(n_samples, replace = TRUE), ]
+
+  # iterate over all rows and cound indexes of the best mama
+  best_mama_ix <- numeric()
+  for (j in 1:nrow(df_boot)) {
+    best_mama_ix <- c(best_mama_ix, which.max(df_boot[j, ]))
+  }
+
+  # to factor
+  best_mama_ix <- factor(best_mama_ix, levels = 1:n_mamas)
+
+  # count
+  count_df <- as.data.frame(table(best_mama_ix))
+
+  # to percentage
+  count_df$Freq <- count_df$Freq / sum(count_df$Freq)
+
+  # rename
+  colnames(count_df) <- c("best_mama_ix", "prob")
+
+  # append
+  best_mama_counts <- rbind(best_mama_counts, count_df)
+}
+
+# mean and se
+best_mama_summary <- best_mama_counts %>%
+  group_by(best_mama_ix) %>%
+  summarise(
+    mean_prob = mean(prob),
+    se = sd(prob) / sqrt(n_repeats)
+  )

@@ -17,7 +17,7 @@ In Bayesian modeling hierarchical models (also called multilevel models) are an 
 
 # Piglets
 
-We will build our first hierarchical (multilevel) model from the ground up by using a practical example. Our dataset (`./data/piglets.csv`) includes the weight of little piggies at birth along with the information about who the mother of each of the piglets is. Let us use $n$ to denote the number of piglets and $m$ to denote the number of mama pigs. For the sake of this illustrative example we will assume that weights of piglets at birth are normally distributed.
+We will build our first hierarchical (multilevel) model from the ground up by using a practical example. Our dataset (`./data/piglets.csv`) includes the weight of little piggies at birth along with the information about who the mother of each of the piglets is and at which farm they live. To get familiar with hierarchical models, we will initially focus only on pigs from the first farm. Let us use $n$ to denote the number of piglets and $m$ to denote the number of mama pigs. For the sake of this illustrative example we will assume that weights of piglets at birth are normally distributed.
 
 The simplest model we can build is the traditional normal model (`./models/normal.stan`):
 
@@ -76,6 +76,8 @@ There are some key differences when comparing models on the group level as well.
 <center>
 ![](./figs/means_group.png)
 </center>
+
+We can now easily fit the hierarchical model to the data from the second farm as well. We can use samples from both hierarchical models (the one fit on pigs from farm 1 and the on fit on pigs from farm 2) to answer several instersting questions. For example, what is the probability that mamas on farm 2 give birth to heavier piglets in comparison to mamas on farm 1? Or we can use the models to find out the mama that gives birth to the heaviest piglets. In other words, we can use the same model to perform analyses both on the subject level (mama pigs) or on the group level (farms). Code for answering the two questions about can be found in the code examples folder.
 
 # The adaptation level experiment
 
