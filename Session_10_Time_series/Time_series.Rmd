@@ -200,7 +200,7 @@ $$\epsilon_t = y_t - (\mu + ar_t + ma_t) ,$$
 
 where $\epsilon$ represents the error term, $\mu$ the mean parameter, $ar$ the autoregressive component and $ma$ the moving average component. The autoregressive component is calculated as:
 
-$$ar_t = \sum_{i=1}^k \beta_i y_{t-i}.$$
+$$ar_t = \sum_{i=1}^p \beta_i y_{t-i}.$$
 
 The moving average component on the other hand is calculated as:
 
