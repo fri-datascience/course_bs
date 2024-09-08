@@ -721,10 +721,6 @@ $$ESS = \frac{SS}{1 + 2 \sum{acf}},$$
 
 where $SS$ is the total sample size, if we are using 4 chains where each one of the produces 1000 samples then $SS = 4 * 1000$$, and $acf$ is the auto correlation function that measures the autocorrelation of generated samples. We will talk about $acf$ in detail in the time-series lecture.
 
-n is the total number of MCMC samples (including all chains).
-m is the number of chains.
-acf is a vector of autocorrelations at different lags, typically up to a reasonable lag where the autocorrelation becomes negligible.
-
 The above diagnostics will be enough for the majority of our use cases, Stan also offers a function ($\texttt{cmdstan_diagnose()}$) that automatically performs some essential checks and lets you know if some things are not in order. If the name of your model fit variable is $\texttt{fit_normal}$ then running $\texttt{fit_normal\$cmdstan_diagnose()}$ woud run the basic diagnostics on it. Furthermore, you can use the $\texttt{shinystan}$ package to open up a web interface in which you can interactively explore your fits.
 
 ```{R eval=FALSE}

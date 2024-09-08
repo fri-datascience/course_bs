@@ -1136,10 +1136,6 @@ samples then <span class="math inline">\(SS = 4 * 1000\)</span>$, and
 function that measures the autocorrelation of generated samples. We will
 talk about <span class="math inline">\(acf\)</span> in detail in the
 time-series lecture.</p>
-<p>n is the total number of MCMC samples (including all chains). m is
-the number of chains. acf is a vector of autocorrelations at different
-lags, typically up to a reasonable lag where the autocorrelation becomes
-negligible.</p>
 <p>The above diagnostics will be enough for the majority of our use
 cases, Stan also offers a function (<span class="math inline">\(\texttt{cmdstan_diagnose()}\)</span>) that
 automatically performs some essential checks and lets you know if some
