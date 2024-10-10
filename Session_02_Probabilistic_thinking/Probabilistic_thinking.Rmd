@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 ### In preparation for this lecture
 
 * Revise the definition of probability.
-* Revise the pmf/pdf, support, parameters, mean, and variance for all univariate distributions from Principles of uncertainty (<https://fri-datascience.github.io/course_pou/probability-distributions.html>). You should also have an rough understanding of the shapes they can take.
+* Revise the pmf/pdf, support, parameters, mean, and variance for all univariate distributions from Principles of uncertainty (<https://fri-datascience.github.io/course_pou/probability-distributions.html>). You should also have a rough understanding of the shapes they can take.
 
 ### Summary
 
@@ -79,7 +79,7 @@ Or the posterior mean of the parameter $\theta$:
 
 $$E[\theta|y] = \int \theta p(\theta|y)d\theta.$$
 
-We can get by as applied statisticians even if we do not have the level of mathematical knowledge that allows us to do computation such as deriving the above expressions for some choice of model $p(y|\theta)$ and prior $p(\theta)$. In fact, in this course we will emphasize the use of computational tools such as Markov Chain Monte Carlo. We do, however, require a good conceptual understanding of basic probability, in particular, the various distributions that are used in statistical modelling and how they relate to each other.
+We can get by as applied statisticians even if we do not have the level of mathematical knowledge that allows us to do computation such as deriving the above expressions for some choice of model $p(y|\theta)$ and prior $p(\theta)$. In fact, in this course we will emphasize the use of computational tools such as Markov Chain Monte Carlo. We do, however, require a good conceptual understanding of basic probability, in particular, the various distributions that are used in statistical modeling and how they relate to each other.
 
 In this section we will briefly review the definition of probability, motivated by the need to describe uncertainty in a formal way.
 
@@ -99,7 +99,7 @@ Before we proceed with random variables and distributions, let us for a moment t
 
 Another example would be things that appear random because we do not have enough information. The most extreme example being the outcome of a pseudo-RNG that we use for our statistical analyses. For practical intents and purposes the output of such a RNG can't be distinguished from truly random sequences, even though it is deterministic. Therefore, we are uncertain about the next number and properties of the sequence, such as the mean, etc. However, if we knew the algorithm and the random seed, the sequence becomes deterministic and there is no uncertainty.
 
-Finally, uncertainty also applies to events from the past, where there is arguably no randomness, just a lack of information. For example, did it rain on this exact same date 300 years ago in Ljubljana? One of the two options is clearly true - it eigher rained or it didn't. However, we lack records from that period, so there is no way of being certain. Even though the uncertainty is not the result of randomness, we can still say that we believe it rained with 0.05% probability or derive a probability from records from nearby locations, historical weather patterns, etc.
+Finally, uncertainty also applies to events from the past, where there is arguably no randomness, just a lack of information. For example, did it rain on this exact same date 300 years ago in Ljubljana? One of the two options is clearly true - it either rained or it didn't. However, we lack records from that period, so there is no way of being certain. Even though the uncertainty is not the result of randomness, we can still say that we believe it rained with 0.05% probability or derive a probability from records from nearby locations, historical weather patterns, etc.
 
 To summarize, uncertainty is the result of lack of information and that lack of information can be caused by mandy different things, not just the inherent randomness of the underlying process. Uncertainty also depends on the observer -- what is uncertain for one observer might be less uncertain or even certain to another observer.
 
