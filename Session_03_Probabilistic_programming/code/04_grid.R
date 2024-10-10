@@ -37,6 +37,8 @@ ggplot(data = df, aes(x = x, y = y)) +
     stat = "identity", color = "skyblue",
     fill = "skyblue", alpha = 0.75
   ) +
+  geom_vline(xintercept = 0.3, linetype = "dashed", color = "grey25") +
+  geom_vline(xintercept = 0.7, linetype = "dashed", color = "grey25") +
   xlim(0, 1) +
   xlab("") +
   ylab("density") +

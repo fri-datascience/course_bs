@@ -19,7 +19,7 @@ cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
 # coin fairness visualization --------------------------------------------------
 df <- data.frame(dist = "beta")
 ggplot(data = df, aes(y = 0, dist = dist, arg1 = alpha, arg2 = beta)) +
-  stat_dist_slab(aes(fill = stat(x < bottom_cut | x > top_cut)),
+  stat_dist_slab(aes(fill = after_stat(x < bottom_cut | x > top_cut)),
     alpha = 0.75,
     show.legend = FALSE,
     normalize = "none",

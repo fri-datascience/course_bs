@@ -96,7 +96,7 @@ cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
 
 # fairness visualization -------------------------------------------------------
 ggplot(data = df_samples, aes(x = theta)) +
-  stat_dist_slab(aes(fill = stat(x < bottom_cut | x > top_cut)),
+  stat_dist_slab(aes(fill = after_stat(x < bottom_cut | x > top_cut)),
     alpha = 0.75,
     show.legend = FALSE,
     normalize = "none",
