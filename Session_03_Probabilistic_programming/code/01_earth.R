@@ -5,6 +5,17 @@ library(ggplot2)
 # x axis
 x <- seq(0, 1, 0.1)
 
+# prior
+prior <- rep(1, 11) / 11
+
+# plot our initial belief
+df <- data.frame(x, prior)
+ggplot(df, aes(x, prior)) +
+  geom_bar(stat = "identity") +
+  xlab("Water percentage") +
+  ylab("Belief") +
+  ylim(0, 1)
+
 # water
 water <- x * 2
 
@@ -21,17 +32,6 @@ ggplot(df, aes(x, y, color = group)) +
   scale_color_brewer(palette = "Set1") +
   theme_minimal() +
   theme(legend.title = element_blank())
-
-# prior
-prior <- rep(1, 11) / 11
-
-# plot our initial belief
-df <- data.frame(x, prior)
-ggplot(df, aes(x, prior)) +
-  geom_bar(stat = "identity") +
-  xlab("Water percentage") +
-  ylab("Belief") +
-  ylim(0, 1)
 
 # set posterior
 our_belief <- NULL

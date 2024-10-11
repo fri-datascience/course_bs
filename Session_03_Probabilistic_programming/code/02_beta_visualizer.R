@@ -6,7 +6,7 @@ library(tidyverse)
 
 # beta plotter -----------------------------------------------------------------
 # set parameters
-alpha <- 6
+alpha <- 10
 beta <- 8
 
 # plot
@@ -17,7 +17,7 @@ ggplot(data = df, aes(y = 0, dist = dist, arg1 = alpha, arg2 = beta)) +
     normalize = "none", scale = 1
   ) +
   xlim(0, 1) +
-  ylim(0, 3) +
+  ylim(0, 4) +
   xlab("") +
   ylab("density") +
   theme_minimal()
