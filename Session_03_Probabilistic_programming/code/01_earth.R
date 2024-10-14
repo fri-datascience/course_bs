@@ -54,7 +54,8 @@ saw_land <- function(our_belief) {
     ylim(0, 1)
   print(p)
 
-  return(posterior)
+  results <- list(our_belief = posterior, plot = p)
+  return(results)
 }
 
 saw_water <- function(our_belief) {
@@ -75,13 +76,21 @@ saw_water <- function(our_belief) {
     ylim(0, 1)
   print(p)
 
-  return(posterior)
+  results <- list(our_belief = posterior, plot = p)
+  return(results)
 }
+
+# init belief is equal to prior
+r$our_belief <- prior
 
 # sample location from https://www.realrandom.net/location.html
 
 # saw land
-our_belief <- saw_land(our_belief)
+r <- saw_land(r$our_belief)
 
 # saw water
-our_belief <- saw_water(our_belief)
+r <- saw_water(r$our_belief)
+
+# plot the truth
+r$plot +
+  geom_vline(xintercept = 0.71, linetype = "dashed", size = 1)
