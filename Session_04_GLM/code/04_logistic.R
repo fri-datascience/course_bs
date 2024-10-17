@@ -27,7 +27,7 @@ stan_data <- list(n = n, x = x, y = y)
 fit <- model$sample(
   data = stan_data,
   parallel_chains = 4,
-  iter_sampled = 2000,
+  iter_sampling = 2000,
   seed = 1
 )
 
