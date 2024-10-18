@@ -19,8 +19,8 @@ parameters {
 model {
   // custom lpdf - zero_centered
   for (i in 1:n) {
-    target += zero_centered_lpdf(y[i] | sigma);
+    y[i] ~ zero_centered(sigma);
     // OR
-    //y[i] ~ zero_centered(sigma);
+    // target += zero_centered_lpdf(y[i] | sigma);
   }
 }

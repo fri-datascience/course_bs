@@ -19,7 +19,141 @@ knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 * The simple linear model is actually the simplest of all GLMs.
 * In the GLM, beta coefficients are usually not as easy to interpret as in the case of simple linear regression. Fortunately, we only need some relatively easy math to make them understandable!
 
-# Parameters of linear regression models
+## Simple linear regression
+
+Simple linear regression traditionally denotes a linear regression model that has a single independent variable. In the following example we will use Bayesian linear regression to model temperature data through ages (the data is stored in `temperature.csv`). The dataset contains three columns, `temperature` denotes the average temperature, while `year` and `month` depict the time of the measurement. As we are interested in the yearly average temperature through ages, we will average the temperature over months. As a result, our dependent variable (`y`) will be the average yearly temperature and our independent variable (`x`) will be the year. We will use a linear normal model (or linear normal regression) to model the dependency between `x` and `y`. At the same time we will see how one would build a model for normally distributed data. This is the Stan model we will use:
+
+```
+data {
+  int<lower=1> n; // total number of data points
+  vector[n] x;    // x values
+  vector[n] y;    // y values
+}
+
+parameters {
+  real a;              // intercept
+  real b;              // slope
+  real<lower=0> sigma; // stdev
+}
+
+model {
+  // model
+  y ~ normal(a + b * x, sigma);
+}
+
+```
+
+The $\texttt{data}$ block contains three variables, `n` stores the total number of data points, `x` the values of the independent variable and `y` the values of the `dependent` variables. In the $\texttt{model}$ block you can see that we are using a normal distribution as the core building block. To model a linear dependency between `x` and `y` we replaced the `mean` ($\mu$) parameter of the normal distribution with a linear function (`a + b * x`), where `a` denotes the intercept and `b` the slope of the function. The $\texttt{parameters}$ block contains the three parameters of the model that we are interested in estimating. Below is the code that compiles the model, loads and prepares the data and fits the model.
+
+```{R message=FALSE, results="hide", fig.show="hide"}
+# load libraries
+library(cmdstanr)
+library(tidyverse)
+library(bayesplot)
+library(posterior)
+library(mcmcse)
+
+# compile the model
+model <- cmdstan_model("./models/simple_linear.stan")
+
+# prepare the data
+data <- read.csv("./data/temperature.csv", sep = ";")
+
+# remove month
+data <- data %>% select(-month)
+
+# mean per year
+data <- data %>%
+  group_by(year) %>%
+  summarise(temperature = mean(temperature))
+
+# x shift for numerical stability
+min_year <- min(data$year)
+x <- data$year - min_year
+y <- data$temperature
+
+# prepare input for Stan
+stan_data <- list(n = nrow(data), x = x, y = y)
+
+# fit
+fit <- model$sample(
+  data = stan_data,
+  seed = 1
+)
+
+# traceplot
+mcmc_trace(fit$draws())
+
+# summary
+fit$summary()
+```
+
+The `traceplot` and `summary` both show no reasons for any concerns, we will skip them here for brevity, but in practice you should always start your analysis by inspecting the outputs of these two functions. Whenever possible you should also always visually inspect how fitted distributions match the underlying data. With more complex and highly dimensional models this most likely will not be possible but here we can easily do this. Let us take a peek at the value of our model's parameters (the intercept, `a` and the slope `b`).
+
+```{R message=FALSE}
+# params
+df <- as_draws_df(fit$draws())
+mcse(df$a)
+mcse(df$b)
+mcse(df$b > 0)
+```
+
+The intercept ($\alpha$ or `a` in our case) denotes the value of `y` when `x` equals zero. For the purpose of numerical stability and to make life easier for Stan, we have shifted our data, this now means that `a` denotes the temperature at the minimum year in our dataset (1901). The slope parameter ($\beta$ or `b` in our case) denotes how `y` changes with `x`, in our case how temperature changes through ages. You can see that we are extremelly confident (P ≈ 1) that value of `b` is positive. This means that the temperature has been rising over the last 120 years, in fact it has been rising on average by 0.013 $\pm$ 0.0004 °C per year.
+
+```{R message=FALSE}
+# plot only 100 random regression lines
+df_100 <- sample_n(df, 100)
+
+# x axis
+x_breaks <- seq(from = 0, to = 120, length.out = 5)
+x_labels <- x_breaks + min_year
+
+# visualize data points with regression lines in the background
+ggplot() +
+  geom_point(
+    data = data,
+    aes(x = x, y = y),
+    shape = 16,
+    color = "skyblue"
+  ) +
+  geom_abline(
+    data = df_100,
+    aes(slope = b, intercept = a),
+    alpha = 0.05,
+    linewidth = 1,
+    color = "skyblue"
+  ) +
+  theme_minimal() +
+  labs(x = "Year", y = "Temperature") +
+  scale_x_continuous(breaks = x_breaks, labels = x_labels)
+```
+
+## Multiple linear regression
+
+Multiple linear regression is a logical next step after getting to know the simple linear regression model. The only difference between the two is that multiple linear regression can handle input data that has more than one idependent variable. As a result, we can check the correlation between the dependant variable ($y$) and many idependent variables ($x_1, x_2, ..., x_k$) simultaneously. The upgrade is quite easy. First, we have a new entry in the input data block, where $m$ denotes the number of independent variables. Second, our input variables are now stored in a matrix ($X$), since there are many of them. And third, we have multiple $\beta$ coefficients, one for each independent variable. Below is an example of multiple linear regression as a .stan model:
+
+```
+data {
+  int<lower=1> n; // total number of data points
+  int<lower=1> m; // number of predictors
+  matrix[n, m] X; // independent variables
+  vector[n] y;    // dependent variable
+}
+
+parameters {
+  real a;              // intercept
+  vector[m] b;         // slope
+  real<lower=0> sigma; // stdev
+}
+
+model {
+  // model
+  y ~ normal(a + X * b, sigma);
+}
+
+```
+
+## Parameters of linear regression models
 
 Typically linear regression models have several parameters, the number of parameters depends on the number of independent variables and their interactions. For the purpose of this explanation let us use the 50 startups datasets that includes information about the profits of startup companies in the USA. In this example we will investigate the relationship between resources invested in research, administration and marketing and the company's profit. For simplicity sake, we will discard the location variable.
 

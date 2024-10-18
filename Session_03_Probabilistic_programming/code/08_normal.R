@@ -5,6 +5,7 @@ library(ggdist)
 library(posterior)
 library(bayesplot)
 library(mcmcse)
+library(distributional) # for distribution plotting
 
 # modelling and data prep ------------------------------------------------------
 # the normal.stan model compares two groups
@@ -76,6 +77,7 @@ ggplot(data = df) +
 # 2. What is the probability that a random person from group 1 is taller than a
 #    random person from group 2?
 taller <- vector()
+n <- 10000
 for (i in 1:n) {
   next_1 <- rnorm(1, df$mu1[i], df$sigma[i])
   next_2 <- rnorm(1, df$mu2[i], df$sigma[i])
@@ -86,3 +88,13 @@ for (i in 1:n) {
   }
 }
 mcse(taller)
+
+# plot the comparison between two distributions
+dist_df <- data.frame(
+  group = c("1", "2"),
+  mean = c(mean(df$mu1), mean(df$mu2)),
+  sd = c(mean(df$sigma), mean(df$sigma))
+)
+ggplot(data = dist_df, aes(xdist = dist_normal(mean, sd), fill = group)) +
+  stat_slab(alpha = 0.5) +
+  scale_fill_manual(values = c("1" = "skyblue", "2" = "tomato"))
