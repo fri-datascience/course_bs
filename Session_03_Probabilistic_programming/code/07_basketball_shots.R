@@ -70,15 +70,3 @@ ggplot(data = df_player1, aes(x = theta, group = Rim, fill = Rim)) +
   scale_fill_brewer(type = "qual", palette = 3) +
   xlim(0, 1) +
   theme_minimal()
-
-# number of draws
-n <- 100000
-
-# draws from the distribution for the default rim
-draws_default <- rbinom(n, 1, df_default$theta)
-
-# draws from the distribution for the special rim
-draws_special <- rbinom(n, 1, df_special$theta)
-
-# compare
-mcse(draws_default > draws_special)

@@ -12,7 +12,7 @@ library(mcmcse) # for comparing samples and calculating MCSE
 model <- cmdstan_model("../models/bernoulli_beta.stan")
 
 # prepare the data
-y <- c(0, 1, 1, 0, 1, 1, 1, 0)
+y <- c(rep(0, 7), rep(1, 9))
 n <- length(y)
 
 # prepare input data
@@ -61,7 +61,7 @@ ggplot(data = df, aes(x = theta)) +
     scale = 1
   ) +
   xlim(0, 1) +
-  ylim(0, 3) +
+  ylim(0, 4) +
   ylab("density") +
   theme_minimal() +
   scale_fill_manual(values = c("skyblue", "grey90"))
