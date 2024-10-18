@@ -71,7 +71,7 @@ x <- c(1, 1.5, 0, 1)
 c_probs <- softmax(betas %*% x)
 c_probs
 
-# plot probabilities for guards ------------------------------------------------
+# plot probabilities for all player types --------------------------------------
 precision <- 100
 distance <- seq(0, 10, length.out = precision)
 
