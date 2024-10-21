@@ -76,18 +76,10 @@ ggplot(data = df) +
 
 # 2. What is the probability that a random person from group 1 is taller than a
 #    random person from group 2?
-taller <- vector()
-n <- 10000
-for (i in 1:n) {
-  next_1 <- rnorm(1, df$mu1[i], df$sigma[i])
-  next_2 <- rnorm(1, df$mu2[i], df$sigma[i])
-  if (next_1 > next_2) {
-    taller <- c(taller, 1)
-  } else {
-    taller <- c(taller, 0)
-  }
-}
-mcse(taller)
+# draw one person for each sample
+draw_1 <- rnorm(nrow(df), df$mu1, df$sigma)
+draw_2 <- rnorm(nrow(df), df$mu2, df$sigma)
+mcse(draw_1 > draw_2)
 
 # plot the comparison between two distributions
 dist_df <- data.frame(

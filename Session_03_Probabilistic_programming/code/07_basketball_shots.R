@@ -71,14 +71,11 @@ ggplot(data = df_player1, aes(x = theta, group = Rim, fill = Rim)) +
   xlim(0, 1) +
   theme_minimal()
 
-# number of draws
-n <- 100000
-
 # draws from the distribution for the default rim
-draws_default <- rbinom(n, 1, df_default$theta)
+draws_default <- rbinom(nrow(df_default), 1, df_default$theta)
 
 # draws from the distribution for the special rim
-draws_special <- rbinom(n, 1, df_special$theta)
+draws_special <- rbinom(nrow(df_default), 1, df_special$theta)
 
 # compare
 mcse(draws_default > draws_special)
