@@ -298,7 +298,7 @@ res_te <- rbind(res_te, data.frame(
   True = dat_test$target
 ))
 
-# compare predictive quality ---------------------------------------------------
+# compare the quality ----------------------------------------------------------
 se_lb <- function(x) {
   mean(x) - sd(x) / sqrt(length(x))
 }

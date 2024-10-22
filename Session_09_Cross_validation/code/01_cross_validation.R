@@ -64,7 +64,7 @@ sd_year <- sd(data$year)
 df_mse_train <- data.frame(mse = numeric(), order = factor())
 df_mse_test <- data.frame(mse = numeric(), order = factor())
 
-# fit posterior predictive storage
+# fit storage
 df_fit <- data.frame(temperature = numeric(),
                      year = numeric(),
                      order = factor(),
@@ -100,7 +100,7 @@ for (p in 0:max_order) {
   df_mse_test <- rbind(df_mse_test,
                        data.frame(mse = df$mse_test, order = as.factor(p)))
 
-  # posterior predictive checking
+  # posterior checking
   n <- 20
   betas <- sample_n(data.frame(df[, 3:(3 + p)]), n)
 
@@ -127,7 +127,7 @@ for (p in 0:max_order) {
   }
 }
 
-# posterior predictive check ---------------------------------------------------
+# posterior check --------------------------------------------------------------
 ggplot() +
   geom_point(data = data,
              aes(x = year, y = temperature),

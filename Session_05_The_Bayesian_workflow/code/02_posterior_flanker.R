@@ -63,7 +63,7 @@ for (i in 1:100) {
   )
 }
 
-# posterior predictive check
+# posterior check
 ggplot() +
   geom_density(
     data = df_incongruent, aes(x = rt),
@@ -131,7 +131,7 @@ for (i in 1:100) {
   )
 }
 
-# posterior predictive check
+# posterior check
 ggplot() +
   geom_density(
     data = df_incongruent,
