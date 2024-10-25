@@ -294,3 +294,6 @@ TSWLatexianTemp*
 
 # mac stuff
 .DS_Store
+
+# R history
+.rapp.history

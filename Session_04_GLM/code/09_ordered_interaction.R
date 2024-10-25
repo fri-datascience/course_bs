@@ -25,6 +25,10 @@ X <- model.matrix(~ religion + degree + country + sex, data)
 # remove intercept since in ordered regression intercepts are cutpoints
 X <- X[, -1]
 
+# add an interaction between the country and religion
+X <- data.frame(X)
+X$religious_usa <- X$religion2 * X$country2
+
 # show a couple of top rows to check if all is OK
 head(X)
 
@@ -70,7 +74,7 @@ df_cutpoints <- df_cutpoints %>% select(-.chain, -.iteration, -.draw)
 
 # plot betas -------------------------------------------------------------------
 # rename for ease of addressing
-colnames(df_beta) <- c("Religion", "Degree", "USA", "Male")
+colnames(df_beta) <- c("Religion", "Degree", "USA", "Male", "Religious_USA")
 
 # to long format
 df_beta_long <- df_beta %>% gather(Beta, Value)
@@ -80,29 +84,3 @@ ggplot(data = df_beta_long, aes(x = Value, y = Beta)) +
   stat_eye(fill = "skyblue", alpha = 0.75) +
   xlim(-2.5, 2.5) +
   geom_vline(xintercept = 0, linetype = "dashed", size = 1, color = "grey50")
-
-# calculate an example probability ---------------------------------------------
-F_1 <- NULL
-F_2 <- NULL
-F_3 <- 1
-
-# x <- (religion, degree, USA, male)
-# a non religious educated female from Sweden
-x <- c(0, 1, 0, 0)
-
-for (i in seq_len(nrow(df_beta))) {
-  beta <- as.numeric(df_beta[i, ])
-  cutpoints <- as.numeric(df_cutpoints[i, ])
-
-  # cumulative probabilities
-  F_1[i] <- 1 / (1 + exp(-(cutpoints[1] - as.numeric(beta %*% x))))
-  F_2[i] <- 1 / (1 + exp(-(cutpoints[2] - as.numeric(beta %*% x))))
-}
-
-# P(y = j) = P(y <= j) - P(y <= j - 1)
-P_1 <- F_1
-mcse(P_1)
-P_2 <- F_2 - F_1
-mcse(P_2)
-P_3 <- F_3 - F_2
-mcse(P_3)

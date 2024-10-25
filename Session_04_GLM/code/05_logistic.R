@@ -46,6 +46,9 @@ df <- as_draws_df(fit$draws())
 mcse(df$alpha)
 mcse(df$beta)
 
+# probability that P(male) increases with height
+mcse(df$beta > 0)
+
 # visualize posterior and data -------------------------------------------------
 # number of lines
 n_lines <- 100
@@ -107,3 +110,7 @@ log_odds184 <- log(theta184 / (1 - theta184))
 
 # diff == mean_beta! so beta tells us how log_odds will change with predictor
 diff <- log_odds184 - log_odds183
+
+# the same
+diff
+mcse(df$beta)

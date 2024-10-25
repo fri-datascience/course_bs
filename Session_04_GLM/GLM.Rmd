@@ -597,7 +597,7 @@ $$\mu = \frac{\nu}{\lambda},$$
 $$\nu = \mu\lambda.$$
 Now we have an expected value parameter $\mu$. Since gamma distribution resides on the positive real scale we can use a log link function. Putting everything together gets us:
 
-$$y \; | \; \nu, \lambda \sim \text{gamma}(\mu\lambda, \lambda),$$
+$$y \; | \; \mu, \lambda \sim \text{gamma}(\mu\lambda, \lambda),$$
 $$\text{log}(\mu) = \beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k,$$
 $$\mu = e^{\beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k}.$$
 

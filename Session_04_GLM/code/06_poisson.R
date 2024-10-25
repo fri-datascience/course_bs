@@ -76,7 +76,11 @@ df_beta <- df_beta %>% gather(Beta, Value)
 
 # plot
 ggplot(data = df_beta, aes(x = Value, y = Beta)) +
-  stat_eye(fill = "skyblue", alpha = 0.75)
+  stat_eye(fill = "skyblue", alpha = 0.75) +
+  geom_vline(
+    xintercept = 0, color = "grey50",
+    linetype = "dashed", linewidth = 1
+  )
 
 # compare lambda vs actual scored goals ----------------------------------------
 df_lambda <- df_lambda %>% select(-.chain, -.iteration, -.draw)
@@ -114,7 +118,10 @@ for (i in 1:9) {
       stat = "identity", color = "skyblue",
       fill = "skyblue", alpha = 0.75
     ) +
-    geom_vline(xintercept = df_am[i, ]$Y_FTHG, color = "grey50", linewidth = 2) +
+    geom_vline(
+      xintercept = df_am[i, ]$Y_FTHG,
+      color = "grey50", linewidth = 2
+    ) +
     geom_vline(
       xintercept = hdi50[1], color = "grey25",
       linewidth = 1, linetype = "dashed"
