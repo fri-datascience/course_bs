@@ -10,5 +10,5 @@ generated quantities {
   real sigma = uniform_rng(0, 50);
 
   // simulated data
-  real y_sim[n] = normal_rng(alpha + beta * x, sigma);
+  array[n] real y_sim = normal_rng(alpha + beta * x, sigma);
 }
