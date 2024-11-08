@@ -276,47 +276,10 @@ model:</p>
 \text{Cauchy}(\alpha + X \beta, \sigma).\]</span></p>
 <p>Weakly informative priors also play an important role in
 regularization, here it is key that our priors contain enough
-information for regularization. The key idea here is that weakly
-informative priors should provide enough information to rule out
-unreasonable parameter values but not too much information which could
-rule out values that might make sense. As shown in our GLMs lecture and
-the ozone example Bayesian L1 (lasso) or L2 (ridge) regression can make
-wonders. In both cases we put a hierarchical hyper-prior on beta
-coefficients, in the case of L2 (ridge) regression we use a normal prior
-on beta coefficients with a hierarchical Cauchy hyper-prior:</p>
-<pre><code>parameters {
-  real alpha;               // intercept
-  vector[k] beta;           // beta coefficients
-  real&lt;lower=0&gt; sigma;      // sd
-  real&lt;lower=0&gt; sigma_beta; // hierarchical sd across betas
-}
-
-model {
-  // penalized regression - Bayesian L2
-  // per Erp et al. 2019 - Shrinkage priors for Bayesian penalized regression
-  sigma_beta ~ cauchy(0, 1);
-  beta ~ normal(0, sigma_beta);
-  
-  y ~ normal(X * beta + alpha, sigma);
-}</code></pre>
-<p>In the case of L1 (lasso) regression we use a double-exponential
-(Laplace) prior on beta coefficients with a hierarchical Cauchy
-hyper-prior:</p>
-<pre><code>parameters {
-  real alpha;               // intercept
-  vector[k] beta;           // beta coefficients
-  real&lt;lower=0&gt; sigma;      // sd
-  real&lt;lower=0&gt; sigma_beta; // hierarchical sd across betas
-}
-
-model {
-  // penalized regression - Bayesian L1
-  // per Erp et al. 2019 - Shrinkage priors for Bayesian penalized regression
-  sigma_beta ~ cauchy(0, 1);
-  beta ~ double_exponential(0, sigma_beta); 
-  
-  y ~ normal(X * beta + alpha, sigma);
-}</code></pre>
+information for regularization. The idea is that weakly informative
+priors should provide enough information to rule out unreasonable
+parameter values but not too much information which could rule out
+values that might make sense.</p>
 </div>
 <div id="informative-priors" class="section level2">
 <h2>Informative priors</h2>
