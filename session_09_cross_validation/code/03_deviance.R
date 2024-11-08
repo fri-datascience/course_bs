@@ -9,7 +9,7 @@ library(loo) # for WAIC and LOOIC calculations
 
 # model ------------------------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/linear_deviance.stan")
+model <- cmdstan_model("./session_09_cross_validation/models/linear_deviance.stan")
 
 # modeling ---------------------------------------------------------------------
 # number of observations

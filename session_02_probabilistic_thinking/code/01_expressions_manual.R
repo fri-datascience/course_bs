@@ -21,7 +21,7 @@ library(ggdist)
 library(tidyverse)
 
 # load the data-----------------------------------------------------------------
-df <- read.csv("../data/expressions2022.csv")
+df <- read.csv("./session_02_probabilistic_thinking/data/expressions2022.csv")
 
 # set factors
 df_mean <- df %>%
@@ -56,7 +56,7 @@ ggplot(df, aes(x = probability)) +
     xlab("probability [%]") +
     theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
 
-ggsave("../figs/expressions2022.png",
+ggsave("./session_02_probabilistic_thinking/figs/expressions2022.png",
     width = 1280,
     height = 2560,
     dpi = 200,

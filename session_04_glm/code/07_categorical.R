@@ -7,10 +7,10 @@ library(tidyverse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/categorical.stan")
+model <- cmdstan_model("./session_04_glm/models/categorical.stan")
 
 # load data
-data <- read.csv("../data/shot_types.csv", stringsAsFactors = TRUE)
+data <- read.csv("./session_04_glm/data/shot_types.csv", stringsAsFactors = TRUE)
 
 # contrasts (similar as one hot encoding)
 contrasts(data$PlayerType) <- contr.treatment(n_distinct(data$PlayerType))

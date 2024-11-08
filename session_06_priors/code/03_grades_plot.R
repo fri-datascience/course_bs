@@ -3,7 +3,7 @@ library(ggplot2)
 library(tidyverse)
 
 # load the data ----------------------------------------------------------------
-df <- read.csv("../data/grades.csv")
+df <- read.csv("./session_06_priors/data/grades.csv")
 
 # betas ------------------------------------------------------------------------
 betas <- data.frame(

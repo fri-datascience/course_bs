@@ -9,7 +9,7 @@ library(mcmcse)
 
 # data wrangling ---------------------------------------------------------------
 # load the data
-data <- read.csv("../data/temperature.csv", sep = ";")
+data <- read.csv("./session_09_cross_validation/data/temperature.csv", sep = ";")
 
 # remove month
 data <- data %>% select(-month)
@@ -21,8 +21,10 @@ data <- data %>%
 
 # scale
 min_temperature <- min(data$temperature)
-data <- data %>% mutate(year_s = as.vector(scale(year)),
-                        temperature_0 = (temperature - min_temperature))
+data <- data %>% mutate(
+  year_s = as.vector(scale(year)),
+  temperature_0 = (temperature - min_temperature)
+)
 
 # train/test split
 train <- data %>% filter(year < 1995)
@@ -36,16 +38,18 @@ n_test <- nrow(test)
 x_test <- test$year_s
 y_test <- test$temperature_0
 
-stan_data <- list(n_train = n_train,
-                  x_train = x_train,
-                  y_train = y_train,
-                  n_test = n_test,
-                  x_test = x_test,
-                  y_test = y_test)
+stan_data <- list(
+  n_train = n_train,
+  x_train = x_train,
+  y_train = y_train,
+  n_test = n_test,
+  x_test = x_test,
+  y_test = y_test
+)
 
 # model ------------------------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/polynomial.stan")
+model <- cmdstan_model("./session_09_cross_validation/models/polynomial.stan")
 
 # polynomial modeling ----------------------------------------------------------
 # max order
@@ -65,10 +69,12 @@ df_mse_train <- data.frame(mse = numeric(), order = factor())
 df_mse_test <- data.frame(mse = numeric(), order = factor())
 
 # fit storage
-df_fit <- data.frame(temperature = numeric(),
-                     year = numeric(),
-                     order = factor(),
-                     iteration = numeric())
+df_fit <- data.frame(
+  temperature = numeric(),
+  year = numeric(),
+  order = factor(),
+  iteration = numeric()
+)
 
 for (p in 0:max_order) {
   # set order
@@ -83,9 +89,9 @@ for (p in 0:max_order) {
 
   # uncomment lines below for diagnostic purposes
   # traceplot
-  #mcmc_trace(fit$draws(c("b", "sigma")))
+  # mcmc_trace(fit$draws(c("b", "sigma")))
   # summary
-  #fit$summary(c("b", "sigma"))
+  # fit$summary(c("b", "sigma"))
 
   # extract mse
   df <- as_draws_df(fit$draws(c("mse_train", "mse_test", "b")))
@@ -95,10 +101,14 @@ for (p in 0:max_order) {
   df <- data.frame(df %>% select(-.chain, -.iteration, -.draw))
 
   # store mse
-  df_mse_train <- rbind(df_mse_train,
-                        data.frame(mse = df$mse_train, order = as.factor(p)))
-  df_mse_test <- rbind(df_mse_test,
-                       data.frame(mse = df$mse_test, order = as.factor(p)))
+  df_mse_train <- rbind(
+    df_mse_train,
+    data.frame(mse = df$mse_train, order = as.factor(p))
+  )
+  df_mse_test <- rbind(
+    df_mse_test,
+    data.frame(mse = df$mse_test, order = as.factor(p))
+  )
 
   # posterior checking
   n <- 20
@@ -118,29 +128,37 @@ for (p in 0:max_order) {
       year <- (j * sd_year) + mean_year
 
       # store
-      df_fit <- rbind(df_fit,
-                      data.frame(temperature = temperature,
-                                 year = year,
-                                 order = as.factor(p),
-                                 iteration = i))
+      df_fit <- rbind(
+        df_fit,
+        data.frame(
+          temperature = temperature,
+          year = year,
+          order = as.factor(p),
+          iteration = i
+        )
+      )
     }
   }
 }
 
 # posterior check --------------------------------------------------------------
 ggplot() +
-  geom_point(data = data,
-             aes(x = year, y = temperature),
-             alpha = 0.3, size = 1, shape = 16) +
-  geom_line(data = df_fit,
-            aes(x = year, y = temperature, group = iteration),
-            alpha = 0.3) +
+  geom_point(
+    data = data,
+    aes(x = year, y = temperature),
+    alpha = 0.3, size = 1, shape = 16
+  ) +
+  geom_line(
+    data = df_fit,
+    aes(x = year, y = temperature, group = iteration),
+    alpha = 0.3
+  ) +
   facet_grid(. ~ order) +
   xlab("Year") +
   ylab("T [°C]") +
   ylim(6, 14)
 
-ggsave("../figs/cross_validation_posterior.png", width = 12, height = 4)
+ggsave("./session_09_cross_validation/figs/cross_validation_posterior.png", width = 12, height = 4)
 
 # compare ----------------------------------------------------------------------
 # plot
@@ -158,7 +176,9 @@ ggplot(data = df_mse_test, aes(y = order, x = mse)) +
 # numerical info
 df_mse_test %>%
   group_by(order) %>%
-  summarize(mean_mse = mcse(mse)$est,
-            mcse_mse = mcse(mse)$se,
-            hdi5 = hdi(mse, credMass = 0.90)[1],
-            hdi95 = hdi(mse, credMass = 0.90)[2])
+  summarize(
+    mean_mse = mcse(mse)$est,
+    mcse_mse = mcse(mse)$se,
+    hdi5 = hdi(mse, credMass = 0.90)[1],
+    hdi95 = hdi(mse, credMass = 0.90)[2]
+  )

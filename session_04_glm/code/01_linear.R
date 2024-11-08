@@ -9,10 +9,10 @@ library(HDInterval)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/simple_linear.stan")
+model <- cmdstan_model("./session_04_glm/models/simple_linear.stan")
 
 # prepare the data
-data <- read.csv("../data/temperature.csv", sep = ";")
+data <- read.csv("./session_04_glm/data/temperature.csv", sep = ";")
 
 # remove month
 data <- data %>% select(-month)

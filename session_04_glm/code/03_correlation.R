@@ -9,10 +9,10 @@ library(psych) # for independent variables correlation plot
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/linear.stan")
+model <- cmdstan_model("./session_04_glm/models/linear.stan")
 
 # load the data
-data <- read.csv("../data/toy.csv")
+data <- read.csv("./session_04_glm/data/toy.csv")
 
 # create dummy x2
 data$x2 <- data$x + rnorm(nrow(data), 0, 2)

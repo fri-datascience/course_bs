@@ -7,7 +7,7 @@ library(tidyverse)
 library(HDInterval)
 
 # data prep and exploratory analysis -------------------------------------------
-df <- read.csv("../data/restaurants.csv")
+df <- read.csv("./session_10_time_series/data/restaurants.csv")
 
 # only last 10 years
 df <- df %>% filter(month > (nrow(df) - 120))
@@ -24,7 +24,7 @@ ggplot(df, aes(x = date, y = spending)) +
   theme_minimal()
 
 # decomposition with harmonic regression ---------------------------------------
-model <- cmdstan_model("../models/harmonic_basic.stan")
+model <- cmdstan_model("./session_10_time_series/models/harmonic_basic.stan")
 
 # seasonality frequency
 omega <- (2 * pi) / 12

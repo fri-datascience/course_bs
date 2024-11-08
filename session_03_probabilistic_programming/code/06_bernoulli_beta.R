@@ -9,7 +9,7 @@ library(mcmcse) # for comparing samples and calculating MCSE
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/bernoulli_beta.stan")
+model <- cmdstan_model("./session_03_probabilistic_programming/models/bernoulli_beta.stan")
 
 # prepare the data
 y <- c(rep(0, 7), rep(1, 9))

@@ -8,7 +8,7 @@ library(mcmcse)
 library(HDInterval
 
 # modelling and data prep ------------------------------------------------------
-model <- cmdstan_model("../models/mark_recapture.stan")
+model <- cmdstan_model("./session_13_miscellaneous/models/mark_recapture.stan")
 
 # prepare the data
 # marked on the first day

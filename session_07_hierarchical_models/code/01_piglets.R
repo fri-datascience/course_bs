@@ -11,13 +11,13 @@ library(tidyverse)
 
 # data prep and model compilation ----------------------------------------------
 # load data
-data_all <- read.csv("../data/piglets.csv")
+data_all <- read.csv("./session_07_hierarchical_models/data/piglets.csv")
 
 # work with farm 1 only for now
 data <- data_all %>% filter(farm == 1)
 
 # normal model -----------------------------------------------------------------
-model_n <- cmdstan_model("../models/normal.stan")
+model_n <- cmdstan_model("./session_07_hierarchical_models/models/normal.stan")
 
 # data prep
 stan_data <- list(
@@ -82,7 +82,7 @@ ggplot() +
   ylab("Density")
 
 # subjects normal model --------------------------------------------------------
-model_s <- cmdstan_model("../models/subjects_normal.stan")
+model_s <- cmdstan_model("./session_07_hierarchical_models/models/subjects_normal.stan")
 
 # data prep
 stan_data <- list(
@@ -157,7 +157,7 @@ ggplot() +
   ylab("Density")
 
 # hierarchical normal model ----------------------------------------------------
-model_h <- cmdstan_model("../models/hierarchical_normal.stan")
+model_h <- cmdstan_model("./session_07_hierarchical_models/models/hierarchical_normal.stan")
 
 # data prep
 stan_data <- list(

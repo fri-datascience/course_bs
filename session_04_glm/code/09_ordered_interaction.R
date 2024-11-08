@@ -9,10 +9,10 @@ library(mcmcse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/ordered.stan")
+model <- cmdstan_model("./session_04_glm/models/ordered.stan")
 
 # load data and treat strings as factors
-data <- read.csv("../data/poverty.csv", stringsAsFactors = TRUE)
+data <- read.csv("./session_04_glm/data/poverty.csv", stringsAsFactors = TRUE)
 
 # contrasts
 contrasts(data$religion) <- contr.treatment(n_distinct(data$religion))

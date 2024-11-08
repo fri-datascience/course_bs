@@ -10,10 +10,10 @@ library(shinystan)
 
 # load the data and the model --------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/bernoulli_beta.stan")
+model <- cmdstan_model("./session_03_probabilistic_programming/models/bernoulli_beta.stan")
 
 # prepare the data
-data <- read.csv("../data/basketball_shots.csv", sep = ";")
+data <- read.csv("./session_03_probabilistic_programming/data/basketball_shots.csv", sep = ";")
 
 # filter for 1st player, default and special rims
 player1_default <- data %>% filter(PlayerID == 1 & SpecialRim == 0)

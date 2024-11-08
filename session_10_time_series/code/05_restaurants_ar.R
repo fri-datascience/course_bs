@@ -7,7 +7,7 @@ library(tidyverse)
 library(HDInterval)
 
 # data prep and exploratory analysis -------------------------------------------
-df <- read.csv("../data/restaurants.csv")
+df <- read.csv("./session_10_time_series/data/restaurants.csv")
 
 # only last 10 years
 df <- df %>% filter(month > (nrow(df) - 120))
@@ -16,7 +16,7 @@ df <- df %>% filter(month > (nrow(df) - 120))
 df$month <- seq_len(nrow(df))
 
 # ar ---------------------------------------------------------------------------
-model <- cmdstan_model("../models/ar.stan")
+model <- cmdstan_model("./session_10_time_series/models/ar.stan")
 
 # use pacf to get the p parameter
 pacf(df$spending)
@@ -104,4 +104,4 @@ ggplot(data = df_plot, aes(x = Month, y = Spending), group = ix) +
   geom_vline(xintercept = max(df$month), linetype = "dashed", size = 1, color = "grey75") +
   theme_minimal()
 
-ggsave("../figs/restaurants_ar.png", width = 1920, height = 1080, units = "px", dpi = 300)
+ggsave("./session_10_time_series/figs/restaurants_ar.png", width = 1920, height = 1080, units = "px", dpi = 300)

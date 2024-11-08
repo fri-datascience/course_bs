@@ -15,7 +15,7 @@ library(HDInterval)
 # 4 - #33a02c
 
 # data prep --------------------------------------------------------------------
-data <- read.csv("../data/golf.csv", sep = "\t")
+data <- read.csv("./session_08_describe_the_process/data/golf.csv", sep = "\t")
 
 # input data to stan will be always the same
 stan_data <- list(
@@ -68,7 +68,7 @@ ggplot(df_golf, aes(x = x, y = p, ymin = hdi5, ymax = hdi95)) +
 
 # binomial logit modelling -----------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/binomial_logit.stan")
+model <- cmdstan_model("./session_08_describe_the_process/models/binomial_logit.stan")
 
 # fit
 fit_binomial <- model$sample(
@@ -146,7 +146,7 @@ ggplot(
 
 # modelling error in the angle -------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/golf_angle.stan")
+model <- cmdstan_model("./session_08_describe_the_process/models/golf_angle.stan")
 
 # fit
 fit_angle <- model$sample(
@@ -222,7 +222,7 @@ ggplot(
 
 # modelling error in the distance ----------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/golf_distance.stan")
+model <- cmdstan_model("./session_08_describe_the_process/models/golf_distance.stan")
 
 # fit
 fit_distance <- model$sample(
@@ -306,7 +306,7 @@ ggplot(
 
 # modelling error in the angle and in the distance -----------------------------
 # compile the model
-model <- cmdstan_model("../models/golf_angle_distance.stan")
+model <- cmdstan_model("./session_08_describe_the_process/models/golf_angle_distance.stan")
 
 # fit
 fit_angle_distance <- model$sample(

@@ -10,7 +10,7 @@ library(distributional) # for distribution plotting
 # modelling and data prep ------------------------------------------------------
 # the normal.stan model compares two groups
 # see normal_minimal.stan for a model that fits a normal model to a single group
-model <- cmdstan_model("../models/normal.stan")
+model <- cmdstan_model("./session_03_probabilistic_programming/models/normal.stan")
 
 # prepare the data
 # number of measurements

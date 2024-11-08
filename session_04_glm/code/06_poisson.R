@@ -11,10 +11,10 @@ library(tidyverse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/poisson.stan")
+model <- cmdstan_model("./session_04_glm/models/poisson.stan")
 
 # load data
-data <- read.csv("../data/football.csv", sep = ";")
+data <- read.csv("./session_04_glm/data/football.csv", sep = ";")
 
 # drop missing data
 data <- drop_na(data)

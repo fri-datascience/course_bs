@@ -7,7 +7,7 @@ library(tidyverse)
 library(HDInterval)
 
 # data prep and exploratory analysis -------------------------------------------
-df <- read.table("../data/SO2.csv", header = TRUE, sep = ";")
+df <- read.table("./session_10_time_series/data/SO2.csv", header = TRUE, sep = ";")
 df$Type <- "Raw"
 
 # log
@@ -30,7 +30,7 @@ ggplot(df_merged, aes(x = Concentration)) +
   facet_wrap(. ~ Type, scales = "free")
 
 # decomposition with harmonic regression ---------------------------------------
-model <- cmdstan_model("../models/harmonic.stan")
+model <- cmdstan_model("./session_10_time_series/models/harmonic.stan")
 
 # seasonality frequency
 omega <- array((2 * pi) / c(52.25, 52.25 / 12))

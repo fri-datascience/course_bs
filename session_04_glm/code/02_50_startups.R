@@ -9,10 +9,10 @@ library(ggdist) # for visualizing distributions
 
 # modelling and data prep ------------------------------------------------------
 # model
-model <- cmdstan_model("../models/linear_nointercept.stan")
+model <- cmdstan_model("./session_04_glm/models/linear_nointercept.stan")
 
 # data
-data <- read.csv("../data/50_startups.csv")
+data <- read.csv("./session_04_glm/data/50_startups.csv")
 
 # let us focus only on research, administration, marketing => profit
 data <- data %>% select(research, administration, marketing, profit)

@@ -9,10 +9,10 @@ library(mcmcse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/logistic.stan")
+model <- cmdstan_model("./session_04_glm/models/logistic.stan")
 
 # load data
-data <- read.csv("../data/weight_height_sex.csv", stringsAsFactors = TRUE)
+data <- read.csv("./session_04_glm/data/weight_height_sex.csv", stringsAsFactors = TRUE)
 
 # cast sex to 0..1
 data$SexNumeric <- as.numeric(data$Sex) - 1

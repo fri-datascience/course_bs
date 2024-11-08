@@ -4,7 +4,7 @@ library(ggridges)
 library(forcats)
 
 # load the data
-df <- read.csv("../data/expressions2024.csv")
+df <- read.csv("./session_02_probabilistic_thinking/data/expressions2024.csv")
 df <- df %>% select(-Timestamp)
 
 # to long format

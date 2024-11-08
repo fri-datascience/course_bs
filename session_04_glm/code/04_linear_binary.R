@@ -7,10 +7,10 @@ library(tidyverse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model
-model <- cmdstan_model("../models/simple_linear.stan")
+model <- cmdstan_model("./session_04_glm/models/simple_linear.stan")
 
 # load the data
-data <- read.csv("../data/weight_height_sex.csv")
+data <- read.csv("./session_04_glm/data/weight_height_sex.csv")
 
 # cast sex to 0..1
 data$Sex <- as.factor(data$Sex)
