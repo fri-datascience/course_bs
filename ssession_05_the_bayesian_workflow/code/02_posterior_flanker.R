@@ -33,7 +33,7 @@ fit_normal <- model_normal$sample(
   seed = 1
 )
 
-# diagnostics -------------------------------------------------------------------
+# diagnostics ------------------------------------------------------------------
 # traceplot
 mcmc_trace(fit_normal$draws())
 
@@ -265,11 +265,11 @@ mean(df_exp_c$mu + 1 / df_exp_c$lambda)
 hdi(df_exp_c$mu + 1 / df_exp_c$lambda, credMass = 0.9)
 
 # compare
-mcse(df_exp_c$mu < df_exp_i$mu)
+mcse(df_exp_c$mu + 1 / df_exp_c$lambda < df_exp_i$mu + 1 / df_exp_i$lambda)
 
 # compare with ROPE
-c <- NULL
-i <- NULL
+congruent <- NULL
+incongruent <- NULL
 equal <- NULL
 
 # measurement error 0.15 s
@@ -283,22 +283,22 @@ for (i in seq_len(nrow(df_exp_i))) {
 
   if (diff > ROPE) {
     if (mean_c < mean_i) {
-      c <- c(c, 1)
-      i <- c(i, 0)
+      congruent <- c(congruent, 1)
+      incongruent <- c(incongruent, 0)
       equal <- c(equal, 0)
     } else {
-      c <- c(c, 0)
-      i <- c(i, 1)
+      congruent <- c(congruent, 0)
+      incongruent <- c(incongruent, 1)
       equal <- c(equal, 0)
     }
   } else {
-    c <- c(c, 0)
-    i <- c(i, 0)
+    congruent <- c(congruent, 0)
+    incongruent <- c(incongruent, 0)
     equal <- c(equal, 1)
   }
 }
 
 # normalize
-mcse(c)
-mcse(i)
+mcse(congruent)
+mcse(incongruent)
 mcse(equal)
