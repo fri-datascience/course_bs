@@ -148,7 +148,7 @@ model {
   // regularization
   beta ~ normal(0, sigma_beta);
 
-  y ~ normal(X * beta + alpha, sigma);
+  y ~ normal(alpha + X * beta, sigma);
 }
 
 ```
@@ -185,7 +185,7 @@ model {
   // for Bayesian L1 use Laplace or double_exponential prior
   //beta ~ double_exponential(0, sigma_beta); 
   
-  y ~ normal(X * beta + alpha, sigma);
+  y ~ normal(alpha + X * beta, sigma);
 }
 
 ```

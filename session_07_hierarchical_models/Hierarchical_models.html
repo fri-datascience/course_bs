@@ -377,7 +377,7 @@ model {
   // regularization
   beta ~ normal(0, sigma_beta);
 
-  y ~ normal(X * beta + alpha, sigma);
+  y ~ normal(alpha + X * beta, sigma);
 }
 </code></pre>
 <p>Regularizing priors are not only helpful to prevent overfitting, but
@@ -428,7 +428,7 @@ model {
   // for Bayesian L1 use Laplace or double_exponential prior
   //beta ~ double_exponential(0, sigma_beta); 
   
-  y ~ normal(X * beta + alpha, sigma);
+  y ~ normal(alpha + X * beta, sigma);
 }
 </code></pre>
 <p>The figure below visualizes the normal and Laplace distributions
