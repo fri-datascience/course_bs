@@ -231,6 +231,7 @@ ggplot() +
   xlab("Weight") +
   ylab("Density")
 
+
 # compare group level means ----------------------------------------------------
 df_group <- data.frame(
   Mean = numeric(),
@@ -447,3 +448,4 @@ best_mama_summary <- best_mama_counts %>%
     mean_prob = mean(prob),
     se = sd(prob) / sqrt(n_repeats)
   )
+best_mama_summary
