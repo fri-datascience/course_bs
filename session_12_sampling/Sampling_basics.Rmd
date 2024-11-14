@@ -48,7 +48,7 @@ The dataset that we will use throughout is an export of the football player data
 ```{r include=FALSE}
 n  <- 200  # sample size
 m  <- 100 # number of simulations
-df <- readRDS("./data/FM2017.rds")
+df <- readRDS("./data/fm2017.rds")
 df <- df[complete.cases(df),]
 df$BestPosition <- names(df)[75:89][apply(df[,75:89],1, function(x){which(x == max(x))[1]})]
 df <- df[, names(df) %in% c("Name", "NationID", "Age", "Height", "Weight", "BestPosition", "PenaltyTaking")]

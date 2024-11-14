@@ -7,7 +7,7 @@ library(tidyverse)
 library(HDInterval)
 
 # data prep and exploratory analysis -------------------------------------------
-df <- read.table("./session_10_time_series/data/SO2.csv", header = TRUE, sep = ";")
+df <- read.table("./session_10_time_series/data/so2.csv", header = TRUE, sep = ";")
 df$Type <- "Raw"
 
 # log
