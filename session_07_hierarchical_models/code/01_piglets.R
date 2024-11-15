@@ -421,7 +421,7 @@ for (i in 1:n_repeats) {
 
   # iterate over all rows and cound indexes of the best mama
   best_mama_ix <- numeric()
-  for (j in 1:nrow(df_boot)) {
+  for (j in seq_len(nrow(df_boot))) {
     best_mama_ix <- c(best_mama_ix, which.max(df_boot[j, ]))
   }
 
