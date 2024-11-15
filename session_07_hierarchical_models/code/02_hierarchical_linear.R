@@ -87,16 +87,16 @@ fit22 <- model$sample(
 )
 
 # trace plots of top level parameters
-mcmc_trace(fit11$draws(c("mu_a", "sigma_a", "mu_b", "sigma_b", "mu_s", "sigma_s")))
-mcmc_trace(fit12$draws(c("mu_a", "sigma_a", "mu_b", "sigma_b", "mu_s", "sigma_s")))
-mcmc_trace(fit21$draws(c("mu_a", "sigma_a", "mu_b", "sigma_b", "mu_s", "sigma_s")))
-mcmc_trace(fit22$draws(c("mu_a", "sigma_a", "mu_b", "sigma_b", "mu_s", "sigma_s")))
+mcmc_trace(fit11$draws(c("mu_a", "mu_b")))
+mcmc_trace(fit12$draws(c("mu_a", "mu_b")))
+mcmc_trace(fit21$draws(c("mu_a", "mu_b")))
+mcmc_trace(fit22$draws(c("mu_a", "mu_b")))
 
 # summary of top level parameters
-fit11$summary(c("mu_a", "sigma_a", "mu_b", "sigma_b", "mu_s", "sigma_s"))
-fit12$summary(c("mu_a", "sigma_a", "mu_b", "sigma_b", "mu_s", "sigma_s"))
-fit21$summary(c("mu_a", "sigma_a", "mu_b", "sigma_b", "mu_s", "sigma_s"))
-fit22$summary(c("mu_a", "sigma_a", "mu_b", "sigma_b", "mu_s", "sigma_s"))
+fit11$summary(c("mu_a", "mu_b"))
+fit12$summary(c("mu_a", "mu_b"))
+fit21$summary(c("mu_a", "mu_b"))
+fit22$summary(c("mu_a", "mu_b"))
 
 
 # visual posterior check -------------------------------------------------------
@@ -105,8 +105,8 @@ n_lines <- 20
 
 # use a different fit or data to explore other segments of the experiment
 # e.g. fit22 for group2_part2
-fit <- fit12
-data <- group1_part2
+fit <- fit22
+data <- group2_part2
 
 # extract subject level parameters
 df_check <- as_draws_df(fit$draws(c("alpha", "beta")))
@@ -155,7 +155,7 @@ ggplot() +
       intercept = alpha
     ),
     alpha = 0.1,
-    size = 1
+    linewidth = 1
   ) +
   facet_wrap(. ~ subject, ncol = 5) +
   ylab("Response") +
