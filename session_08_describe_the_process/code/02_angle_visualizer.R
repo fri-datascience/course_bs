@@ -30,6 +30,9 @@ for (s in sigmas) {
   df <- df %>% add_row(distance = distances, sigma = s, p = p)
 }
 
+# change sigma to degrees
+df$sigma <- round(df$sigma * 180 / pi, 1)
+
 # change sigma to factor
 df$sigma <- as.factor(df$sigma)
 

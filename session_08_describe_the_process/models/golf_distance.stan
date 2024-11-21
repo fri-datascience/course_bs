@@ -19,15 +19,15 @@ model {
   // probabilities
   vector[N] p = Phi((d_t - o) ./ ((x + o)*sigma)) -
                 Phi((- o) ./ ((x + o)*sigma));
-  
+
   // priors
   sigma ~ cauchy(0, 2.5);
-  
+
   y ~ binomial(n, p);
 }
 
 generated quantities {
   // recalculate and return probabilities
   vector[N] p = (Phi((d_t - o) ./ ((x + o)*sigma)) -
-                Phi((- o) ./ ((x + o)*sigma)));
+                 Phi((- o) ./ ((x + o)*sigma)));
 }

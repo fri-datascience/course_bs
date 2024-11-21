@@ -6,11 +6,11 @@ data {
 }
 
 transformed data {
-  // golf ball radius 2.135 cm
+  // golf ball radius = 2.135 cm
   real r = 2.135 / 100;
-  // golf hole radius
+  // golf hole radius = 5.398 cm
   real R = 5.398 / 100;
-  
+
   // trehshold angle
   vector[N] threshold_angle = atan((R-r) ./ x);
 }
@@ -22,17 +22,17 @@ parameters {
 model {
   // probabilities
   vector[N] p = 2*Phi(threshold_angle / sigma) - 1;
-  
+
   // prior
   sigma ~ cauchy(0, 2.5);
-  
+
   y ~ binomial(n, p);
 }
 
 generated quantities {
   // rad to deg converter
   real sigma_degrees = sigma * 180 / pi();
-  
+
   // recalculate and return probabilities
   vector[N] p = 2*Phi(threshold_angle / sigma) - 1;
 }
