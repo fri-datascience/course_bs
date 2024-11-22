@@ -43,7 +43,7 @@ model {
 }
 
 generated quantities {
-    // rad to deg converter
+  // rad to deg converter
   real sigma_a_degrees = sigma_a * 180 / pi();
 
   // recalculate and return probabilities
