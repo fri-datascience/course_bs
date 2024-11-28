@@ -145,7 +145,7 @@ ggplot(data = df, aes(x = q, y = d_kl)) +
   ylab("K-L divergence")
 ```
 
-The problem in practice is that we usually do not know the truth $p$, we only have the model $q$. It turns out that, for model comparison, we do not need the truth part in the $D_{KL}$ since it is in its essence merely an additive term. We can get a relative difference from the truth without knowing the truth. In other words, we do not know what the truth is, but we do know how far away from it we are with a particular model. What comes in handy for us Bayesians is the fact that we can estimate divergence with log-score (sum of log likelihoods of each observation):
+The problem in practice is that we usually do not know the truth $p$, we only have the model $q$. It turns out that, for model comparison, we do not need the truth part in the $D_{KL}$ since it is in its essence merely an additive term. We can get a relative difference from the truth without knowing the truth. In other words, we do not know what the truth is, but we do know how far away from it we are with a particular model. Note that divergence is used for quantifying the difference between two distributions on the other hand deviance measures the goodness of a model's fit to data, and this is what we are looking for here. What comes in handy for us Bayesians is the fact that we can estimate deviance with log-score (sum of log likelihoods of each observation):
 
 $$\text{LS} = -2 \sum_{i=1}^n log(p(y_i \; | \; \theta)).$$
 
