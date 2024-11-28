@@ -3,13 +3,15 @@ library(cmdstanr)
 library(ggplot2)
 library(bayesplot)
 library(posterior)
-library(tidyverse)
 library(HDInterval)
 library(loo) # for WAIC and LOOIC calculations
+library(tidyverse)
+
 
 # model ------------------------------------------------------------------------
 # compile the model
 model <- cmdstan_model("./session_09_cross_validation/models/linear_deviance.stan")
+
 
 # modeling ---------------------------------------------------------------------
 # number of observations
@@ -65,9 +67,14 @@ for (m in 0:m_max) {
   # summary
   # fit$summary(c("b", "sigma"))
 
-  # extract
+  # store log likelihood
   log_lik[[m + 1]] <- fit$draws(c("log_lik"))
-  df_ll <- as_draws_df(fit$draws(c("log_lik")))
+}
+
+
+# AIC --------------------------------------------------------------------------
+for (m in 0:m_max) {
+  df_ll <- as_draws_df(log_lik[[m + 1]])
 
   # remove unwanted columns
   # also cast to regular data frame to avoid some warnings later on
@@ -80,7 +87,6 @@ for (m in 0:m_max) {
   )
 }
 
-# AIC --------------------------------------------------------------------------
 df_aic_summary <- df_aic %>%
   group_by(Order) %>%
   summarize(
@@ -94,7 +100,9 @@ ggplot(data = df_aic_summary, aes(x = Order, y = mean_AIC)) +
   geom_point(shape = 16, size = 2) +
   geom_linerange(aes(ymin = hdi5, ymax = hdi95), alpha = 0.3) +
   xlab("Number of predictors") +
-  ylab("AIC")
+  ylab("AIC") +
+  ylim(0, 100)
+
 
 # WAIC -------------------------------------------------------------------------
 df_waic <- data.frame(WAIC = numeric(), SE = numeric(), Order = factor())
@@ -113,7 +121,9 @@ ggplot(data = df_waic, aes(x = Order, y = WAIC)) +
   geom_point(shape = 16, size = 2) +
   geom_linerange(aes(ymin = (WAIC - SE), ymax = (WAIC + SE)), alpha = 0.3) +
   xlab("Number of predictors") +
-  ylab("WAIC")
+  ylab("WAIC") +
+  ylim(0, 100)
+
 
 # LOOIC ------------------------------------------------------------------------
 df_looic <- data.frame(looic = numeric(), SE = numeric(), Order = factor())
@@ -133,7 +143,9 @@ ggplot(data = df_looic, aes(x = Order, y = looic)) +
   geom_point(shape = 16, size = 2) +
   geom_linerange(aes(ymin = (looic - SE), ymax = (looic + SE)), alpha = 0.3) +
   xlab("Number of predictors") +
-  ylab("LOOIC")
+  ylab("LOOIC") +
+  ylim(0, 100)
+
 
 # Akaike weights for model combination -----------------------------------------
 # calculate delta_looic
