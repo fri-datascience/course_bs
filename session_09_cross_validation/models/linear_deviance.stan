@@ -19,12 +19,12 @@ model {
   for (i in 1:n) {
     // storage for linear terms
     vector[mm] mu;
-    
+
     // calculate terms
     for (j in 1:mm) {
       mu[j] = X[i,j] * b[j];
     }
-    
+
     // model
     y[i] ~ normal(sum(mu), sigma);
   }
@@ -33,16 +33,16 @@ model {
 generated quantities {
   // log-likelihood
   vector[n] log_lik;
-  
+
   for (i in 1:n) {
     // mu
     vector[mm] mu;
-     
+
     // calculate terms
     for (j in 1:mm) {
       mu[j] = X[i,j] * b[j];
     }
-     
+
     log_lik[i] = normal_lpdf(y[i] | sum(mu), sigma);
   }
 }
