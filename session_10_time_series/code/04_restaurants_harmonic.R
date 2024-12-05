@@ -6,6 +6,7 @@ library(posterior)
 library(tidyverse)
 library(HDInterval)
 
+
 # data prep and exploratory analysis -------------------------------------------
 df <- read.csv("./session_10_time_series/data/restaurants.csv")
 
@@ -22,6 +23,7 @@ df$date <- as.Date(df$date)
 ggplot(df, aes(x = date, y = spending)) +
   geom_line() +
   theme_minimal()
+
 
 # decomposition with harmonic regression ---------------------------------------
 model <- cmdstan_model("./session_10_time_series/models/harmonic_basic.stan")
@@ -117,6 +119,7 @@ ggplot(df_decomposed, aes(
   geom_path() +
   facet_wrap(. ~ Type, ncol = 1, scales = "free_y")
 
+
 # plot fit ---------------------------------------------------------------------
 # get a subsample of 20 random samples
 df_ss <- df_s[sample(seq_len(nrow(df_s)), 20, rep = FALSE), ]
@@ -159,5 +162,10 @@ ggplot(data = df_plot, aes(x = Month, y = Spending), group = ix) +
   geom_line(data = df, aes(x = month, y = spending), color = "skyblue") +
   geom_line() +
   geom_ribbon(aes(ymin = hdi5, ymax = hdi95), alpha = 0.25) +
-  geom_vline(xintercept = max(df$month), linetype = "dashed", size = 1, color = "grey75") +
+  geom_vline(
+    xintercept = max(df$month),
+    linetype = "dashed",
+    linewidth = 1,
+    color = "grey75"
+  ) +
   theme_minimal()

@@ -6,6 +6,7 @@ library(posterior)
 library(tidyverse)
 library(HDInterval)
 
+
 # data prep and exploratory analysis -------------------------------------------
 df <- read.csv("./session_10_time_series/data/restaurants.csv")
 
@@ -14,6 +15,7 @@ df <- df %>% filter(month > (nrow(df) - 120))
 
 # reindex months
 df$month <- seq_len(nrow(df))
+
 
 # ar ---------------------------------------------------------------------------
 model <- cmdstan_model("./session_10_time_series/models/ar.stan")
@@ -45,6 +47,7 @@ fit$summary()
 # samples
 df_s <- as_draws_df(fit$draws())
 df_s <- df_s %>% select(-lp__, -.draw, -.chain, -.iteration)
+
 
 # plot fit ---------------------------------------------------------------------
 # get a subsample of 20 random samples
@@ -101,7 +104,18 @@ ggplot(data = df_plot, aes(x = Month, y = Spending), group = ix) +
   geom_line(data = df, aes(x = month, y = spending), color = "skyblue") +
   geom_line() +
   geom_ribbon(aes(ymin = hdi5, ymax = hdi95), alpha = 0.25) +
-  geom_vline(xintercept = max(df$month), linetype = "dashed", size = 1, color = "grey75") +
+  geom_vline(
+    xintercept = max(df$month),
+    linetype = "dashed",
+    linewidth = 1,
+    color = "grey75"
+  ) +
   theme_minimal()
 
-ggsave("./session_10_time_series/figs/restaurants_ar.png", width = 1920, height = 1080, units = "px", dpi = 300)
+ggsave(
+  "./session_10_time_series/figs/restaurants_ar.png",
+  width = 1920,
+  height = 1080,
+  units = "px",
+  dpi = 300
+)

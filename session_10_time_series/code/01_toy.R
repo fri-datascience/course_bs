@@ -2,6 +2,7 @@
 library(ggplot2)
 library(tidyverse)
 
+
 # generate data ----------------------------------------------------------------
 # 50 years of monthly data
 n <- 50 * 12
@@ -35,6 +36,7 @@ df <- df %>% add_row(data.frame(
 ggplot(df, aes(x = t, y = y)) +
   geom_line(color = "grey40") +
   facet_wrap(. ~ type, ncol = 1)
+
 
 # acf --------------------------------------------------------------------------
 df_acf <- data.frame(Lag = numeric(), ACF = numeric(), type = character())
