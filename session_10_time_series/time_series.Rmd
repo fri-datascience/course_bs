@@ -78,13 +78,15 @@ $$t_t = \alpha + \beta * t,$$
 
 $$s_t = \beta_{cos} \cos(\omega t) + \beta_{sin} \sin(\omega t).$$
 
-$\alpha$ represents the intercept of the trend component, while $\beta$ is its beta coefficient. $\beta_{cos}$ and $\beta_{sin}$ represent beta coefficients for cosine and sine parts of the seasonality component. With $\omega$ we define the frequency of the seasonality component:
+$\alpha$ represents the intercept of the trend component, while $\beta$ is its beta coefficient. Note that the trend above is linear, in practice it could be anything (quadtratic, polynomial ...), so you can swap the linear term in $t_t$ with something that works beeter for your data.
+
+$\beta_{cos}$ and $\beta_{sin}$ represent beta coefficients for cosine and sine parts of the seasonality component. With $\omega$ we define the frequency of the seasonality component:
 
 $$\omega = \frac{2 \pi}{M},$$
 
 where $M$ represents the period of seasonality. For example, if our time-series has monthly measurements and has a yearly seasonality period we would set $M=12$, if we have weekly data and a yearly period we would set it to $M=52.25$, etc.
 
-Note that the seasonality component in the above model describes seasonality with only a single period, if the seasonality in our time-series is composed of multiple fluctuations we need a more complex model. We can easily upgrade the seasonality component to allow fluctiations with different values for the $\omega$ parameter:
+The seasonality component in the above model describes seasonality with only a single period, if the seasonality in our time-series is composed of multiple fluctuations we need a more complex model. We can easily upgrade the seasonality component to allow fluctiations with different values for the $\omega$ parameter:
 
 $$s_t = \sum_{i=1}^k \beta_{cos,i} \cos(\omega_i t) + \beta_{sin,i} \sin(\omega_i t).$$
 
@@ -114,7 +116,7 @@ There are two other harmonic regression examples in the repository. The first on
 
 # Autoregressive (AR) and moving average (MA) models
 
-The autoregressive (AR), moving average (MA) and their combinations or derivatives are probably the most popular models when it comes to modelling time-series. AR and MA as well as their combination (ARMA) are not suitable for modelling non-stationary time-series. When modelling such time-series you have to use more advanced models from this family (ARIMA, SARMA, SARIMA).
+The autoregressive (AR), moving average (MA) and their combinations or derivatives are probably the most popular models when it comes to modelling time-series. AR and MA as well as their combination (ARMA) are not suitable for modelling non-stationary time-series. When modelling such time-series you usually need to use more advanced models from this family (ARIMA, SARMA, SARIMA). An alternative approach is to first detrend and deseasonalize the data and then work on the remainder. Detrending or deseasonalizing means removing the trend and seasonality components from the time series (e.g., with harmonic regression) and then working on the remainder with a model that is suitable for that task.
 
 ## The autoregressive model (AR)
 
