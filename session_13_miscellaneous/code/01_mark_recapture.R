@@ -4,7 +4,6 @@ library(ggplot2)
 library(ggdist)
 library(posterior)
 library(bayesplot)
-library(mcmcse)
 library(HDInterval)
 
 

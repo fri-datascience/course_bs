@@ -17,6 +17,75 @@ Statistical (probabilistic) models are used for describing how certain data we a
 
 Stan is a widespread probabilistic programming language, it offers an intuitive framework for specifying statistical models along with algorithms for full Bayesian inference for continuous-variable models through Markov chain Monte Carlo methods such as the No-U-Turn sampler, an adaptive form of Hamiltonian Monte Carlo sampling.
 
+# High density intervals
+
+A bit of an intermezzo before we begin with statistical modelling. During our lectures we will often use high density intervals (HDI) instead of confidence intervals (CI). The difference is that the confidence interval calculates its bound by symmetrically cutting away the data on both ends of the distribution. For example, the lower bound of the 90% CI is the 5^th^ percentile, while the upper bound is the 95^th^ percentile, regardless of the distribution's shape. This means that with asymmetrical and multi-modal distributions the 90% CI does not represent the 90% of the data we are most likely to see. While for symmetrical distributions CI and HDI give the same results.
+
+HDI on the other hand acknowledges the shape of the distribution and give us an interval where the density of the distribution is the highest. In other words, a 90% HDI will give us the region where the likelihood of the distribution is higher than in the remaining 10%. Since we are traditionally interested in that region, we will be mainly using the HDI in this course. Below is a simple example that shows how we can calculate HDI numerically. The visualization at the end also shows the difference between HDI (solid dark grey lines) and the CI (dashed light grey lines).
+
+```{R message=FALSE}
+# libraries
+library(ggplot2)
+
+# precision/number of samples
+n <- 10000
+
+# arbitrary gamma parameters
+alpha <- 5
+beta <- 50
+
+# generate some random gamma numbers
+x <- rgamma(n, alpha, beta)
+
+# let us calculate 90% HDI
+cred_mass <- 0.9
+
+# sort our samples
+x <- sort.int(x, method = "quick")
+
+# number of total values to exclude (10% of all data)
+exclude <- n - floor(n * cred_mass)
+
+# in the most extreme cases we exclude everything (10% of data in our case)
+# either at the bottom or in the upper part of the distribution
+# these are our bounds
+upper_bound <- x[(n - exclude + 1):n]
+lower_bound <- x[1:exclude]
+
+# in order to discard 10% of data we need to use a pair from the bounds vectors
+# find the lower/upper pair with minimum distance between them
+# smaller the difference higher the density of that chunk
+# this is then our solution
+best <- which.min(upper_bound - lower_bound)
+
+# extract the best pair
+result <- c(lower_bound[best], upper_bound[best])
+
+# 90% confidence interval
+q5 <- quantile(x, 0.05)
+q95 <- quantile(x, 0.95)
+
+# report
+cat(paste0("90% HDI: [", round(result[1], 3), ", ", round(result[2], 3), "]"))
+cat(paste0("90% CI: [", round(q5, 3), ", ", round(q95, 3), "]"))
+
+# plot
+df <- data.frame(x=x)
+ggplot(data = df) +
+  geom_density(aes(x=x), color=NA, fill="skyblue", alpha=0.75) +
+  xlab("difference") +
+  geom_vline(xintercept = q5,
+             linetype = "dashed",
+             color = "grey80",
+             linewidth = 1) +
+  geom_vline(xintercept = q95,
+             linetype = "dashed",
+             color = "grey80",
+             linewidth = 1) +
+  geom_vline(xintercept = result[1], color = "grey40", linewidth = 1) +
+  geom_vline(xintercept = result[2], color = "grey40", linewidth = 1)
+```
+
 # Statistical modelling
 
 Statistical models are used to describe processes that are behind the generation of some data we are interested in. If we know what the process is, we know pretty much all there is to know about the generated data. Since the data generation processes are traditionally very complex and contain many unknowns, statistical models are usually just an approximation of this process.
@@ -569,7 +638,7 @@ else {
 // this is a for loop
 for (n in 1:N) {
   y[n] ~ bernoulli(theta);
-} 
+}
 
 // Stan is quite smart, as you saw in our first example
 // the above can be simplified (presuming y is a vector or an array)
@@ -649,14 +718,15 @@ Let us put our knowledge in practice. The `basketball_shots.csv` dataset contain
 
 ```{R message=FALSE, warning=FALSE, results="hide"}
 # load libraries
-library(cmdstanr)  # for interfacing Stan
-library(ggplot2)   # for visualizations
-library(ggdist)    # for distribution visualizations
-library(tidyverse) # for data prep
-library(posterior) # for extracting samples
-library(bayesplot) # for some quick MCMC visualizations
-library(mcmcse)    # for comparing samples and calculating MCSE
-library(shinystan) # for visual diagnostics
+library(cmdstanr)   # for interfacing Stan
+library(ggplot2)    # for visualizations
+library(ggdist)     # for distribution visualizations
+library(tidyverse)  # for data prep
+library(posterior)  # for extracting samples
+library(bayesplot)  # for some quick MCMC visualizations
+library(mcmcse)     # for comparing samples and calculating MCSE
+library(HDInterval) # for high density intervals
+library(shinystan)  # for visual diagnostics
 
 # compile the model
 model <- cmdstan_model("./models/bernoulli_beta.stan")
@@ -743,6 +813,11 @@ df_special <- as_draws_df(fit_special$draws("theta"))
 # compare
 mcse(df_default$theta - df_special$theta)
 mcse(df_default$theta > df_special$theta)
+
+# 90% hdi interval
+theta_diff <- df_default$theta - df_special$theta
+mean(theta_diff)
+hdi(theta_diff, prob = 0.9)
 ```
 
 Now we can compare how this basketball player fares when shooting on a default sized rim in comparison to a smaller rim (the special rim). To do this we just have to compare the model's $\texttt{theta}$ parameter between both cases. Here we are using the $\texttt{mcse}$ library because it conveniently also calculates the Monte Carlo standard error. It is important to always estimate uncertainty in our conclusions!
@@ -791,72 +866,6 @@ with
 
 $$\texttt{target += normal_lpdf(y[i] | mu, sigma)}.$$
 In Stan the keyword target is actually not a variable, and may not be accessed as such. $\texttt{target}$ denotes the current value of the log probability density.
-
-# High density intervals
-
-During our lectures we will often use high density intervals (HDI) instead of confidence intervals (CI). The difference is that the confidence interval calculates its bound by symmetrically cutting away the data on both ends of the distribution. For example, the lower bound of the 90% CI is the 5^th^ percentile, while the upper bound is the 95^th^ percentile, regardless of the distribution's shape. This means that with asymmetrical and multi-modal distributions the 90% CI does not represent the 90% of the data we are most likely to see. While for symmetrical distributions CI and HDI give the same results.
-
-HDI on the other hand acknowledges the shape of the distribution and give us an interval where the density of the distribution is the highest. In other words, a 90% HDI will give us the region where the likelihood of the distribution is higher than in the remaining 10%. Since we are traditionally interested in that region, we will be mainly using the HDI in this course. Below is a simple example that shows how we can calculate HDI numerically. The visualization at the end also shows the difference between HDI (solid dark grey lines) and the CI (dashed light grey lines).
-
-```{R message=FALSE}
-# precision/number of samples
-n <- 10000
-
-# arbitrary gamma parameters
-alpha <- 5
-beta <- 50
-
-# generate some random gamma numbers
-x <- rgamma(n, alpha, beta)
-
-# let us calculate 90% HDI
-cred_mass <- 0.9
-
-# sort our samples
-x <- sort.int(x, method = "quick")
-
-# number of total values to exclude (10% of all data)
-exclude <- n - floor(n * cred_mass)
-
-# in the most extreme cases we exclude everything (10% of data in our case)
-# either at the bottom or in the upper part of the distribution
-# these are our bounds
-upper_bound <- x[(n - exclude + 1):n]
-lower_bound <- x[1:exclude]
-
-# in order to discard 10% of data we need to use a pair from the bounds vectors
-# find the lower/upper pair with minimum distance between them
-# smaller the difference higher the density of that chunk
-# this is then our solution
-best <- which.min(upper_bound - lower_bound)
-
-# extract the best pair
-result <- c(lower_bound[best], upper_bound[best])
-
-# 90% confidence interval
-q5 <- quantile(x, 0.05)
-q95 <- quantile(x, 0.95)
-
-# report
-cat(paste0("90% HDI: [", round(result[1], 3), ", ", round(result[2], 3), "]"))
-cat(paste0("90% CI: [", round(q5, 3), ", ", round(q95, 3), "]"))
-
-# plot
-df <- data.frame(x=x)
-ggplot(data = df) +
-  geom_density(aes(x=x), color=NA, fill="skyblue", alpha=0.75) +
-  xlab("difference") +
-  geom_vline(xintercept = q5,
-             linetype = "dashed",
-             color = "grey80",
-             linewidth = 1) +
-  geom_vline(xintercept = q95,
-             linetype = "dashed",
-             color = "grey80",
-             linewidth = 1) +
-  geom_vline(xintercept = result[1], color = "grey40", linewidth = 1) +
-  geom_vline(xintercept = result[2], color = "grey40", linewidth = 1)
-```
 
 # Presenting our models
 

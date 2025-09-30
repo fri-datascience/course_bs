@@ -5,7 +5,6 @@ library(ggdist)
 library(bayesplot)
 library(posterior)
 library(tidyverse)
-library(mcmcse)
 
 # modelling and data prep ------------------------------------------------------
 # compile the model

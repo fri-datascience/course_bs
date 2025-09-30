@@ -182,8 +182,7 @@ ggplot(data = df_mse_test, aes(y = order, x = mse)) +
 df_mse_test %>%
   group_by(order) %>%
   summarize(
-    mean_mse = mcse(mse)$est,
-    mcse_mse = mcse(mse)$se,
+    mean_mse = mean(mse),
     hdi5 = hdi(mse, credMass = 0.90)[1],
     hdi95 = hdi(mse, credMass = 0.90)[2]
   )

@@ -6,6 +6,7 @@ library(tidyverse)
 library(posterior)
 library(bayesplot)
 library(mcmcse)
+library(HDInterval)
 library(shinystan)
 
 # load the data and the model --------------------------------------------------
@@ -58,6 +59,11 @@ df_special <- as_draws_df(fit_special$draws("theta"))
 # compare
 mcse(df_default$theta - df_special$theta)
 mcse(df_default$theta > df_special$theta)
+
+# 90% hdi interval
+theta_diff <- df_default$theta - df_special$theta
+mean(theta_diff)
+hdi(theta_diff, prob = 0.9)
 
 # set rim
 df_default$Rim <- "Default"

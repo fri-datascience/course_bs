@@ -3,7 +3,6 @@ library(cmdstanr) # for interfacing Stan
 library(ggplot2) # for visualizations
 library(posterior) # for extracting samples
 library(bayesplot) # for some quick MCMC visualizations
-library(mcmcse) # for comparing samples and calculating MCSE
 library(tidyverse) # for data manipulations
 library(psych) # for independent variables correlation plot
 
