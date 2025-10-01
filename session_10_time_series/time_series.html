@@ -350,6 +350,30 @@ trying to predict is, the harder the task. Another reason for this is
 that, the AR model is making future predictions based on past values,
 once past values become predictions themselves the quality of
 predictions usually declines heavily.</p>
+<p>It is important to establish that we do not have to use all the from
+1 to <span class="math inline">\(n\)</span>. Let’s say we have weekly
+data and the value at the current time point (<span class="math inline">\(y_t\)</span>) is dependent only on the data from 2
+weeks and 4 weeks back. Such autoregressive model would have the
+following formulation:</p>
+<p><span class="math display">\[y_t \; | \; \alpha, \beta_1, \beta_2,
+\sigma \sim N \left( \alpha + \beta_1 y_{t-2} + \beta_2 y_{t-4}, \sigma
+\right).\]</span> You can see that we skipped two timepoints in our
+modelling (<span class="math inline">\(y_{t-1}\)</span> and <span class="math inline">\(y_{t-3}\)</span>) since they are not relevant for
+the prediction of the current time point.</p>
+<p>An upgrade to the AR model is ARX (autoregressive model with
+exogenous variables). Again, the upgrade is relatively simple:</p>
+<p><span class="math display">\[y_t \; | \; \alpha, \beta, p, \theta, s,
+\sigma \sim N \left( \alpha + \sum_{i=1}^p \beta_i y_{t-i} +
+\sum_{j=1}^s \theta_j x_{t-j}, \sigma \right),\]</span> where <span class="math inline">\(\theta_j\)</span> is the regression coefficient
+for the exogenous variable <span class="math inline">\(x_j\)</span>,
+which can be constant through time or can change with it as in the
+equation above.</p>
+<p>Another upgrade to the AR model is called VAR (multivariate
+autoregressive model), we will only mention it here as it is relatively
+complex and probably out of scope for Bayesian Statistics 101 lectures.
+Like mentioned, there are whole courses dedicated to time series
+modelling while we only scratch the surface in a single lecture, so we
+have to stop somewhere.</p>
 </div>
 <div id="the-moving-average-model-ma" class="section level2">
 <h2>The moving average model (MA)</h2>

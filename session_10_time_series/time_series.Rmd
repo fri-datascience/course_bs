@@ -144,6 +144,18 @@ Based on the above we set the $p$ parameter of our model to 13 and fit the model
 
 At a glance, the model's fit looks quite good, but we can see that it does not do a good job for forecasting future values. At least for predictions that are farther in the future. AR models have problems with non-stationary time-series so this is a somewhat expected results. An important thing to note here is also that the quality of predictions is declining and the uncertainty is growing as we move into the future. This makes sense, the farther into the future the data point we are trying to predict is, the harder the task. Another reason for this is that, the AR model is making future predictions based on past values, once past values become predictions themselves the quality of predictions usually declines heavily.
 
+It is important to establish that we do not have to use all the from 1 to $n$. Let's say we have weekly data and the value at the current time point ($y_t$) is dependent only on the data from 2 weeks and 4 weeks back. Such autoregressive model would have the following formulation:
+
+$$y_t \; | \; \alpha, \beta_1, \beta_2, \sigma \sim N \left( \alpha + \beta_1 y_{t-2} + \beta_2 y_{t-4}, \sigma \right).$$
+You can see that we skipped two timepoints in our modelling ($y_{t-1}$ and $y_{t-3}$) since they are not relevant for the prediction of the current time point.
+
+An upgrade to the AR model is ARX (autoregressive model with exogenous variables). Again, the upgrade is relatively simple:
+
+$$y_t \; | \; \alpha, \beta, p, \theta, s, \sigma \sim N \left( \alpha + \sum_{i=1}^p \beta_i y_{t-i} + \sum_{j=1}^s \theta_j x_{t-j}, \sigma \right),$$
+where $\theta_j$ is the regression coefficient for the exogenous variable $x_j$, which can be constant through time or can change with it as in the equation above.
+
+Another upgrade to the AR model is called VAR (multivariate autoregressive model), we will only mention it here as it is relatively complex and probably out of scope for Bayesian Statistics 101 lectures. Like mentioned, there are whole courses dedicated to time series modelling while we only scratch the surface in a single lecture, so we have to stop somewhere.
+
 ## The moving average model (MA)
 
 MA specifies that the output variable depends linearly on the current and various past values of a stochastic term. It accounts for very short-run autocorrelation, and is as such not suitable for time-series where ACF is high for large values of lag. We can formally define the MA($q$) model as:
