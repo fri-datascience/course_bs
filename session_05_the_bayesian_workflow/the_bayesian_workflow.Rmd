@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 
 # Summary
 
-Bayesian modeling is an iterative process, we start by picking an initial model and settings its priors. To investigate whether our priors have undesirable effects that contradict domain knowledge we start by performing prior checks (in the literature this is sometimes also called prior predictive checks or checking). Once we are happy with our priors, we fit the model and diagnose the fitting process (traceplot, convergence, diagnostics ...). If all is good, we then execute posterior checks (or posterior predictive checks) to evaluate whether our model is suitable for answering the questions we are asking.
+Bayesian modeling is an iterative process, we start by picking an initial model and settings its priors. To investigate whether our priors have undesirable effects that contradict domain knowledge we start by performing prior checks (in the literature this is sometimes also called prior predictive checks or checking). Once we are happy with our priors, we fit the model and diagnose the fitting process (traceplot, convergence, diagnostics...). If all is good, we then execute posterior checks (or posterior predictive checks) to evaluate whether our model is suitable for answering the questions we are asking.
 
 # The Bayesian workflow
 
@@ -97,7 +97,7 @@ Like in the previous example, we could again code everything in R, for illustrat
 
 ```
 data {
-  int<lower = 0> n; // number of observations 
+  int<lower = 0> n; // number of observations
   vector[n] x;      // weights
 }
 
@@ -106,7 +106,7 @@ generated quantities {
   real alpha = normal_rng(150, 50);
   real beta = normal_rng(0, 1);
   real sigma = uniform_rng(0, 50);
-  
+
   // simulated data
   real y_sim[n] = normal_rng(alpha + beta * x, sigma);
 }
@@ -182,13 +182,13 @@ Since a picture is worth more than a thousand words it is often a very good prac
 
 ![](./figs/posterior_linear.png)
 
-In more complex models (e.g. highly dimensional posterior distributions, complicated hierarchical models ...) visualizing our fits is often unfeasible. There, we can use the fit model in a generative manner to create the so-called replicate datasets. Next, we use these datasets for comparison with real data, for example through some summary statistics. But we have to be careful here since summary statistics can sometimes be misleading.
+In more complex models (e.g.,highly dimensional posterior distributions, complicated hierarchical models...) visualizing our fits is often unfeasible. There, we can use the fit model in a generative manner to create the so-called replicate datasets. Next, we use these datasets for comparison with real data, for example through some summary statistics. But we have to be careful here since summary statistics can sometimes be misleading.
 
 ## Using replicate datasets
 
-Since our models are often complex and high dimensional the visual comparison is hard to execute. Therefore, the most common posterior check compares replicate datasets from the posterior distribution against the actual data. Once we fit the model, we use the posterior distribution to create several replicate datasets. To create a replicate dataset we usually draw as many samples from the posterior distribution as there are in the original dataset. Once we create several such replicate datasets we compare whether the quantities we are interested in match between replicate dataset and the real dataset. If they do then we can proceed with our analysis, if they do not we have to revisit our model. It is important to emphasize here that if we are interested only in some quantites (e.g. means) then we are usually satisfied if our model does a good job at estimating only the quantities we are interested in.
+Since our models are often complex and high dimensional the visual comparison is hard to execute. Therefore, the most common posterior check compares replicate datasets from the posterior distribution against the actual data. Once we fit the model, we use the posterior distribution to create several replicate datasets. To create a replicate dataset we usually draw as many samples from the posterior distribution as there are in the original dataset. Once we create several such replicate datasets we compare whether the quantities we are interested in match between replicate dataset and the real dataset. If they do then we can proceed with our analysis, if they do not we have to revisit our model. It is important to emphasize here that if we are interested only in some quantites (e.g.,means) then we are usually satisfied if our model does a good job at estimating only the quantities we are interested in.
 
-In the example below we are interested in the mean temperature in Slovenia after the year 2000. We fit a normal model to our data and then generate 16 replicate datasets from our posterior samples. Visualization below visualizes replicate datasets (gray histograms) along with their means (gray vertical lines), while the black vertical line visualizes the sample mean. Since it seems like our model does a good job at estimating the mean temperature in Slovenia we can proceed with our analysis (whatever that might be). If we are interested in other quantities (e.g. variance) then we need to check whether our model does a good job at estimating those as well.
+In the example below we are interested in the mean temperature in Slovenia after the year 2000. We fit a normal model to our data and then generate 16 replicate datasets from our posterior samples. Visualization below visualizes replicate datasets (gray histograms) along with their means (gray vertical lines), while the black vertical line visualizes the sample mean. Since it seems like our model does a good job at estimating the mean temperature in Slovenia we can proceed with our analysis (whatever that might be). If we are interested in other quantities (e.g.,variance) then we need to check whether our model does a good job at estimating those as well.
 
 ```{R warning=FALSE, message=FALSE, results = 'hide', fig.width=9, fig.height=9}
 # libraries --------------------------------------------------------------------
@@ -267,7 +267,7 @@ ggplot(data = df_ppc, aes(x = temperature)) +
 
 ### Modeling reaction times
 
-In the next example, we will try to build a model suitable for analyzing human reaction times. We will use reaction times from the Eriksen flanker test. In it participants are presented with an image of an odd number of arrows (usually five or seven). Their task is to indicate the orientation (left or right) of the middle arrow as quickly as possible whilst ignoring the flanking arrows on left and right. Traditionally, participant provide their answers by pressing one of the two buttons (one if the middle arrow is facing left and the other if it is facing right). There are two types of stimuli in the task: in the congruent condition (e.g. ‘<<<<<<<‘) both the middle arrow and the flanking arrows point in the same direction, whereas in the incongruent condition (e.g. ‘<<<><<<‘) the middle arrow points to the opposite direction of the flanking arrows. Since the incongruent case is more complicated, we would expect slower reaction times there, let us investigate this.
+In the next example, we will try to build a model suitable for analyzing human reaction times. We will use reaction times from the Eriksen flanker test. In it participants are presented with an image of an odd number of arrows (usually five or seven). Their task is to indicate the orientation (left or right) of the middle arrow as quickly as possible whilst ignoring the flanking arrows on left and right. Traditionally, participant provide their answers by pressing one of the two buttons (one if the middle arrow is facing left and the other if it is facing right). There are two types of stimuli in the task: in the congruent condition (e.g.,‘<<<<<<<‘) both the middle arrow and the flanking arrows point in the same direction, whereas in the incongruent condition (e.g.,‘<<<><<<‘) the middle arrow points to the opposite direction of the flanking arrows. Since the incongruent case is more complicated, we would expect slower reaction times there, let us investigate this.
 
 ### Is a normal model good here?
 
@@ -316,7 +316,7 @@ ROPE is not useful only when taking measurement error into account, but also whe
 
 ## Fitting our model to simulated data
 
-Another important technique in posterior checking is fitting our model to simulated data. The advantage of simulated data is the fact that we know all the details of the data generating process (well, we were the ones who created the process in the first place). This can be of tremendous value when investigating the strengths and weaknesses of our model. For example, we can easily find out which aspects of the process our model is struggling to reconstruct. By providing our model with extreme data, we can investigate how robust it is. When we are comparing several groups, we can inspect how sensitive our model is -- how large the difference between groups needs to be in order for our model to detect them. Or we can investigate how large our sample size needs to be, so we are able to detect a difference between two or more groups. Studies and experiments can be very expensive (e.g., clinical trials, MRI data acquisition ...), so knowing what kind of a sample size we need to show the difference we expect between groups is an important piece of information. Obviously, our assumptions and expectations can be wrong and the study does not go in the direction we would like, but we have to do everything we can for that not to happen. It is very painful to find out later on that we are unable to show the difference, or an effect, simply because the sample size we acquired is too small. It is much more expensive to reacquire new data then to acquire a bit more the first time around. As you can see, just like with prior checking, exploratory analysis with simulated data has many practical usages!
+Another important technique in posterior checking is fitting our model to simulated data. The advantage of simulated data is the fact that we know all the details of the data generating process (well, we were the ones who created the process in the first place). This can be of tremendous value when investigating the strengths and weaknesses of our model. For example, we can easily find out which aspects of the process our model is struggling to reconstruct. By providing our model with extreme data, we can investigate how robust it is. When we are comparing several groups, we can inspect how sensitive our model is -- how large the difference between groups needs to be in order for our model to detect them. Or we can investigate how large our sample size needs to be, so we are able to detect a difference between two or more groups. Studies and experiments can be very expensive (e.g., clinical trials, MRI data acquisition...), so knowing what kind of a sample size we need to show the difference we expect between groups is an important piece of information. Obviously, our assumptions and expectations can be wrong and the study does not go in the direction we would like, but we have to do everything we can for that not to happen. It is very painful to find out later on that we are unable to show the difference, or an effect, simply because the sample size we acquired is too small. It is much more expensive to reacquire new data then to acquire a bit more the first time around. As you can see, just like with prior checking, exploratory analysis with simulated data has many practical usages!
 
 # Recommended readings
 

@@ -130,7 +130,7 @@ ggplot() +
 
 ## Multiple linear regression
 
-Multiple linear regression is a logical next step after getting to know the simple linear regression model. The only difference between the two is that multiple linear regression can handle input data that has more than one idependent variable. As a result, we can check the correlation between the dependant variable ($y$) and many idependent variables ($x_1, x_2, ..., x_k$) simultaneously. The upgrade is quite easy. First, we have a new entry in the input data block, where $m$ denotes the number of independent variables. Second, our input variables are now stored in a matrix ($X$), since there are many of them. And third, we have multiple $\beta$ coefficients, one for each independent variable. Below is an example of multiple linear regression as a .stan model:
+Multiple linear regression is a logical next step after getting to know the simple linear regression model. The only difference between the two is that multiple linear regression can handle input data that has more than one idependent variable. As a result, we can check the correlation between the dependant variable ($y$) and many idependent variables ($x_1, x_2, \ldots, x_k$) simultaneously. The upgrade is quite easy. First, we have a new entry in the input data block, where $m$ denotes the number of independent variables. Second, our input variables are now stored in a matrix ($X$), since there are many of them. And third, we have multiple $\beta$ coefficients, one for each independent variable. Below is an example of multiple linear regression as a .stan model:
 
 ```
 data {
@@ -168,7 +168,7 @@ $\alpha$ (or often $\beta_0$) represents the intercept, the value of the depende
 
 $$y_i \; | \; x_i, \beta_r, \beta_a, \beta_m, \sigma \sim N(\beta_r x_{r,i} + \beta_a x_{a,i} + \beta_n x_{m,i}, \sigma).$$
 
-Note though, that the intercept often does make a lot of sense. For example if we were interested in explaining relationship between salaries and work experience (e.g. years of employment) then the intercept would denote the average salary for a person without any work experience (0 years of work experience).
+Note though, that the intercept often does make a lot of sense. For example if we were interested in explaining relationship between salaries and work experience (e.g.,years of employment) then the intercept would denote the average salary for a person without any work experience (0 years of work experience).
 
 ## The $\beta$ coefficients
 
@@ -211,7 +211,7 @@ As you can image, we have a lot of freedom when designing our regression models.
 
 $$y_i \; | \; x_i, \beta_3, \beta_2, \beta_1, \sigma \sim N(\beta_3 x_{r,i}^3 + \beta_2 x_{r,i}^2 + \beta_1 x_{r,i}, \sigma).$$
 
-This is called polynomial regression and still falls in the category of linear models, we achieved non-linearity by transforming independent variables (something we will do a lot). This could be a completely valid model and might even fit our input data better than the one we used previously. However, making sense of this model's outputs would be very hard since the $\beta$ coefficients are now much harder to interpret. It is important to always have in mind that in Bayesian analysis we are (usually) trying to devise models that provide us with useful insights about the data generating processes in question! While complex models might fit the data extremely well they are often too hard to understand and do not provide any new insights into the data generating process. In fact, in several sensible scientific fields (such as clinical medicine and trials ...) regulative agencies enforce the use of interpretable models only.
+This is called polynomial regression and still falls in the category of linear models, we achieved non-linearity by transforming independent variables (something we will do a lot). This could be a completely valid model and might even fit our input data better than the one we used previously. However, making sense of this model's outputs would be very hard since the $\beta$ coefficients are now much harder to interpret. It is important to always have in mind that in Bayesian analysis we are (usually) trying to devise models that provide us with useful insights about the data generating processes in question! While complex models might fit the data extremely well they are often too hard to understand and do not provide any new insights into the data generating process. In fact, in several sensible scientific fields (such as clinical medicine and trials...) regulative agencies enforce the use of interpretable models only.
 
 ## Non-additive interactions between independent variables
 
@@ -235,7 +235,7 @@ X <- data %>% select(-y)
 
 # correlation
 # plot correlation of independent variables
-pairs.panels(X, 
+pairs.panels(X,
              method = "pearson", # correlation method
              hist.col = "skyblue",
              density = TRUE,  # show density plots
@@ -313,7 +313,7 @@ Below is model's code in Stan, as you can see the Bernoulli logit regression is 
 data {
   int<lower=1> n;                   // number of observations
   vector<lower=0>[n] x;             // height
-  array[n] int<lower=0, upper=1> y; // sex 
+  array[n] int<lower=0, upper=1> y; // sex
 }
 
 parameters {
@@ -390,7 +390,7 @@ data {
   int<lower=1> n;          // number of data points
   int<lower=0> m;          // number of independent variables
   matrix[n,m] X;           // independent variables
-  array[n] int<lower=0> y; // dependent variable 
+  array[n] int<lower=0> y; // dependent variable
 }
 
 parameters {
@@ -411,7 +411,7 @@ generated quantities {
 
   // predictions
   array[n] int<lower=0> pred;
-  
+
   for (i in 1:n) {
     lambda[i] = exp(alpha + X[i] * beta);
     pred[i] = poisson_rng(lambda[i]);
@@ -434,7 +434,7 @@ Once we standardize our independent variables we can check their distributions a
   ![](./figs/correlations.png)
 </center>
 
-There were no issues in the fitting process and basic diagnostics show no reasons for concern. A quick inspection of $\beta$ coefficients (see the figure below) suggests that the results make sense -- independent variables associated with the amount of goals scored by the away team (e.g. `X_ScoringRateA` and `X_CornerRatioA`) have less influence on predictions as the variables directly associated with the amount of goals scored by the home team (e.g. `X_ScoringRateH` and `X_CornerRatioH`). In a Bayesian setting we usually determine whether an independent variable has an influence (either positive or negative) on the dependent variable by checking whether the whole 95% HDI of its $\beta$ coefficients posterior lies above or below 0.
+There were no issues in the fitting process and basic diagnostics show no reasons for concern. A quick inspection of $\beta$ coefficients (see the figure below) suggests that the results make sense -- independent variables associated with the amount of goals scored by the away team (e.g.,`X_ScoringRateA` and `X_CornerRatioA`) have less influence on predictions as the variables directly associated with the amount of goals scored by the home team (e.g.,`X_ScoringRateH` and `X_CornerRatioH`). In a Bayesian setting we usually determine whether an independent variable has an influence (either positive or negative) on the dependent variable by checking whether the whole 95% HDI of its $\beta$ coefficients posterior lies above or below 0.
 
 <center>
   ![](./figs/poisson_betas.png)
@@ -617,7 +617,7 @@ Based on the above, you should be able to develop a gamma regression model in St
 
 ## Ordered logistic regression
 
-Ordered logistic regression (also known as ordinal logistic regression or proportional odds model) is used for modeling variables on the ordinal scale. That is nominal variables for which there exists a meaningful ordering. The most common use case of ordered logistic regression is modeling preference (e.g. on a five-level Likert scale, ranging from strongly disagree to strongly agree).
+Ordered logistic regression (also known as ordinal logistic regression or proportional odds model) is used for modeling variables on the ordinal scale. That is nominal variables for which there exists a meaningful ordering. The most common use case of ordered logistic regression is modeling preference (e.g.,on a five-level Likert scale, ranging from strongly disagree to strongly agree).
 
 Essentially, ordinal variable is just a categorization (multinomial prediction) problem with an additional constraint -- responses have an exact ordering. Meaning that our model has to ensure a proper ordering of outcomes. The traditional solution to this problem is to use a cumulative link function. Suppose our dependent variable $y$ has $k$ outcomes and $j \in 1, \ldots, k$, the cumulative probability of outcome $j$ thus equals:
 
@@ -662,7 +662,7 @@ See `code/ordered.R` for a practical example of the ordered logistic regression.
 
 ## And many more
 
-There are many more GLMs out there that might come in handy when tackling a particular problem (e.g probit regression, ordered probit regression, binomial regression, inverse Gaussian regression, exponential regression ...). Luckily the core concepts are the same in all of them, so equipped with the knowledge you gained today you should not have too many issues when implementing them. Some of the mentioned GLMs are already implemented in Stan, to take a look at all readily available regression models in Stan consult <https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html>.
+There are many more GLMs out there that might come in handy when tackling a particular problem (e.g probit regression, ordered probit regression, binomial regression, inverse Gaussian regression, exponential regression...). Luckily the core concepts are the same in all of them, so equipped with the knowledge you gained today you should not have too many issues when implementing them. Some of the mentioned GLMs are already implemented in Stan, to take a look at all readily available regression models in Stan consult <https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html>.
 
 An alternative to coding your own models is an R package called `rstanarm` that emulates other R model-fitting functions but uses Stan (via the `rstan` package) for the back-end estimation. The primary target audience is people who would be open to Bayesian inference if using Bayesian software were easier but would use frequentist software otherwise.
 

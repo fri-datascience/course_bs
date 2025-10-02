@@ -179,9 +179,9 @@ at the same time.</p>
 generalization error of our models. To evaluate model’s generalization
 CV tests our models against unknown data in order to find out how well
 our model generalizes (e.g is our model overfitting, do we have
-selection bias …). Since you should be already familiar with the
-majority of CV techniques (leave-one-out cross-validation, leave-p-out
-cross-validation, k-fold cross-validation, holdout …) we will sift
+selection bias…). Since you should be already familiar with the majority
+of CV techniques (leave-one-out cross-validation, leave-p-out
+cross-validation, k-fold cross-validation, holdout…) we will sift
 through them relatively quickly. The gist of CV is to split the dataset
 into two subsets – the train set and the test set. The train set is then
 used for building the model and the test set is used for evaluating it.
@@ -240,7 +240,7 @@ In the example that follows we will try to model how temperature changes
 through years. In other words, given a year our model will be able to
 predict temperature in that year. If we want to test how good the model
 is for making future predictions, which is what we are traditionally
-interested in, then we need to simulate such a scenario, e.g. we use
+interested in, then we need to simulate such a scenario, e.g.,we use
 data before the year 1995 for training the model and after 1995 for
 evaluating the model. If we are interested in future temperatures then
 training the model on the most recent observations and then using the
@@ -287,7 +287,7 @@ polynomial regressions with a different order of the polynomial
 term:</p>
 <p><span class="math display">\[y \; | \; x, \beta, \sigma \sim
 N(\sum_{i=0}^{p}{\beta_i x^i}, \sigma),\]</span></p>
-<p><span class="math display">\[\beta_2, \beta_3, ... , \beta_{p} \sim
+<p><span class="math display">\[\beta_2, \beta_3, \ldots, \beta_{p} \sim
 Cauchy(0, 1).\]</span></p>
 <p>Above, <span class="math inline">\(y\)</span> represents our
 dependent variable (average yearly temperature in °C), <span class="math inline">\(x\)</span> our independent variable (years) and
@@ -311,11 +311,11 @@ the used polynomial) fit the underlying data.</p>
 we trained the model on temperature observations before the year 1995
 and tested it on observations after the year 1995. To emphasize that CV
 is CV regardless of the modeling methodology (Bayesian modeling, random
-forests, deep neural networks …) we used mean squared error (MSE) to
+forests, deep neural networks…) we used mean squared error (MSE) to
 measure model’s error. MSE was used because we are evaluating the
 posterior mean and the decision-theoretic optimal estimator for the
 posterior mean is MSE. If we were evaluating something else then a
-different measure would be optimal (e.g. absolute error if we are
+different measure would be optimal (e.g.,absolute error if we are
 interested in the median). So, to pick the optimal evaluation method we
 need to be familiar with decision theory. Bayesian modeling is again at
 an advantage here, since we are always working with distributions we can
@@ -602,7 +602,7 @@ log-likelihood of <span class="math inline">\(y_i\)</span> for all
 samples (<span class="math inline">\(j \in s\)</span>) from the
 posterior distribution. WAIC looks complicated but it is fortunately
 quite easy to calculate and is readily implemented in several popular R
-libraries for Bayesian statistics (e.g. loo, rethinking). In the figure
+libraries for Bayesian statistics (e.g.,loo, rethinking). In the figure
 below we used WAIC (mean and SE) to compare our models from the toy
 example.</p>
 <center>
@@ -667,7 +667,7 @@ we are evaluating and <span class="math inline">\(\Delta
 look a bit funky, but all it is doing is reversing the -2 multiplication
 followed by reversing the log transformation – it is putting WAIC on the
 probability scale. In the equation above we used WAIC (<span class="math inline">\(\Delta \text{WAIC}\)</span>) to calculate weights,
-in practice you can use any other measure as well (e.g. <span class="math inline">\(\Delta \text{AIC}\)</span> or <span class="math inline">\(\Delta \text{LOOIC}\)</span>). Akaike weights can
+in practice you can use any other measure as well (e.g.,<span class="math inline">\(\Delta \text{AIC}\)</span> or <span class="math inline">\(\Delta \text{LOOIC}\)</span>). Akaike weights can
 be interpreted as estimates of the probability that a model will make
 the best prediction on new data conditional on the set of models
 considered. The figure below visualizes Akaike weights for our toy

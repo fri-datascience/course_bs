@@ -104,7 +104,7 @@ fit22$summary(c("mu_a", "mu_b"))
 n_lines <- 20
 
 # use a different fit or data to explore other segments of the experiment
-# e.g. fit22 for group2_part2
+# e.g.,fit22 for group2_part2
 fit <- fit22
 data <- group2_part2
 

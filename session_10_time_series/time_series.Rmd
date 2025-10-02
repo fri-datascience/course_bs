@@ -78,7 +78,7 @@ $$t_t = \alpha + \beta * t,$$
 
 $$s_t = \beta_{cos} \cos(\omega t) + \beta_{sin} \sin(\omega t).$$
 
-$\alpha$ represents the intercept of the trend component, while $\beta$ is its beta coefficient. Note that the trend above is linear, in practice it could be anything (quadtratic, polynomial ...), so you can swap the linear term in $t_t$ with something that works beeter for your data.
+$\alpha$ represents the intercept of the trend component, while $\beta$ is its beta coefficient. Note that the trend above is linear, in practice it could be anything (quadtratic, polynomial...), so you can swap the linear term in $t_t$ with something that works beeter for your data.
 
 $\beta_{cos}$ and $\beta_{sin}$ represent beta coefficients for cosine and sine parts of the seasonality component. With $\omega$ we define the frequency of the seasonality component:
 

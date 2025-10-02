@@ -378,11 +378,11 @@ ggplot(data = df_samples, aes(x = theta)) +
   theme_minimal()
 ```
 
-For illustrative purposes the above code is the most basic variant of the algorithm. In practice the implementations use a number of improvements, e.g. using log-likelihood for the purposes of numerical stability, adaptive configuration of the step size, etc. It is also worth mentioning that modern tools for Bayesian inference facilitate approaches that are more sophisticated than Metropolis-Hastings, such as the No-U-Turn Sampler (NUTS) in Stan. A detailed discussion about particular MCMC algorithms is outside of the scope of this course. If you are interested in these details you can find some good references here <https://chi-feng.github.io/mcmc-demo/>. Even if you are not interested in reading very demanding scientific papers, check out the neat sampling visualizations of MCMC sampling that can be found on that same page. To determine how the posterior is calculated we can use probabilistic models defined through probabilistic programming languages.
+For illustrative purposes the above code is the most basic variant of the algorithm. In practice the implementations use a number of improvements, e.g.,using log-likelihood for the purposes of numerical stability, adaptive configuration of the step size, etc. It is also worth mentioning that modern tools for Bayesian inference facilitate approaches that are more sophisticated than Metropolis-Hastings, such as the No-U-Turn Sampler (NUTS) in Stan. A detailed discussion about particular MCMC algorithms is outside of the scope of this course. If you are interested in these details you can find some good references here <https://chi-feng.github.io/mcmc-demo/>. Even if you are not interested in reading very demanding scientific papers, check out the neat sampling visualizations of MCMC sampling that can be found on that same page. To determine how the posterior is calculated we can use probabilistic models defined through probabilistic programming languages.
 
 # Probabilistic programming languages
 
-When we talk about programming languages we traditionally think about imperative programming. Indeed, the majority of programming languages that we use (e.g. Python, Java, R, C, C++ ...) are imperative. In imperative programming we are given a set of inputs (input parameters or input data) and our goal is to develop an algorithm (define a step-by-step procedure) that uses given inputs to produce desired outputs. Below is an example of a typical imperative algorithm.
+When we talk about programming languages we traditionally think about imperative programming. Indeed, the majority of programming languages that we use (e.g.,Python, Java, R, C, C++...) are imperative. In imperative programming we are given a set of inputs (input parameters or input data) and our goal is to develop an algorithm (define a step-by-step procedure) that uses given inputs to produce desired outputs. Below is an example of a typical imperative algorithm.
 
 ```{r eval=FALSE}
 # Generate n Bernoulli variables
@@ -417,11 +417,11 @@ As you see we already developed a statistical model for the coin toss, let us wr
 
 1. Specification of the input data:
 
-$$y_1, ..., y_n \qquad y_i \in {0,1}.$$
+$$y_1, \ldots, y_n \qquad y_i \in {0,1}.$$
 
 2. The model:
 
-$$y_1, ..., y_n | \theta \sim_{iid} Bernoulli(\theta).$$
+$$y_1, \ldots, y_n | \theta \sim_{iid} Bernoulli(\theta).$$
 
 3. Prior information:
 
@@ -478,7 +478,7 @@ zero_one_sequence <- function(n) {
 }
 ```
 
-The algorithm above generates zeros and ones depending on a random factor (a coin flip) and the current temperature and air pressure in Ljubljana. With probabilistic programming we will never be able to model this, our starting point will be a vector of zeros and ones and it is impossible to deduce that these values are based on weather data from Ljubljana. However, we are still able to design a model through which we will gain a better understanding of the process, e.g. we can use a simple Bernoulli-beta model to estimate the probability that the next value will equal 1.
+The algorithm above generates zeros and ones depending on a random factor (a coin flip) and the current temperature and air pressure in Ljubljana. With probabilistic programming we will never be able to model this, our starting point will be a vector of zeros and ones and it is impossible to deduce that these values are based on weather data from Ljubljana. However, we are still able to design a model through which we will gain a better understanding of the process, e.g.,we can use a simple Bernoulli-beta model to estimate the probability that the next value will equal 1.
 
 # Stan
 
@@ -534,7 +534,7 @@ generated quantities {
 
 The $\texttt{data}$, $\texttt{parameters}$ and $\texttt{model}$ blocks will be present in almost every of our models, while the others will be used less frequently. Let us first get to know the more common building blocks of Stan programs.
 
-The $\texttt{data}$ block is for the declaration of variables that are read in as input data. This defines how input data to Stan will have to be prepared in the interface programming language we are using (e.g. R, python ...). Commonly used variable types in Stan are:
+The $\texttt{data}$ block is for the declaration of variables that are read in as input data. This defines how input data to Stan will have to be prepared in the interface programming language we are using (e.g.,R, python...). Commonly used variable types in Stan are:
 
 ```
 // integer number
@@ -610,13 +610,13 @@ $\texttt{transformed data}$ block is for declaring and defining variables that d
 
 The $\texttt{transformed parameters}$ block consists of optional variable declarations followed by statements. After the statements are executed, the constraints on the transformed parameters are validated. Any variable declared as a transformed parameter is part of the output produced for draws. It serves a similar purpose as the $\texttt{transformed data}$ block, except that this time around we are performing various transformations on the parameters of the model and not on the data. Like the constraints on data, the constraints on transformed parameters are meant to catch programming errors as well as convey programmer intent. They are not automatically transformed in such a way as to be satisfied. What will happen if a transformed parameter does not match its constraint is that the current parameter values will be rejected.
 
-The $\texttt{generated quantities}$ block is rather different than the other blocks. Nothing in it affects the sampled parameter values. The block is executed only after a sample has been generated. It can be used to monitor various quantities generated by the model at each step, in other words we can use the input data and parameters to create new quantities we might be interested in (e.g. posterior event probabilities, various comparisons, transformed output parameters, log likelihoods ...).
+The $\texttt{generated quantities}$ block is rather different than the other blocks. Nothing in it affects the sampled parameter values. The block is executed only after a sample has been generated. It can be used to monitor various quantities generated by the model at each step, in other words we can use the input data and parameters to create new quantities we might be interested in (e.g.,posterior event probabilities, various comparisons, transformed output parameters, log likelihoods...).
 
 The $\texttt{functions}$ block is intended for user-defined functions, and it appears at the top of your Stan program, before all of the other program blocks. Inside, function definitions and declarations may appear in any order, subject to the condition that a function must be declared before it is used. Forward declarations are allowed in order to support recursive functions.
 
 ## Coding in Stan
 
-Stan is programmed in c++, as a result traditional coding techniques (such as comments, conditional statements, loops ...) are similar as in c:
+Stan is programmed in c++, as a result traditional coding techniques (such as comments, conditional statements, loops...) are similar as in c:
 
 ```
 // conditional statements
@@ -779,13 +779,13 @@ Stan implements the most common diagnostics, such as the traceplots, $\hat{R}$, 
 fit_special$summary()
 ```
 
-The fit's $\texttt{summary()}$ function prints some summary statistics about the model's parameters along with some basic diagnostic parameters (e.g. $\hat{R}$ and ESS). $\hat{R}$ ($\texttt{rhat}$) is convergence diagnostic which compares the between- and within-chain estimates for model parameters and other univariate quantities of interest. If chains have not mixed well (i.e. the between- and within-chain estimates don't agree), $\hat{R}$ is larger than 1. So we want $\hat{R}$ to be equal, or close to, 1. $\hat{R}$ is calculated as
+The fit's $\texttt{summary()}$ function prints some summary statistics about the model's parameters along with some basic diagnostic parameters (e.g.,$\hat{R}$ and ESS). $\hat{R}$ ($\texttt{rhat}$) is convergence diagnostic which compares the between- and within-chain estimates for model parameters and other univariate quantities of interest. If chains have not mixed well (i.e. the between- and within-chain estimates don't agree), $\hat{R}$ is larger than 1. So we want $\hat{R}$ to be equal, or close to, 1. $\hat{R}$ is calculated as
 
 $$\hat{R} = \sqrt{\frac{W}{B}},$$
 
 where $W$ is the average within-chain variance over all chains and $B$ is the between-chain variance (variance of the chain means across all chains).
 
-The $\texttt{ess_bulk}$ estimates the bulk effective sample size using rank normalized draws. $\texttt{ess_bulk}$ is a useful measure for sampling efficiency in the bulk of the distribution (related e.g. to efficiency of mean and median estimates), and is well defined even if the chains do not have finite mean or variance. The $\texttt{ess_tail}$ function produces an estimated tail effective sample size by computing the minimum of effective sample sizes for 5% and 95% percentiles. $\texttt{ess_tail}$ is a useful measure for sampling efficiency in the tails of the distribution (related e.g. to efficiency of variance and tail percentile estimates). A good rule of thumb is that both $\texttt{ess_bulk}$ and $\texttt{ess_tail}$ should be at least 100 (approximately) per Markov Chain in order to be reliable and indicate that estimates of respective posterior percentiles are reliable. Effective sample size is calculated as
+The $\texttt{ess_bulk}$ estimates the bulk effective sample size using rank normalized draws. $\texttt{ess_bulk}$ is a useful measure for sampling efficiency in the bulk of the distribution (related e.g.,to efficiency of mean and median estimates), and is well defined even if the chains do not have finite mean or variance. The $\texttt{ess_tail}$ function produces an estimated tail effective sample size by computing the minimum of effective sample sizes for 5% and 95% percentiles. $\texttt{ess_tail}$ is a useful measure for sampling efficiency in the tails of the distribution (related e.g.,to efficiency of variance and tail percentile estimates). A good rule of thumb is that both $\texttt{ess_bulk}$ and $\texttt{ess_tail}$ should be at least 100 (approximately) per Markov Chain in order to be reliable and indicate that estimates of respective posterior percentiles are reliable. Effective sample size is calculated as
 
 $$ESS = \frac{SS}{1 + 2 \sum{acf}},$$
 

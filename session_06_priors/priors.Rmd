@@ -63,11 +63,11 @@ model {
 }
 ```
 
-So unless we are 100% sure that our parameter has hard constraints or boundaries (e.g. height is strictly positive, minimum possible temperature is -273.15 °C ...) we should probably use priors that do not set these hard constraints. For example, instead of U(0,1), we could use N(0.5, 0.5).
+So unless we are 100% sure that our parameter has hard constraints or boundaries (e.g., height is strictly positive, minimum possible temperature is -273.15 °C...) we should probably use priors that do not set these hard constraints. For example, instead of U(0,1), we could use N(0.5, 0.5).
 
 Some classifications of prior types also define a group of super vague, but proper priors, for example N(0, 100000). In practice, these carry almost no information and can be treated as non-informative. The only advantage they have is that they are represented by a proper distribution and can in some cases alleviate some of the sampling issues encountered with non-informative (improper, flat) priors. However, just like with non-informative priors usage of super vague priors is not recommended and we should put some additional effort and define weakly informative priors.
 
-A distribution that deserves a special mention in the section of non-informative priors is the beta distribution. Beta is our go-to distribution whenever we are working with probabilities. Beta distribution has two parameters $\alpha$ (number of successes) and $\beta$ (number of fails). Since higher values of both parameters mean that we have more information (e.g. we observed more cases of a binary experiment) it is intuitive that non-informative priors should have low values of both parameters. The first and probably the most commonly used option is Beta(1, 1), also called the Bayes-Laplace prior, which results in a uniform distribution between 0 and 1:
+A distribution that deserves a special mention in the section of non-informative priors is the beta distribution. Beta is our go-to distribution whenever we are working with probabilities. Beta distribution has two parameters $\alpha$ (number of successes) and $\beta$ (number of fails). Since higher values of both parameters mean that we have more information (e.g.,we observed more cases of a binary experiment) it is intuitive that non-informative priors should have low values of both parameters. The first and probably the most commonly used option is Beta(1, 1), also called the Bayes-Laplace prior, which results in a uniform distribution between 0 and 1:
 
 <center>
 ![](./figs/beta11.png)

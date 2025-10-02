@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 
 # Summary
 
-In Bayesian modeling hierarchical models (also called multilevel models) are an extremely powerful tool. As already emphasized a couple of times now, when modeling we should try to describe the data generating process (and not fit some distributions to some data). Since data generating processes often have a hierarchical structure (e.g. groups of students, multiple repetitions of an experiment ...), hierarchical models enable us to efficiently describe such data generating processes.
+In Bayesian modeling hierarchical models (also called multilevel models) are an extremely powerful tool. As already emphasized a couple of times now, when modeling we should try to describe the data generating process (and not fit some distributions to some data). Since data generating processes often have a hierarchical structure (e.g.,groups of students, multiple repetitions of an experiment...), hierarchical models enable us to efficiently describe such data generating processes.
 
 # Piglets
 
@@ -43,11 +43,11 @@ where $y_{s,i}$ represents the weight of piglet $i$ that was born to mama pig $s
 
 ![](./figs/normal_s.png)
 
-Above model acknowledges the fact that each piglet has its own mother, but we discard the fact that they are all piglets. As a result we are now able to make comparisons between subjects (between piglets belonging to different mama pigs) but lose the capability of more general (group level) comparisons (e.g. inter-species). The figure below visualizes how this model fits the underlying for each mama pig (subject) separately:
+Above model acknowledges the fact that each piglet has its own mother, but we discard the fact that they are all piglets. As a result we are now able to make comparisons between subjects (between piglets belonging to different mama pigs) but lose the capability of more general (group level) comparisons (e.g.,inter-species). The figure below visualizes how this model fits the underlying for each mama pig (subject) separately:
 
 ![](./figs/subject_fit.png)
 
-Based on this figure, one could argue that the assumption that the variance between subjects is the same is not correct. This is a valid case, since we can see that because of this constraint our model does not fit the underlying data well in some cases (e.g. mama pig #3 or #6). So, a possible model upgrade would be to also model variances on the subject level. We decided not to do that because we were interested mainly in mean weights and wanted to keep the model as simple as possible for the purpose of this illustration. Furthermore, our dataset is quite small, for getting good variance estimates we usually need more data than we have in this case.
+Based on this figure, one could argue that the assumption that the variance between subjects is the same is not correct. This is a valid case, since we can see that because of this constraint our model does not fit the underlying data well in some cases (e.g.,mama pig #3 or #6). So, a possible model upgrade would be to also model variances on the subject level. We decided not to do that because we were interested mainly in mean weights and wanted to keep the model as simple as possible for the purpose of this illustration. Furthermore, our dataset is quite small, for getting good variance estimates we usually need more data than we have in this case.
 
 In Bayesian statistics we can easily have the best of both worlds through hierarchical modeling. Actually, one could easily argue that in our case such a model is the only reasonable approach since we have a very clear hierarchical structure in our data generating process. By linking subject means in a hierarchical fashion, our model becomes:
 
@@ -84,7 +84,7 @@ We can now easily fit the hierarchical model to the data from the second farm as
 In the previous example we used a normal distribution to establish a hierarchical structure between groups of normally distributed data. But this does not have to be the case, the building blocks of any hierarchical model do not have to be normally distributed nor do we have to use a normal distribution to link these pieces together. In the following example we will build a hierarchical model based on simple linear regression models.
 
 In this example we will analyze data from an adaptation level experiment. In it participants had to assess weights of the objects placed in their hands by using a verbal scale: very very light, very light, light, medium light, medium, medium heavy, heavy, very heavy and very very heavy. The task was to assess the weight of an object that was placed on the palm of their hand. To standardize the procedure the participants had to place the elbow on the desk, extend the palm and assess the weight of the object after it was placed on their palm by slight up and down movements of their arm. During the experiment participants were blinded by using non-transparent fabric. In total there were 15 objects of the same shape and size but different mass (photo film canisters filled with metallic balls). Objects were grouped into three sets:
-  
+
 * light set: 45 g, 55 g, 65 g, 75 g, 85 g (weights 1 to 5),
 * medium set: 95 g, 105 g, 115 g, 125 g, 135 g (weights 6 to 10),
 * heavy set: 145 g, 155 g, 165 g, 175 g, 185 g (weights 11 to 15).
@@ -123,7 +123,7 @@ A Bayesian approach can also overfit the training data, although it is less like
 
 ## Using a regularizing (skeptical) prior
 
-Bayesian learning combines prior knowledge with data (facts) to update model's beliefs about the data generating process. If priors are completely uninformative (e.g. $U(-\infty, \infty)$) then updated beliefs will be based completely on the input data which can lead to overfitting. To prevent this we can put a more strict prior on model's of our parameter. This way the model will be less excited by the input data. In a way, priors make the model skeptical about the input data. Since such priors achieve the effect of regularization, we often call them regularization priors.
+Bayesian learning combines prior knowledge with data (facts) to update model's beliefs about the data generating process. If priors are completely uninformative (e.g.,$U(-\infty, \infty)$) then updated beliefs will be based completely on the input data which can lead to overfitting. To prevent this we can put a more strict prior on model's of our parameter. This way the model will be less excited by the input data. In a way, priors make the model skeptical about the input data. Since such priors achieve the effect of regularization, we often call them regularization priors.
 
 As you already saw by now, we commonly put such priors on $\beta$ coefficients in our regression models, now you know that the main goal of this is to avoid overfitting. But be careful here, if we are too skeptical (we provide too strict priors) then our model will not pay enough attention to the input data and will underfit! If we standardize our input variables then $\beta$ coefficients should be close to 0. In our previous models we put a $N(0, 1)$ (or similar) prior on our $\beta$ coefficients. Below is a more flexible way, in this example of a multiple linear regression model we put a $N(0, \sigma_\beta)$ prior on our $\beta$ coefficients, where $\sigma_\beta$ is a hyper-parameter that we can provide as input to the model. Finding the optimal value of this parameter is usually done in the same way as with hyper-parameters in any other machine learning model -- with cross validation or some other approach to model parameter selection.
 
@@ -183,8 +183,8 @@ model {
   beta ~ normal(0, sigma_beta);
 
   // for Bayesian L1 use Laplace or double_exponential prior
-  //beta ~ double_exponential(0, sigma_beta); 
-  
+  //beta ~ double_exponential(0, sigma_beta);
+
   y ~ normal(alpha + X * beta, sigma);
 }
 
