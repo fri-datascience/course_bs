@@ -3,14 +3,20 @@ library(tidyverse)
 library(ggridges)
 library(forcats)
 
+# set year
+year <- 2025
+
 # load the data
-df <- read.csv("./session_02_probabilistic_thinking/data/expressions2024.csv")
+df <- read.csv(paste0("./session_02_probabilistic_thinking/data/expressions", year, ".csv"))
 df <- df %>% select(-Timestamp)
 
 # to long format
 df_long <- df %>% gather(key = "term", value = "value")
 df_long$term <- gsub("\\.", " ", df_long$term)
 df_long$value <- ifelse(df_long$value < 1, df_long$value * 100, df_long$value)
+
+# drop na
+df_long <- df_long %>% filter(!is.na(value))
 
 # sort descendingly by average value
 average_values <- df_long %>%
@@ -28,4 +34,7 @@ ggplot(df_long, aes(x = value, y = term, fill = term)) +
   xlim(0, 100)
 
 # save
-ggsave("terms.png", width = 1920, height = 1920, units = "px", dpi = 300)
+ggsave(
+  paste0("session_02_probabilistic_thinking/figs/expressions", year, ".png"),
+  width = 1920, height = 1920, units = "px", dpi = 300
+)
