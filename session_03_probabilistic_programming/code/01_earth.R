@@ -81,6 +81,7 @@ saw_water <- function(our_belief) {
 }
 
 # init belief is equal to prior
+r <- list()
 r$our_belief <- prior
 
 # sample location from https://www.realrandom.net/location.html
