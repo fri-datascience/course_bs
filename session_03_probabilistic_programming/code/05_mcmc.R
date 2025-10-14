@@ -53,7 +53,7 @@ metropolis <- function(z, n, steps = 1000, init = 0.5, step = 0.2) {
 
 # MCMC based inference ---------------------------------------------------------
 n <- 16
-z <- 9
+z <- 11
 
 chain1 <- metropolis(z, n)
 chain2 <- metropolis(z, n, init = 0.25)

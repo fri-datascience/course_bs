@@ -13,7 +13,7 @@ prior <- rep(1, resolution)
 
 # data
 n <- 16
-z <- 9
+z <- 11
 
 # likelihood
 likelihood <- dbinom(z, n, prob = grid)

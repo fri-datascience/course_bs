@@ -5,8 +5,8 @@ library(distributional)
 
 # coin fairness calculator -----------------------------------------------------
 # set parameters
-alpha <- 10
-beta <- 8
+alpha <- 12
+beta <- 6
 
 # bottom and top cuts for fairness
 bottom_cut <- 0.3

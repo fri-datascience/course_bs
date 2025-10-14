@@ -6,8 +6,8 @@ library(tidyverse)
 
 # beta plotter -----------------------------------------------------------------
 # set parameters
-alpha <- 10
-beta <- 8
+alpha <- 12
+beta <- 6
 
 # plot
 df <- data.frame(dist = "beta")
