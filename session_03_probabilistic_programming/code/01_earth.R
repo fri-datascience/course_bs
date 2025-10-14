@@ -26,7 +26,7 @@ land <- 2 - water
 df <- data.frame(x, y = water, group = "water")
 df <- rbind(df, data.frame(x, y = land, group = "land"))
 ggplot(df, aes(x, y, color = group)) +
-  geom_line(size = 2) +
+  geom_line(linewidth = 2) +
   xlab("Water percentage") +
   ylab("Likelihood") +
   scale_color_brewer(palette = "Set1") +
@@ -91,6 +91,9 @@ r <- saw_land(r$our_belief)
 
 # saw water
 r <- saw_water(r$our_belief)
+
+# ------------------------------------------------------------------------------
+# WARNING: spoilers below
 
 # plot the truth
 r$plot +
