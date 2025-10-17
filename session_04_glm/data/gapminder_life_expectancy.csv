@@ -1,4 +1,4 @@
-"lifeExp","year","continent","gdpPercap","pop"
+"life_expectancy","year","continent","gdp_per_capita","population"
 28.801,1952,"Asia",779.4453145,8425333
 30.332,1957,"Asia",820.8530296,9240934
 31.997,1962,"Asia",853.10071,10267083
