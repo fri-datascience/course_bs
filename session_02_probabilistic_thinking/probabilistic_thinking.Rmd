@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 ### In preparation for this lecture
 
 * Revise the definition of probability.
-* Revise the pmf/pdf, support, parameters, mean, and variance for all univariate distributions from Principles of uncertainty (<https://fri-datascience.github.io/course_pou/probability-distributions.html>). You should also have a rough understanding of the shapes they can take.
+* Revise the pmf/pdf, support, parameters, mean, and variance for all univariate distributions from Principles of uncertainty (<https://fri-datascience.github.io/course_pou/distributions.html>). You should also have a rough understanding of the shapes they can take.
 
 ### Summary
 
