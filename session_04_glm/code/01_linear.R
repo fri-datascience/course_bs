@@ -68,7 +68,7 @@ ggplot() +
   geom_abline(
     data = df_100,
     aes(slope = b, intercept = a),
-    alpha = 0.,
+    alpha = 0.1,
     linewidth = 1,
     color = "skyblue"
   ) +
