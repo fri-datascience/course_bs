@@ -17,7 +17,7 @@ model {
   mu1 ~ uniform(50, 300);
   mu2 ~ uniform(50, 300);
   sigma ~ uniform(0, 100);
-  
+
   // model
   for (i in 1:n) {
     if (g[i] == 1)
