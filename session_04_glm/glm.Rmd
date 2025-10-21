@@ -21,7 +21,11 @@ knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 
 ## Simple linear regression
 
-Simple linear regression traditionally denotes a linear regression model that has a single independent variable. In the following example we will use Bayesian linear regression to model temperature data through ages (the data is stored in `temperature.csv`). The dataset contains three columns, `temperature` denotes the average temperature, while `year` and `month` depict the time of the measurement. As we are interested in the yearly average temperature through ages, we will average the temperature over months. As a result, our dependent variable (`y`) will be the average yearly temperature and our independent variable (`x`) will be the year. We will use a linear normal model (or linear normal regression) to model the dependency between `x` and `y`. At the same time we will see how one would build a model for normally distributed data. This is the Stan model we will use:
+Simple linear regression traditionally denotes a linear regression model that has a single independent variable. In the following example we will use Bayesian linear regression to model temperature data through ages (the data is stored in `temperature.csv`). The dataset contains three columns, `temperature` denotes the average temperature, while `year` and `month` depict the time of the measurement. As we are interested in the yearly average temperature through ages, we will average the temperature over months. As a result, our dependent variable (`y`) will be the average yearly temperature and our independent variable (`x`) will be the year. We will use a linear normal model (or linear normal regression) to model the dependency between `x` and `y`. At the same time we will see how one would build a model for normally distributed data. Formally we can define the simple linear regression as:
+
+$$y | x, \alpha, \beta, \sigma \sim N(\alpha + x \beta, \sigma),$$
+
+where $y$ is the independent variable, $x$ is the dependent (exploratory) variable, $\alpha$ the intercept, $\beta$ the beta coefficient and $\sigma$ the error (spread, variance) parameter. Their detailed explanation can be found in the example that follows. This is the Stan model we will use:
 
 ```
 data {
@@ -130,7 +134,11 @@ ggplot() +
 
 ## Robust linear regression
 
-A very useful modelling technique in Bayesian statistics are so called robust models. Robustness here depicts that they are less sensitive to outliers or extreme data values. In modelling, we usually achieve this by modelling errors (spread) with a distribution that has higher tails. Such a distribution will not shift the mean towards extreme values so much during the fitting process in order to assign some non-negligable likelihood to these points with extreme values. Probably the most common technique is to use the Cauchy distribution instead of a normal one. An alternative approach is to remove outliers from your data, but that process is almost always tricky as you usually need to resort to some arbitrary thresholds which classify points as outliers or not. It is often much more elegant and objective to simply use a model that is robust to these outliers. Below is a robust variant of the simple linear regression described above.
+A very useful modelling technique in Bayesian statistics are so called robust models. Robustness here depicts that they are less sensitive to outliers or extreme data values. In modelling, we usually achieve this by modelling errors (spread) with a distribution that has higher tails. Such a distribution will not shift the mean towards extreme values so much during the fitting process in order to assign some non-negligable likelihood to these points with extreme values. Probably the most common technique is to use the Cauchy distribution instead of a normal one. An alternative approach is to remove outliers from your data, but that process is almost always tricky as you usually need to resort to some arbitrary thresholds which classify points as outliers or not. It is often much more elegant and objective to simply use a model that is robust to these outliers. Below is a robust variant of the simple linear regression described above:
+
+$$y | x, \alpha, \beta, \sigma \sim Cauchy(\alpha + x \beta, \sigma).$$
+
+Stan code for this model can be found below.
 
 ```
 data {
@@ -163,6 +171,10 @@ Note that this technique does not apply only to regression model. Probably the m
 ## Simple linear regression with a variable sigma
 
 In the vast majority of our models we will investigate how the mean of some resposne variable (y) changes with exploratory variables (x). But there might be cases where mean is not the only thing that changes with x, in the example above mean is constant while variance changes with x. So in this case, we need to "linearize" the $\sigma$ in the simple linear regression above. Again, this is relatively simple to do and showcased in the model below.
+
+$$y | x, \beta, \sigma \sim N(\mu, x \beta).$$
+
+Stan code for this model can be found below.
 
 ```
 data {
