@@ -17,7 +17,7 @@ data <- read.csv("./session_04_glm/data/50_startups.csv")
 # let us focus only on research, administration, marketing => profit
 data <- data %>% select(research, administration, marketing, profit)
 
-# normalized columns
+# normalize per column
 data$r <- (data$research - min(data$research)) /
   (max(data$research) - min(data$research))
 data$a <- (data$administration - min(data$administration)) /
