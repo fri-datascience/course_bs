@@ -128,6 +128,69 @@ ggplot() +
   scale_x_continuous(breaks = x_breaks, labels = x_labels)
 ```
 
+## Robust linear regression
+
+A very useful modelling technique in Bayesian statistics are so called robust models. Robustness here depicts that they are less sensitive to outliers or extreme data values. In modelling, we usually achieve this by modelling errors (spread) with a distribution that has higher tails. Such a distribution will not shift the mean towards extreme values so much during the fitting process in order to assign some non-negligable likelihood to these points with extreme values. Probably the most common technique is to use the Cauchy distribution instead of a normal one. An alternative approach is to remove outliers from your data, but that process is almost always tricky as you usually need to resort to some arbitrary thresholds which classify points as outliers or not. It is often much more elegant and objective to simply use a model that is robust to these outliers. Below is a robust variant of the simple linear regression described above.
+
+```
+data {
+  int<lower=1> n; // total number of data points
+  vector[n] x;    // independent variable
+  vector[n] y;    // dependent variable
+}
+
+parameters {
+  real a;              // intercept
+  real b;              // slope
+  real<lower=0> sigma; // stdev
+}
+
+model {
+  // model
+  y ~ cauchy(a + x * b, sigma);
+}
+
+```
+
+The figure below sees the application of this model, in comparison with the standard linear regression on an artifical dataset with a clear cluster of outliers. The visualization nicely showcases how the robust model is not influenced by this cluster as much as the standard model.
+
+<center>
+  ![](./figs/linear_robust.png)
+</center>
+
+Note that this technique does not apply only to regression model. Probably the most commonly used Bayesian robust model is the robust t-test, where the normal distribution is again replaced with the Cauchy distribution.
+
+## Simple linear regression with a variable sigma
+
+In the vast majority of our models we will investigate how the mean of some resposne variable (y) changes with exploratory variables (x). But there might be cases where mean is not the only thing that changes with x, in the example above mean is constant while variance changes with x. So in this case, we need to "linearize" the $\sigma$ in the simple linear regression above. Again, this is relatively simple to do and showcased in the model below.
+
+```
+data {
+  int<lower=1> n; // total number of data points
+  vector[n] x;    // independent variable
+  vector[n] y;    // dependent variable
+}
+
+parameters {
+  real mu;        // mean
+  real b;         // slope
+}
+
+model {
+  // model
+  y ~ normal(mu, x * b);
+}
+
+```
+
+The figure below showcases this model applied to a dataset where the mean is constant, while the variance changes with x.
+
+<center>
+  ![](./figs/linear_sigma.png)
+</center>
+
+Note that there are some caveats to this approach. If you were to investigate y outside of the dataset's domain ([1, 10] in our example case), you might encounter the issue of negative sigmas, which obvisouly will not work. There are solutions to that, instead of a linear function for sigma, you could use a function that asymptotically approaches 0.
+
 ## Multiple linear regression
 
 Multiple linear regression is a logical next step after getting to know the simple linear regression model. The only difference between the two is that multiple linear regression can handle input data that has more than one idependent variable. As a result, we can check the correlation between the dependant variable ($y$) and many idependent variables ($x_1, x_2, \ldots, x_k$) simultaneously. The upgrade is quite easy. First, we have a new entry in the input data block, where $m$ denotes the number of independent variables. Second, our input variables are now stored in a matrix ($X$), since there are many of them. And third, we have multiple $\beta$ coefficients, one for each independent variable. Below is an example of multiple linear regression as a .stan model:
