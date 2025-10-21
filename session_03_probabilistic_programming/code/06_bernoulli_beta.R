@@ -12,7 +12,7 @@ library(mcmcse) # for comparing samples and calculating MCSE
 model <- cmdstan_model("./session_03_probabilistic_programming/models/bernoulli_beta.stan")
 
 # prepare the data
-y <- c(rep(0, 7), rep(1, 9))
+y <- c(rep(0, 5), rep(1, 11))
 n <- length(y)
 
 # prepare input data
