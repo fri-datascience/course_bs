@@ -12,7 +12,7 @@ model <- cmdstan_model("./session_04_glm/models/categorical.stan")
 # load data
 data <- read.csv("./session_04_glm/data/shot_types.csv", stringsAsFactors = TRUE)
 
-# contrasts (similar as one hot encoding)
+# contrasts (one hot encoding with a reference category)
 contrasts(data$PlayerType) <- contr.treatment(n_distinct(data$PlayerType))
 
 # display contrasts
