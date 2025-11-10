@@ -82,4 +82,4 @@ df_beta_long <- df_beta %>% gather(Beta, Value)
 ggplot(data = df_beta_long, aes(x = Value, y = Beta)) +
   stat_eye(fill = "skyblue", alpha = 0.75) +
   xlim(-2.5, 2.5) +
-  geom_vline(xintercept = 0, linetype = "dashed", size = 1, color = "grey50")
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 1, color = "grey50")
