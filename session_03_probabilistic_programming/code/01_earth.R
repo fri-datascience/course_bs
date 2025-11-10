@@ -97,4 +97,4 @@ r <- saw_water(r$our_belief)
 
 # plot the truth
 r$plot +
-  geom_vline(xintercept = 0.71, linetype = "dashed", size = 1)
+  geom_vline(xintercept = 0.71, linetype = "dashed", linewidth = 1)
