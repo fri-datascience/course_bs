@@ -54,7 +54,7 @@ df_betas <- df_betas %>% select(-.chain, -.iteration, -.draw)
 
 # beta matrix composed of sample means
 # working with means from here one for brevity and simplicity purposes
-# the true bayesian way would be to work with samples all the way
+# a true bayesian approach would be to work with samples all the way
 betas <- matrix(colMeans(df_betas), nrow = 3, ncol = 4)
 
 # helper softmax function ------------------------------------------------------
