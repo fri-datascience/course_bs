@@ -69,7 +69,7 @@ softmax <- function(x) {
 }
 
 # calculate example probabilities ----------------------------------------------
-# probabilities for each shot type for a guard shooting from 1.5m
+# probabilities for each shot type for a guard shooting from 1.5 m
 # x <- c(intercept, distance, forward, guard)
 x <- c(1, 1.5, 0, 1)
 
