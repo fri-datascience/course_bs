@@ -69,7 +69,7 @@ df_betas <- df_betas %>% select(-.chain, -.iteration, -.draw)
 betas <- matrix(colMeans(df_betas), nrow = 3, ncol = 4)
 
 # inspect betas
-# rows represent categories: africa (reference in last row), asia, europe
+# rows represent categories: africa, asia, europe (reference in last row)
 # columns represent predictors: intercept, longitude, hemisphere (north), hemisphere (south)
 # reference hemisphere is equator
 betas
@@ -80,31 +80,31 @@ softmax <- function(x) {
 }
 
 # calculate example probabilities ----------------------------------------------
-# example 1: Point in equator, longitude = 5 (typical for Africa)
+# example 1: Point in equator, longitude = 25 (typical for Africa)
 # x <- c(intercept, longitude, hemisphere_north, hemisphere_south)
-x1 <- c(1, standardize_longitude(5), 0, 0)
+x1 <- c(1, standardize_longitude(25), 0, 0)
 prob1 <- softmax(betas %*% x1)
 names(prob1) <- levels(data$continent)
-cat("\nProbabilities for: longitude=5, hemisphere=equator\n")
+cat("\nProbabilities for: longitude=25, hemisphere=equator\n")
 print(round(prob1, 3))
 
-# example 2: Point in north, longitude = 1 (typical for Europe)
-x2 <- c(1, standardize_longitude(1), 1, 0)
+# example 2: Point in north, longitude = 0 (typical for Western Europe)
+x2 <- c(1, standardize_longitude(0), 1, 0)
 prob2 <- softmax(betas %*% x2)
 names(prob2) <- levels(data$continent)
-cat("\nProbabilities for: longitude=1, hemisphere=north\n")
+cat("\nProbabilities for: longitude=0, hemisphere=north\n")
 print(round(prob2, 3))
 
-# example 3: Point in north, longitude = 9 (typical for Asia)
-x3 <- c(1, standardize_longitude(9), 1, 0)
+# example 3: Point in north, longitude = 110 (typical for East Asia)
+x3 <- c(1, standardize_longitude(110), 1, 0)
 prob3 <- softmax(betas %*% x3)
 names(prob3) <- levels(data$continent)
-cat("\nProbabilities for: longitude=9, hemisphere=north\n")
+cat("\nProbabilities for: longitude=110, hemisphere=north\n")
 print(round(prob3, 3))
 
 # plot probabilities across longitude ranges -----------------------------------
-precision <- 100
-longitude_range <- seq(0, 10, length.out = precision)
+precision <- 200
+longitude_range <- seq(-20, 140, length.out = precision)
 longitude_range_z <- standardize_longitude(longitude_range)
 
 # calculate probabilities from longitude
@@ -146,4 +146,4 @@ ggplot(data = df_probs, aes(x = Longitude, y = Probability, fill = Continent)) +
   facet_grid(Hemisphere ~ .) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5)) +
-  labs(x = "Longitude (scaled 0-10)", y = "Probability")
+  labs(x = "Longitude (degrees east)", y = "Probability")
