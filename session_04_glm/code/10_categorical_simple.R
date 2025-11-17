@@ -15,6 +15,9 @@ data <- read.csv("./session_04_glm/data/continents.csv", stringsAsFactors = TRUE
 # contrasts (one hot encoding with a reference category)
 contrasts(data$hemisphere) <- contr.treatment(n_distinct(data$hemisphere))
 
+# default sets equator as reference category, set south instead
+# data$hemisphere <- relevel(data$hemisphere, ref = "south")
+
 # display contrasts
 contrasts(data$hemisphere)
 
@@ -34,7 +37,11 @@ X <- model.matrix(~ longitude + hemisphere, data)
 # show a couple of top rows to check if all is OK
 head(X)
 
+# default reference is europe, change to asia
+# continent_order <- c("africa", "europe", "asia")
+
 # dependent variable (convert factor to integer levels for Stan)
+data$continent <- factor(data$continent, levels = continent_order)
 continent_levels <- levels(data$continent)
 y <- as.integer(data$continent)
 
