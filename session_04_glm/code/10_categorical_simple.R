@@ -15,7 +15,7 @@ data <- read.csv("./session_04_glm/data/continents.csv", stringsAsFactors = TRUE
 # contrasts (one hot encoding with a reference category)
 contrasts(data$hemisphere) <- contr.treatment(n_distinct(data$hemisphere))
 
-# default sets equator as reference category, set south instead
+# default sets north as the reference category, set south instead
 # data$hemisphere <- relevel(data$hemisphere, ref = "south")
 
 # display contrasts
@@ -71,12 +71,11 @@ df_betas <- df_betas %>% select(-.chain, -.iteration, -.draw)
 # beta matrix composed of sample means
 # working with means from here one for brevity and simplicity purposes
 # a true bayesian approach would be to work with samples all the way
-betas <- matrix(colMeans(df_betas), nrow = 3, ncol = 4)
+betas <- matrix(colMeans(df_betas), nrow = 3, ncol = 3)
 
 # inspect betas
-# rows represent categories: africa, asia, europe (reference in last row)
-# columns represent predictors: intercept, longitude, hemisphere (north), hemisphere (south)
-# reference hemisphere is equator
+# rows represent categories: africa, asia, europe
+# columns represent predictors: intercept, longitude, hemisphere
 betas
 
 # helper softmax function ------------------------------------------------------
@@ -85,27 +84,19 @@ softmax <- function(x) {
 }
 
 # calculate example probabilities ----------------------------------------------
-# example 1: Point in equator, longitude = 25 (typical for Africa)
-# x <- c(intercept, longitude, hemisphere_north, hemisphere_south)
-x1 <- c(1, standardize_longitude(25), 0, 0)
+# example 1: Point in north, longitude = 0 (typical for Western Europe)
+x1 <- c(1, standardize_longitude(0), 0)
 prob1 <- softmax(betas %*% x1)
 names(prob1) <- levels(data$continent)
-cat("\nProbabilities for: longitude=25, hemisphere=equator\n")
+cat("\nProbabilities for: longitude=0, hemisphere=north\n")
 print(round(prob1, 3))
 
-# example 2: Point in north, longitude = 0 (typical for Western Europe)
-x2 <- c(1, standardize_longitude(0), 1, 0)
+# example 2: Point in north, longitude = 110 (typical for East Asia)
+x2 <- c(1, standardize_longitude(110), 0)
 prob2 <- softmax(betas %*% x2)
 names(prob2) <- levels(data$continent)
-cat("\nProbabilities for: longitude=0, hemisphere=north\n")
-print(round(prob2, 3))
-
-# example 3: Point in north, longitude = 110 (typical for East Asia)
-x3 <- c(1, standardize_longitude(110), 1, 0)
-prob3 <- softmax(betas %*% x3)
-names(prob3) <- levels(data$continent)
 cat("\nProbabilities for: longitude=110, hemisphere=north\n")
-print(round(prob3, 3))
+print(round(prob2, 3))
 
 # plot probabilities across longitude ranges -----------------------------------
 precision <- 200
@@ -124,19 +115,18 @@ df_probs <- data.frame(
 continent_levels <- levels(data$continent)
 
 # iterate over longitude and hemisphere combinations
-for (hemi in c("equator", "north", "south")) {
-  hemi_north <- ifelse(hemi == "north", 1, 0)
-  hemi_south <- ifelse(hemi == "south", 1, 0)
+for (h in c("north", "south")) {
+  hemi_south <- ifelse(h == "south", 1, 0)
 
   for (i in 1:precision) {
-    x <- c(1, longitude_range_z[i], hemi_north, hemi_south)
+    x <- c(1, longitude_range_z[i], hemi_south)
     probs <- softmax(betas %*% x)
 
     df_temp <- data.frame(
       Longitude = longitude_range[i],
       Continent = continent_levels,
       Probability = probs,
-      Hemisphere = hemi
+      Hemisphere = h
     )
 
     df_probs <- rbind(df_probs, df_temp)
