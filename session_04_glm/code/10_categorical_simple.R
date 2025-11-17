@@ -37,19 +37,17 @@ X <- model.matrix(~ longitude + hemisphere, data)
 # show a couple of top rows to check if all is OK
 head(X)
 
-# default reference is europe, change to asia
+# default reference is europe
+continent_order <- c("africa", "asia", "europe")
+# here, we change it to asia
 # continent_order <- c("africa", "europe", "asia")
 
 # dependent variable (convert factor to integer levels for Stan)
 data$continent <- factor(data$continent, levels = continent_order)
-continent_levels <- levels(data$continent)
 y <- as.integer(data$continent)
 
-# show levels of y
-continent_levels
-
 # stan_data
-stan_data <- list(n = nrow(data), m = ncol(X), k = length(continent_levels), x = X, y = y)
+stan_data <- list(n = nrow(data), m = ncol(X), k = length(continent_order), x = X, y = y)
 
 # fit
 fit <- model$sample(
