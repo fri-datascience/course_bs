@@ -659,6 +659,8 @@ Note here that calculating the sample means for the beta matrix is not the true 
 
 An alternative, and arguably more elegant way of calculating shot type probabilities would be to use the `generated quantities` block.
 
+Since the above example might be a bit overwhelming there is also a simpler one in the code examples (`code/10_categorical_simple.R`). In there were use longitude and hemishpere data to predict the probability that a given point lies on one of the continents. The interpretation of beta coefficients there is much more easy to inrepret as it is very obvious how probability of being on a certain continent changes as we move around the planet.
+
 ## Gamma regression
 
 Gamma regression is useful when our dependent variable resides on the positive side of real numbers. However, using the gamma distribution in a GLM is a bit trickier because it's two default parameters $\nu$ (shape) and $\lambda$ (rate) do not directly represent the mean and the variance. The two parameters of the gamma distribution are traditionally called $\alpha$ and $\beta$, here we are using $\nu$ and $\lambda$ to distinguish them from the intercept and $\beta$ coefficients that will come into play later on:

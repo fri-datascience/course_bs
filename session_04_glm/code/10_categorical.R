@@ -65,7 +65,7 @@ betas
 
 # helper softmax function ------------------------------------------------------
 softmax <- function(x) {
-  return(as.vector(exp(x) / sum(exp(x))))
+  as.vector(exp(x) / sum(exp(x))
 }
 
 # calculate example probabilities ----------------------------------------------
