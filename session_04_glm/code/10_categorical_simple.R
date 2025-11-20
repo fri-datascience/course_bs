@@ -11,17 +11,18 @@ model <- cmdstan_model("./session_04_glm/models/categorical.stan")
 
 # load data
 data <- read.csv("./session_04_glm/data/continents.csv", stringsAsFactors = TRUE)
+head(data)
 
 # contrasts (one hot encoding with a reference category)
 contrasts(data$hemisphere) <- contr.treatment(n_distinct(data$hemisphere))
 
 # default sets north as the reference category, set south instead
-# data$hemisphere <- relevel(data$hemisphere, ref = "south")
+data$hemisphere <- relevel(data$hemisphere, ref = "south")
 
 # display contrasts
 contrasts(data$hemisphere)
 
-# normalize longitude (store mean/sd for interpretability later)
+# standardize longitude (store mean/sd for interpretability later)
 longitude_scaled <- scale(data$longitude)
 lon_center <- attr(longitude_scaled, "scaled:center")
 lon_scale <- attr(longitude_scaled, "scaled:scale")
@@ -38,9 +39,9 @@ X <- model.matrix(~ longitude + hemisphere, data)
 head(X)
 
 # default reference is europe
-continent_order <- c("africa", "asia", "europe")
-# here, we change it to asia
-# continent_order <- c("africa", "europe", "asia")
+# continent_order <- c("africa", "asia", "europe")
+# here, we change it to africa
+continent_order <- c("europe", "asia", "africa")
 
 # dependent variable (convert factor to integer levels for Stan)
 data$continent <- factor(data$continent, levels = continent_order)
