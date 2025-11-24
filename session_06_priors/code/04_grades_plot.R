@@ -10,8 +10,8 @@ df <- read.csv("./session_06_priors/data/grades.csv")
 
 # betas ------------------------------------------------------------------------
 betas <- data.frame(
-  alpha = c(2, 1.7, 0.8),
-  beta = c(1.2, 0.8, 0.3)
+  alpha = c(4, 1, 1.1),
+  beta = c(3, 1, 0.5)
 )
 
 # calculate density scaled to [x_min, x_max]) ----------------------------------
