@@ -36,8 +36,13 @@ for (i in seq_len(nrow(gammas))) {
 
 # plot -------------------------------------------------------------------------
 ggplot(data = df, aes(x = salary)) +
+  geom_line(data = df_gamma, aes(x = x, y = y, color = group), linewidth = 1) +
+  xlim(0, 10) +
+  scale_color_brewer(type = "qual", palette = 2)
+
+ggplot(data = df, aes(x = salary)) +
   geom_density(color = NA, fill = "skyblue") +
-  geom_line(data = df_gamma, aes(x = x, y = y, color = group), linewidth = 2) +
+  geom_line(data = df_gamma, aes(x = x, y = y, color = group), linewidth = 1) +
   xlim(0, 10) +
   scale_color_brewer(type = "qual", palette = 2)
 
@@ -78,7 +83,7 @@ kl_divergence_gamma <- function(k_p, t_p, k_q, t_q) {
   p <- dgamma(x, shape = k_p, rate = t_p)
   q <- dgamma(x, shape = k_q, rate = t_q)
 
-  # kl divergence: E_p[log(p/q)] = integral p(x) * log(p(x)/q(x)) dx
+  # kl divergence
   kl <- sum(p * log(p / q) * dx, na.rm = TRUE)
 
   return(kl)
