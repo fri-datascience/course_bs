@@ -3,7 +3,7 @@ library(ggplot2)
 library(tidyverse)
 
 # load the data ----------------------------------------------------------------
-df <- read.csv("./session_06_priors/data/salaries.csv")
+df <- read.csv("./session_06_priors/data/salaries_2025.csv")
 
 # to thousands
 df$salary <- df$salary / 1000
