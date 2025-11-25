@@ -17,12 +17,12 @@ median(df$salary)
 
 # gammas -----------------------------------------------------------------------
 gammas <- data.frame(
-  k = c(6.166, 1.95, 3.86),
-  t = c(1.47, 0.5, 1.06)
+  k = c(4, 3.2, 2.9),
+  t = c(0.8, 0.6, 0.2)
 )
 
 # calculate density
-x_max <- 15
+x_max <- 20
 precision <- 1000
 x <- seq(0, x_max, length.out = precision)
 
@@ -37,13 +37,13 @@ for (i in seq_len(nrow(gammas))) {
 # plot -------------------------------------------------------------------------
 ggplot(data = df, aes(x = salary)) +
   geom_line(data = df_gamma, aes(x = x, y = y, color = group), linewidth = 1) +
-  xlim(0, 10) +
+  xlim(0, x_max) +
   scale_color_brewer(type = "qual", palette = 2)
 
 ggplot(data = df, aes(x = salary)) +
   geom_density(color = NA, fill = "skyblue") +
   geom_line(data = df_gamma, aes(x = x, y = y, color = group), linewidth = 1) +
-  xlim(0, 10) +
+  xlim(0, x_max) +
   scale_color_brewer(type = "qual", palette = 2)
 
 # bayesian fit -----------------------------------------------------------------
@@ -93,8 +93,8 @@ kl_divergence_gamma <- function(k_p, t_p, k_q, t_q) {
 for (i in seq_len(nrow(gammas))) {
   gamma <- gammas[i, ]
   kl <- kl_divergence_gamma(mean_k, mean_t, gamma$k, gamma$t)
-  cat(
-    "Model", i, ": k =", gamma$k, ", t =", gamma$t,
-    "| KL divergence =", round(kl, 4), "\n"
-  )
+  cat(paste0(
+    "Group ", i, ": k = ", gamma$k, ", t = ", gamma$t,
+    " | KL divergence = ", round(kl, 4), "\n"
+  ))
 }
