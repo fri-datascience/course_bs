@@ -6,7 +6,6 @@ library(posterior)
 library(tidyverse)
 library(HDInterval)
 
-
 # data prep and exploratory analysis -------------------------------------------
 df <- read.csv("./session_10_time_series/data/restaurants.csv")
 
@@ -23,7 +22,6 @@ df$date <- as.Date(df$date)
 ggplot(df, aes(x = date, y = spending)) +
   geom_line() +
   theme_minimal()
-
 
 # decomposition with harmonic regression ---------------------------------------
 model <- cmdstan_model("./session_10_time_series/models/harmonic_basic.stan")
@@ -118,7 +116,6 @@ ggplot(df_decomposed, aes(
 )) +
   geom_path() +
   facet_wrap(. ~ Type, ncol = 1, scales = "free_y")
-
 
 # plot fit ---------------------------------------------------------------------
 # get a subsample of 20 random samples

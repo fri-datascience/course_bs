@@ -1,11 +1,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FRI Data Science_report LaTeX Template
 % Version 1.0 (28/1/2020)
-% 
+%
 % Jure Demšar (jure.demsar@fri.uni-lj.si)
 %
 % Based on MicromouseSymp article template by:
-% Mathias Legrand (legrand.mathias@gmail.com) 
+% Mathias Legrand (legrand.mathias@gmail.com)
 % With extensive modifications by:
 % Antonio Valente (antonio.luis.valente@gmail.com)
 %
@@ -29,14 +29,12 @@
 \RequirePackage{flushend}   % Needed to align columns in the last page
 \RequirePackage[pscoord]{eso-pic}%
 
-
 %----------------------------------------------------------------------
 %	FONTS
 %----------------------------------------------------------------------
 
 \RequirePackage{times}      % Loads the Times-Roman Fonts
 \RequirePackage{mathptmx}   % Loads the Times-Roman Math Fonts
-
 
 %----------------------------------------------------------------------
 %	VARIOUS USEFUL PACKAGES
@@ -52,14 +50,13 @@
 %%%% URL
 \RequirePackage{url}
 \urlstyle{same}
-\g@addto@macro{\UrlBreaks}{\UrlOrds} 
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
 
 %% To have the possibility to change the urlcolor
-\newcommand{\changeurlcolor}[1]{\hypersetup{urlcolor=#1}} 
-
+\newcommand{\changeurlcolor}[1]{\hypersetup{urlcolor=#1}}
 
 %----------------------------------------------------------------------
-%	MARGINS	
+%	MARGINS
 %----------------------------------------------------------------------
 
 \RequirePackage[left=0.8cm,%
@@ -69,13 +66,11 @@ bottom=0.8cm,%
 headheight=9pt,%
 letterpaper]{geometry}%
 
-
 %-------*--------------------------------------------------------------------------------
 %	COLUMNS
 %----------------------------------------------------------------------------------------
 
 \setlength{\columnsep}{0.4cm} % Distance between the two columns of text
-
 
 %----------------------------------------------------------------------------------------
 %	COLORS
@@ -84,14 +79,12 @@ letterpaper]{geometry}%
 \definecolor{color1}{RGB}{70,70,70} % Color of the article title and sections
 \definecolor{color2}{RGB}{200,200,200} % Color of the boxes behind the abstract and headings
 
-
 %----------------------------------------------------------------------------------------
 %	HYPERLINKS
 %----------------------------------------------------------------------------------------
 
 \usepackage{hyperref} % Required for hyperlinks
 \hypersetup{hidelinks,colorlinks,breaklinks=true,urlcolor=color1,citecolor=color1,linkcolor=color1,bookmarksopen=false,pdftitle={Title},pdfauthor={Author}}
-
 
 %----------------------------------------------------------------------
 %	CODE
@@ -100,7 +93,6 @@ letterpaper]{geometry}%
 \usepackage{listings}
 \lstset{frame=lines}
 \lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
-
 
 %----------------------------------------------------------------------
 %	FIGURES AND TABLES CAPTIONS
@@ -111,7 +103,6 @@ labelsep=period,%
 justification=raggedright]{caption}
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0pt}
-
 
 %----------------------------------------------------------------------
 %	PAGE HEADER
@@ -131,7 +122,6 @@ justification=raggedright]{caption}
 \renewcommand{\headrulewidth}{0pt}% % No header rule
 \renewcommand{\footrulewidth}{0pt}% % No footer rule
 
-
 %----------------------------------------------------------------------
 %	SECTION/SUBSECTION/PARAGRAPH SET-UP
 %----------------------------------------------------------------------
@@ -148,7 +138,7 @@ justification=raggedright]{caption}
   {}
   {0em}
   {\colorbox{color2}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\centering#1}}}
-  []  
+  []
 \titleformat{\subsection}
   {\color{color1}\sffamily\bfseries}
   {\thesubsection}
@@ -160,12 +150,12 @@ justification=raggedright]{caption}
   {\thesubsubsection}
   {0.5em}
   {#1}
-  []    
+  []
 \titleformat{\paragraph}[runin]
   {\sffamily\small\bfseries}
   {}
   {0em}
-  {#1} 
+  {#1}
 \titlespacing*{\section}{0pc}{3ex \@plus4pt \@minus3pt}{5pt}
 \titlespacing*{\subsection}{0pc}{2.5ex \@plus3pt \@minus2pt}{0pt}
 \titlespacing*{\subsubsection}{0pc}{2ex \@plus2.5pt \@minus1.5pt}{0pt}
@@ -173,13 +163,13 @@ justification=raggedright]{caption}
 
 %----------------------------------------------------------------------
 %	LIST CONTROL
-%----------------------------------------------------------------------  
+%----------------------------------------------------------------------
 
 \RequirePackage{enumitem}
 
 %----------------------------------------------------------------------
 %	ABSTRACT+AUTHOR FRAME
-%----------------------------------------------------------------------  
+%----------------------------------------------------------------------
 
 \newcommand{\Authors}[1]{\def\@Authors{#1}}
 \newcommand{\HWInfo}[1]{\def\@HWInfo{#1}}
@@ -199,7 +189,7 @@ justification=raggedright]{caption}
 
 %----------------------------------------------------------------------
 %	REFERENCES
-%----------------------------------------------------------------------  
+%----------------------------------------------------------------------
 
 % Remove brackets from numbering in List of References
 \renewcommand{\@biblabel}[1]{\bfseries\color{color1}\textsuperscript{[#1]}}

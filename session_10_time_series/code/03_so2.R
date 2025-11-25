@@ -6,7 +6,6 @@ library(posterior)
 library(tidyverse)
 library(HDInterval)
 
-
 # sulfure dioxide (s02) dataset prep and exploratory analysis ------------------
 df <- read.table(
   "./session_10_time_series/data/so2.csv",
@@ -33,7 +32,6 @@ ggplot(df_merged, aes(x = WeekNumber, y = Concentration)) +
 ggplot(df_merged, aes(x = Concentration)) +
   geom_histogram(stat = "bin") +
   facet_wrap(. ~ Type, scales = "free")
-
 
 # decomposition with harmonic regression ---------------------------------------
 model <- cmdstan_model("./session_10_time_series/models/harmonic.stan")
@@ -68,7 +66,6 @@ fit$summary()
 # samples
 df_s <- as_draws_df(fit$draws())
 df_s <- df_s %>% select(-lp__, -.draw, -.chain, -.iteration)
-
 
 # decomposition results --------------------------------------------------------
 # plot 5 random samples

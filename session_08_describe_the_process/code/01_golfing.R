@@ -8,13 +8,11 @@ library(arm)
 library(tidyverse)
 library(HDInterval)
 
-
 # color palette ----------------------------------------------------------------
 # 1 - #a6cee3
 # 2 - #1f78b4
 # 3 - #b2df8a
 # 4 - #33a02c
-
 
 # data prep --------------------------------------------------------------------
 data <- read.csv("./session_08_describe_the_process/data/golf.csv", sep = "\t")
@@ -67,7 +65,6 @@ ggplot(df_golf, aes(x = x, y = p, ymin = hdi5, ymax = hdi95)) +
   geom_point(color = "grey25") +
   theme_minimal() +
   ylim(0, 1)
-
 
 # binomial logit modelling -----------------------------------------------------
 # compile the model
@@ -147,7 +144,6 @@ ggplot(
   theme_minimal() +
   ylim(0, 1)
 
-
 # modelling error in the angle -------------------------------------------------
 # compile the model
 model <- cmdstan_model("./session_08_describe_the_process/models/golf_angle.stan")
@@ -223,7 +219,6 @@ ggplot(
   geom_line(color = "#1f78b4") +
   theme_minimal() +
   ylim(0, 1)
-
 
 # modelling error in the distance ----------------------------------------------
 # compile the model
@@ -308,7 +303,6 @@ ggplot(
   geom_line(color = "#b2df8a") +
   theme_minimal() +
   ylim(0, 1)
-
 
 # modelling error in the angle and in the distance -----------------------------
 # compile the model

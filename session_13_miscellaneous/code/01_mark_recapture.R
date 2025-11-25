@@ -6,7 +6,6 @@ library(posterior)
 library(bayesplot)
 library(HDInterval)
 
-
 # modelling and data prep ------------------------------------------------------
 model <- cmdstan_model("./session_13_miscellaneous/models/mark_recapture.stan")
 
@@ -29,14 +28,12 @@ fit <- model$sample(
   seed = 1
 )
 
-
 # diagnostics ------------------------------------------------------------------
 # traceplot
 mcmc_trace(fit$draws())
 
 # summary
 fit$summary()
-
 
 # analysis ---------------------------------------------------------------------
 # convert samples to data frame

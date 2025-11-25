@@ -6,7 +6,6 @@ library(posterior)
 library(tidyverse)
 library(HDInterval)
 
-
 # data prep and exploratory analysis -------------------------------------------
 df <- read.csv("./session_10_time_series/data/restaurants.csv")
 
@@ -15,7 +14,6 @@ df <- df %>% filter(month > (nrow(df) - 120))
 
 # reindex months
 df$month <- seq_len(nrow(df))
-
 
 # ar ---------------------------------------------------------------------------
 model <- cmdstan_model("./session_10_time_series/models/ma.stan")
@@ -48,7 +46,6 @@ fit$summary()
 # samples
 df_s <- as_draws_df(fit$draws(c("mu", "sigma", "theta", "epsilon")))
 df_s <- df_s %>% select(-.draw, -.chain, -.iteration)
-
 
 # plot fit ---------------------------------------------------------------------
 # get a subsample of 20 random samples

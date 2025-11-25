@@ -7,11 +7,9 @@ library(HDInterval)
 library(loo) # for WAIC and LOOIC calculations
 library(tidyverse)
 
-
 # model ------------------------------------------------------------------------
 # compile the model
 model <- cmdstan_model("./session_09_cross_validation/models/linear_deviance.stan")
-
 
 # modeling ---------------------------------------------------------------------
 # number of observations
@@ -71,7 +69,6 @@ for (m in 0:m_max) {
   log_lik[[m + 1]] <- fit$draws(c("log_lik"))
 }
 
-
 # AIC --------------------------------------------------------------------------
 for (m in 0:m_max) {
   df_ll <- as_draws_df(log_lik[[m + 1]])
@@ -103,7 +100,6 @@ ggplot(data = df_aic_summary, aes(x = Order, y = mean_AIC)) +
   ylab("AIC") +
   ylim(0, 100)
 
-
 # WAIC -------------------------------------------------------------------------
 df_waic <- data.frame(WAIC = numeric(), SE = numeric(), Order = factor())
 
@@ -123,7 +119,6 @@ ggplot(data = df_waic, aes(x = Order, y = WAIC)) +
   xlab("Number of predictors") +
   ylab("WAIC") +
   ylim(0, 100)
-
 
 # LOOIC ------------------------------------------------------------------------
 df_looic <- data.frame(looic = numeric(), SE = numeric(), Order = factor())
@@ -145,7 +140,6 @@ ggplot(data = df_looic, aes(x = Order, y = looic)) +
   xlab("Number of predictors") +
   ylab("LOOIC") +
   ylim(0, 100)
-
 
 # Akaike weights for model combination -----------------------------------------
 # calculate delta_looic

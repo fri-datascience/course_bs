@@ -665,7 +665,6 @@ while (condition) {
   sum += x[n];
 }
 
-
 // while and break
 while (condition) {
   if (x[n] >= 0) break;

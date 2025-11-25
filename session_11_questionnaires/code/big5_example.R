@@ -193,7 +193,6 @@ summary(fit)
 ppc <- ppmc(fit, fit.measures = c("rmsea"))
 summary(ppc)
 
-
 # - Let's also run lavaan on the entire dataset, for comparison.
 # - A nice tutorial on CFA in lavaan: https://stats.idre.ucla.edu/r/seminars/rcfa/
 fit <- cfa(CFA_model, data = dat)

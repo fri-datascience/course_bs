@@ -6,7 +6,6 @@ library(posterior)
 library(tidyverse)
 library(HDInterval)
 
-
 # data prep and exploratory analysis -------------------------------------------
 df <- read.csv("./session_10_time_series/data/temperature.csv", sep = ";")
 
@@ -36,7 +35,6 @@ df_fft <- data.frame(P = P[-1], f = f[-1])
 ggplot(df_fft, aes(x = f, y = P)) +
   geom_bar(stat = "identity") +
   xlim(0, 0.2)
-
 
 # decomposition with harmonic regression ---------------------------------------
 model <- cmdstan_model("./session_10_time_series/models/harmonic_basic.stan")

@@ -7,7 +7,6 @@ library(tidyverse)
 library(mcmcse)
 library(cowplot)
 
-
 # data prep and model compilation ----------------------------------------------
 # load data
 data <- read.csv("./session_07_hierarchical_models/data/adaptation_level.csv")
@@ -20,7 +19,6 @@ group2_part2 <- data %>% filter(group == 2 & part == 2)
 
 # model
 model <- cmdstan_model("./session_07_hierarchical_models/models/hierarchical_linear.stan")
-
 
 # fit all four models ----------------------------------------------------------
 # group1_part1
@@ -98,7 +96,6 @@ fit12$summary(c("mu_a", "mu_b"))
 fit21$summary(c("mu_a", "mu_b"))
 fit22$summary(c("mu_a", "mu_b"))
 
-
 # visual posterior check -------------------------------------------------------
 # number of lines
 n_lines <- 20
@@ -162,7 +159,6 @@ ggplot() +
   xlab("Question index") +
   scale_x_continuous(breaks = seq(1, 10)) +
   ylim(0, 10)
-
 
 # analysis ---------------------------------------------------------------------
 # extract group level parameters

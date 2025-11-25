@@ -77,7 +77,6 @@ res_te <- rbind(res_te, data.frame(
 ))
 cvfit_L2 <- cvfit
 
-
 # L1-regularized regression, cross-validated reg. parameter --------------------
 cvfit <- glmnet::cv.glmnet(
   x = as.matrix(dat_train[, -1]), y = dat_train[, 1],

@@ -102,7 +102,7 @@ Again, we can proceed in a relatively systematic manner:
 
 1. First, we determine the **study units** and **study population**. These are analogue to the idealized *units* and *target population* but narrowed down to what we can actually investigate in practice. The difference between the study population and target population results in **study error**.
 
-> **Example -- Dung beetle variability**: In the Problem stage we identified the target population as all dung beetles in dry rain forests during any wet season ever. The study population, however, is much narrower -- dung beetles during the beginning, middle, and end of the 2009-10 wet season in northern Minas Gerais state, Brazil. How can we make such a leap -- doesn't this huge discrepancy mean that the authors' research is useless? No! It might be a small piece of the puzzle, but, for now, it is a piece. But we mustn't forget this discrepancy and we must be critical of the authors if they later make generalizations without carefully considering the potential impact of study error. 
+> **Example -- Dung beetle variability**: In the Problem stage we identified the target population as all dung beetles in dry rain forests during any wet season ever. The study population, however, is much narrower -- dung beetles during the beginning, middle, and end of the 2009-10 wet season in northern Minas Gerais state, Brazil. How can we make such a leap -- doesn't this huge discrepancy mean that the authors' research is useless? No! It might be a small piece of the puzzle, but, for now, it is a piece. But we mustn't forget this discrepancy and we must be critical of the authors if they later make generalizations without carefully considering the potential impact of study error.
 
 2. Next, we determine the **response variates to be measured**. Ideally, these would be the idealized **response variates** from the Problem stage, but that is not always possible. It might be infeasible to measure the idealized variate and we instead use a proxy (for example, body fat % is relatively difficult to measure, so we might use a combination of height, weight, and age as a proxy) or the idealized variate might not be precisely defined, so we need to introduce an operational equivalent (for example, academic performance is a phenomenon and students' average grades are one possible operationalization of that phenomenon).
 
@@ -129,7 +129,6 @@ An example of an experimental approach would be to make pizza dough with differe
 4. Next, we have to **determine the measuring process**. That is, we need to determine how we will measure the variates of interest and once we determine the measuring devices, we need to, if possible, quantify *measurement error* -- the difference between the value of the measured value of the variate and the true variate. We should already be familiar with the two components of **measurement error**: *measurement bias* and *measurement variability*. Measurement error is propagated throughout all subsequent stages to the conclusion. Note that study error and approximation error also have a bias component and a variance component.
 
 > **Example -- Dung beetle variability**: The authors choose to measure beetle species -- the only response variate -- via identification by an expert, using taxonomic keys. Reliability of this is not discussed but it seems reasonable to assume that it can be done with near perfect accuracy. The authors do not explain in the paper how plant richness and plant abundance were determined (they refer to another paper). And precipitation (mm) data was taken from the Mocambinho Meteorological Station, which we can also assume is the gold standard.
-
 
 5. Next is **the sampling protocol** -- the procedure used to select units from the study population to be measured. That is, how, when, and how many units do we select from the study population. Of course, the goal is for the sample to be as representative of the study population as possible in the context of the attributes of interest. Rarely are we able to measure all the units in the study population, so we will introduce **sampling error**. Sampling error, like other errors, can be divided in to sampling bias and sampling variability.
 
@@ -171,7 +170,7 @@ A particular type of constraint in statistical enquiry is that statisticians typ
 
 **Modeling:** Using models to understand and predict behavior of phenomena is a very general way of thinking. By *model* we are the context of statistic most commonly referring to statistical models, such as linear regression. However, in the context of this dimension, we are referring to models in the more general sense that includes not only models we use for analysis, but also those in the stages of the investigative cycle. For example, the models we use for sampling, survey design, etc.
 
-Note that all models are simplifications of reality, because information must be discarded in order to keep them at a manageable complexity. Of course, we aim for practically useful models -- models where we do not discard information that is relevant to what we are interested in.  
+Note that all models are simplifications of reality, because information must be discarded in order to keep them at a manageable complexity. Of course, we aim for practically useful models -- models where we do not discard information that is relevant to what we are interested in.
 
 **Applying techniques:** A basic problem solving technique is to map our problem to a problem that has already been solved, so that we can use or adapt an existing technique. In order to do this effectively, we must be able to *recognize problem archetypes* and corresponding techniques, *apply* those techniques, and correctly *interpret* the results.
 
@@ -184,7 +183,6 @@ Note that all models are simplifications of reality, because information must be
 **Variation:** The main role of statistical enquiry is to support decision making under uncertainty. Uncertainty is often the consequence of variation -- slight changes in conditions. Therefore, statistical thinking includes identifying variation, measuring it, modeling it, and explaining it.
 
 **Context knowledge, statistical knowledge, and synthesis:** Statistics is never done in a vacuum and one cannot indulge in statistical thinking based only on statistical knowledge and not context knowledge. We must synthesize context knowledge and results we obtain from data using statistical knowledge.
-
 
 ### Dimension 3: The interrogative cycle
 

@@ -6,11 +6,9 @@ library(posterior)
 library(tidyverse)
 library(HDInterval)
 
-
 # model ------------------------------------------------------------------------
 # compile the model
 model <- cmdstan_model("./session_09_cross_validation/models/linear_deviance_cv.stan")
-
 
 # modeling ---------------------------------------------------------------------
 # number of observations
@@ -102,7 +100,6 @@ for (m in 0:m_max) {
     )
   )
 }
-
 
 # plot -------------------------------------------------------------------------
 df_s_train$Type <- "In-sample"

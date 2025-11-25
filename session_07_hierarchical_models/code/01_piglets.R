@@ -8,14 +8,12 @@ library(mcmcse)
 library(posterior)
 library(tidyverse)
 
-
 # data prep and model compilation ----------------------------------------------
 # load data
 data_all <- read.csv("./session_07_hierarchical_models/data/piglets.csv")
 
 # work with farm 1 only for now
 data <- data_all %>% filter(farm == 1)
-
 
 # normal model -----------------------------------------------------------------
 model_n <- cmdstan_model("./session_07_hierarchical_models/models/normal.stan")
@@ -81,7 +79,6 @@ ggplot() +
   theme_minimal() +
   xlab("Weight") +
   ylab("Density")
-
 
 # subjects normal model --------------------------------------------------------
 model_s <- cmdstan_model("./session_07_hierarchical_models/models/subjects_normal.stan")
@@ -158,7 +155,6 @@ ggplot() +
   xlab("Weight") +
   ylab("Density")
 
-
 # hierarchical normal model ----------------------------------------------------
 model_h <- cmdstan_model("./session_07_hierarchical_models/models/hierarchical_normal.stan")
 
@@ -231,7 +227,6 @@ ggplot() +
   xlab("Weight") +
   ylab("Density")
 
-
 # compare group level means ----------------------------------------------------
 df_group <- data.frame(
   Mean = numeric(),
@@ -290,7 +285,6 @@ ggplot(
   scale_color_brewer(palette = "Set1") +
   ylim(0, 6) +
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
-
 
 # compare subject level means --------------------------------------------------
 df_subject <- data.frame(
@@ -362,7 +356,6 @@ ggplot(
   facet_wrap(. ~ mama_pig, ncol = 4) +
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
 
-
 # fit the hierarchical model for farm 2 as well --------------------------------
 data2 <- data_all %>% filter(farm == 2)
 
@@ -392,10 +385,8 @@ fit_h2$summary()
 df_h2 <- as_draws_df(fit_h2$draws(c("sigma", "mu", "mu_mu", "sigma_mu")))
 df_h2 <- df_h2 %>% select(-.draw, -.chain, -.iteration)
 
-
 # compare farm 2 vs farm 1 -----------------------------------------------------
 mcse(df_h2$mu_mu > df_h$mu_mu)
-
 
 # find the best pig out of all mama pigs ---------------------------------------
 # select only subject level mus

@@ -32,7 +32,6 @@ df_mean <- df %>%
 df_mean$expression <- factor(df_mean$expression, levels = df_mean$expression)
 df$expression <- factor(df$expression, levels = df_mean$expression)
 
-
 # plot -------------------------------------------------------------------------
 y_offset <- 0.07
 ggplot(df, aes(x = probability)) +
