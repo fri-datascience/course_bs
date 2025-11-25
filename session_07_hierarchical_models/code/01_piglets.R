@@ -410,7 +410,7 @@ for (i in 1:n_repeats) {
   # bootstrap df_mu_mamas
   df_boot <- df_mu_mamas[sample(n_samples, replace = TRUE), ]
 
-  # iterate over all rows and cound indexes of the best mama
+  # iterate over all rows and count indexes of the best mama
   best_mama_ix <- numeric()
   for (j in seq_len(nrow(df_boot))) {
     best_mama_ix <- c(best_mama_ix, which.max(df_boot[j, ]))

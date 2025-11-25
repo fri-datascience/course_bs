@@ -379,7 +379,14 @@ model {
 
   y ~ normal(alpha + X * beta, sigma);
 }
-</code></pre>
+
+generated quantities {
+  // calculate predictions on test and train
+  vector[n] pred;
+  vector[m] pred_test;
+  pred = X * beta + alpha;
+  pred_test = X_test * beta + alpha;
+}</code></pre>
 <p>Regularizing priors are not only helpful to prevent overfitting, but
 can also help out the sampler by narrowing down plausible ranges of
 parameters, which usually results in a faster and more stable sampling
@@ -430,7 +437,14 @@ model {
 
   y ~ normal(alpha + X * beta, sigma);
 }
-</code></pre>
+
+generated quantities {
+  // calculate predictions on test and train
+  vector[n] pred;
+  vector[m] pred_test;
+  pred = X * beta + alpha;
+  pred_test = X_test * beta + alpha;
+}</code></pre>
 <p>The figure below visualizes the normal and Laplace distributions
 which are used as <span class="math inline">\(\beta\)</span> priors in
 the case of the Bayesian L1 and L2 regression. In this case the spread
