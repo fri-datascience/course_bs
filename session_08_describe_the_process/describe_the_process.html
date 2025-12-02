@@ -184,7 +184,7 @@ parameters {
 model {
   // priors
   b ~ cauchy(0, 2.5);
-  
+
   y ~ binomial_logit(n, a + b*x);
 }
 </code></pre>
@@ -252,12 +252,23 @@ variable of a standard normal distribution (<span class="math inline">\(Z = N(0,
 <p><span class="math display">\[Pr(x &lt; y) = \Phi(\frac{y -
 \mu}{\sigma}),\]</span></p>
 <p>where <span class="math inline">\(\Phi\)</span> is the cumulative
-density function of the standard normal distribution <span class="math inline">\(Z\)</span>. And we calculate the probability that
+density function of the standard normal distribution <span class="math inline">\(Z\)</span>. And we can derive the probability that
 <span class="math inline">\(|x|\)</span> is smaller than some threshold
 <span class="math inline">\(y\)</span> as:</p>
-<p><span class="math display">\[Pr(|x| &lt; y) = 2 \Phi(\frac{y -
-\mu}{\sigma}) - 1.\]</span></p>
-<p>In our case this becomes:</p>
+<p><span class="math display">\[Pr(|X| &lt; y) = Pr(-y &lt; X &lt;
+y),\]</span></p>
+<p><span class="math display">\[Pr(-y &lt; X &lt; y) = Pr(X &lt; y) -
+Pr(X &lt; -y),\]</span></p>
+<p><span class="math display">\[Pr(|X| &lt; y) = \Phi(\frac{y -
+\mu}{\sigma}) - \Phi(\frac{-y - \mu}{\sigma}).\]</span></p>
+<p>In the special case, where <span class="math inline">\(\mu =
+0\)</span>, we can simplify:</p>
+<p><span class="math display">\[\Phi(-a) = 1 - \Phi(a),\]</span></p>
+<p><span class="math display">\[\Phi(\frac{-y}{\sigma}) = 1 -
+\Phi(\frac{y}{\sigma}),\]</span></p>
+<p><span class="math display">\[Pr(|x| &lt; y) = 2
+\Phi(\frac{y}{\sigma}) - 1.\]</span></p>
+<p>Putting it all together for our problem this becomes:</p>
 <p><span class="math display">\[Pr(|\beta| &lt; \alpha) = Pr(|\beta|
 &lt; \left ( tan^{-1} \left ( \frac{R-r}{x} \right ) \right ) = 2 \Phi
 \left ( \frac{tan^{-1} \left ( \frac{R-r}{x} \right )}{\sigma}  \right )
@@ -299,7 +310,7 @@ transformed data {
   real r = 2.135 / 100;
   // golf hole radius
   real R = 5.398 / 100;
-  
+
   // trehshold angle
   vector[N] threshold_angle = atan((R-r) ./ x);
 }
@@ -311,17 +322,17 @@ parameters {
 model {
   // probabilities
   vector[N] p = 2*Phi(threshold_angle / sigma) - 1;
-  
+
   // prior
   sigma ~ cauchy(0, 2.5);
-  
+
   y ~ binomial(n, p);
 }
 
 generated quantities {
   // rad to deg converter
   real sigma_degrees = sigma * 180 / pi();
-  
+
   // recalculate and return probabilities
   vector[N] p = 2*Phi(threshold_angle / sigma) - 1;
 }
@@ -437,10 +448,10 @@ model {
   // probabilities
   vector[N] p = Phi((d_t - o) ./ ((x + o)*sigma)) -
                 Phi((- o) ./ ((x + o)*sigma));
-  
+
   // priors
   sigma ~ cauchy(0, 2.5);
-  
+
   y ~ binomial(n, p);
 }
 
@@ -493,7 +504,7 @@ transformed data {
   real r = 2.135 / 100;
   // golf hole radius
   real R = 5.398 / 100;
-  
+
   // trehshold angle
   vector[N] threshold_angle = atan((R-r) ./ x);
 
@@ -514,21 +525,21 @@ model {
   // distance probabilities
   vector[N] p_distance = Phi((d_t - o) ./ ((x + o)*sigma_d)) -
                          Phi((- o) ./ ((x + o)*sigma_d));
-               
+
   // probabilities
   vector[N] p = p_angle .* p_distance;
-  
+
   // priors
   sigma_a ~ cauchy(0, 2.5);
   sigma_d ~ cauchy(0, 2.5);
-  
+
   y ~ binomial(n, p);
 }
 
 generated quantities {
     // rad to deg converter
   real sigma_a_degrees = sigma_a * 180 / pi();
-  
+
   // recalculate and return probabilities
   vector[N] p = (2*Phi(threshold_angle / sigma_a) - 1) .*
                 (Phi((d_t - o) ./ ((x + o)*sigma_d)) -

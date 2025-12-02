@@ -15,7 +15,7 @@ library(HDInterval)
 # 4 - #33a02c
 
 # data prep --------------------------------------------------------------------
-data <- read.csv("./session_08_describe_the_process/data/golf.csv", sep = "\t")
+data <- read.csv("./session_08_describe_the_process/data/golf.csv")
 
 # input data to stan will be always the same
 stan_data <- list(
