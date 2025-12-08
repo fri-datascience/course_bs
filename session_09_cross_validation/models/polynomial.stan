@@ -9,7 +9,7 @@ data {
 }
 
 transformed data {
-  // transform polynom order since b[0] is the intercept
+  // transform order of the polynomial as b[0] is the intercept
   int p_order = p + 1;
 }
 
@@ -19,7 +19,7 @@ parameters {
 }
 
 model {
-  // x 
+  // x
   vector[p_order] mu;
 
   // priors
