@@ -150,7 +150,7 @@ df_looic$weight <-
   exp(-0.5 * df_looic$delta_looic) / sum(exp(-0.5 * df_looic$delta_looic))
 df_looic$weight <- round(df_looic$weight, 2)
 
-# plot
+# plot - no uncertainty as we need point estimates for model mixing
 ggplot(data = df_looic, aes(x = Order, y = weight)) +
   geom_segment(
     aes(x = Order, xend = Order, y = 0, yend = weight),
