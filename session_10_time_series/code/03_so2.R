@@ -6,7 +6,7 @@ library(posterior)
 library(tidyverse)
 library(HDInterval)
 
-# sulfure dioxide (s02) dataset prep and exploratory analysis ------------------
+# sulfure dioxide (so2) dataset prep and exploratory analysis ------------------
 df <- read.table(
   "./session_10_time_series/data/so2.csv",
   header = TRUE,
@@ -54,9 +54,8 @@ fit <- model$sample(
   data = stan_data,
   parallel_chains = 4,
   seed = 1,
-  iter_warmup = 200,
+  iter_warmup = 400,
   iter_sampling = 100,
-  max_treedepth = 15
 )
 
 # diagnostics
