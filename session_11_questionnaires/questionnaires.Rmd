@@ -313,6 +313,14 @@ Do you get aroused when you put on women's clothes?
 What other benefits do you see for having a dog, other than for food?
 </div>
 
+<div style="padding: 10px; border: 1px solid transparent; border-color: transparent; margin-bottom: 5px; border-radius: 4px; color: #000000; background-color: #f5f7f7; border-color: #000000;">
+<b>And some examples from recent referendum in Slovenia::</b>
+
+Do you support the implementation of the JEK2 project, which, together with other low-carbon sources, will ensure a stable supply of electricity?
+
+Are you in favor of introducing preferential voting for the elections of deputies to the National Assembly of the Republic of Slovenia, which will ensure that voters have a decisive influence on the choice of a deputy?
+</div>
+
 ##### Negatively worded questions
 
 A negative worded question is defined as a question in which disagreement would be a positive answer. Evidence shows that negatively worded questions take longer to process, can lead to more negative responses, and can confuse the respondents into making mistakes.
