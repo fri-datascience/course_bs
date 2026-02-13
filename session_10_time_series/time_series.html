@@ -197,11 +197,11 @@ linear function, the seasonality component is modelled with a sine and
 cosine function, while the remainder is normally distributed around the
 sum of the trend and seasonality components. Formally, harmonic
 regression is thus defined as:</p>
-<p><span class="math display">\[y_t \; | \; \alpha, \beta, \beta_{cos},
-\beta_{sin}, \omega, \sigma \sim N(t_t + s_t, \sigma),\]</span></p>
-<p><span class="math display">\[t_t = \alpha + \beta * t,\]</span></p>
-<p><span class="math display">\[s_t = \beta_{cos} \cos(\omega t) +
-\beta_{sin} \sin(\omega t).\]</span></p>
+<p><span class="math display">\[y_t \; | \; t, \alpha, \beta,
+\beta_{cos}, \beta_{sin}, \omega, \sigma \sim N(t_t + s_t,
+\sigma),\]</span> <span class="math display">\[t_t = \alpha + \beta *
+t,\]</span> <span class="math display">\[s_t = \beta_{cos} \cos(\omega
+t) + \beta_{sin} \sin(\omega t).\]</span></p>
 <p><span class="math inline">\(\alpha\)</span> represents the intercept
 of the trend component, while <span class="math inline">\(\beta\)</span>
 is its beta coefficient. Note that the trend above is linear, in
@@ -296,7 +296,7 @@ task.</p>
 regression in order to predict the value at the next step. The <span class="math inline">\(p\)</span> parameter determines the order of the
 autoregressive model, the order represents the amount of time steps used
 in the regression. We can formally define the AR(<span class="math inline">\(p\)</span>) model as:</p>
-<p><span class="math display">\[y_t \; | \; \alpha, \beta, \sigma, p
+<p><span class="math display">\[y_t \; | \; t, p, \alpha, \beta, \sigma
 \sim N \left( \alpha + \sum_{i=1}^p \beta_i y_{t-i}, \sigma
 \right).\]</span> So the model is relatively simple, a regression model
 with an intercept <span class="math inline">\(\alpha\)</span> which
@@ -307,11 +307,11 @@ line with variance <span class="math inline">\(\sigma\)</span>. In order
 to better understand models that have varying complexity (complexity is
 defined with a parameter) it is usually best if you take a look at the
 simplest case. In our case this is the AR(1) model:</p>
-<p><span class="math display">\[y_t \; | \; \alpha, \beta, \sigma \sim N
-\left( \alpha + \beta y_{t-1}, \sigma \right).\]</span> As you can see
-this is essentially a very simple regressive model that uses a single
-beta coefficient to determine the amount of influence the previous time
-point has on the current one.</p>
+<p><span class="math display">\[y_t \; | \; t, \alpha, \beta, \sigma
+\sim N \left( \alpha + \beta y_{t-1}, \sigma \right).\]</span> As you
+can see this is essentially a very simple regressive model that uses a
+single beta coefficient to determine the amount of influence the
+previous time point has on the current one.</p>
 <p>We usually determine the order (<span class="math inline">\(p\)</span>) of the autoregressive model by looking
 at the the partial autocorrelation function (PACF). ACF is not suitable
 because in autoregressive processes, previous time points also have an
@@ -355,15 +355,15 @@ predictions usually declines heavily.</p>
 data and the value at the current time point (<span class="math inline">\(y_t\)</span>) is dependent only on the data from 2
 weeks and 4 weeks back. Such autoregressive model would have the
 following formulation:</p>
-<p><span class="math display">\[y_t \; | \; \alpha, \beta_1, \beta_2,
+<p><span class="math display">\[y_t \; | \; t, \alpha, \beta_1, \beta_2,
 \sigma \sim N \left( \alpha + \beta_1 y_{t-2} + \beta_2 y_{t-4}, \sigma
 \right).\]</span> You can see that we skipped two timepoints in our
 modelling (<span class="math inline">\(y_{t-1}\)</span> and <span class="math inline">\(y_{t-3}\)</span>) since they are not relevant for
 the prediction of the current time point.</p>
 <p>An upgrade to the AR model is ARX (autoregressive model with
 exogenous variables). Again, the upgrade is relatively simple:</p>
-<p><span class="math display">\[y_t \; | \; \alpha, \beta, p, \theta, s,
-\sigma \sim N \left( \alpha + \sum_{i=1}^p \beta_i y_{t-i} +
+<p><span class="math display">\[y_t \; | \; t, p, s, \alpha, \beta,
+\theta, \sigma \sim N \left( \alpha + \sum_{i=1}^p \beta_i y_{t-i} +
 \sum_{j=1}^s \theta_j x_{t-j}, \sigma \right),\]</span> where <span class="math inline">\(\theta_j\)</span> is the regression coefficient
 for the exogenous variable <span class="math inline">\(x_j\)</span>,
 which can be constant through time or can change with it as in the
@@ -382,8 +382,8 @@ and various past values of a stochastic term. It accounts for very
 short-run autocorrelation, and is as such not suitable for time-series
 where ACF is high for large values of lag. We can formally define the
 MA(<span class="math inline">\(q\)</span>) model as:</p>
-<p><span class="math display">\[y_t \; | \; \mu, \theta, \sigma, q \sim
-N(\mu + \sum_{i=1}^q \theta_i \epsilon_{t-i}, \sigma),\]</span></p>
+<p><span class="math display">\[y_t \; | \; t, q, \mu, \theta, \sigma,
+\sim N(\mu + \sum_{i=1}^q \theta_i \epsilon_{t-i}, \sigma),\]</span></p>
 <p><span class="math display">\[\epsilon_1 = y_1 - \mu,\]</span></p>
 <p><span class="math display">\[\epsilon_2 = y_2 - (\mu + \theta_1
 \epsilon_1),\]</span></p>
@@ -393,8 +393,8 @@ N(\mu + \sum_{i=1}^q \theta_i \epsilon_{t-i}, \sigma),\]</span></p>
 (error coefficients) and <span class="math inline">\(\epsilon_t\)</span>
 is the white noise (remainder) at time point <span class="math inline">\(t\)</span>. Just like in the case of AR, let us
 take a look at the MA(1) model:</p>
-<p><span class="math display">\[y_t \; | \; \mu, \theta, \sigma \sim
-N(\mu + \theta \epsilon_{t-1}, \sigma).\]</span></p>
+<p><span class="math display">\[y_t \; | \; t, q, \mu, \theta, \sigma
+\sim N(\mu + \theta \epsilon_{t-1}, \sigma).\]</span></p>
 <p>With MA we are modelling the time-series with its average (<span class="math inline">\(\mu\)</span>) and errors. In the error modelling
 part, <span class="math inline">\(y_{t-1} - \mu\)</span> represents the
 error in the previous time step, while <span class="math inline">\(\theta_1\)</span> is the error coefficient that

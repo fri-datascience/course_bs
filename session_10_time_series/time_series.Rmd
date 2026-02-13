@@ -72,10 +72,8 @@ More formally, PACF of time series $y_t$ is the autocorrelation between $y_t$ an
 
 Harmonic regression tries to decompose a given time-series into the three components mentioned above. The trend component is modelled as a linear function, the seasonality component is modelled with a sine and cosine function, while the remainder is normally distributed around the sum of the trend and seasonality components. Formally, harmonic regression is thus defined as:
 
-$$y_t \; | \; \alpha, \beta, \beta_{cos}, \beta_{sin}, \omega, \sigma \sim N(t_t + s_t, \sigma),$$
-
+$$y_t \; | \; t, \alpha, \beta, \beta_{cos}, \beta_{sin}, \omega, \sigma \sim N(t_t + s_t, \sigma),$$
 $$t_t = \alpha + \beta * t,$$
-
 $$s_t = \beta_{cos} \cos(\omega t) + \beta_{sin} \sin(\omega t).$$
 
 $\alpha$ represents the intercept of the trend component, while $\beta$ is its beta coefficient. Note that the trend above is linear, in practice it could be anything (quadtratic, polynomial...), so you can swap the linear term in $t_t$ with something that works beeter for your data.
@@ -122,10 +120,10 @@ The autoregressive (AR), moving average (MA) and their combinations or derivativ
 
 AR uses observations from previous time steps as input to a regression in order to predict the value at the next step. The $p$ parameter determines the order of the autoregressive model, the order represents the amount of time steps used in the regression. We can formally define the AR($p$) model as:
 
-$$y_t \; | \; \alpha, \beta, \sigma, p \sim N \left( \alpha + \sum_{i=1}^p \beta_i y_{t-i}, \sigma \right).$$
+$$y_t \; | \; t, p, \alpha, \beta, \sigma \sim N \left( \alpha + \sum_{i=1}^p \beta_i y_{t-i}, \sigma \right).$$
 So the model is relatively simple, a regression model with an intercept $\alpha$ which takes into account the previous $p$ data points in the time-series and assigns a beta coefficient to each of these points. The noise is normally distributed around the regression line with variance $\sigma$. In order to better understand models that have varying complexity (complexity is defined with a parameter) it is usually best if you take a look at the simplest case. In our case this is the AR(1) model:
 
-$$y_t \; | \; \alpha, \beta, \sigma \sim N \left( \alpha + \beta y_{t-1}, \sigma \right).$$
+$$y_t \; | \; t, \alpha, \beta, \sigma \sim N \left( \alpha + \beta y_{t-1}, \sigma \right).$$
 As you can see this is essentially a very simple regressive model that uses a single beta coefficient to determine the amount of influence the previous time point has on the current one.
 
 We usually determine the order ($p$) of the autoregressive model by looking at the the partial autocorrelation function (PACF). ACF is not suitable because in autoregressive processes, previous time points also have an indirect impact on the current time point, which means that even with an AR(1) process, autocorrelation will still be relatively high for lags larger than 1. PACF does not have this problem as it removes the indirect effects, which is why we can use it to determine the order of an autoregressive model. Below is the PACF plot for our time-series.
@@ -146,12 +144,12 @@ At a glance, the model's fit looks quite good, but we can see that it does not d
 
 It is important to establish that we do not have to use all the from 1 to $n$. Let's say we have weekly data and the value at the current time point ($y_t$) is dependent only on the data from 2 weeks and 4 weeks back. Such autoregressive model would have the following formulation:
 
-$$y_t \; | \; \alpha, \beta_1, \beta_2, \sigma \sim N \left( \alpha + \beta_1 y_{t-2} + \beta_2 y_{t-4}, \sigma \right).$$
+$$y_t \; | \; t, \alpha, \beta_1, \beta_2, \sigma \sim N \left( \alpha + \beta_1 y_{t-2} + \beta_2 y_{t-4}, \sigma \right).$$
 You can see that we skipped two timepoints in our modelling ($y_{t-1}$ and $y_{t-3}$) since they are not relevant for the prediction of the current time point.
 
 An upgrade to the AR model is ARX (autoregressive model with exogenous variables). Again, the upgrade is relatively simple:
 
-$$y_t \; | \; \alpha, \beta, p, \theta, s, \sigma \sim N \left( \alpha + \sum_{i=1}^p \beta_i y_{t-i} + \sum_{j=1}^s \theta_j x_{t-j}, \sigma \right),$$
+$$y_t \; | \; t, p, s, \alpha, \beta, \theta, \sigma \sim N \left( \alpha + \sum_{i=1}^p \beta_i y_{t-i} + \sum_{j=1}^s \theta_j x_{t-j}, \sigma \right),$$
 where $\theta_j$ is the regression coefficient for the exogenous variable $x_j$, which can be constant through time or can change with it as in the equation above.
 
 Another upgrade to the AR model is called VAR (multivariate autoregressive model), we will only mention it here as it is relatively complex and probably out of scope for Bayesian Statistics 101 lectures. Like mentioned, there are whole courses dedicated to time series modelling while we only scratch the surface in a single lecture, so we have to stop somewhere.
@@ -160,7 +158,7 @@ Another upgrade to the AR model is called VAR (multivariate autoregressive model
 
 MA specifies that the output variable depends linearly on the current and various past values of a stochastic term. It accounts for very short-run autocorrelation, and is as such not suitable for time-series where ACF is high for large values of lag. We can formally define the MA($q$) model as:
 
-$$y_t \; | \; \mu, \theta, \sigma, q \sim N(\mu + \sum_{i=1}^q \theta_i \epsilon_{t-i}, \sigma),$$
+$$y_t \; | \; t, q, \mu, \theta, \sigma, \sim N(\mu + \sum_{i=1}^q \theta_i \epsilon_{t-i}, \sigma),$$
 
 $$\epsilon_1 = y_1 - \mu,$$
 
@@ -171,7 +169,7 @@ $$...$$
 $$\epsilon_t = y_t - (\mu + \sum_{i=1}^q \theta_i \epsilon_{t-i}).$$
 Above, $\mu$ denotes the mean of the series, $\theta_i$ are the model's parameters (error coefficients) and $\epsilon_t$ is the white noise (remainder) at time point $t$. Just like in the case of AR, let us take a look at the MA(1) model:
 
-$$y_t \; | \; \mu, \theta, \sigma \sim N(\mu + \theta \epsilon_{t-1}, \sigma).$$
+$$y_t \; | \; t, q, \mu, \theta, \sigma \sim N(\mu + \theta \epsilon_{t-1}, \sigma).$$
 
 With MA we are modelling the time-series with its average ($\mu$) and errors. In the error modelling part, $y_{t-1} - \mu$ represents the error in the previous time step, while $\theta_1$ is the error coefficient that determines how previous errors influence the error at the current point in time.
 

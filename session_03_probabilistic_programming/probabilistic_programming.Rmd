@@ -419,11 +419,11 @@ As you see we already developed a statistical model for the coin toss, let us wr
 
 $$y_1, \ldots, y_n \qquad y_i \in {0,1}.$$
 
-2. The model:
+1. The model:
 
-$$y_1, \ldots, y_n | \theta \sim_{iid} Bernoulli(\theta).$$
+$$y_1, \ldots, y_n | \theta \sim Bernoulli(\theta).$$
 
-3. Prior information:
+1. Prior information:
 
 $$\theta \sim Beta(1,1).$$
 

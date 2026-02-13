@@ -43,7 +43,7 @@ This example is based on work done by Andrew Gelman and Mark Broadie. Conusult t
 
 Both the sigmoid shape and the format of the dataset suggest that some kind of a logistic regression might be a good fit here. Indeed, in our first model we will use the binomial logistic regression. In a way, binomial logistic regression is very similar to the Bernoulli one that we used last week for predicting sex of a person given their height. The link and the inverse functions are the same -- logit and inverse logit. Actually, we could just as well use a Bernoulli logistic regression here, but in this case we would have to change the format of the data. In Bernoulli logistic regression each golf putt would have to be its own data point, while in binomial logistic regression the putt results are summarized in terms of the number of attempts and the number of successes. As you can see from the data, they are already in the format expected by the binomial logistic regression. Below is a formal definition of the Binomial logistic regression:
 
-$$y_i \; | \; x_i, n_i, \alpha, \beta \sim \text{Binomial}(n_i, \text{inv_logit}(\alpha + x_i \beta)),$$
+$$y \; | \; x, n, \alpha, \beta \sim \text{Binomial}(n, \text{inv_logit}(\alpha + x \beta)),$$
 $$\alpha \sim \text{Cauchy}(0, 2.5),$$
 $$\beta \sim \text{Cauchy}(0, 2.5).$$
 
@@ -132,8 +132,8 @@ The only unknown parameter in this model is $\sigma$, which denotes the standard
 
 Putting everything together gives us:
 
-$$y_i \; | \; x_i, n_i, p_i \sim \text{binomial}(n_i, p_i),$$
-$$p_i = 2 \Phi \left ( \frac{\alpha_i}{\sigma}  \right ) - 1 = 2 \Phi \left ( \frac{tan^{-1} \left ( \frac{R-r}{x_i} \right )}{\sigma}  \right ) - 1,$$
+$$y \; | \; x, n, p \sim \text{binomial}(n, p),$$
+$$p = 2 \Phi \left ( \frac{\alpha}{\sigma} \right ) - 1 = 2 \Phi \left ( \frac{tan^{-1} \left ( \frac{R-r}{x} \right )}{\sigma}  \right ) - 1,$$
 
 $$\sigma \sim \text{Cauchy}(0, 2.5).$$
 
@@ -213,10 +213,8 @@ $$Pr(\mu \in [x, x + d_t]) = Pr(\mu < (x + d_t)) - Pr(\mu < x) = \Phi \left ( \f
 
 To summarize, the golfers are aiming to hit the ball so it will travel exactly $x + o$. The hit will end up in the cup if the ball stops on the $[x, x + d_t]$ interval. The probability of that is calculated with the above equation. By acknowledging the error in the putting distance, we get the following Bayesian model:
 
-$$y_i \; | \; x_i, n_i, p_i \sim \text{binomial}(n_i, p_i),$$
-
-$$p_i = \Phi \left ( \frac{d_t - o}{(x_i + o) \sigma_d} \right ) - \Phi \left ( \frac{- o}{(x_i + o) \sigma_d} \right ),$$
-
+$$y \; | \; x, n, p \sim \text{binomial}(n, p),$$
+$$p = \Phi \left ( \frac{d_t - o}{(x + o) \sigma_d} \right ) - \Phi \left ( \frac{- o}{(x + o) \sigma_d} \right ),$$
 $$\sigma \sim \text{Cauchy}(0, 2.5).$$
 
 We set the distance threshold, $d_t = 0.75 m$, and the overshot, $o = 0.2 m$.
@@ -272,14 +270,11 @@ Again the model is better than the binomial one, but it seems like a worst fit t
 
 Putting everything together (the angular and the putting distance errors) we get the following Bayesian model:
 
-$$y_i \; | \; x_i, n_i, p_i \sim \text{binomial}(n_i, p_i),$$
-$$p_{i,a} = 2 \Phi \left ( \frac{tan^{-1} \left ( \frac{R-r}{x_i} \right )}{\sigma_a}  \right ) - 1,$$
-
-$$p_{i,d} = \Phi \left ( \frac{d_t - o}{(x_i + o) \sigma_d} \right ) - \Phi \left ( \frac{- o}{(x_i + o) \sigma_d} \right ),$$
-
-$$p_i = p_{i,a} \; p_{i,d},$$
+$$y \; | \; x, n, p \sim \text{binomial}(n, p),$$
+$$p_a = 2 \Phi \left ( \frac{tan^{-1} \left ( \frac{R-r}{x} \right )}{\sigma_a}  \right ) - 1,$$
+$$p_d = \Phi \left ( \frac{d_t - o}{(x + o) \sigma_d} \right ) - \Phi \left ( \frac{- o}{(x + o) \sigma_d} \right ),$$
+$$p = p_a \; p_d,$$
 $$\sigma_a \sim \text{Cauchy}(0, 2.5),$$
-
 $$\sigma_d \sim \text{Cauchy}(0, 2.5).$$
 
 ```

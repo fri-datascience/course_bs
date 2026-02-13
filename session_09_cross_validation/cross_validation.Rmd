@@ -45,7 +45,7 @@ The nested CV approach uses a constant size of the test set and increases the tr
 
 We will use cross-validation to try and find a good regression model for predicting temperature given a year. We will evaluate several polynomial regressions with a different order of the polynomial term:
 
-$$y \; | \; x, \beta, \sigma \sim N(\sum_{i=0}^{p}{\beta_i x^i}, \sigma),$$
+$$y \; | \; p, x, \beta, \sigma \sim N(\sum_{i=0}^{p}{\beta_i x^i}, \sigma),$$
 
 $$\beta_2, \beta_3, \ldots, \beta_{p} \sim Cauchy(0, 1).$$
 
@@ -151,11 +151,11 @@ $$\text{LS} = -2 \sum_{i=1}^n log(p(y_i \; | \; \theta)).$$
 
 Note here, that due to historical reasons to get deviance we usually multiply the log score by -2. In the following example we will use log-score to evaluate various models. To gain some additional insight into evaluation methods we will use a toy (simulated) dataset. As we know by now, toy datasets are great since we know what the data generating process is. In our case we will use:
 
-$$y \sim N(1 + 1.5x_1 - 2.5x_2, 1).$$
+$$y \; | \; x_1, x_2 \sim N(1 + 1.5x_1 - 2.5x_2, 1).$$
 
 We will fit multiple linear regression models of varying complexity to our toy data:
 
-$$y \; | \; x, \alpha, \beta, \sigma \sim N \left(\alpha + \sum_{i=1}^m \beta_i x_i, \sigma \right),$$
+$$y \; | \; m, x, \alpha, \beta, \sigma \sim N \left(\alpha + \sum_{i=1}^m \beta_i x_i, \sigma \right),$$
 
 where $\alpha$ is the intercept, $\beta$ are the beta coefficients, $\sigma$ the standard deviation and $m$ the parameter that determines the model's complexity. We expect to get the best results when $m = 2$ since that is the complexity of the data generating process. If we use a lower value of $m$ we expect underfitting, while with larger value we expect overfitting -- the model will also fit to predictors that are nothing but noise. The most complex model that we used had $m = 6$. The figure below visualizes in-sample and out-of-sample approximated deviance (means and 90% HDI) when models were trained and tested on 20 observations.
 
