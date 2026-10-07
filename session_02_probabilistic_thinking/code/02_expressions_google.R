@@ -4,7 +4,7 @@ library(ggridges)
 library(forcats)
 
 # set year
-year <- 2025
+year <- 2026
 
 # load the data
 df <- read.csv(paste0("./session_02_probabilistic_thinking/data/expressions", year, ".csv"))
