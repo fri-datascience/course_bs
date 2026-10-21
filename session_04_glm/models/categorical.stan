@@ -25,5 +25,5 @@ model {
   matrix[n, k] x_beta = x * beta';
   for (i in 1:n)
     y[i] ~ categorical_logit(x_beta[i]');
-    // or y[i] ~ categorical(softmax(x_beta[n]'));
+    // or y[i] ~ categorical(softmax(x_beta[i]'));
 }
