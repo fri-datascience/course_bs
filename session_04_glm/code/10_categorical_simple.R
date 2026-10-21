@@ -39,9 +39,9 @@ X <- model.matrix(~ longitude + hemisphere, data)
 head(X)
 
 # default reference is europe
-# continent_order <- c("africa", "asia", "europe")
+continent_order <- c("africa", "asia", "europe")
 # here, we change it to africa
-continent_order <- c("europe", "asia", "africa")
+# continent_order <- c("europe", "asia", "africa")
 
 # dependent variable (convert factor to integer levels for Stan)
 data$continent <- factor(data$continent, levels = continent_order)
@@ -86,14 +86,14 @@ softmax <- function(x) {
 
 # calculate example probabilities ----------------------------------------------
 # example 1: Point in north, longitude = 0 (typical for Western Europe)
-x1 <- c(1, standardize_longitude(0), 0)
+x1 <- c(1, standardize_longitude(0), 1)
 prob1 <- softmax(betas %*% x1)
 names(prob1) <- levels(data$continent)
 cat("\nProbabilities for: longitude=0, hemisphere=north\n")
 print(round(prob1, 3))
 
 # example 2: Point in north, longitude = 110 (typical for East Asia)
-x2 <- c(1, standardize_longitude(110), 0)
+x2 <- c(1, standardize_longitude(110), 1)
 prob2 <- softmax(betas %*% x2)
 names(prob2) <- levels(data$continent)
 cat("\nProbabilities for: longitude=110, hemisphere=north\n")
@@ -117,10 +117,10 @@ continent_levels <- levels(data$continent)
 
 # iterate over longitude and hemisphere combinations
 for (h in c("north", "south")) {
-  hemi_south <- ifelse(h == "south", 1, 0)
+  hemi_north <- ifelse(h == "north", 1, 0)
 
   for (i in 1:precision) {
-    x <- c(1, longitude_range_z[i], hemi_south)
+    x <- c(1, longitude_range_z[i], hemi_north)
     probs <- softmax(betas %*% x)
 
     df_temp <- data.frame(
