@@ -65,10 +65,10 @@ df_samples <- data.frame(
   theta = chain1, chain = "1"
 )
 
-df_samples <- df_samples %>%
+df_samples <- df_samples |>
   add_row(data.frame(x = seq_len(length(chain2)), theta = chain2, chain = "2"))
 
-df_samples <- df_samples %>%
+df_samples <- df_samples |>
   add_row(data.frame(x = seq_len(length(chain3)), theta = chain3, chain = "3"))
 
 # traceplot

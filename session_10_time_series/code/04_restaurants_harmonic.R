@@ -10,7 +10,7 @@ library(HDInterval)
 df <- read.csv("./session_10_time_series/data/restaurants.csv")
 
 # only last 10 years
-df <- df %>% filter(month > (nrow(df) - 120))
+df <- df |> filter(month > (nrow(df) - 120))
 
 # reindex months
 df$month <- seq_len(nrow(df))
@@ -50,7 +50,7 @@ fit$summary()
 
 # samples
 df_s <- as_draws_df(fit$draws())
-df_s <- df_s %>% select(-lp__, -.draw, -.chain, -.iteration)
+df_s <- df_s |> select(-lp__, -.draw, -.chain, -.iteration)
 
 # plot 5 random samples
 idx <- sample(seq_len(nrow(df_s)), 5, rep = FALSE)
@@ -68,7 +68,7 @@ df_decomposed <- data.frame(
 
 for (i in idx) {
   # original
-  df_decomposed <- df_decomposed %>%
+  df_decomposed <- df_decomposed |>
     add_row(data.frame(
       idx = as.character(i),
       Type = "Original",
@@ -78,7 +78,7 @@ for (i in idx) {
 
   # ssn
   ssn <- df_s$beta_cos[i] * cos(omega * t) + df_s$beta_sin[i] * sin(omega * t)
-  df_decomposed <- df_decomposed %>%
+  df_decomposed <- df_decomposed |>
     add_row(data.frame(
       idx = as.character(i),
       Type = "Seasonality",
@@ -88,7 +88,7 @@ for (i in idx) {
 
   # trend
   trend <- df_s$beta[i] * t + df_s$alpha[i]
-  df_decomposed <- df_decomposed %>%
+  df_decomposed <- df_decomposed |>
     add_row(data.frame(
       idx = as.character(i),
       Type = "Trend",
@@ -98,7 +98,7 @@ for (i in idx) {
 
   # remainder
   remainder <- df$spending - ssn - trend
-  df_decomposed <- df_decomposed %>%
+  df_decomposed <- df_decomposed |>
     add_row(data.frame(
       idx = as.character(i),
       Type = "Remainder",
@@ -137,7 +137,7 @@ for (i in seq_len(nrow(df_ss))) {
   ssn <- df_ss$beta_cos[i] * cos(omega * t) + df_ss$beta_sin[i] * sin(omega * t)
   trend <- df_ss$beta[i] * t + df_ss$alpha[i]
 
-  df_plot <- df_plot %>%
+  df_plot <- df_plot |>
     add_row(data.frame(
       idx = as.character(i),
       Month = t,
@@ -146,8 +146,8 @@ for (i in seq_len(nrow(df_ss))) {
 }
 
 # get mean and HDI
-df_plot <- df_plot %>%
-  group_by(Month) %>%
+df_plot <- df_plot |>
+  group_by(Month) |>
   summarize(
     Spending = mean(S),
     hdi5 = hdi(S, credMass = 0.90)[1],

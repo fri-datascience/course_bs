@@ -15,11 +15,11 @@ model <- cmdstan_model("./session_04_glm/models/simple_linear.stan")
 data <- read.csv("./session_04_glm/data/temperature.csv", sep = ";")
 
 # remove month
-data <- data %>% select(-month)
+data <- data |> select(-month)
 
 # mean per year
-data <- data %>%
-  group_by(year) %>%
+data <- data |>
+  group_by(year) |>
   summarise(temperature = mean(temperature))
 
 # x shift for numerical stability

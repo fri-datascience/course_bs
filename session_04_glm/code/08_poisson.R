@@ -20,7 +20,7 @@ data <- read.csv("./session_04_glm/data/football.csv", sep = ";")
 data <- drop_na(data)
 
 # prep data
-df_X <- data %>% select(
+df_X <- data |> select(
   -INFO_Date, -INFO_Competition,
   -INFO_TeamH, -INFO_TeamA, -Y_FTHG, -Y_FTAG
 )
@@ -66,13 +66,13 @@ df_pred <- as_draws_df(fit$draws("pred"))
 
 # plot betas -------------------------------------------------------------------
 # remove unwanted columns
-df_beta <- df_beta %>% select(-.chain, -.iteration, -.draw)
+df_beta <- df_beta |> select(-.chain, -.iteration, -.draw)
 
 # rename for ease of addressing
 colnames(df_beta) <- colnames(df_X)
 
 # to long format
-df_beta <- df_beta %>% gather(Beta, Value)
+df_beta <- df_beta |> gather(Beta, Value)
 
 # plot
 ggplot(data = df_beta, aes(x = Value, y = Beta)) +
@@ -83,7 +83,7 @@ ggplot(data = df_beta, aes(x = Value, y = Beta)) +
   )
 
 # compare lambda vs actual scored goals ----------------------------------------
-df_lambda <- df_lambda %>% select(-.chain, -.iteration, -.draw)
+df_lambda <- df_lambda |> select(-.chain, -.iteration, -.draw)
 df_lambda_goals <- data.frame(Goals = data$Y_FTHG, Lambda = colMeans(df_lambda))
 
 # x axis labels
@@ -95,10 +95,10 @@ ggplot(data = df_lambda_goals, aes(x = Goals, y = Lambda)) +
   scale_x_continuous("Goals", breaks = goals, labels = goals)
 
 # compare predictions vs home goals for Atletico Madrid ------------------------
-df_pred <- df_pred %>% select(-.chain, -.iteration, -.draw)
+df_pred <- df_pred |> select(-.chain, -.iteration, -.draw)
 
 # compare last 9 games in the dataset
-df_am <- data %>% filter(INFO_TeamH == "Ath Madrid")
+df_am <- data |> filter(INFO_TeamH == "Ath Madrid")
 df_am <- tail(df_am, 9)
 
 # select appropriate predictions
@@ -109,7 +109,7 @@ plots <- NULL
 for (i in 1:9) {
   df_preds <- df_pred[, i]
   colnames(df_preds) <- "x"
-  df_counts <- df_preds %>% count(x)
+  df_counts <- df_preds |> count(x)
 
   hdi50 <- hdi(df_preds$x, credMass = 0.75)
 

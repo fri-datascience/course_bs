@@ -64,7 +64,7 @@ fit$summary()
 
 # samples
 df_s <- as_draws_df(fit$draws())
-df_s <- df_s %>% select(-lp__, -.draw, -.chain, -.iteration)
+df_s <- df_s |> select(-lp__, -.draw, -.chain, -.iteration)
 
 # decomposition results --------------------------------------------------------
 # plot 5 random samples
@@ -83,7 +83,7 @@ df_decomposed <- data.frame(
 
 for (i in idx) {
   # original
-  df_decomposed <- df_decomposed %>%
+  df_decomposed <- df_decomposed |>
     add_row(data.frame(
       idx = as.character(i),
       Type = "Original",
@@ -97,7 +97,7 @@ for (i in idx) {
   ssn2 <- df_s$`beta_cos[2]`[i] * cos(omega[2] * x) +
     df_s$`beta_sin[2]`[i] * sin(omega[2] * x)
   ssn <- ssn1 + ssn2
-  df_decomposed <- df_decomposed %>%
+  df_decomposed <- df_decomposed |>
     add_row(data.frame(
       idx = as.character(i),
       Type = "Seasonality",
@@ -107,7 +107,7 @@ for (i in idx) {
 
   # trend
   trend <- df_s$beta[i] * x + df_s$alpha[i]
-  df_decomposed <- df_decomposed %>%
+  df_decomposed <- df_decomposed |>
     add_row(data.frame(
       idx = as.character(i),
       Type = "Trend",
@@ -117,7 +117,7 @@ for (i in idx) {
 
   # remainder
   remainder <- df_log$Concentration - ssn - trend
-  df_decomposed <- df_decomposed %>%
+  df_decomposed <- df_decomposed |>
     add_row(data.frame(
       idx = as.character(i),
       Type = "Remainder",

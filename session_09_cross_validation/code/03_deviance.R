@@ -75,7 +75,7 @@ for (m in 0:m_max) {
 
   # remove unwanted columns
   # also cast to regular data frame to avoid some warnings later on
-  df_ll <- data.frame(df_ll %>% select(-.chain, -.iteration, -.draw))
+  df_ll <- data.frame(df_ll |> select(-.chain, -.iteration, -.draw))
 
   # average per row and store
   df_aic <- rbind(
@@ -84,8 +84,8 @@ for (m in 0:m_max) {
   )
 }
 
-df_aic_summary <- df_aic %>%
-  group_by(Order) %>%
+df_aic_summary <- df_aic |>
+  group_by(Order) |>
   summarize(
     mean_AIC = mean(AIC),
     hdi5 = hdi(AIC, credMass = 0.9)[1],

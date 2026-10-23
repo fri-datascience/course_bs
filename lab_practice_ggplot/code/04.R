@@ -7,14 +7,14 @@ df <- read.csv("../data/flanker.csv")
 
 # plot -------------------------------------------------------------------------
 # get means
-df_mean <- df %>%
-  group_by(subject, congruency) %>%
-  summarize(mean_rt = round(mean(rt), 2)) %>%
+df_mean <- df |>
+  group_by(subject, congruency) |>
+  summarize(mean_rt = round(mean(rt), 2)) |>
   arrange(mean_rt)
 
-df_mean_combined <- df %>%
-  group_by(subject) %>%
-  summarize(mean_rt = round(mean(rt), 2)) %>%
+df_mean_combined <- df |>
+  group_by(subject) |>
+  summarize(mean_rt = round(mean(rt), 2)) |>
   arrange(mean_rt)
 
 df$subject <- factor(df$subject, levels = df_mean_combined$subject)

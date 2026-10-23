@@ -15,11 +15,11 @@ model <- cmdstan_model("./session_05_the_bayesian_workflow/models/simple_linear.
 data <- read.csv("./session_05_the_bayesian_workflow/data/temperature.csv", sep = ";")
 
 # remove month
-data <- data %>% select(-month)
+data <- data |> select(-month)
 
 # mean per year
-data <- data %>%
-  group_by(year) %>%
+data <- data |>
+  group_by(year) |>
   summarise(temperature = mean(temperature))
 
 # shift to 0

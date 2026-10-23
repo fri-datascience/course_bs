@@ -50,7 +50,7 @@ fit$summary("beta")
 # analysis ---------------------------------------------------------------------
 # extract parameters
 df_betas <- as_draws_df(fit$draws("beta"))
-df_betas <- df_betas %>% select(-.chain, -.iteration, -.draw)
+df_betas <- df_betas |> select(-.chain, -.iteration, -.draw)
 
 # beta matrix composed of sample means
 # working with means from here one for brevity and simplicity purposes

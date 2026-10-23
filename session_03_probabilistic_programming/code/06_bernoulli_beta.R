@@ -48,7 +48,7 @@ mcse(df$theta)
 # fairness
 bottom_cut <- 0.3
 top_cut <- 0.7
-df_fair <- df %>% filter(theta > bottom_cut & theta < top_cut)
+df_fair <- df |> filter(theta > bottom_cut & theta < top_cut)
 fairness <- nrow(df_fair) / nrow(df)
 cat(paste0("Fairness of the coin is: ", format(fairness, digits = 3), "."))
 

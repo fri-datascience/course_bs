@@ -13,8 +13,8 @@ library(HDInterval)
 data <- read.csv("./session_05_the_bayesian_workflow/data/flanker.csv")
 
 # split
-df_incongruent <- data %>% filter(congruency == "incongruent")
-df_congruent <- data %>% filter(congruency == "congruent")
+df_incongruent <- data |> filter(congruency == "incongruent")
+df_congruent <- data |> filter(congruency == "congruent")
 
 # the normal model -------------------------------------------------------------
 # compile the model
@@ -44,7 +44,7 @@ fit_normal$summary()
 df_normal <- as_draws_df(fit_normal$draws())
 
 # remove unused columns
-df_normal <- df_normal %>% select(-lp__, -.chain, -.iteration, -.draw)
+df_normal <- df_normal |> select(-lp__, -.chain, -.iteration, -.draw)
 
 # generate 100 distributions
 n <- 100
@@ -108,7 +108,7 @@ fit_exp_i$summary()
 df_exp_i <- as_draws_df(fit_exp_i$draws())
 
 # remove unused columns
-df_exp_i <- df_exp_i %>% select(-lp__, -.chain, -.iteration, -.draw)
+df_exp_i <- df_exp_i |> select(-lp__, -.chain, -.iteration, -.draw)
 
 # generate 100 distributions
 n <- 100
@@ -253,7 +253,7 @@ fit_exp_c$summary()
 df_exp_c <- as_draws_df(fit_exp_c$draws())
 
 # remove unused column
-df_exp_c <- df_exp_c %>% select(-lp__, -.chain, -.iteration, -.draw)
+df_exp_c <- df_exp_c |> select(-lp__, -.chain, -.iteration, -.draw)
 
 # compare congruent vs incongruent ---------------------------------------------
 # incongruent

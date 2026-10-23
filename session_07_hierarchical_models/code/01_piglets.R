@@ -13,7 +13,7 @@ library(tidyverse)
 data_all <- read.csv("./session_07_hierarchical_models/data/piglets.csv")
 
 # work with farm 1 only for now
-data <- data_all %>% filter(farm == 1)
+data <- data_all |> filter(farm == 1)
 
 # normal model -----------------------------------------------------------------
 model_n <- cmdstan_model("./session_07_hierarchical_models/models/normal.stan")
@@ -37,7 +37,7 @@ fit_n$summary()
 
 # samples
 df_n <- as_draws_df(fit_n$draws(c("sigma", "mu")))
-df_n <- df_n %>% select(-.draw, -.chain, -.iteration)
+df_n <- df_n |> select(-.draw, -.chain, -.iteration)
 
 # visual posterior check
 # use only a subsample
@@ -104,7 +104,7 @@ fit_s$summary()
 
 # samples
 df_s <- as_draws_df(fit_s$draws(c("sigma", "mu")))
-df_s <- df_s %>% select(-.draw, -.chain, -.iteration)
+df_s <- df_s |> select(-.draw, -.chain, -.iteration)
 
 # visual posterior check
 # use only n_dist distributions
@@ -179,7 +179,7 @@ fit_h$summary()
 
 # samples
 df_h <- as_draws_df(fit_h$draws(c("sigma", "mu", "mu_mu", "sigma_mu")))
-df_h <- df_h %>% select(-.draw, -.chain, -.iteration)
+df_h <- df_h |> select(-.draw, -.chain, -.iteration)
 
 # visual posterior check
 # use only n_dist distributions
@@ -296,8 +296,8 @@ df_subject <- data.frame(
 )
 
 # sample means
-df_mu_sample <- data %>%
-  group_by(mama_pig) %>%
+df_mu_sample <- data |>
+  group_by(mama_pig) |>
   summarise(mean_weight = mean(piglet_weight))
 df_subject <- rbind(df_subject, data.frame(
   Mean = df_mu_sample$mean_weight,
@@ -308,7 +308,7 @@ df_subject <- rbind(df_subject, data.frame(
 ))
 
 # subject means
-df_mu_s <- df_s %>% select(2:(1 + n_mamas))
+df_mu_s <- df_s |> select(2:(1 + n_mamas))
 s_means <- colMeans(df_mu_s)
 s_90_hdi <- apply(df_mu_s, 2, hdi, credMass = 0.9)
 df_subject <- rbind(df_subject, data.frame(
@@ -320,7 +320,7 @@ df_subject <- rbind(df_subject, data.frame(
 ))
 
 # hierarchical means
-df_mu_h <- df_h %>% select(2:(1 + n_mamas))
+df_mu_h <- df_h |> select(2:(1 + n_mamas))
 h_means <- colMeans(df_mu_h)
 h_hdi90 <- apply(df_mu_h, 2, hdi, credMass = 0.9)
 df_subject <- rbind(df_subject, data.frame(
@@ -357,7 +357,7 @@ ggplot(
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
 
 # fit the hierarchical model for farm 2 as well --------------------------------
-data2 <- data_all %>% filter(farm == 2)
+data2 <- data_all |> filter(farm == 2)
 
 min_mama_ix <- min(data2$mama_pig)
 max_mama_ix <- max(data2$mama_pig)
@@ -383,15 +383,15 @@ fit_h2$summary()
 
 # samples
 df_h2 <- as_draws_df(fit_h2$draws(c("sigma", "mu", "mu_mu", "sigma_mu")))
-df_h2 <- df_h2 %>% select(-.draw, -.chain, -.iteration)
+df_h2 <- df_h2 |> select(-.draw, -.chain, -.iteration)
 
 # compare farm 2 vs farm 1 -----------------------------------------------------
 mcse(df_h2$mu_mu > df_h$mu_mu)
 
 # find the best pig out of all mama pigs ---------------------------------------
 # select only subject level mus
-df_mu_mamas <- df_h %>% select(-sigma, -mu_mu, -sigma_mu)
-df_mu_mamas <- cbind(df_mu_mamas, df_h2 %>% select(-sigma, -mu_mu, -sigma_mu))
+df_mu_mamas <- df_h |> select(-sigma, -mu_mu, -sigma_mu)
+df_mu_mamas <- cbind(df_mu_mamas, df_h2 |> select(-sigma, -mu_mu, -sigma_mu))
 
 # name columns from 1 to n
 n_mamas <- ncol(df_mu_mamas)
@@ -433,8 +433,8 @@ for (i in 1:n_repeats) {
 }
 
 # mean and se
-best_mama_summary <- best_mama_counts %>%
-  group_by(best_mama_ix) %>%
+best_mama_summary <- best_mama_counts |>
+  group_by(best_mama_ix) |>
   summarise(
     mean_prob = mean(prob),
     se = sd(prob) / sqrt(n_repeats)

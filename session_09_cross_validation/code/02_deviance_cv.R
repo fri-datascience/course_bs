@@ -80,9 +80,9 @@ for (m in 0:m_max) {
   # remove unwanted columns
   # also cast to regular data frame to avoid some warnings later on
   df_ll_train <-
-    data.frame(df_ll_train %>% select(-.chain, -.iteration, -.draw))
+    data.frame(df_ll_train |> select(-.chain, -.iteration, -.draw))
   df_ll_test <-
-    data.frame(df_ll_test %>% select(-.chain, -.iteration, -.draw))
+    data.frame(df_ll_test |> select(-.chain, -.iteration, -.draw))
 
   # average per row and store
   df_s_train <- rbind(
@@ -107,8 +107,8 @@ df_s_test$Type <- "Out-of-sample"
 
 df <- rbind(df_s_train, df_s_test)
 
-df_summary <- df %>%
-  group_by(Type, Order) %>%
+df_summary <- df |>
+  group_by(Type, Order) |>
   summarize(
     mean_s = mean(s),
     hdi5 = hdi(s, credMass = 0.9)[1],
@@ -124,8 +124,8 @@ ggplot(data = df_summary, aes(x = Order, y = mean_s)) +
   facet_grid(. ~ Type)
 
 # difference plot
-df_difference <- df_summary %>%
-  group_by(Order) %>%
+df_difference <- df_summary |>
+  group_by(Order) |>
   summarize(diff = mean_s[2] - mean_s[1])
 
 ggplot(data = df_difference, aes(x = Order, y = diff)) +

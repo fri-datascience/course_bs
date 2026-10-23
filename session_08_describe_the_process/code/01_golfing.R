@@ -51,7 +51,7 @@ for (i in seq_len(nrow(data))) {
   hdi90 <- hdi(b, credMass = 0.90)
 
   # bind
-  df_golf <- df_golf %>% add_row(
+  df_golf <- df_golf |> add_row(
     x = row$distance,
     p = p,
     hdi5 = hdi90[1],
@@ -122,7 +122,7 @@ for (i in seq_len(ncol(X))) {
   hdi90 <- hdi(column, credMass = 0.90)
 
   # bind
-  df_binomial <- df_binomial %>%
+  df_binomial <- df_binomial |>
     add_row(x = x[i], p = p, hdi5 = hdi90[1], hdi95 = hdi90[2])
 }
 
@@ -189,7 +189,7 @@ for (i in seq_len(ncol(X))) {
   hdi90 <- hdi(column, credMass = 0.90)
 
   # bind
-  df_angle <- df_angle %>%
+  df_angle <- df_angle |>
     add_row(x = data$distance[i], p = p, hdi5 = hdi90[1], hdi95 = hdi90[2])
 }
 
@@ -264,7 +264,7 @@ for (i in seq_len(ncol(X))) {
   hdi90 <- hdi(column, credMass = 0.90)
 
   # bind
-  df_distance <- df_distance %>%
+  df_distance <- df_distance |>
     add_row(x = data$distance[i], p = p, hdi5 = hdi90[1], hdi95 = hdi90[2])
 }
 
@@ -348,7 +348,7 @@ for (i in seq_len(ncol(X))) {
   hdi90 <- hdi(column, credMass = 0.90)
 
   # bind
-  df_angle_distance <- df_angle_distance %>%
+  df_angle_distance <- df_angle_distance |>
     add_row(x = data$distance[i], p = p, hdi5 = hdi90[1], hdi95 = hdi90[2])
 }
 

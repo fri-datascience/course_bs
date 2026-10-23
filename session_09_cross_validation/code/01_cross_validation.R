@@ -12,23 +12,23 @@ library(mcmcse)
 data <- read.csv("./session_09_cross_validation/data/temperature.csv", sep = ";")
 
 # remove month
-data <- data %>% select(-month)
+data <- data |> select(-month)
 
 # mean per year
-data <- data %>%
-  group_by(year) %>%
+data <- data |>
+  group_by(year) |>
   summarise(temperature = mean(temperature))
 
 # scale
 min_temperature <- min(data$temperature)
-data <- data %>% mutate(
+data <- data |> mutate(
   year_s = as.vector(scale(year)),
   temperature_0 = (temperature - min_temperature)
 )
 
 # train/test split
-train <- data %>% filter(year < 1995)
-test <- data %>% filter(year >= 1995)
+train <- data |> filter(year < 1995)
+test <- data |> filter(year >= 1995)
 
 # stan_data
 n_train <- nrow(train)
@@ -98,7 +98,7 @@ for (p in 0:max_order) {
 
   # remove unwanted columns
   # also cast to regular data frame to avoid some warnings later on
-  df <- data.frame(df %>% select(-.chain, -.iteration, -.draw))
+  df <- data.frame(df |> select(-.chain, -.iteration, -.draw))
 
   # store mse
   df_mse_train <- rbind(
@@ -174,8 +174,8 @@ ggplot(data = df_mse_test, aes(y = order, x = mse)) +
   coord_cartesian(xlim = c(0, 10))
 
 # numerical info
-df_mse_test %>%
-  group_by(order) %>%
+df_mse_test |>
+  group_by(order) |>
   summarize(
     mean_mse = mean(mse),
     hdi5 = hdi(mse, credMass = 0.90)[1],

@@ -15,7 +15,7 @@ model <- cmdstan_model("./session_04_glm/models/linear_nointercept.stan")
 data <- read.csv("./session_04_glm/data/50_startups.csv")
 
 # let us focus only on research, administration, marketing => profit
-data <- data %>% select(research, administration, marketing, profit)
+data <- data |> select(research, administration, marketing, profit)
 
 # normalize per column
 data$r <- (data$research - min(data$research)) /
@@ -30,7 +30,7 @@ data$p <- (data$profit - min(data$profit)) /
 # fit without normalization
 # prep for Stan
 y <- data$profit
-X <- data %>% select(research, administration, marketing)
+X <- data |> select(research, administration, marketing)
 stan_data <- list(n = length(y), k = ncol(X), y = y, X = X)
 
 # fit
@@ -42,7 +42,7 @@ fit <- model$sample(
 
 # fit with normalization
 y <- data$p
-X <- data %>% select(r, a, m)
+X <- data |> select(r, a, m)
 stan_data <- list(n = length(y), k = ncol(X), y = y, X = X)
 
 # fit normalized
@@ -78,20 +78,20 @@ mcse(df_normalized$`b[3]`)
 
 # compare default vs normalized ------------------------------------------------
 # calculate ratios
-df_ratios_default <- df %>%
+df_ratios_default <- df |>
   mutate(
     Research = `b[1]` / (`b[1]` + `b[2]` + `b[3]`),
     Administration = `b[2]` / (`b[1]` + `b[2]` + `b[3]`),
     Marketing = `b[3]` / (`b[1]` + `b[2]` + `b[3]`)
-  ) %>%
+  ) |>
   select(Research, Administration, Marketing)
 
-df_ratios_normalized <- df_normalized %>%
+df_ratios_normalized <- df_normalized |>
   mutate(
     Research = `b[1]` / (`b[1]` + `b[2]` + `b[3]`),
     Administration = `b[2]` / (`b[1]` + `b[2]` + `b[3]`),
     Marketing = `b[3]` / (`b[1]` + `b[2]` + `b[3]`)
-  ) %>%
+  ) |>
   select(Research, Administration, Marketing)
 
 # column means
@@ -110,7 +110,7 @@ df_ratios_normalized$Type <- "Normalized"
 df_ratios <- rbind(df_ratios_default, df_ratios_normalized)
 
 # to long format
-df_ratios <- df_ratios %>% gather(
+df_ratios <- df_ratios |> gather(
   Variable,
   Value,
   c(Research, Administration, Marketing)

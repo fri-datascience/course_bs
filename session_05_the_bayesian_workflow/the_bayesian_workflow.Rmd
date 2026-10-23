@@ -149,7 +149,7 @@ fit <- model$sample(
 # analysis ---------------------------------------------------------------------
 # extract draws
 df <- as_draws_df(fit$draws())
-df <- df %>% select(-alpha, -beta, -sigma, -.chain, -.draw, -.iteration)
+df <- df |> select(-alpha, -beta, -sigma, -.chain, -.draw, -.iteration)
 
 # prep df for plotting
 df_plot <- data.frame(x = numeric(), y = factor())
@@ -203,7 +203,7 @@ library(tidyverse)
 data <- read.csv("./data/temperature.csv", sep = ";")
 
 # after 2000
-data <- data %>% filter(year >= 2000)
+data <- data |> filter(year >= 2000)
 
 # prep the data for stan
 stan_data <- list(
@@ -248,8 +248,8 @@ for (i in 1:n) {
 }
 
 # means
-df_ppc_means <- df_ppc %>%
-  group_by(iteration) %>%
+df_ppc_means <- df_ppc |>
+  group_by(iteration) |>
   summarize(mean_temperature = mean(temperature))
 
 # plot

@@ -10,7 +10,7 @@ library(HDInterval)
 df <- read.csv("./session_10_time_series/data/restaurants.csv")
 
 # only last 10 years
-df <- df %>% filter(month > (nrow(df) - 120))
+df <- df |> filter(month > (nrow(df) - 120))
 
 # reindex months
 df$month <- seq_len(nrow(df))
@@ -43,7 +43,7 @@ fit$summary()
 
 # samples
 df_s <- as_draws_df(fit$draws())
-df_s <- df_s %>% select(-lp__, -.draw, -.chain, -.iteration)
+df_s <- df_s |> select(-lp__, -.draw, -.chain, -.iteration)
 
 # plot fit ---------------------------------------------------------------------
 # get a subsample of 20 random samples
@@ -104,7 +104,7 @@ for (i in seq_len(nrow(df_ss))) {
   }
 
   # store
-  df_forecast <- df_forecast %>%
+  df_forecast <- df_forecast |>
     add_row(
       Month = (n_t + 1):(n_t + n_f),
       S = s[(n_t + 1):(n_t + n_f)]
@@ -112,8 +112,8 @@ for (i in seq_len(nrow(df_ss))) {
 }
 
 # add forecasts to the plotting data frame
-df_plot_forecast <- df_forecast %>%
-  group_by(Month) %>%
+df_plot_forecast <- df_forecast |>
+  group_by(Month) |>
   summarize(
     Spending = mean(S),
     hdi5 = hdi5(S),
@@ -121,7 +121,7 @@ df_plot_forecast <- df_forecast %>%
   )
 
 # bind
-df_plot <- df_plot %>% add_row(df_plot_forecast)
+df_plot <- df_plot |> add_row(df_plot_forecast)
 
 # plot
 ggplot(data = df_plot, aes(x = Month, y = Spending), group = ix) +

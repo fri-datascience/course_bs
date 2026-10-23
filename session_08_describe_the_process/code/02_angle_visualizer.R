@@ -27,7 +27,7 @@ for (s in sigmas) {
   p <- 2 * pnorm(threshold_angle / s, 0, 1) - 1
 
   # append
-  df <- df %>% add_row(distance = distances, sigma = s, p = p)
+  df <- df |> add_row(distance = distances, sigma = s, p = p)
 }
 
 # change sigma to degrees

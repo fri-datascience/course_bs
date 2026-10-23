@@ -118,11 +118,11 @@ fit <- model$sample(
 )
 
 pred <- as_draws_df(fit$draws("pred"))
-pred <- pred %>% select(-.chain, -.iteration, -.draw)
+pred <- pred |> select(-.chain, -.iteration, -.draw)
 pred_test <- as_draws_df(fit$draws("pred_test"))
-pred_test <- pred_test %>% select(-.chain, -.iteration, -.draw)
+pred_test <- pred_test |> select(-.chain, -.iteration, -.draw)
 lm_beta <- as_draws_df(fit$draws("beta"))
-lm_beta <- lm_beta %>% select(-.chain, -.iteration, -.draw)
+lm_beta <- lm_beta |> select(-.chain, -.iteration, -.draw)
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "lmBayes",
@@ -158,11 +158,11 @@ fit <- model$sample(
 )
 
 pred <- as_draws_df(fit$draws("pred"))
-pred <- pred %>% select(-.chain, -.iteration, -.draw)
+pred <- pred |> select(-.chain, -.iteration, -.draw)
 pred_test <- as_draws_df(fit$draws("pred_test"))
-pred_test <- pred_test %>% select(-.chain, -.iteration, -.draw)
+pred_test <- pred_test |> select(-.chain, -.iteration, -.draw)
 lm1_beta <- as_draws_df(fit$draws("beta"))
-lm1_beta <- lm1_beta %>% select(-.chain, -.iteration, -.draw)
+lm1_beta <- lm1_beta |> select(-.chain, -.iteration, -.draw)
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "lmBayes[1]",
@@ -198,11 +198,11 @@ fit <- model$sample(
 )
 
 pred <- as_draws_df(fit$draws("pred"))
-pred <- pred %>% select(-.chain, -.iteration, -.draw)
+pred <- pred |> select(-.chain, -.iteration, -.draw)
 pred_test <- as_draws_df(fit$draws("pred_test"))
-pred_test <- pred_test %>% select(-.chain, -.iteration, -.draw)
+pred_test <- pred_test |> select(-.chain, -.iteration, -.draw)
 lm01_beta <- as_draws_df(fit$draws("beta"))
-lm01_beta <- lm01_beta %>% select(-.chain, -.iteration, -.draw)
+lm01_beta <- lm01_beta |> select(-.chain, -.iteration, -.draw)
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "lmBayes[0.1]",
@@ -238,11 +238,11 @@ fit <- model$sample(
 )
 
 pred <- as_draws_df(fit$draws("pred"))
-pred <- pred %>% select(-.chain, -.iteration, -.draw)
+pred <- pred |> select(-.chain, -.iteration, -.draw)
 pred_test <- as_draws_df(fit$draws("pred_test"))
-pred_test <- pred_test %>% select(-.chain, -.iteration, -.draw)
+pred_test <- pred_test |> select(-.chain, -.iteration, -.draw)
 L1_beta <- as_draws_df(fit$draws("beta"))
-L1_beta <- L1_beta %>% select(-.chain, -.iteration, -.draw)
+L1_beta <- L1_beta |> select(-.chain, -.iteration, -.draw)
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "L1Bayes",
@@ -278,11 +278,11 @@ fit <- model$sample(
 )
 
 pred <- as_draws_df(fit$draws("pred"))
-pred <- pred %>% select(-.chain, -.iteration, -.draw)
+pred <- pred |> select(-.chain, -.iteration, -.draw)
 pred_test <- as_draws_df(fit$draws("pred_test"))
-pred_test <- pred_test %>% select(-.chain, -.iteration, -.draw)
+pred_test <- pred_test |> select(-.chain, -.iteration, -.draw)
 L2_beta <- as_draws_df(fit$draws("beta"))
-L2_beta <- L2_beta %>% select(-.chain, -.iteration, -.draw)
+L2_beta <- L2_beta |> select(-.chain, -.iteration, -.draw)
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "L2Bayes",

@@ -64,16 +64,16 @@ fit$summary("c")
 # analysis ---------------------------------------------------------------------
 # extract parameters
 df_beta <- as_draws_df(fit$draws("beta"))
-df_beta <- df_beta %>% select(-.chain, -.iteration, -.draw)
+df_beta <- df_beta |> select(-.chain, -.iteration, -.draw)
 df_cutpoints <- as_draws_df(fit$draws("c"))
-df_cutpoints <- df_cutpoints %>% select(-.chain, -.iteration, -.draw)
+df_cutpoints <- df_cutpoints |> select(-.chain, -.iteration, -.draw)
 
 # plot betas -------------------------------------------------------------------
 # rename for ease of addressing
 colnames(df_beta) <- c("Religion", "Degree", "USA", "Male")
 
 # to long format
-df_beta_long <- df_beta %>% gather(Beta, Value)
+df_beta_long <- df_beta |> gather(Beta, Value)
 
 # plot
 ggplot(data = df_beta_long, aes(x = Value, y = Beta)) +

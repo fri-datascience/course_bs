@@ -24,9 +24,9 @@ library(tidyverse)
 df <- read.csv("./session_02_probabilistic_thinking/data/expressions2022.csv")
 
 # set factors
-df_mean <- df %>%
-    group_by(expression) %>%
-    summarise(mean_p = round(mean(probability), 1)) %>%
+df_mean <- df |>
+    group_by(expression) |>
+    summarise(mean_p = round(mean(probability), 1)) |>
     arrange(desc(mean_p))
 
 df_mean$expression <- factor(df_mean$expression, levels = df_mean$expression)

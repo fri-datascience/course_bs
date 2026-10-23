@@ -10,7 +10,7 @@ library(HDInterval)
 df <- read.csv("./session_10_time_series/data/temperature.csv", sep = ";")
 
 # select only newer data so it runs faster
-df <- df %>% filter(year > 1980)
+df <- df |> filter(year > 1980)
 
 # cast to date
 df$date <- as.Date(paste0(df$year, "-", df$month, "-01"))
@@ -62,7 +62,7 @@ fit$summary()
 
 # samples
 df_s <- as_draws_df(fit$draws())
-df_s <- df_s %>% select(-lp__, -.draw, -.chain, -.iteration)
+df_s <- df_s |> select(-lp__, -.draw, -.chain, -.iteration)
 
 # plot 5 random samples
 idx <- sample(seq_len(nrow(df_s)), 5, rep = FALSE)
@@ -80,7 +80,7 @@ df_decomposed <- data.frame(
 
 for (i in idx) {
   # original
-  df_decomposed <- df_decomposed %>%
+  df_decomposed <- df_decomposed |>
     add_row(data.frame(
       idx = as.character(i),
       Type = "Original",
@@ -90,7 +90,7 @@ for (i in idx) {
 
   # ssn
   ssn <- df_s$beta_cos[i] * cos(omega * t) + df_s$beta_sin[i] * sin(omega * t)
-  df_decomposed <- df_decomposed %>%
+  df_decomposed <- df_decomposed |>
     add_row(data.frame(
       idx = as.character(i),
       Type = "Seasonality",
@@ -100,7 +100,7 @@ for (i in idx) {
 
   # trend
   trend <- df_s$beta[i] * t + df_s$alpha[i]
-  df_decomposed <- df_decomposed %>%
+  df_decomposed <- df_decomposed |>
     add_row(data.frame(
       idx = as.character(i),
       Type = "Trend",
@@ -110,7 +110,7 @@ for (i in idx) {
 
   # remainder
   remainder <- df$temperature - ssn - trend
-  df_decomposed <- df_decomposed %>%
+  df_decomposed <- df_decomposed |>
     add_row(data.frame(
       idx = as.character(i),
       Type = "Remainder",

@@ -31,7 +31,7 @@ df_gamma <- data.frame(x = numeric(), y = numeric(), group = factor())
 for (i in seq_len(nrow(gammas))) {
   gamma <- gammas[i, ]
   y <- dgamma(x, gamma$k, rate = gamma$t)
-  df_gamma <- df_gamma %>% add_row(x = x, y = y, group = as.factor(i))
+  df_gamma <- df_gamma |> add_row(x = x, y = y, group = as.factor(i))
 }
 
 # plot -------------------------------------------------------------------------

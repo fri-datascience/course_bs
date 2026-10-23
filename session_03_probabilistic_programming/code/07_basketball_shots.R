@@ -17,8 +17,8 @@ model <- cmdstan_model("./session_03_probabilistic_programming/models/bernoulli_
 data <- read.csv("./session_03_probabilistic_programming/data/basketball_shots.csv", sep = ";")
 
 # filter for 1st player, default and special rims
-player1_default <- data %>% filter(PlayerID == 1 & SpecialRim == 0)
-player1_special <- data %>% filter(PlayerID == 1 & SpecialRim == 1)
+player1_default <- data |> filter(PlayerID == 1 & SpecialRim == 0)
+player1_special <- data |> filter(PlayerID == 1 & SpecialRim == 1)
 
 # prepare input data
 stan_data_default <- list(n = nrow(player1_default), y = player1_default$Made)

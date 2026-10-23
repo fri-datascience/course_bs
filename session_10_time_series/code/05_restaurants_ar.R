@@ -10,7 +10,7 @@ library(HDInterval)
 df <- read.csv("./session_10_time_series/data/restaurants.csv")
 
 # only last 10 years
-df <- df %>% filter(month > (nrow(df) - 120))
+df <- df |> filter(month > (nrow(df) - 120))
 
 # reindex months
 df$month <- seq_len(nrow(df))
@@ -44,7 +44,7 @@ fit$summary()
 
 # samples
 df_s <- as_draws_df(fit$draws())
-df_s <- df_s %>% select(-lp__, -.draw, -.chain, -.iteration)
+df_s <- df_s |> select(-lp__, -.draw, -.chain, -.iteration)
 
 # plot fit ---------------------------------------------------------------------
 # get a subsample of 20 random samples
@@ -79,7 +79,7 @@ for (i in seq_len(nrow(df_ss))) {
     s[j] <- alpha + sum(betas * s[(j - p):(j - 1)])
   }
 
-  df_plot <- df_plot %>%
+  df_plot <- df_plot |>
     add_row(data.frame(
       idx = as.character(i),
       Month = t,
@@ -88,8 +88,8 @@ for (i in seq_len(nrow(df_ss))) {
 }
 
 # get mean and HDI
-df_plot <- df_plot %>%
-  group_by(Month) %>%
+df_plot <- df_plot |>
+  group_by(Month) |>
   summarize(
     Spending = mean(S),
     hdi5 = hdi(S, credMass = 0.90)[1],

@@ -14,18 +14,18 @@ t <- 1:n
 
 # trend
 trend <- t * 0.25
-df <- df %>% add_row(data.frame(t = t, y = trend, type = "Trend"))
+df <- df |> add_row(data.frame(t = t, y = trend, type = "Trend"))
 
 # seasonality
 seasonality <- 50 * sin(t / 12)
-df <- df %>% add_row(data.frame(t = t, y = seasonality, type = "Seasonality"))
+df <- df |> add_row(data.frame(t = t, y = seasonality, type = "Seasonality"))
 
 # noise
 noise <- rnorm(n, 0, 50)
-df <- df %>% add_row(data.frame(t = t, y = noise, type = "Noise"))
+df <- df |> add_row(data.frame(t = t, y = noise, type = "Noise"))
 
 # merge
-df <- df %>% add_row(data.frame(
+df <- df |> add_row(data.frame(
   t = t,
   y = trend + seasonality + noise,
   type = "Combined"
@@ -40,42 +40,42 @@ ggplot(df, aes(x = t, y = y)) +
 df_acf <- data.frame(Lag = numeric(), ACF = numeric(), type = character())
 
 acf <- acf(trend, lag.max = 300)
-df_acf <- df_acf %>% add_row(data.frame(
+df_acf <- df_acf |> add_row(data.frame(
   Lag = acf$lag,
   ACF = acf$acf,
   type = "Trend"
 ))
 
 acf <- acf(seasonality, lag.max = 300)
-df_acf <- df_acf %>% add_row(data.frame(
+df_acf <- df_acf |> add_row(data.frame(
   Lag = acf$lag,
   ACF = acf$acf,
   type = "Seasonality"
 ))
 
 acf <- acf(noise, lag.max = 300)
-df_acf <- df_acf %>% add_row(data.frame(
+df_acf <- df_acf |> add_row(data.frame(
   Lag = acf$lag,
   ACF = acf$acf,
   type = "Noise"
 ))
 
 acf <- acf(trend + seasonality, lag.max = 300)
-df_acf <- df_acf %>% add_row(data.frame(
+df_acf <- df_acf |> add_row(data.frame(
   Lag = acf$lag,
   ACF = acf$acf,
   type = "Trend + Seasonality"
 ))
 
 acf <- acf(trend + noise, lag.max = 300)
-df_acf <- df_acf %>% add_row(data.frame(
+df_acf <- df_acf |> add_row(data.frame(
   Lag = acf$lag,
   ACF = acf$acf,
   type = "Trend + Noise"
 ))
 
 acf <- acf(seasonality + noise, lag.max = 300)
-df_acf <- df_acf %>% add_row(data.frame(
+df_acf <- df_acf |> add_row(data.frame(
   Lag = acf$lag,
   ACF = acf$acf,
   type = "Seasonality + Noise"

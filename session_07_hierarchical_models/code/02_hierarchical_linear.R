@@ -12,10 +12,10 @@ library(cowplot)
 data <- read.csv("./session_07_hierarchical_models/data/adaptation_level.csv")
 
 # separate groups and parts
-group1_part1 <- data %>% filter(group == 1 & part == 1)
-group1_part2 <- data %>% filter(group == 1 & part == 2)
-group2_part1 <- data %>% filter(group == 2 & part == 1)
-group2_part2 <- data %>% filter(group == 2 & part == 2)
+group1_part1 <- data |> filter(group == 1 & part == 1)
+group1_part2 <- data |> filter(group == 1 & part == 2)
+group2_part1 <- data |> filter(group == 2 & part == 1)
+group2_part2 <- data |> filter(group == 2 & part == 2)
 
 # model
 model <- cmdstan_model("./session_07_hierarchical_models/models/hierarchical_linear.stan")
@@ -107,7 +107,7 @@ data <- group2_part2
 
 # extract subject level parameters
 df_check <- as_draws_df(fit$draws(c("alpha", "beta")))
-df_check <- df_check %>% select(-.draw, -.chain, -.iteration)
+df_check <- df_check |> select(-.draw, -.chain, -.iteration)
 
 df_check <- sample_n(df_check, n_lines)
 
@@ -163,13 +163,13 @@ ggplot() +
 # analysis ---------------------------------------------------------------------
 # extract group level parameters
 df_11_full <- as_draws_df(fit11$draws(c("mu_a", "mu_b")))
-df_11_full <- df_11_full %>% select(-.draw, -.chain, -.iteration)
+df_11_full <- df_11_full |> select(-.draw, -.chain, -.iteration)
 df_12_full <- as_draws_df(fit12$draws(c("mu_a", "mu_b")))
-df_12_full <- df_12_full %>% select(-.draw, -.chain, -.iteration)
+df_12_full <- df_12_full |> select(-.draw, -.chain, -.iteration)
 df_21_full <- as_draws_df(fit21$draws(c("mu_a", "mu_b")))
-df_21_full <- df_21_full %>% select(-.draw, -.chain, -.iteration)
+df_21_full <- df_21_full |> select(-.draw, -.chain, -.iteration)
 df_22_full <- as_draws_df(fit22$draws(c("mu_a", "mu_b")))
-df_22_full <- df_22_full %>% select(-.draw, -.chain, -.iteration)
+df_22_full <- df_22_full |> select(-.draw, -.chain, -.iteration)
 
 # compare intercepts
 mcse(df_12_full$mu_a > df_22_full$mu_a)

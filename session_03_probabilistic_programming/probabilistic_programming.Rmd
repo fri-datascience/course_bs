@@ -362,10 +362,10 @@ chain3 <- metropolis(z, n, init = 0.75)
 df_samples <- data.frame(x = seq_len(length(chain1)),
                         theta = chain1, chain = "1")
 
-df_samples <- df_samples %>%
+df_samples <- df_samples |>
   add_row(data.frame(x = seq_len(length(chain2)), theta = chain2, chain = "2"))
 
-df_samples <- df_samples %>%
+df_samples <- df_samples |>
   add_row(data.frame(x = seq_len(length(chain3)), theta = chain3, chain = "3"))
 
 # visualize
@@ -734,8 +734,8 @@ model <- cmdstan_model("./models/bernoulli_beta.stan")
 data <- read.csv("./data/basketball_shots.csv", sep = ";")
 
 # filter for 1st player, default and special rims
-player1_default <- data %>% filter(PlayerID == 1 & SpecialRim == 0)
-player1_special <- data %>% filter(PlayerID == 1 & SpecialRim == 1)
+player1_default <- data |> filter(PlayerID == 1 & SpecialRim == 0)
+player1_special <- data |> filter(PlayerID == 1 & SpecialRim == 1)
 
 # prepare input data
 stan_data_default <- list(n = nrow(player1_default), y = player1_default$Made)

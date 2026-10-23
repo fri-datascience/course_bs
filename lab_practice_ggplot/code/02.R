@@ -7,8 +7,8 @@ df <- read.csv("../data/50_startups.csv")
 
 # plot -------------------------------------------------------------------------
 # to long format
-df_funds <- df %>%
-    select(administration, research, marketing, profit) %>%
+df_funds <- df |>
+    select(administration, research, marketing, profit) |>
     gather(field, funds)
 
 # plot

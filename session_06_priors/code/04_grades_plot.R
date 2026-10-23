@@ -27,7 +27,7 @@ df_beta <- data.frame(x = numeric(), y = numeric(), group = factor())
 for (i in seq_len(nrow(betas))) {
   beta <- betas[i, ]
   y <- dbeta(x, beta$alpha, beta$beta)
-  df_beta <- df_beta %>%
+  df_beta <- df_beta |>
     add_row(x = x_min + (x * (x_max - x_min)), y = y / (x_max - x_min), group = as.factor(i))
 }
 

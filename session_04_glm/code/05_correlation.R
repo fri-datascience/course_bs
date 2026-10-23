@@ -17,7 +17,7 @@ data <- read.csv("./session_04_glm/data/toy.csv")
 data$x2 <- data$x + rnorm(nrow(data), 0, 2)
 
 # independent variables only
-X <- data %>% select(-y)
+X <- data |> select(-y)
 
 # correlation
 # plot correlation of independent variables

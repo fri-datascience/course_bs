@@ -64,11 +64,11 @@ model <- cmdstan_model("./models/simple_linear.stan")
 data <- read.csv("./data/temperature.csv", sep = ";")
 
 # remove month
-data <- data %>% select(-month)
+data <- data |> select(-month)
 
 # mean per year
-data <- data %>%
-  group_by(year) %>%
+data <- data |>
+  group_by(year) |>
   summarise(temperature = mean(temperature))
 
 # x shift for numerical stability
@@ -306,7 +306,7 @@ data <- read.csv("./data/toy.csv")
 data$x2 <- data$x + rnorm(nrow(data), 0, 2)
 
 # independent variables only
-X <- data %>% select(-y)
+X <- data |> select(-y)
 
 # correlation
 # plot correlation of independent variables
@@ -620,7 +620,7 @@ As you can see our dependent variable has three levels -- above head, hook shot 
 ```
 # extract parameters
 df_betas <- as_draws_df(fit$draws("beta"))
-df_betas <- df_betas %>% select(-.chain, -.iteration, -.draw)
+df_betas <- df_betas |> select(-.chain, -.iteration, -.draw)
 
 # beta matrix composed of sample means
 betas <- matrix(colMeans(df_betas), nrow = 4, ncol = 3)

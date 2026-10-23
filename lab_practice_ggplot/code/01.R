@@ -8,7 +8,7 @@ df <- read.csv("../data/50_startups.csv")
 
 # 1 ----------------------------------------------------------------------------
 # get state counts
-df_state <- df %>% group_by(state) %>% summarise(count = n())
+df_state <- df |> group_by(state) |> summarise(count = n())
 
 # plot
 p1 <- ggplot(df_state, aes(x = state, y = count)) +

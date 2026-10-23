@@ -59,8 +59,8 @@ df_100_robust <- sample_n(df_robust, 100)
 # visualize data points with regression lines in the background
 # combine data for faceting
 df_100_combined <- bind_rows(
-  df_100_std %>% mutate(model = "Standard"),
-  df_100_robust %>% mutate(model = "Robust")
+  df_100_std |> mutate(model = "Standard"),
+  df_100_robust |> mutate(model = "Robust")
 )
 
 ggplot() +
