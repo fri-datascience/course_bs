@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
 # Summary
@@ -46,11 +46,13 @@ In all of our analyses we will focus on estimating the mean. The basic principle
 The dataset that we will use throughout is an export of the football player database from the popular computer game Football Manager, we obtained the dataset from [Kaggle](https://www.kaggle.com/ajinkyablaze/football-manager-data).
 
 ```{r include=FALSE}
-n  <- 200  # sample size
-m  <- 100 # number of simulations
+n <- 200 # sample size
+m <- 100 # number of simulations
 df <- readRDS("./data/fm2017.rds")
-df <- df[complete.cases(df),]
-df$BestPosition <- names(df)[75:89][apply(df[,75:89],1, function(x){which(x == max(x))[1]})]
+df <- df[complete.cases(df), ]
+df$BestPosition <- names(df)[75:89][apply(df[, 75:89], 1, function(x) {
+  which(x == max(x))[1]
+})]
 df <- df[, names(df) %in% c("Name", "NationID", "Age", "Height", "Weight", "BestPosition", "PenaltyTaking")]
 df$BestPosition[df$BestPosition == "WingBackLeft"] <- "DefenderLeft"
 df$BestPosition[df$BestPosition == "WingBackRight"] <- "DefenderRight"
@@ -82,12 +84,14 @@ library(ggplot2)
 mus <- c()
 set.seed(0)
 for (i in 1:m) {
-  idx <- sample(1:nrow(df), n, rep = T)
+  idx <- sample(seq_len(nrow(df)), n, rep = TRUE)
   mus <- c(mus, mean(df$PenaltyTaking[idx]))
 }
 
-ggplot(data.frame(mu = mus), aes(x = mu)) + geom_histogram(bins = 15) +
-  ylab("freq") + xlab("estimate")
+ggplot(data.frame(mu = mus), aes(x = mu)) +
+  geom_histogram(bins = 15) +
+  ylab("freq") +
+  xlab("estimate")
 ```
 
 The estimate of course varies from sample to sample. The average over all estimates is `r round(mean(mus), 2)` and their standard deviation (hence, standard error of the mean estimates) is `r round(sd(mus), 3)`. Both of these values are within margin of error of what we predicted from theory.
@@ -116,11 +120,11 @@ if (file.exists("./saved_results/001.rds")) {
 } else {
   res001 <- NULL
   for (i in 1:50) {
-    idx <- sample(1:nrow(df), n, rep = T)
+    idx <- sample(seq_len(nrow(df)), n, rep = TRUE)
     stan_data <- list(y = df$PenaltyTaking[idx], n = n)
     fit_base <- model1$sample(data = stan_data, chains = 1, iter_sampling = 1000, iter_warmup = 200)
     mus <- as_draws_matrix(fit_base$draws("mu"))
-    res001 <- rbind(res001, data.frame(mu = mean(mus[,1]), sd = sd(mus[,1])))
+    res001 <- rbind(res001, data.frame(mu = mean(mus[, 1]), sd = sd(mus[, 1])))
   }
   saveRDS(res001, file = "./saved_results/001.rds")
 }
@@ -131,8 +135,10 @@ We simulated 50 different samples and fit the model separately to each. The post
 In practice we typically aren't able to simulate many samples. Instead, we one sample of size $n$ from our population. So we have to rely on t. Below is a histogram of the posterior means for standard deviation for our 50 simulations. We can see how in practice we will sometimes underestimate, sometimes underestimate the variance (why?), but on average, it will be close to the true variance. Of course, the problem gets worse with smaller sample sizes and better with larger sample sizes.
 
 ```{r echo=FALSE, warning=FALSE, fig.width=3, fig.height=3}
-ggplot(res001, aes(x = sd)) + geom_histogram(bins = 15) +
-  ylab("freq") + xlab("estimate")
+ggplot(res001, aes(x = sd)) +
+  geom_histogram(bins = 15) +
+  ylab("freq") +
+  xlab("estimate")
 ```
 
 ## Stratified sampling
@@ -188,9 +194,9 @@ if (file.exists("./saved_results/002.rds")) {
 } else {
   for (i in 1:m) {
     w_mus <- 0
-    for (j in 1:length(weights)) {
+    for (j in seq_along(weights)) {
       tmp <- df$PenaltyTaking[df$BestPosition == names(weights)[j]]
-      idx <- sample(1:length(tmp), weights[j], rep = T)
+      idx <- sample(seq_along(tmp), weights[j], rep = TRUE)
       w_mus <- w_mus + weights[j] / n * mean(tmp[idx])
     }
     mus002 <- c(mus002, w_mus)
@@ -198,8 +204,10 @@ if (file.exists("./saved_results/002.rds")) {
   saveRDS(mus002, "./saved_results/002.rds")
 }
 
-ggplot(data.frame(mu = mus002), aes(x = mu)) + geom_histogram(bins = 30) + 
-  ylab("freq") + xlab("estimate")
+ggplot(data.frame(mu = mus002), aes(x = mu)) +
+  geom_histogram(bins = 30) +
+  ylab("freq") +
+  xlab("estimate")
 ```
 
 The average over all estimates is `r round(mean(mus002), 2)` and their standard deviation is `r round(sd(mus002), 3)`. This is better than simple random sampling.
@@ -234,18 +242,20 @@ if (file.exists("./saved_results/003.rds")) {
   mus003 <- c()
   for (i in 1:m) {
     w_mus <- 0
-    for (j in 1:length(weights_opt)) {
+    for (j in seq_along(weights_opt)) {
       tmp <- df$PenaltyTaking[df$BestPosition == names(weights_opt)[j]]
-      idx <- sample(1:length(tmp), weights_opt[j], rep = T)
+      idx <- sample(seq_along(tmp), weights_opt[j], rep = TRUE)
       w_mus <- w_mus + weights[j] / n * mean(tmp[idx])
     }
     mus003 <- c(mus003, w_mus)
   }
-    saveRDS(mus003, "./saved_results/003.rds")
+  saveRDS(mus003, "./saved_results/003.rds")
 }
 
-ggplot(data.frame(mu = mus003), aes(x = mu)) + geom_histogram(bins = 30) + 
-  ylab("freq") + xlab("estimate")
+ggplot(data.frame(mu = mus003), aes(x = mu)) +
+  geom_histogram(bins = 30) +
+  ylab("freq") +
+  xlab("estimate")
 ```
 
 The average over all estimates is `r round(mean(mus003), 2)` and their standard deviation is `r round(sd(mus003), 3)`. This is better than simple random sampling and proportional stratified sampling.
@@ -271,23 +281,24 @@ if (file.exists("./saved_results/004.rds")) {
 } else {
   for (i in 1:m) {
     obs <- NULL
-      w_mus <- 0
-    for (j in 1:length(weights)) {
-    
+    w_mus <- 0
+    for (j in seq_along(weights)) {
       tmp <- df$PenaltyTaking[df$BestPosition == names(weights)[j]]
-      idx <- sample(1:length(tmp), weights[j], rep = T)
+      idx <- sample(seq_along(tmp), weights[j], rep = TRUE)
       obs <- rbind(obs, data.frame(ID = j, y = tmp[idx]))
       w_mus <- w_mus + weights[j] / n * mean(tmp[idx])
     }
-    
+
     stan_data <- list(y = obs$y, id = obs$ID, n = n, k = length(weights), w = as.numeric(weights) / n)
     fit_base <- model2$sample(data = stan_data, chains = 1, iter_sampling = 1000, iter_warmup = 200)
     mus <- as_draws_matrix(fit_base$draws("mu_est"))
-    res004 <- rbind(res004, data.frame(mu = mean(mus),
-                                 med = median(mus),
-                                 sd = sd(mus), 
-                                 w_mus = w_mus,
-                                 mu_obs = mean(obs$y)))
+    res004 <- rbind(res004, data.frame(
+      mu = mean(mus),
+      med = median(mus),
+      sd = sd(mus),
+      w_mus = w_mus,
+      mu_obs = mean(obs$y)
+    ))
   }
 
   saveRDS(res004, file = "./saved_results/004.rds")
@@ -318,21 +329,21 @@ Third, we will use a two-level bootstrap. Instead of the most common use of boot
 
 ```{r}
 h_bootstrap <- function(x, group, w, m = 100) {
-  k   <- length(w)
+  k <- length(w)
   mus <- c()
-  for (i in 1:m) {    # bootstrap iteration
+  for (i in 1:m) { # bootstrap iteration
     tot_w <- 0
     tot_x <- 0
-    for (j in 1:k) {  # resample clusters
+    for (j in 1:k) { # resample clusters
       idx <- sample(1:k, 1)
       tmp <- x[group == idx]
       tot_w <- tot_w + w[idx]
-      tmp <- sample(tmp, length(tmp), rep = T) # resample withing cluster
+      tmp <- sample(tmp, length(tmp), rep = TRUE) # resample withing cluster
       tot_x <- tot_x + mean(tmp) * w[idx]
     }
     mus <- c(mus, tot_x / tot_w)
   }
-  return (list(mu = mean(mus), SE = sd(mus)))
+  return(list(mu = mean(mus), SE = sd(mus)))
 }
 ```
 
@@ -348,7 +359,7 @@ Now we are ready to simulate:
 model3 <- cmdstan_model("./models/clustered.stan")
 
 # cluster sampling
-weights <- table(df$BestPosition) / nrow(df) 
+weights <- table(df$BestPosition) / nrow(df)
 bp <- unique(df$BestPosition)
 
 if (file.exists("./saved_results/005.rds")) {
@@ -358,13 +369,13 @@ if (file.exists("./saved_results/005.rds")) {
   for (i in 1:m) {
     x_total <- 0
     w_total <- 0
-    all_y   <- c()
-    all_g   <- c()
-    all_w   <- c()
+    all_y <- c()
+    all_g <- c()
+    all_w <- c()
     for (j in 1:5) {
-      idw <- sample(1:length(bp), 1)
+      idw <- sample(seq_along(bp), 1)
       tmp <- df$PenaltyTaking[df$BestPosition == bp[idw]]
-      idx <- sample(1:length(tmp), n / 5, rep = T)
+      idx <- sample(seq_along(tmp), n / 5, rep = TRUE)
       all_y <- c(all_y, tmp[idx])
       all_g <- c(all_g, rep(j, length(idx)))
       all_w <- c(all_w, weights[idw])
@@ -373,25 +384,29 @@ if (file.exists("./saved_results/005.rds")) {
     }
 
     bts <- h_bootstrap(all_y, all_g, all_w)
-    
+
     stan_data <- list(y = all_y, id = all_g, n = length(all_y), k = length(all_w), w = all_w / sum(all_w))
     fit_base <- model3$sample(data = stan_data, chains = 1, iter_sampling = 1000, iter_warmup = 200)
 
     mus <- as_draws_matrix(fit_base$draws("mu_est"))
 
-    res <- rbind(res, data.frame(mu = x_total / w_total,          # weighted estimate
-                                 mu_simple = mean(all_y),         # naive estimate
-                                 se_simple = sd(all_y) / sqrt(n), # SE of naive estimate
-                                 mu_boot = bts$mu,                # bootstrap estimate
-                                 se_boot = bts$SE,
-                                 mu_bayes = mean(mus),            # Bayesian model estimate
-                                 se_bayes = sd(mus)))
+    res <- rbind(res, data.frame(
+      mu = x_total / w_total, # weighted estimate
+      mu_simple = mean(all_y), # naive estimate
+      se_simple = sd(all_y) / sqrt(n), # SE of naive estimate
+      mu_boot = bts$mu, # bootstrap estimate
+      se_boot = bts$SE,
+      mu_bayes = mean(mus), # Bayesian model estimate
+      se_bayes = sd(mus)
+    ))
   }
   saveRDS(res, file = "./saved_results/005.rds")
 }
 
-ggplot(data.frame(mu = res$mu), aes(x = mu)) + geom_histogram(bins = 30) + 
-  ylab("freq") + xlab("estimate")
+ggplot(data.frame(mu = res$mu), aes(x = mu)) +
+  geom_histogram(bins = 30) +
+  ylab("freq") +
+  xlab("estimate")
 ```
 
 The average over all estimates is `r round(mean(res$mu), 2)` and their standard deviation is `r round(sd(res$mu), 3)`. This is worse than simple random sampling.
@@ -405,8 +420,10 @@ colMeans(res)
 Again, the quality of the estimate of standard error also varies. For some unfortunate sample of clusters and units withing those clusters, it can be far away from the true standard error. Here is the distribution of posterior means of standard error for the Bayesian model across all iterations of the simulation:
 
 ```{r echo=FALSE, warning=FALSE, fig.width=4, fig.height=4}
-ggplot(res, aes(x = se_bayes)) + geom_histogram(bins = 15) + 
-  ylab("freq") + xlab("estimate")
+ggplot(res, aes(x = se_bayes)) +
+  geom_histogram(bins = 15) +
+  ylab("freq") +
+  xlab("estimate")
 ```
 
 ## A note on sampling without replacement

@@ -19,33 +19,33 @@ m_max <- 6
 
 # generate the data
 # predictors
-X_train <- matrix(nrow = n, ncol = m_max + 1)
+design_matrix_train <- matrix(nrow = n, ncol = m_max + 1)
 
 # intercept
-X_train[, 1] <- 1
+design_matrix_train[, 1] <- 1
 
 # test set
-X_test <- X_train
+design_matrix_test <- design_matrix_train
 
 # set seed
 set.seed(1)
 
 # other terms
 for (i in 2:(m_max + 1)) {
-  X_train[, i] <- runif(n, -1, 1)
-  X_test[, i] <- runif(n, -2, 2)
+  design_matrix_train[, i] <- runif(n, -1, 1)
+  design_matrix_test[, i] <- runif(n, -2, 2)
 }
 
 # generate data
-y_train <- rnorm(n, 1 + 1.5 * X_train[, 2] - 2.5 * X_train[, 3], 1)
-y_test <- rnorm(n, 1 + 1.5 * X_test[, 2] - 2.5 * X_test[, 3], 1)
+y_train <- rnorm(n, 1 + 1.5 * design_matrix_train[, 2] - 2.5 * design_matrix_train[, 3], 1)
+y_test <- rnorm(n, 1 + 1.5 * design_matrix_test[, 2] - 2.5 * design_matrix_test[, 3], 1)
 
 # stan_data
 stan_data <- list(
   n = n,
   m_max = m_max,
-  X_train = X_train,
-  X_test = X_test,
+  X_train = design_matrix_train,
+  X_test = design_matrix_test,
   y_train = y_train,
   y_test = y_test
 )
@@ -67,11 +67,9 @@ for (m in 0:m_max) {
     seed = 1
   )
 
-  # uncomment lines below for diagnostic purposes
-  # traceplot
-  # mcmc_trace(fit$draws(c("b", "sigma")))
-  # summary
-  # fit$summary(c("b", "sigma"))
+  # optional diagnostics
+  # To inspect traces, call mcmc_trace(fit$draws(c("b", "sigma"))).
+  # To inspect the summary, call fit$summary(c("b", "sigma")).
 
   # extract
   df_ll_train <- as_draws_df(fit$draws(c("log_lik_train")))

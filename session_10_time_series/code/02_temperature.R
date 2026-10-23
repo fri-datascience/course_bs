@@ -24,15 +24,15 @@ ggplot(df, aes(x = date, y = temperature)) +
 
 # fft can be useful with seasonality to get important frequencies
 n <- nrow(df)
-I <- abs(fft(df$temperature))^2 / n
-P <- (4 / n) * I[1:(n / 2 + 1)]
+spectral_intensity <- abs(fft(df$temperature))^2 / n
+power <- (4 / n) * spectral_intensity[1:(n / 2 + 1)]
 f <- 0:(n / 2) / (n)
 
 # merge
-df_fft <- data.frame(P = P[-1], f = f[-1])
+df_fft <- data.frame(power = power[-1], f = f[-1])
 
 # power spectrum
-ggplot(df_fft, aes(x = f, y = P)) +
+ggplot(df_fft, aes(x = f, y = power)) +
   geom_bar(stat = "identity") +
   xlim(0, 0.2)
 

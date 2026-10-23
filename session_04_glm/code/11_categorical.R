@@ -19,10 +19,10 @@ contrasts(data$PlayerType) <- contr.treatment(n_distinct(data$PlayerType))
 contrasts(data$PlayerType)
 
 # the intercept is part of the model matrix (1st column always equals 1)
-X <- model.matrix(~ Distance + PlayerType, data)
+design_matrix <- model.matrix(~ Distance + PlayerType, data)
 
 # show a couple of top rows to check if all is OK
-head(X)
+head(design_matrix)
 
 # dependent variable
 y <- data$ShotType
@@ -31,7 +31,7 @@ y <- data$ShotType
 levels(y)
 
 # stan_data
-stan_data <- list(n = nrow(data), m = ncol(X), k = nlevels(y), x = X, y = y)
+stan_data <- list(n = nrow(data), m = ncol(design_matrix), k = nlevels(y), x = design_matrix, y = y)
 
 # fit
 fit <- model$sample(
@@ -70,7 +70,7 @@ softmax <- function(x) {
 
 # calculate example probabilities ----------------------------------------------
 # probabilities for each shot type for a guard shooting from 1.5 m
-# x <- c(intercept, distance, forward, guard)
+# Predictor order: intercept, distance, forward, guard.
 x <- c(1, 1.5, 0, 1)
 
 # calculate probabilities

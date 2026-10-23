@@ -20,7 +20,7 @@ data <- read.csv("./session_04_glm/data/football.csv", sep = ";")
 data <- drop_na(data)
 
 # prep data
-df_X <- data |> select(
+df_x <- data |> select(
   -INFO_Date, -INFO_Competition,
   -INFO_TeamH, -INFO_TeamA, -Y_FTHG, -Y_FTAG
 )
@@ -29,10 +29,10 @@ df_X <- data |> select(
 data$ID <- seq.int(nrow(data))
 
 # center and standardize
-X <- scale(df_X)
+design_matrix <- scale(df_x)
 
 # plot correlation of independent variables
-pairs.panels(X,
+pairs.panels(design_matrix,
   method = "pearson", # correlation method
   hist.col = "skyblue",
   density = TRUE, # show density plots
@@ -40,8 +40,8 @@ pairs.panels(X,
 )
 
 y <- data$Y_FTHG # home goals
-# y <- data$Y_FTAG # away goals
-stan_data <- list(n = nrow(data), m = ncol(X), X = X, y = y)
+# For away goals, use data$Y_FTAG as the response.
+stan_data <- list(n = nrow(data), m = ncol(design_matrix), X = design_matrix, y = y)
 
 # fit
 fit <- model$sample(
@@ -69,7 +69,7 @@ df_pred <- as_draws_df(fit$draws("pred"))
 df_beta <- df_beta |> select(-.chain, -.iteration, -.draw)
 
 # rename for ease of addressing
-colnames(df_beta) <- colnames(df_X)
+colnames(df_beta) <- colnames(df_x)
 
 # to long format
 df_beta <- df_beta |> gather(Beta, Value)

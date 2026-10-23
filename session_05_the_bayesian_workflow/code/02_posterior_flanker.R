@@ -84,7 +84,7 @@ ggplot() +
   ylab("Density")
 
 # the exponentially modified normal model --------------------------------------
-# mean <- mu + 1/lambda
+# The mean is mu + 1 / lambda.
 # var <- sigma^2 + 1\lambda^2
 # compile the model
 model_exp <- cmdstan_model("./session_05_the_bayesian_workflow/models/exp_normal.stan")
@@ -273,7 +273,7 @@ incongruent <- NULL
 equal <- NULL
 
 # measurement error 0.15 s
-ROPE <- 0.15
+rope <- 0.15
 
 for (i in seq_len(nrow(df_exp_i))) {
   mean_i <- df_exp_i[i, ]$mu + 1 / df_exp_i[i, ]$lambda
@@ -281,7 +281,7 @@ for (i in seq_len(nrow(df_exp_i))) {
 
   diff <- abs(mean_i - mean_c)
 
-  if (diff > ROPE) {
+  if (diff > rope) {
     if (mean_c < mean_i) {
       congruent <- c(congruent, 1)
       incongruent <- c(incongruent, 0)

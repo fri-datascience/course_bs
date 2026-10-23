@@ -33,22 +33,22 @@ standardize_longitude <- function(x) {
 }
 
 # the intercept is part of the model matrix (1st column always equals 1)
-X <- model.matrix(~ longitude + hemisphere, data)
+design_matrix <- model.matrix(~ longitude + hemisphere, data)
 
 # show a couple of top rows to check if all is OK
-head(X)
+head(design_matrix)
 
 # default reference is europe
 continent_order <- c("africa", "asia", "europe")
 # here, we change it to africa
-# continent_order <- c("europe", "asia", "africa")
+# Continent order: Europe, Asia, Africa.
 
 # dependent variable (convert factor to integer levels for Stan)
 data$continent <- factor(data$continent, levels = continent_order)
 y <- as.integer(data$continent)
 
 # stan_data
-stan_data <- list(n = nrow(data), m = ncol(X), k = length(continent_order), x = X, y = y)
+stan_data <- list(n = nrow(data), m = ncol(design_matrix), k = length(continent_order), x = design_matrix, y = y)
 
 # fit
 fit <- model$sample(

@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
 ### In preparation for this lecture
@@ -129,8 +129,10 @@ And distributions are nothing but high level compact representations of probabil
 x <- seq(1, 50, 1) - 1
 y <- dgeom(x, 0.1)
 library(ggplot2)
-ggplot(data.frame(x, y), aes(x = x, y = y)) + geom_bar(stat = "identity") +
-  xlab("visitors") + ylab("probability")
+ggplot(data.frame(x, y), aes(x = x, y = y)) +
+  geom_bar(stat = "identity") +
+  xlab("visitors") +
+  ylab("probability")
 ```
 
 * In the temperature case, we would treat the temperature as an uncertain quantity $T$ and if we, for example, wanted to express the opinion that it will be around 25 degrees, use a normal distribution $T \sim N(25, 3)$. Again, if we agree that we will parametrize the normal distribution with the mean and standard deviation, this is an unambiguous statement that we assign the following density (the area represents the probabilities):
@@ -139,8 +141,10 @@ ggplot(data.frame(x, y), aes(x = x, y = y)) + geom_bar(stat = "identity") +
 x <- seq(1, 50, 0.01)
 y <- dnorm(x, 25, 3)
 library(ggplot2)
-ggplot(data.frame(x, y), aes(x = x, y = y)) + geom_line() +
-  xlab("temperature") + ylab("density")
+ggplot(data.frame(x, y), aes(x = x, y = y)) +
+  geom_line() +
+  xlab("temperature") +
+  ylab("density")
 ```
 
 It is a very short step from formal probabilistic expression to probabilistic (statistical) modeling. For example, recall the earlier example with the number of customers. Let's say that we don't really know what the mean number of customers $X$ is and we would instead like to predict it from historical data. Instead of claiming $X \sim \text{Geom(0.1)}$ we have to replace the constant with parameter $\theta$ we would like to learn about $X \sim \text{Geom}(\theta)$. Do we know exactly what $\theta$ is? Of course not, if we did, there would be nothing left to learn. Not all is known about $\theta$ so it again makes sense to think about it as an uncertain quantity. As such, we need to express our probabilistic opinion about $\theta$ before we even see the data. In other words, we need to give it a distribution. Even having no clue about what $\theta$ might be is no excuse, because having no clue is also a valid probabilistic expression. For example, we might say $\theta \sim \text{Unif}(0,1)$.

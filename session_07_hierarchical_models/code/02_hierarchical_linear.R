@@ -176,10 +176,10 @@ mcse(df_12_full$mu_a > df_22_full$mu_a)
 df_compare <- data.frame(diff = df_12_full$mu_a - df_22_full$mu_a)
 
 # beta
-# beta_12 < 0
+# Probability that beta_12 is negative.
 mcse(df_12_full$mu_b < 0)
 
-# beta_22 > 0
+# Probability that beta_22 is positive.
 mcse(df_22_full$mu_b > 0)
 
 # plot

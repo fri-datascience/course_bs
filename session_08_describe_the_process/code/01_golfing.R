@@ -90,7 +90,7 @@ mcse(df_binomial_samples$a)
 mcse(df_binomial_samples$b)
 
 # storage for probabilities
-X <- matrix(0, nrow = nrow(df_binomial_samples), ncol = precision)
+probability_samples <- matrix(0, nrow = nrow(df_binomial_samples), ncol = precision)
 
 # calculate probabilities from samples
 for (i in seq_len(nrow(df_binomial_samples))) {
@@ -99,7 +99,7 @@ for (i in seq_len(nrow(df_binomial_samples))) {
   b <- df_binomial_samples[i, ]$b
 
   # calculate probability
-  X[i, ] <- invlogit(a + b * x)
+  probability_samples[i, ] <- invlogit(a + b * x)
 }
 
 # data frame for storing probabilities
@@ -111,9 +111,9 @@ df_binomial <- data.frame(
 )
 
 # calculate mean and hdi for each distance
-for (i in seq_len(ncol(X))) {
+for (i in seq_len(ncol(probability_samples))) {
   # get column
-  column <- X[, i]
+  column <- probability_samples[, i]
 
   # calcuate
   p <- mean(column)
@@ -168,8 +168,8 @@ mcse(df_angle_samples$sigma)
 mcse(df_angle_samples$sigma_degrees)
 
 # extract probabilities
-X <- as_draws_matrix(fit_angle$draws())
-X <- X[, 4:(4 + nrow(data) - 1)]
+probability_samples <- as_draws_matrix(fit_angle$draws())
+probability_samples <- probability_samples[, 4:(4 + nrow(data) - 1)]
 
 # data frame for storing probabilities
 df_angle <- data.frame(
@@ -180,9 +180,9 @@ df_angle <- data.frame(
 )
 
 # calculate mean and hdi for each distance
-for (i in seq_len(ncol(X))) {
+for (i in seq_len(ncol(probability_samples))) {
   # get column
-  column <- X[, i]
+  column <- probability_samples[, i]
 
   # calcuate
   p <- mean(column)
@@ -243,8 +243,8 @@ df_distance_samples <- as_draws_df(fit_distance$draws())
 mcse(df_distance_samples$sigma)
 
 # extract probabilities
-X <- as_draws_matrix(fit_distance$draws())
-X <- X[, 3:(3 + nrow(data) - 1)]
+probability_samples <- as_draws_matrix(fit_distance$draws())
+probability_samples <- probability_samples[, 3:(3 + nrow(data) - 1)]
 
 # data frame for storing probabilities
 df_distance <- data.frame(
@@ -255,9 +255,9 @@ df_distance <- data.frame(
 )
 
 # calculate mean and hdi for each distance
-for (i in seq_len(ncol(X))) {
+for (i in seq_len(ncol(probability_samples))) {
   # get column
-  column <- X[, i]
+  column <- probability_samples[, i]
 
   # calcuate
   p <- mean(column)
@@ -329,8 +329,8 @@ mcse(df_angle_distance_samples$sigma_a_degrees)
 mcse(df_angle_distance_samples$sigma_d)
 
 # extract probabilities
-X <- as_draws_matrix(fit_angle_distance$draws())
-X <- X[, 5:(5 + nrow(data) - 1)]
+probability_samples <- as_draws_matrix(fit_angle_distance$draws())
+probability_samples <- probability_samples[, 5:(5 + nrow(data) - 1)]
 
 # data frame for storing probabilities
 df_angle_distance <- data.frame(
@@ -339,9 +339,9 @@ df_angle_distance <- data.frame(
 )
 
 # calculate mean and hdi for each distance
-for (i in seq_len(ncol(X))) {
+for (i in seq_len(ncol(probability_samples))) {
   # get column
-  column <- X[, i]
+  column <- probability_samples[, i]
 
   # calcuate
   p <- mean(column)

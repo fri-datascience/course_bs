@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
 # Summary
@@ -23,7 +23,7 @@ A bit of an intermezzo before we begin with statistical modelling. During our le
 
 HDI on the other hand acknowledges the shape of the distribution and give us an interval where the density of the distribution is the highest. In other words, a 90% HDI will give us the region where the likelihood of the distribution is higher than in the remaining 10%. Since we are traditionally interested in that region, we will be mainly using the HDI in this course. Below is a simple example that shows how we can calculate HDI numerically. The visualization at the end also shows the difference between HDI (solid dark grey lines) and the CI (dashed light grey lines).
 
-```{R message=FALSE}
+```{r message=FALSE}
 # libraries
 library(ggplot2)
 
@@ -70,18 +70,22 @@ cat(paste0("90% HDI: [", round(result[1], 3), ", ", round(result[2], 3), "]"))
 cat(paste0("90% CI: [", round(q5, 3), ", ", round(q95, 3), "]"))
 
 # plot
-df <- data.frame(x=x)
+df <- data.frame(x = x)
 ggplot(data = df) +
-  geom_density(aes(x=x), color=NA, fill="skyblue", alpha=0.75) +
+  geom_density(aes(x = x), color = NA, fill = "skyblue", alpha = 0.75) +
   xlab("difference") +
-  geom_vline(xintercept = q5,
-             linetype = "dashed",
-             color = "grey80",
-             linewidth = 1) +
-  geom_vline(xintercept = q95,
-             linetype = "dashed",
-             color = "grey80",
-             linewidth = 1) +
+  geom_vline(
+    xintercept = q5,
+    linetype = "dashed",
+    color = "grey80",
+    linewidth = 1
+  ) +
+  geom_vline(
+    xintercept = q95,
+    linetype = "dashed",
+    color = "grey80",
+    linewidth = 1
+  ) +
   geom_vline(xintercept = result[1], color = "grey40", linewidth = 1) +
   geom_vline(xintercept = result[2], color = "grey40", linewidth = 1)
 ```
@@ -137,10 +141,10 @@ plots <- list()
 # plot our initial belief
 df <- data.frame(x, prior)
 p <- ggplot(df, aes(x, prior)) +
-    geom_bar(stat = "identity") +
-    xlab("Water percentage") +
-    ylab("Belief") +
-    ylim(0, 1)
+  geom_bar(stat = "identity") +
+  xlab("Water percentage") +
+  ylab("Belief") +
+  ylim(0, 1)
 
 # store
 plots[[1]] <- p
@@ -149,43 +153,43 @@ plots[[1]] <- p
 our_belief <- NULL
 
 saw_land <- function(our_belief, plots) {
-    # calculate the posterior
-    if (is.null(our_belief)) {
-        posterior <- prior * land
-    } else {
-        posterior <- our_belief * land
-    }
-    posterior <- posterior / sum(posterior)
+  # calculate the posterior
+  if (is.null(our_belief)) {
+    posterior <- prior * land
+  } else {
+    posterior <- our_belief * land
+  }
+  posterior <- posterior / sum(posterior)
 
-    # plot
-    df <- data.frame(x, posterior)
-    plot <- ggplot(df, aes(x, posterior)) +
-        geom_bar(stat = "identity") +
-        xlab("Water percentage") +
-        ylab("Belief") +
-        ylim(0, 1)
+  # plot
+  df <- data.frame(x, posterior)
+  plot <- ggplot(df, aes(x, posterior)) +
+    geom_bar(stat = "identity") +
+    xlab("Water percentage") +
+    ylab("Belief") +
+    ylim(0, 1)
 
-    return(list(posterior, plot))
+  list(posterior, plot)
 }
 
 saw_water <- function(our_belief, plots) {
-    # calculate the posterior
-    if (is.null(our_belief)) {
-        posterior <- prior * water
-    } else {
-        posterior <- our_belief * water
-    }
-    posterior <- posterior / sum(posterior)
+  # calculate the posterior
+  if (is.null(our_belief)) {
+    posterior <- prior * water
+  } else {
+    posterior <- our_belief * water
+  }
+  posterior <- posterior / sum(posterior)
 
-    # plot
-    df <- data.frame(x, posterior)
-    plot <- ggplot(df, aes(x, posterior)) +
-        geom_bar(stat = "identity") +
-        xlab("Water percentage") +
-        ylab("Belief") +
-        ylim(0, 1)
+  # plot
+  df <- data.frame(x, posterior)
+  plot <- ggplot(df, aes(x, posterior)) +
+    geom_bar(stat = "identity") +
+    xlab("Water percentage") +
+    ylab("Belief") +
+    ylim(0, 1)
 
-    return(list(posterior, plot))
+  list(posterior, plot)
 }
 
 # sample location from https://www.realrandom.net/location.html
@@ -193,15 +197,15 @@ saw_water <- function(our_belief, plots) {
 y <- c(1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1)
 
 for (observation in y) {
-    if (observation == 1) {
-        result <- saw_water(our_belief, plots)
-    } else {
-        result <- saw_land(our_belief, plots)
-    }
+  if (observation == 1) {
+    result <- saw_water(our_belief, plots)
+  } else {
+    result <- saw_land(our_belief, plots)
+  }
 
-    # update our belief and store the plot
-    our_belief <- result[[1]]
-    plots[[length(plots) + 1]] <- result[[2]]
+  # update our belief and store the plot
+  our_belief <- result[[1]]
+  plots[[length(plots) + 1]] <- result[[2]]
 }
 
 plot_grid(plotlist = plots, ncol = 3, nrow = 4, scale = 0.9)
@@ -285,10 +289,12 @@ posterior <- posterior / sum(posterior)
 # visualize
 df <- data.frame(x = grid, y = posterior)
 ggplot(data = df, aes(x = x, y = y)) +
-  geom_bar(stat = "identity",
-           color = "#67a9cf",
-           fill = "#67a9cf",
-           alpha = 0.5) +
+  geom_bar(
+    stat = "identity",
+    color = "#67a9cf",
+    fill = "#67a9cf",
+    alpha = 0.5
+  ) +
   xlim(0, 1) +
   xlab("") +
   ylab("density") +
@@ -359,8 +365,10 @@ chain2 <- metropolis(z, n, init = 0.25)
 chain3 <- metropolis(z, n, init = 0.75)
 
 # plot samples through time
-df_samples <- data.frame(x = seq_len(length(chain1)),
-                        theta = chain1, chain = "1")
+df_samples <- data.frame(
+  x = seq_len(length(chain1)),
+  theta = chain1, chain = "1"
+)
 
 df_samples <- df_samples |>
   add_row(data.frame(x = seq_len(length(chain2)), theta = chain2, chain = "2"))
@@ -370,8 +378,10 @@ df_samples <- df_samples |>
 
 # visualize
 ggplot(data = df_samples, aes(x = theta)) +
-  geom_histogram(bins = 50, color = "skyblue",
-                 fill = "skyblue", alpha = 0.75) +
+  geom_histogram(
+    bins = 50, color = "skyblue",
+    fill = "skyblue", alpha = 0.75
+  ) +
   xlim(0, 1) +
   xlab("") +
   ylab("density") +
@@ -401,7 +411,7 @@ bernoulli <- function(n, p) {
   }
 
   # return the vector
-  return(x)
+  x
 }
 ```
 
@@ -442,8 +452,8 @@ So it is important to be aware that you will probably never develop a perfect mo
 Let us emphasize the point that all models are interpretations on a "practical" example. Below is a code snippet that generates a sequence of $n$ zeros and ones.
 
 ```{r eval=FALSE}
-# Generate a sequence of 0, 1 values
-zero_one_sequence <- function(n) {
+# Generate a sequence of 0, 1 values using supplied weather-reading functions.
+zero_one_sequence <- function(n, get_lj_temp, get_air_pressure_lj) {
   # Create and empty vector
   x <- c()
 
@@ -461,7 +471,7 @@ zero_one_sequence <- function(n) {
 
       if (p_lj < 1000) {
         # flip a coin for output 0 or 1
-          if (runif(1) > 0.5) {
+        if (runif(1) > 0.5) {
           x <- c(x, 0)
         } else {
           x <- c(x, 1)
@@ -474,7 +484,7 @@ zero_one_sequence <- function(n) {
   }
 
   # return the vector
-  return(x)
+  x
 }
 ```
 
@@ -715,17 +725,17 @@ model {
 
 Let us put our knowledge in practice. The `basketball_shots.csv` dataset contains data about hits and misses of basketball players when shooting free throws. Let's use the developed model to compare success of a basketball player when shooting on a traditional rim and a smaller rim.
 
-```{R message=FALSE, warning=FALSE, results="hide"}
+```{r message=FALSE, warning=FALSE, results="hide"}
 # load libraries
-library(cmdstanr)   # for interfacing Stan
-library(ggplot2)    # for visualizations
-library(ggdist)     # for distribution visualizations
-library(tidyverse)  # for data prep
-library(posterior)  # for extracting samples
-library(bayesplot)  # for some quick MCMC visualizations
-library(mcmcse)     # for comparing samples and calculating MCSE
+library(cmdstanr) # for interfacing Stan
+library(ggplot2) # for visualizations
+library(ggdist) # for distribution visualizations
+library(tidyverse) # for data prep
+library(posterior) # for extracting samples
+library(bayesplot) # for some quick MCMC visualizations
+library(mcmcse) # for comparing samples and calculating MCSE
 library(HDInterval) # for high density intervals
-library(shinystan)  # for visual diagnostics
+library(shinystan) # for visual diagnostics
 
 # compile the model
 model <- cmdstan_model("./models/bernoulli_beta.stan")
@@ -764,17 +774,17 @@ First we load the required R libraries and compile the model we prepared. Next, 
 
 After the sampling finishes we have to perform some diagnostics to check if everything was OK. In this lecture we will just quickly mention some basic diagnostic techniques, some of them should already be familiar to you. You will learn more about how to check if everything went OK in one of the following lectures.
 
-```{R message=FALSE, results="hide"}
+```{r message=FALSE, results="hide"}
 # traceplots
-#mcmc_trace(fit_default$draws("theta"))
+# To inspect traces, call mcmc_trace(fit_default$draws("theta")).
 mcmc_trace(fit_special$draws("theta"))
 ```
 
 Stan implements the most common diagnostics, such as the traceplots, $\hat{R}$, effective sample size (ESS). Traceplots offer a quick diagnostic for detecting if there were any issues during sampling. We are using 4 chains to sample independently in parallel. Informally, the traceplot has to look like a hairy caterpillar, this means that all chains are sampling in a similar fashion. If the behaviour of one of the chains is completely different from the others then there is something wrong with your model.
 
-```{R message=FALSE}
+```{r message=FALSE}
 # summary
-#fit_default$summary()
+# To inspect the summary, call fit_default$summary().
 fit_special$summary()
 ```
 
@@ -792,7 +802,7 @@ where $SS$ is the total sample size, if we are using 4 chains where each one of 
 
 The above diagnostics will be enough for the majority of our use cases, Stan also offers a function ($\texttt{cmdstan_diagnose()}$) that automatically performs some essential checks and lets you know if some things are not in order. If the name of your model fit variable is $\texttt{fit_normal}$ then running $\texttt{fit_normal\$cmdstan_diagnose()}$ woud run the basic diagnostics on it. Furthermore, you can use the $\texttt{shinystan}$ package to open up a web interface in which you can interactively explore your fits.
 
-```{R eval=FALSE}
+```{r eval=FALSE}
 # additional automated diagnostics
 fit_default$cmdstan_diagnose()
 fit_special$cmdstan_diagnose()
@@ -804,7 +814,7 @@ launch_shinystan(fit_special)
 
 Since our diagnostics show no reason for concern, we can extract our samples and start our analysis.
 
-```{R message=FALSE}
+```{r message=FALSE}
 # convert draws to data frame
 df_default <- as_draws_df(fit_default$draws("theta"))
 df_special <- as_draws_df(fit_special$draws("theta"))
@@ -823,7 +833,7 @@ Now we can compare how this basketball player fares when shooting on a default s
 
 The first comparison calculates the difference in success between the default and the special rims. We can see that the player has a 30.78% ($\pm$ 0.2%) higher success rate when shooting on the default rim. The second comparison calculates the probability with which we can claim that player's success is indeed higher when shooting on the default rim. As you can see we can claim this with ~100% ($\pm$ 0%) probability. So we are extremely confident (as confident as we can be) that shooting on a larger rim will yield better success. The code snippet below visualizes this finding.
 
-```{R message=FALSE}
+```{r message=FALSE}
 # label each dataframe and bind together
 df_default$Rim <- "Default"
 df_special$Rim <- "Special"
@@ -832,14 +842,14 @@ df_player1 <- rbind(df_default, df_special)
 # visualize
 ggplot(data = df_player1, aes(x = theta, group = Rim, fill = Rim)) +
   geom_density(alpha = 0.5, color = NA) +
-  scale_fill_brewer(type='qual', palette = 3) +
+  scale_fill_brewer(type = "qual", palette = 3) +
   xlim(0, 1) +
   theme_minimal()
 ```
 
 Note that the above statement that we are ~100% certain that the player is more successful when shooting on the default rim than on the special rim is based on averages. We are answering the question: *"How certain are we that the player will make more shots on the default rim than on the special rim if we were to see him shoot a lot of shots?"* On the other hand, we need to perform analysis in a different way, if the question is *"What is the probability that the player will make the next shot on the default rim versus the probability that it will make the next shot on the special rim?"* These types of question also commonly pop up during our analyses. In this case, we need to acknowledge the whole distribution and not only the mean/location parameter of it. We usually do this by drawing a large number of samples from each of the distributions and then compare those. Below is an example of such an analysis.
 
-```{R message=FALSE}
+```{r message=FALSE}
 # number of draws
 n <- 100000
 

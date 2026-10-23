@@ -8,10 +8,10 @@ df <- read.csv("../data/50_startups.csv")
 # plot -------------------------------------------------------------------------
 # to long format
 df_funds <- df |>
-    select(administration, research, marketing, profit) |>
-    gather(field, funds)
+  select(administration, research, marketing, profit) |>
+  gather(field, funds)
 
 # plot
 ggplot(df_funds, aes(x = funds)) +
-    geom_density(color = NA, fill = "grey50") +
-    facet_wrap(~ field, ncol = 2)
+  geom_density(color = NA, fill = "grey50") +
+  facet_wrap(~field, ncol = 2)

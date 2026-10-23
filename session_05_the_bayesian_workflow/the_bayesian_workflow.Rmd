@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
 # Summary
@@ -31,7 +31,7 @@ $$\theta = \text{inv_logit}(\sum_{i = 1}^n x_i \beta_i).$$
 
 Below is the implementation of the described process.
 
-```{R warning=FALSE, message=FALSE, results = 'hide', fig.width=16, fig.height=9}
+```{r warning=FALSE, message=FALSE, results = 'hide', fig.width=16, fig.height=9}
 # libraries --------------------------------------------------------------------
 library(ggplot2)
 library(arm)
@@ -50,7 +50,7 @@ simulation <- function(n_x) {
     result <- c(result, invlogit(sum(betas * x)))
   }
 
-  return(result)
+  result
 }
 
 # data frame for storing results
@@ -62,18 +62,21 @@ for (n_x in c(2, 8, 32)) {
   result <- simulation(n_x)
 
   # store
-  df <- rbind(df, data.frame(x = result,
-                             n = paste0(n_x, " predictors")))
+  df <- rbind(df, data.frame(
+    x = result,
+    n = paste0(n_x, " predictors")
+  ))
 }
 
 # set levels for proper ordering of sub graphs
 df$n <- factor(df$n,
-               levels = c("2 predictors", "8 predictors", "32 predictors"))
+  levels = c("2 predictors", "8 predictors", "32 predictors")
+)
 
 # plot
 ggplot(data = df, aes(x = x)) +
   geom_histogram(bins = 30) +
-  facet_grid(~ n) +
+  facet_grid(~n) +
   xlab("theta")
 ```
 
@@ -115,7 +118,7 @@ generated quantities {
 
 Because you are already familiar with Stan and with the way Stan and R interact these code snippets should be easy to understand. The only novel thing is the `fixed_param = TRUE` setting in the model's sampling function in R. This tells Stan that we are not using it in the traditional way where we are interested in estimating parameters. Our parameters are known (fixed) and we will essentially use them merely for random number generation.
 
-```{R warning=FALSE, message=FALSE, results = 'hide', fig.width=9, fig.height=9}
+```{r warning=FALSE, message=FALSE, results = 'hide', fig.width=9, fig.height=9}
 # libraries --------------------------------------------------------------------
 library(cmdstanr)
 library(posterior)
@@ -127,8 +130,7 @@ library(ggdist)
 # compile the model
 model <- cmdstan_model("./models/prior.stan")
 
-# for Cauchy(0, 2.5) prior on the intercept use the model below
-#model <- cmdstan_model("./models/prior_cauchy.stan")
+# For a Cauchy(0, 2.5) prior on the intercept, use ./models/prior_cauchy.stan.
 
 # generate data
 n <- 100
@@ -156,8 +158,10 @@ df_plot <- data.frame(x = numeric(), y = factor())
 
 # plot 10
 for (i in 1:10) {
-  df_plot <- rbind(df_plot,
-                   data.frame(x = as.numeric(df[i, ]), y = as.factor(i)))
+  df_plot <- rbind(
+    df_plot,
+    data.frame(x = as.numeric(df[i, ]), y = as.factor(i))
+  )
 }
 
 # simulated distributions of heights
@@ -190,7 +194,7 @@ Since our models are often complex and high dimensional the visual comparison is
 
 In the example below we are interested in the mean temperature in Slovenia after the year 2000. We fit a normal model to our data and then generate 16 replicate datasets from our posterior samples. Visualization below visualizes replicate datasets (gray histograms) along with their means (gray vertical lines), while the black vertical line visualizes the sample mean. Since it seems like our model does a good job at estimating the mean temperature in Slovenia we can proceed with our analysis (whatever that might be). If we are interested in other quantities (e.g.,variance) then we need to check whether our model does a good job at estimating those as well.
 
-```{R warning=FALSE, message=FALSE, results = 'hide', fig.width=9, fig.height=9}
+```{r warning=FALSE, message=FALSE, results = 'hide', fig.width=9, fig.height=9}
 # libraries --------------------------------------------------------------------
 library(cmdstanr)
 library(ggplot2)
@@ -242,9 +246,13 @@ for (i in 1:n) {
   temperatures <- rnorm(nrow(data), mean = df_16[i, ]$mu, sd = df_16[i, ]$sigma)
 
   # store
-  df_ppc <- rbind(df_ppc,
-                  data.frame(temperature = temperatures,
-                             iteration = as.factor(i)))
+  df_ppc <- rbind(
+    df_ppc,
+    data.frame(
+      temperature = temperatures,
+      iteration = as.factor(i)
+    )
+  )
 }
 
 # means
@@ -255,12 +263,16 @@ df_ppc_means <- df_ppc |>
 # plot
 ggplot(data = df_ppc, aes(x = temperature)) +
   geom_histogram(bins = 30, alpha = 0.5) +
-  geom_vline(data = df_ppc_means,
-             aes(xintercept = mean_temperature),
-             linewidth = 1, alpha = 0.5) +
-  geom_vline(xintercept = mean(data$temperature),
-             linewidth = 1,
-             linetype = "dashed") +
+  geom_vline(
+    data = df_ppc_means,
+    aes(xintercept = mean_temperature),
+    linewidth = 1, alpha = 0.5
+  ) +
+  geom_vline(
+    xintercept = mean(data$temperature),
+    linewidth = 1,
+    linetype = "dashed"
+  ) +
   facet_wrap(iteration ~ ., nrow = 4) +
   xlab("T [°C]")
 ```

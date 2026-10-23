@@ -555,21 +555,21 @@ several times, to quantify uncertainty. In essence, we mimic the
 two-level structure of the data, capturing both the uncertainty due to
 cluster sampling and the uncertainty due to unit sampling.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>h_bootstrap <span class="ot">&lt;-</span> <span class="cf">function</span>(x, group, w, <span class="at">m =</span> <span class="dv">100</span>) {</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  k   <span class="ot">&lt;-</span> <span class="fu">length</span>(w)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  k <span class="ot">&lt;-</span> <span class="fu">length</span>(w)</span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  mus <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>m) {    <span class="co"># bootstrap iteration</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>m) { <span class="co"># bootstrap iteration</span></span>
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    tot_w <span class="ot">&lt;-</span> <span class="dv">0</span></span>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    tot_x <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>k) {  <span class="co"># resample clusters</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>k) { <span class="co"># resample clusters</span></span>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>      idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>k, <span class="dv">1</span>)</span>
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>      tmp <span class="ot">&lt;-</span> x[group <span class="sc">==</span> idx]</span>
 <span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>      tot_w <span class="ot">&lt;-</span> tot_w <span class="sc">+</span> w[idx]</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>      tmp <span class="ot">&lt;-</span> <span class="fu">sample</span>(tmp, <span class="fu">length</span>(tmp), <span class="at">rep =</span> T) <span class="co"># resample withing cluster</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>      tmp <span class="ot">&lt;-</span> <span class="fu">sample</span>(tmp, <span class="fu">length</span>(tmp), <span class="at">rep =</span> <span class="cn">TRUE</span>) <span class="co"># resample withing cluster</span></span>
 <span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>      tot_x <span class="ot">&lt;-</span> tot_x <span class="sc">+</span> <span class="fu">mean</span>(tmp) <span class="sc">*</span> w[idx]</span>
 <span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    }</span>
 <span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    mus <span class="ot">&lt;-</span> <span class="fu">c</span>(mus, tot_x <span class="sc">/</span> tot_w)</span>
 <span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  }</span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="fu">return</span> (<span class="fu">list</span>(<span class="at">mu =</span> <span class="fu">mean</span>(mus), <span class="at">SE =</span> <span class="fu">sd</span>(mus)))</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mu =</span> <span class="fu">mean</span>(mus), <span class="at">SE =</span> <span class="fu">sd</span>(mus)))</span>
 <span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>}</span></code></pre></div>
 <p>Finally, we will use a Bayesian model that models the two-level
 strucure. Similarly, we will estimate the mean of each cluster

@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
 # Summary
@@ -130,10 +130,10 @@ q_seq <- seq(from = 0.01, to = 0.99, by = 0.01)
 
 # d_kl
 d_kl_seq <- sapply(
-    q_seq,
-    function(q) {
-        d_kl(p, c(q, 1 - q))
-    }
+  q_seq,
+  function(q) {
+    d_kl(p, c(q, 1 - q))
+  }
 )
 
 # plot

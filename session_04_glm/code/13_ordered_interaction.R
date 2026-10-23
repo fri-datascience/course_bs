@@ -20,16 +20,16 @@ contrasts(data$country) <- contr.treatment(n_distinct(data$country))
 contrasts(data$sex) <- contr.treatment(n_distinct(data$sex))
 
 # note that intercept is part of the model matrix (1st column always equals 1)
-X <- model.matrix(~ religion + degree + country + sex, data)
+design_matrix <- model.matrix(~ religion + degree + country + sex, data)
 # remove intercept since in ordered regression intercepts are cutpoints
-X <- X[, -1]
+design_matrix <- design_matrix[, -1]
 
 # add an interaction between the country and religion
-X <- data.frame(X)
-X$religious_usa <- X$religion2 * X$country2
+design_matrix <- data.frame(design_matrix)
+design_matrix$religious_usa <- design_matrix$religion2 * design_matrix$country2
 
 # show a couple of top rows to check if all is OK
-head(X)
+head(design_matrix)
 
 # check poverty levels
 levels(data$poverty)
@@ -46,7 +46,7 @@ levels(data$poverty)
 y <- data$poverty
 
 # stan_data
-stan_data <- list(n = nrow(data), m = ncol(X), k = nlevels(y), x = X, y = y)
+stan_data <- list(n = nrow(data), m = ncol(design_matrix), k = nlevels(y), x = design_matrix, y = y)
 
 # fit
 fit <- model$sample(

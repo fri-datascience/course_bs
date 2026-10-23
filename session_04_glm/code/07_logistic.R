@@ -100,7 +100,7 @@ ggplot(data = df, aes(x = beta)) +
 mean_alpha <- mean(df$alpha)
 mean_beta <- mean(df$beta)
 
-# logit(theta) = mean_alpha + mean_beta * 183
+# At 183 cm, the logit is mean_alpha + mean_beta * 183.
 theta183 <- invlogit(mean_alpha + mean_beta * 183)
 theta184 <- invlogit(mean_alpha + mean_beta * 184)
 

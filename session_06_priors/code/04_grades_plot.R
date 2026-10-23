@@ -89,7 +89,7 @@ kl_divergence_beta <- function(a_p, b_p, a_q, b_q) {
   # kl divergence
   kl <- sum(p * log(p / q) * dx, na.rm = TRUE)
 
-  return(kl)
+  kl
 }
 
 # calculate kl divergence for each beta model vs the truth

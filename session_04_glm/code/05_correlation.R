@@ -17,11 +17,11 @@ data <- read.csv("./session_04_glm/data/toy.csv")
 data$x2 <- data$x + rnorm(nrow(data), 0, 2)
 
 # independent variables only
-X <- data |> select(-y)
+design_matrix <- data |> select(-y)
 
 # correlation
 # plot correlation of independent variables
-pairs.panels(X,
+pairs.panels(design_matrix,
   method = "pearson", # correlation method
   hist.col = "skyblue",
   density = TRUE, # show density plots
@@ -29,7 +29,7 @@ pairs.panels(X,
 )
 
 # prepare data for stan
-stan_data <- list(n = nrow(data), m = ncol(X), X = X, y = data$y)
+stan_data <- list(n = nrow(data), m = ncol(design_matrix), X = design_matrix, y = data$y)
 
 # fit
 fit <- model$sample(

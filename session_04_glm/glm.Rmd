@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
 # Summary
@@ -49,7 +49,7 @@ model {
 
 The $\texttt{data}$ block contains three variables, `n` stores the total number of data points, `x` the values of the independent variable and `y` the values of the `dependent` variables. In the $\texttt{model}$ block you can see that we are using a normal distribution as the core building block. To model a linear dependency between `x` and `y` we replaced the `mean` ($\mu$) parameter of the normal distribution with a linear function (`a + b * x`), where `a` denotes the intercept and `b` the slope of the function. The $\texttt{parameters}$ block contains the three parameters of the model that we are interested in estimating. Below is the code that compiles the model, loads and prepares the data and fits the model.
 
-```{R message=FALSE, results="hide", fig.show="hide"}
+```{r message=FALSE, results="hide", fig.show="hide"}
 # load libraries
 library(cmdstanr)
 library(tidyverse)
@@ -94,7 +94,7 @@ fit$summary()
 
 The `traceplot` and `summary` both show no reasons for any concerns, we will skip them here for brevity, but in practice you should always start your analysis by inspecting the outputs of these two functions. Whenever possible you should also always visually inspect how fitted distributions match the underlying data. With more complex and highly dimensional models this most likely will not be possible but here we can easily do this. Let us take a peek at the value of our model's parameters (the intercept, `a` and the slope `b`).
 
-```{R message=FALSE}
+```{r message=FALSE}
 # params
 df <- as_draws_df(fit$draws())
 mcse(df$a)
@@ -104,7 +104,7 @@ mcse(df$b > 0)
 
 The intercept ($\alpha$ or `a` in our case) denotes the value of `y` when `x` equals zero. For the purpose of numerical stability and to make life easier for Stan, we have shifted our data, this now means that `a` denotes the temperature at the minimum year in our dataset (1901). The slope parameter ($\beta$ or `b` in our case) denotes how `y` changes with `x`, in our case how temperature changes through ages. You can see that we are extremelly confident (P ≈ 1) that value of `b` is positive. This means that the temperature has been rising over the last 120 years, in fact it has been rising on average by 0.013 $\pm$ 0.0004 °C per year.
 
-```{R message=FALSE}
+```{r message=FALSE}
 # plot only 100 random regression lines
 df_100 <- sample_n(df, 100)
 
@@ -577,14 +577,14 @@ In this case every generated sample of the $\beta$ parameter will be a matrix wi
 
 We start by loading our dataset, it has 3 columns -- PlayerType, Distance, ShotType. Distance is a metric variable while player type (guard, forward or center) and shot type (above head, hook shot, layup) contain strings. Since the latter two are not strings of characters but factors (in our case both are nominal variables) we have to explicitly tell R that it should treat them as such.
 
-```{R}
+```{r}
 # load data
 data <- read.csv("./data/shot_types.csv", stringsAsFactors = TRUE)
 ```
 
 Once our variable types are properly set, we can easily prepare matrices with independent and dependent variables. The `model.matrix()` function can be used to create the so called model matrix (<https://en.wikipedia.org/wiki/Design_matrix>). In model matrices (or design matrices) each row represents an observation of our data, with the successive columns corresponding to the variables and their specific values for that object. To encode nominal variables model matrices use something called contrasts, you can think of contrasts as encoding of variables.
 
-```{R, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE}
 # library needed for n_distinct
 library(dplyr)
 
@@ -597,17 +597,17 @@ contrasts(data$PlayerType)
 
 When constructing the model matrix we first have to specify which independent variables we want to encode, in the snippet above we use the `contrasts()` function to encode our PlayerType variable. Once we determine which variables have to be encoded, we can use the `model.matrix()` function to create the final model matrix. This matrix represents represents our independent variable related input data.
 
-```{R}
+```{r}
 # note here that intercept is part of the model matrix (1st column always equals 1)
-X <- model.matrix(~ Distance + PlayerType, data)
+design_matrix <- model.matrix(~ Distance + PlayerType, data)
 
 # show a couple of top rows to check if all is OK
-head(X)
+head(design_matrix)
 ```
 
 One thing worth mentioning here is the first column (`(Intercept)`), as you see its value is always 1. In practice this means that we do not need an explicit intercept ($\alpha$) in the formulation of our GLM, since the first $\beta$ coefficient will be always multiplied by 1 and will thus effectively serve as the intercept. Therefore, intercept is often labeled as $\beta_0$. To prepare the vector of dependent variables we can just use the ShotType column of our dataset. Since it is a factor it will be automatically translated into numerical variables before the fitting process.
 
-```{R}
+```{r}
 # dependent variable
 y <- data$ShotType
 

@@ -50,11 +50,11 @@ df_s <- df_s |> select(-lp__, -.draw, -.chain, -.iteration)
 df_nu <- df_s[(3 + p + q):(3 + p + q + nrow(df) - 1)]
 
 hdi5 <- function(x) {
-  return(hdi(x, credMass = 0.90)[1])
+  hdi(x, credMass = 0.90)[1]
 }
 
 hdi95 <- function(x) {
-  return(hdi(x, credMass = 0.90)[2])
+  hdi(x, credMass = 0.90)[2]
 }
 
 df_plot <- data.frame(

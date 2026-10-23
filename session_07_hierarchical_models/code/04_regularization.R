@@ -10,7 +10,7 @@ library(glmnet) # for L2 (ridge) and L1 (lasso) regressions
 data <- read.csv("./session_07_hierarchical_models/data/ozone.csv")
 
 # use 500 to train the rest to test
-idx <- sample(1:nrow(data), 500, rep = F)
+idx <- sample(seq_len(nrow(data)), 500, rep = FALSE)
 
 # in practice, test data should not be used
 # to scale all data, but we do it to simplify
@@ -30,13 +30,13 @@ my_lm <- lm(target ~ ., dat_train)
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "lm",
-  Row = 1:nrow(dat_train),
+  Row = seq_len(nrow(dat_train)),
   Predicted = predict(my_lm),
   True = dat_train$target
 ))
 res_te <- rbind(res_te, data.frame(
   Method = "lm",
-  Row = 1:nrow(dat_test),
+  Row = seq_len(nrow(dat_test)),
   Predicted = predict(my_lm, newdata = dat_test),
   True = dat_test$target
 ))
@@ -46,13 +46,13 @@ my_rf <- randomForest(target ~ ., dat_train, ntree = 1000)
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "rf",
-  Row = 1:nrow(dat_train),
+  Row = seq_len(nrow(dat_train)),
   Predicted = predict(my_rf),
   True = dat_train$target
 ))
 res_te <- rbind(res_te, data.frame(
   Method = "rf",
-  Row = 1:nrow(dat_test),
+  Row = seq_len(nrow(dat_test)),
   Predicted = predict(my_rf, newdata = dat_test),
   True = dat_test$target
 ))
@@ -65,17 +65,17 @@ cvfit <- glmnet::cv.glmnet(
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "L2",
-  Row = 1:nrow(dat_train),
+  Row = seq_len(nrow(dat_train)),
   Predicted = c(predict(cvfit, newx = as.matrix(dat_train[, -1]), s = "lambda.1se")),
   True = dat_train$target
 ))
 res_te <- rbind(res_te, data.frame(
   Method = "L2",
-  Row = 1:nrow(dat_test),
+  Row = seq_len(nrow(dat_test)),
   Predicted = c(predict(cvfit, newx = as.matrix(dat_test[, -1]), s = "lambda.1se")),
   True = dat_test$target
 ))
-cvfit_L2 <- cvfit
+cvfit_l2 <- cvfit
 
 # L1-regularized regression, cross-validated reg. parameter --------------------
 cvfit <- glmnet::cv.glmnet(
@@ -85,27 +85,27 @@ cvfit <- glmnet::cv.glmnet(
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "L1",
-  Row = 1:nrow(dat_train),
+  Row = seq_len(nrow(dat_train)),
   Predicted = c(predict(cvfit, newx = as.matrix(dat_train[, -1]), s = "lambda.1se")),
   True = dat_train$target
 ))
 res_te <- rbind(res_te, data.frame(
   Method = "L1",
-  Row = 1:nrow(dat_test),
+  Row = seq_len(nrow(dat_test)),
   Predicted = c(predict(cvfit, newx = as.matrix(dat_test[, -1]), s = "lambda.1se")),
   True = dat_test$target
 ))
-cvfit_L1 <- cvfit
+cvfit_l1 <- cvfit
 
 # Bayesian lm no regularization ------------------------------------------------
 model <- cmdstan_model("./session_07_hierarchical_models/models/regularization_none.stan")
 
 y <- dat_train[, 1]
-X <- dat_train[, -1]
-X_test <- dat_test[, -1]
+design_matrix <- dat_train[, -1]
+design_matrix_test <- dat_test[, -1]
 stan_data <- list(
-  y = y, X = X, n = nrow(X), k = ncol(X), m = nrow(X_test),
-  X_test = X_test
+  y = y, X = design_matrix, n = nrow(design_matrix), k = ncol(design_matrix), m = nrow(design_matrix_test),
+  X_test = design_matrix_test
 )
 
 # fit
@@ -126,13 +126,13 @@ lm_beta <- lm_beta |> select(-.chain, -.iteration, -.draw)
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "lmBayes",
-  Row = 1:nrow(dat_train),
+  Row = seq_len(nrow(dat_train)),
   Predicted = colMeans(pred),
   True = dat_train$target
 ))
 res_te <- rbind(res_te, data.frame(
   Method = "lmBayes",
-  Row = 1:nrow(dat_test),
+  Row = seq_len(nrow(dat_test)),
   Predicted = colMeans(pred_test),
   True = dat_test$target
 ))
@@ -141,11 +141,11 @@ res_te <- rbind(res_te, data.frame(
 model <- cmdstan_model("./session_07_hierarchical_models/models/regularization_parameter.stan")
 
 y <- dat_train[, 1]
-X <- dat_train[, -1]
-X_test <- dat_test[, -1]
+design_matrix <- dat_train[, -1]
+design_matrix_test <- dat_test[, -1]
 stan_data <- list(
-  y = y, X = X, n = nrow(X), k = ncol(X), m = nrow(X_test),
-  X_test = X_test, sigma_beta = 1
+  y = y, X = design_matrix, n = nrow(design_matrix), k = ncol(design_matrix), m = nrow(design_matrix_test),
+  X_test = design_matrix_test, sigma_beta = 1
 )
 
 # fit
@@ -166,13 +166,13 @@ lm1_beta <- lm1_beta |> select(-.chain, -.iteration, -.draw)
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "lmBayes[1]",
-  Row = 1:nrow(dat_train),
+  Row = seq_len(nrow(dat_train)),
   Predicted = colMeans(pred),
   True = dat_train$target
 ))
 res_te <- rbind(res_te, data.frame(
   Method = "lmBayes[1]",
-  Row = 1:nrow(dat_test),
+  Row = seq_len(nrow(dat_test)),
   Predicted = colMeans(pred_test),
   True = dat_test$target
 ))
@@ -181,11 +181,11 @@ res_te <- rbind(res_te, data.frame(
 model <- cmdstan_model("./session_07_hierarchical_models/models/regularization_parameter.stan")
 
 y <- dat_train[, 1]
-X <- dat_train[, -1]
-X_test <- dat_test[, -1]
+design_matrix <- dat_train[, -1]
+design_matrix_test <- dat_test[, -1]
 stan_data <- list(
-  y = y, X = X, n = nrow(X), k = ncol(X), m = nrow(X_test),
-  X_test = X_test, sigma_beta = 0.1
+  y = y, X = design_matrix, n = nrow(design_matrix), k = ncol(design_matrix), m = nrow(design_matrix_test),
+  X_test = design_matrix_test, sigma_beta = 0.1
 )
 
 # fit
@@ -206,13 +206,13 @@ lm01_beta <- lm01_beta |> select(-.chain, -.iteration, -.draw)
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "lmBayes[0.1]",
-  Row = 1:nrow(dat_train),
+  Row = seq_len(nrow(dat_train)),
   Predicted = colMeans(pred),
   True = dat_train$target
 ))
 res_te <- rbind(res_te, data.frame(
   Method = "lmBayes[0.1]",
-  Row = 1:nrow(dat_test),
+  Row = seq_len(nrow(dat_test)),
   Predicted = colMeans(pred_test),
   True = dat_test$target
 ))
@@ -221,11 +221,11 @@ res_te <- rbind(res_te, data.frame(
 model <- cmdstan_model("./session_07_hierarchical_models/models/regularization_hyperprior_l1.stan")
 
 y <- dat_train[, 1]
-X <- dat_train[, -1]
-X_test <- dat_test[, -1]
+design_matrix <- dat_train[, -1]
+design_matrix_test <- dat_test[, -1]
 stan_data <- list(
-  y = y, X = X, n = nrow(X), k = ncol(X), m = nrow(X_test),
-  X_test = X_test
+  y = y, X = design_matrix, n = nrow(design_matrix), k = ncol(design_matrix), m = nrow(design_matrix_test),
+  X_test = design_matrix_test
 )
 
 # fit
@@ -241,18 +241,18 @@ pred <- as_draws_df(fit$draws("pred"))
 pred <- pred |> select(-.chain, -.iteration, -.draw)
 pred_test <- as_draws_df(fit$draws("pred_test"))
 pred_test <- pred_test |> select(-.chain, -.iteration, -.draw)
-L1_beta <- as_draws_df(fit$draws("beta"))
-L1_beta <- L1_beta |> select(-.chain, -.iteration, -.draw)
+l1_beta <- as_draws_df(fit$draws("beta"))
+l1_beta <- l1_beta |> select(-.chain, -.iteration, -.draw)
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "L1Bayes",
-  Row = 1:nrow(dat_train),
+  Row = seq_len(nrow(dat_train)),
   Predicted = colMeans(pred),
   True = dat_train$target
 ))
 res_te <- rbind(res_te, data.frame(
   Method = "L1Bayes",
-  Row = 1:nrow(dat_test),
+  Row = seq_len(nrow(dat_test)),
   Predicted = colMeans(pred_test),
   True = dat_test$target
 ))
@@ -261,11 +261,11 @@ res_te <- rbind(res_te, data.frame(
 model <- cmdstan_model("./session_07_hierarchical_models/models/regularization_hyperprior_l2.stan")
 
 y <- dat_train[, 1]
-X <- dat_train[, -1]
-X_test <- dat_test[, -1]
+design_matrix <- dat_train[, -1]
+design_matrix_test <- dat_test[, -1]
 stan_data <- list(
-  y = y, X = X, n = nrow(X), k = ncol(X), m = nrow(X_test),
-  X_test = X_test
+  y = y, X = design_matrix, n = nrow(design_matrix), k = ncol(design_matrix), m = nrow(design_matrix_test),
+  X_test = design_matrix_test
 )
 
 # fit
@@ -281,18 +281,18 @@ pred <- as_draws_df(fit$draws("pred"))
 pred <- pred |> select(-.chain, -.iteration, -.draw)
 pred_test <- as_draws_df(fit$draws("pred_test"))
 pred_test <- pred_test |> select(-.chain, -.iteration, -.draw)
-L2_beta <- as_draws_df(fit$draws("beta"))
-L2_beta <- L2_beta |> select(-.chain, -.iteration, -.draw)
+l2_beta <- as_draws_df(fit$draws("beta"))
+l2_beta <- l2_beta |> select(-.chain, -.iteration, -.draw)
 
 res_tr <- rbind(res_tr, data.frame(
   Method = "L2Bayes",
-  Row = 1:nrow(dat_train),
+  Row = seq_len(nrow(dat_train)),
   Predicted = colMeans(pred),
   True = dat_train$target
 ))
 res_te <- rbind(res_te, data.frame(
   Method = "L2Bayes",
-  Row = 1:nrow(dat_test),
+  Row = seq_len(nrow(dat_test)),
   Predicted = colMeans(pred_test),
   True = dat_test$target
 ))
@@ -320,10 +320,10 @@ coeff_lm[is.na(coeff_lm)] <- 0
 coeff_lmb <- colMeans(lm_beta)
 coeff_lmb1 <- colMeans(lm1_beta)
 coeff_lmb01 <- colMeans(lm01_beta)
-coeff_L1 <- as.matrix(glmnet::coef.glmnet(cvfit_L1, s = "lambda.1se"))[-1]
-coeff_L1b <- colMeans(L1_beta)
-coeff_L2 <- as.matrix(glmnet::coef.glmnet(cvfit_L2, s = "lambda.1se"))[-1]
-coeff_L2b <- colMeans(L2_beta)
+coeff_l1 <- as.matrix(glmnet::coef.glmnet(cvfit_l1, s = "lambda.1se"))[-1]
+coeff_l1b <- colMeans(l1_beta)
+coeff_l2 <- as.matrix(glmnet::coef.glmnet(cvfit_l2, s = "lambda.1se"))[-1]
+coeff_l2b <- colMeans(l2_beta)
 
 tmp <- data.frame(
   Idx = rep(1:300, 8),
@@ -332,10 +332,10 @@ tmp <- data.frame(
     (abs(coeff_lmb)),
     (abs(coeff_lmb1)),
     (abs(coeff_lmb01)),
-    (abs(coeff_L1)),
-    (abs(coeff_L1b)),
-    (abs(coeff_L2)),
-    (abs(coeff_L2b))
+    (abs(coeff_l1)),
+    (abs(coeff_l1b)),
+    (abs(coeff_l2)),
+    (abs(coeff_l2b))
   ),
   Method = rep(
     c(

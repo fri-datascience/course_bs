@@ -87,11 +87,9 @@ for (p in 0:max_order) {
     seed = 1
   )
 
-  # uncomment lines below for diagnostic purposes
-  # traceplot
-  # mcmc_trace(fit$draws(c("b", "sigma")))
-  # summary
-  # fit$summary(c("b", "sigma"))
+  # optional diagnostics
+  # To inspect traces, call mcmc_trace(fit$draws(c("b", "sigma"))).
+  # To inspect the summary, call fit$summary(c("b", "sigma")).
 
   # extract mse
   df <- as_draws_df(fit$draws(c("mse_train", "mse_test", "b")))

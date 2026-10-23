@@ -20,25 +20,25 @@ m_max <- 6
 
 # generate the data
 # predictors
-X <- matrix(nrow = n, ncol = m_max + 1)
-X[, 1] <- 1
+design_matrix <- matrix(nrow = n, ncol = m_max + 1)
+design_matrix[, 1] <- 1
 
 # other terms
 for (i in 2:(m_max + 1)) {
-  X[, i] <- runif(n, -1, 1)
+  design_matrix[, i] <- runif(n, -1, 1)
 }
 
 # set seed
 set.seed(1)
 
 # generate data
-y <- rnorm(n, 1 + 1.5 * X[, 2] - 2.5 * X[, 3], 1)
+y <- rnorm(n, 1 + 1.5 * design_matrix[, 2] - 2.5 * design_matrix[, 3], 1)
 
 # stan_data
 stan_data <- list(
   n = n,
   m_max = m_max,
-  X = X,
+  X = design_matrix,
   y = y
 )
 
@@ -59,11 +59,9 @@ for (m in 0:m_max) {
     seed = 1
   )
 
-  # uncomment lines below for diagnostic purposes
-  # traceplot
-  # mcmc_trace(fit$draws(c("b", "sigma")))
-  # summary
-  # fit$summary(c("b", "sigma"))
+  # optional diagnostics
+  # To inspect traces, call mcmc_trace(fit$draws(c("b", "sigma"))).
+  # To inspect the summary, call fit$summary(c("b", "sigma")).
 
   # store log likelihood
   log_lik[[m + 1]] <- fit$draws(c("log_lik"))

@@ -146,7 +146,7 @@ m <- 1000
 cors <- c()
 set.seed(0)
 for (i in 1:m) {
-  idx <- sample(1:10, 5, rep = F)
+  idx <- sample(1:10, 5, rep = FALSE)
   x1 <- rowMeans(z[, idx])
   x2 <- rowMeans(z[, -idx])
   rho <- cor(x1, x2)
@@ -182,20 +182,20 @@ library(blavaan)
 #   R formulas. In the background, blavaan now also uses Stan.
 # - We'll only run it for 1000 data points, because it runs for a long time.
 
-CFA_model <- "
+cfa_model <- "
  extraversion =~ E1 + E2 + E3 + E4 + E5 + E6 + E7 + E8 + E9 + E10
  openness =~ O1 + O2 + O3 + O4 + O5 + O6 + O7 + O8 + O9 + O10
  conscientiousness  =~ C1 + C2 + C3 + C4 + C5 + C6 + C7 + C8 + C9 + C10
  agreeableness  =~ A1 + A2 + A3 + A4 + A5 + A6 + A7 + A8 + A9 + A10
  neuroticism =~ N1 + N2 + N3 + N4 + N5 + N6 + N7 + N8 + N9 + N10"
-fit <- bcfa(CFA_model, data = dat[1:1000, ], n.chains = 1, sample = 200, burnin = 200)
+fit <- bcfa(cfa_model, data = dat[1:1000, ], n.chains = 1, sample = 200, burnin = 200)
 summary(fit)
 ppc <- ppmc(fit, fit.measures = c("rmsea"))
 summary(ppc)
 
 # - Let's also run lavaan on the entire dataset, for comparison.
 # - A nice tutorial on CFA in lavaan: https://stats.idre.ucla.edu/r/seminars/rcfa/
-fit <- cfa(CFA_model, data = dat)
+fit <- cfa(cfa_model, data = dat)
 summary(fit)
 fitMeasures(fit, c("rmsea"))
 

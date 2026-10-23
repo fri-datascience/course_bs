@@ -55,7 +55,7 @@ saw_land <- function(our_belief) {
   print(p)
 
   results <- list(our_belief = posterior, plot = p)
-  return(results)
+  results
 }
 
 saw_water <- function(our_belief) {
@@ -77,7 +77,7 @@ saw_water <- function(our_belief) {
   print(p)
 
   results <- list(our_belief = posterior, plot = p)
-  return(results)
+  results
 }
 
 # init belief is equal to prior

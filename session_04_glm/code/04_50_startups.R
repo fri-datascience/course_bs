@@ -30,8 +30,8 @@ data$p <- (data$profit - min(data$profit)) /
 # fit without normalization
 # prep for Stan
 y <- data$profit
-X <- data |> select(research, administration, marketing)
-stan_data <- list(n = length(y), k = ncol(X), y = y, X = X)
+design_matrix <- data |> select(research, administration, marketing)
+stan_data <- list(n = length(y), k = ncol(design_matrix), y = y, X = design_matrix)
 
 # fit
 fit <- model$sample(
@@ -42,8 +42,8 @@ fit <- model$sample(
 
 # fit with normalization
 y <- data$p
-X <- data |> select(r, a, m)
-stan_data <- list(n = length(y), k = ncol(X), y = y, X = X)
+design_matrix <- data |> select(r, a, m)
+stan_data <- list(n = length(y), k = ncol(design_matrix), y = y, X = design_matrix)
 
 # fit normalized
 fit_normalized <- model$sample(

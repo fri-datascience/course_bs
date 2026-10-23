@@ -86,7 +86,7 @@ kl_divergence_gamma <- function(k_p, t_p, k_q, t_q) {
   # kl divergence
   kl <- sum(p * log(p / q) * dx, na.rm = TRUE)
 
-  return(kl)
+  kl
 }
 
 # calculate kl divergence for each gamma model vs the truth

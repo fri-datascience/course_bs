@@ -21,12 +21,12 @@ contrasts(data$country) <- contr.treatment(n_distinct(data$country))
 contrasts(data$sex) <- contr.treatment(n_distinct(data$sex))
 
 # note that intercept is part of the model matrix (1st column always equals 1)
-X <- model.matrix(~ religion + degree + country + sex, data)
+design_matrix <- model.matrix(~ religion + degree + country + sex, data)
 # remove intercept since in ordered regression intercepts are cutpoints
-X <- X[, -1]
+design_matrix <- design_matrix[, -1]
 
 # show a couple of top rows to check if all is OK
-head(X)
+head(design_matrix)
 
 # check poverty levels
 levels(data$poverty)
@@ -43,7 +43,7 @@ levels(data$poverty)
 y <- data$poverty
 
 # stan_data
-stan_data <- list(n = nrow(data), m = ncol(X), k = nlevels(y), x = X, y = y)
+stan_data <- list(n = nrow(data), m = ncol(design_matrix), k = nlevels(y), x = design_matrix, y = y)
 
 # fit
 fit <- model$sample(
@@ -82,9 +82,9 @@ ggplot(data = df_beta_long, aes(x = Value, y = Beta)) +
   geom_vline(xintercept = 0, linetype = "dashed", linewidth = 1, color = "grey50")
 
 # calculate an example probability ---------------------------------------------
-F_1 <- NULL
-F_2 <- NULL
-F_3 <- 1
+f_1 <- NULL
+f_2 <- NULL
+f_3 <- 1
 
 # x <- (religion, degree, USA, male)
 # a non religious educated female from Sweden
@@ -95,14 +95,14 @@ for (i in seq_len(nrow(df_beta))) {
   cutpoints <- as.numeric(df_cutpoints[i, ])
 
   # cumulative probabilities
-  F_1[i] <- 1 / (1 + exp(-(cutpoints[1] - as.numeric(beta %*% x))))
-  F_2[i] <- 1 / (1 + exp(-(cutpoints[2] - as.numeric(beta %*% x))))
+  f_1[i] <- 1 / (1 + exp(-(cutpoints[1] - as.numeric(beta %*% x))))
+  f_2[i] <- 1 / (1 + exp(-(cutpoints[2] - as.numeric(beta %*% x))))
 }
 
-# P(y = j) = P(y <= j) - P(y <= j - 1)
-P_1 <- F_1
-mcse(P_1)
-P_2 <- F_2 - F_1
-mcse(P_2)
-P_3 <- F_3 - F_2
-mcse(P_3)
+# Category probability: subtract adjacent cumulative probabilities.
+p_1 <- f_1
+mcse(p_1)
+p_2 <- f_2 - f_1
+mcse(p_2)
+p_3 <- f_3 - f_2
+mcse(p_3)
