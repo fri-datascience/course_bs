@@ -11,11 +11,11 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
-# Summary
+## Summary
 
 In Bayesian modeling hierarchical models (also called multilevel models) are an extremely powerful tool. As already emphasized a couple of times now, when modeling we should try to describe the data generating process (and not fit some distributions to some data). Since data generating processes often have a hierarchical structure (e.g.,groups of students, multiple repetitions of an experiment...), hierarchical models enable us to efficiently describe such data generating processes.
 
-# Piglets
+## Piglets
 
 We will build our first hierarchical (multilevel) model from the ground up by using a practical example. Our dataset (`./data/piglets.csv`) includes the weight of little piggies at birth along with the information about who the mother of each of the piglets is and at which farm they live. To get familiar with hierarchical models, we will initially focus only on pigs from the first farm. Let us use $n$ to denote the number of piglets and $m$ to denote the number of mama pigs. For the sake of this illustrative example we will assume that weights of piglets at birth are normally distributed.
 
@@ -25,15 +25,15 @@ $$y_i \; | \; \mu, \sigma \sim N(\mu, \sigma),$$
 
 where $y_i$ denotes the birth weight of piglet $i$. Visually this model can be represented as:
 
-<center>
-![](./figs/normal.png){width=50%}
-</center>
+```{r echo=FALSE, out.width="50%", fig.alt="Diagram of the simple normal model: a single bell curve labeled N(mu, sigma) with an arrow pointing down to the observed piglet weights y sub i, so all weights come from one distribution."}
+knitr::include_graphics("./figs/normal.png", dpi = NA)
+```
 
 This simple normal model discards the information about mama pigs and fits a normal distribution over all piglet weights. With this approach we obviously lose the ability to compare piglet weights between mama pigs. But this does not mean that the model is useless -- it is perfectly OK for making several more general comparisons, such as comparing birth weight of pigs with those of baby tigers (if we had another similar dataset containing weights of baby tigers that is). The figure below visualizes how this model fits the underlying data:
 
-<center>
-![](./figs/normal_fit.png){width=50%}
-</center>
+```{r echo=FALSE, out.width="50%", fig.alt="Density plot of piglet birth weight: observed data as a blue filled density overlaid with many gray fitted normal curves, which match its overall location and spread but miss its left skew and peak just above 3."}
+knitr::include_graphics("./figs/normal_fit.png", dpi = NA)
+```
 
 If our goal is not to perform general comparisons but the comparison of piglet birth weights between different mama pigs, then we need a different model. We can simply model the mean of each mama pig (subject) separately:
 
@@ -41,11 +41,15 @@ $$y_{s,i} \; | \; \mu_s, \sigma \sim N(\mu_s, \sigma),$$
 
 where $y_{s,i}$ represents the weight of piglet $i$ that was born to mama pig $s$, meaning that $\mu_s$ is the mean parameter for subject (mama pig) $s$. Note here, that we are assuming equal variance (or standard deviation) in weights between all subjects, if we assumed that each subject has its own variance then we could just use the traditional normal model multiple times, once for each mama pig. Below is a visual representation of this model:
 
-![](./figs/normal_s.png)
+```{r echo=FALSE, fig.alt="Diagram of the separate-means model: unlinked bell curves N(mu sub 1, sigma) to N(mu sub m, sigma), one per mama pig, each with its own mean but a shared sigma and an arrow to that mother's piglet weights."}
+knitr::include_graphics("./figs/normal_s.png", dpi = NA)
+```
 
 Above model acknowledges the fact that each piglet has its own mother, but we discard the fact that they are all piglets. As a result we are now able to make comparisons between subjects (between piglets belonging to different mama pigs) but lose the capability of more general (group level) comparisons (e.g.,inter-species). The figure below visualizes how this model fits the underlying for each mama pig (subject) separately:
 
-![](./figs/subject_fit.png)
+```{r echo=FALSE, fig.alt="Grid of eight density panels, one per mama pig: blue densities of observed piglet weights with gray fitted normal curves of similar width; for mama pigs 3 and 6 the data form tall narrow spikes the curves fit poorly."}
+knitr::include_graphics("./figs/subject_fit.png", dpi = NA)
+```
 
 Based on this figure, one could argue that the assumption that the variance between subjects is the same is not correct. This is a valid case, since we can see that because of this constraint our model does not fit the underlying data well in some cases (e.g.,mama pig #3 or #6). So, a possible model upgrade would be to also model variances on the subject level. We decided not to do that because we were interested mainly in mean weights and wanted to keep the model as simple as possible for the purpose of this illustration. Furthermore, our dataset is quite small, for getting good variance estimates we usually need more data than we have in this case.
 
@@ -57,15 +61,21 @@ $$\mu_s \; | \; \mu_\mu, \sigma_\mu \sim N(\mu_\mu, \sigma_\mu).$$
 
 So, to get a hierarchical model we simply inject the information about the hierarchical structure of our data generating process into the model by linking all group level means ($\mu_s$) together using another distribution. In our case we are linking subject level means together with a normal distribution, this top level (group level) normal distribution is defined with parameters $\mu_\mu$ and $\sigma_\mu$. As a result $\mu_\mu$ now defines the mean birth weight of all piglets, while $\mu_s$ is the mean birth weight of piglets belonging to a particular mama pig. Here, $\mu_\mu$ serves a similar function as $\mu$ in the traditional normal model -- the mean parameter for birth weight of all piglets. It is important to note here that the same does not hold for $\sigma_\mu$. $\sigma_\mu$ depicts the standard deviation of subject means ($\mu_s$) and not the standard deviation between birth weights of all piglets like in the traditional normal model. This hierarchical structure can be nicely seen on the model's visualization:
 
-![](./figs/normal_h.png)
+```{r echo=FALSE, fig.alt="Diagram of the hierarchical normal model: a top-level bell curve N(mu sub mu, sigma sub mu) branches to the subject curves N(mu sub 1, sigma) to N(mu sub m, sigma), linking their means; each points to one mama pig's piglet weights."}
+knitr::include_graphics("./figs/normal_h.png", dpi = NA)
+```
 
 To summarize, we now have both subject level parameters ($\mu_s$, $\sigma$) to work with, as well as a group level parameter for mean piglet weight ($\mu_\mu$) along with its standard deviation ($\sigma_\mu$). The figure below visualizes how this model fits the underlying data at the subject level.
 
-![](./figs/hierarchical_fit.png)
+```{r echo=FALSE, fig.alt="Grid of eight density panels, one per mama pig: blue densities of observed piglet weights with gray normal curves from the hierarchical model; the fits look almost identical to those of the separate-means model."}
+knitr::include_graphics("./figs/hierarchical_fit.png", dpi = NA)
+```
 
 The figure is very similar to the one made by the previous model (the non-hierarchical model with multiple means). There are a couple of subtle but important differences between the two figures. This differences are even more prominent on the visualization below, which compares means and 90% HDI between both models and our sample means.
 
-![](./figs/means_subject.png)
+```{r echo=FALSE, fig.alt="Grid of eight panels, one per mama pig, comparing mean weight and 90% HDI from the subject and hierarchical models with the sample mean; hierarchical means sit nearer the gray population-mean line, most clearly for pigs 3 and 7."}
+knitr::include_graphics("./figs/means_subject.png", dpi = NA)
+```
 
 The most important thing to notice is the fact that mean estimates for subjects in the case of the hierarchical model are closer to the population mean (the gray horizontal line) than the mean estimates for subjects from the non-hierarchical model. This phenomenon is called Bayesian shrinkage and is a desired effect in hierarchical models (if we do not want this, then we do not use a hierarchical model). Bayesian shrinkage is the result of model's information pooling or sharing, in hierarchical modeling information about one subject influences inferences for all other subjects. This way subjects with very little data are empowered by all other subjects. This effect will be more prominent in outliers, if one subject sticks out from the rest then our model will be correctly skeptical about its data and will nudge the inferences about it towards other subjects. Indeed, in our case you see it best with mama pigs #3 and #7, these are the two mamas that gave birth to the fattest and the slimmest piglets, and with those two the difference in parameter estimates between the non-hierarchical and the hierarchical normal models is the most prominent.
 
@@ -73,13 +83,13 @@ Another thing you can see on the image above is that the subject level uncertain
 
 There are some key differences when comparing models on the group level as well. First, the uncertainty is higher in the case of our hierarchical model. In the hierarchical model we have two sources of uncertainty -- we have uncertainty in the subject level means along with uncertainty in the the group level mean (mean of group level means). Even though information is pooled between subjects the overall uncertainty is still higher than in the case of a simple normal model. There we are using all data to estimate a single mean parameter. You can also see that because of the hierarchical structure the estimate for the group level mean is slightly different between two models.
 
-<center>
-![](./figs/means_group.png)
-</center>
+```{r echo=FALSE, fig.alt="Point plot with error bars of the group-level mean piglet weight from the normal model and the hierarchical model, next to the sample mean; all lie between 2 and 3, but the hierarchical interval is clearly wider."}
+knitr::include_graphics("./figs/means_group.png", dpi = NA)
+```
 
 We can now easily fit the hierarchical model to the data from the second farm as well. We can use samples from both hierarchical models (the one fit on pigs from farm 1 and the on fit on pigs from farm 2) to answer several instersting questions. For example, what is the probability that mamas on farm 2 give birth to heavier piglets in comparison to mamas on farm 1? Or we can use the models to find out the mama that gives birth to the heaviest piglets. In other words, we can use the same model to perform analyses both on the subject level (mama pigs) or on the group level (farms). Code for answering the two questions about can be found in the code examples folder.
 
-# The adaptation level experiment
+## The adaptation level experiment
 
 In the previous example we used a normal distribution to establish a hierarchical structure between groups of normally distributed data. But this does not have to be the case, the building blocks of any hierarchical model do not have to be normally distributed nor do we have to use a normal distribution to link these pieces together. In the following example we will build a hierarchical model based on simple linear regression models.
 
@@ -101,33 +111,41 @@ $$\beta_s \; | \; \mu_\beta, \sigma_\beta \sim N(\mu_\beta, \sigma_\beta),$$
 
 $$\sigma_s \; | \; \mu_\sigma, \sigma_\sigma \sim N(\mu_\sigma, \sigma_\sigma).$$
 
-![](./figs/linear.png)
+```{r echo=FALSE, fig.alt="Diagram of the hierarchical linear model: top-level normals for intercepts alpha, slopes beta and sigmas branch to each subject's linear normal model, a regression line with normal noise that generates that subject's responses."}
+knitr::include_graphics("./figs/linear.png", dpi = NA)
+```
 
 We fit four separate models, one for each combination of group and part of the experiment. Traceplots and summary diagnostics look good so we can move on with our analysis (you can check yourself in `./code/hierarchical_linear.R`). Next, we can visually check the quality of our posterior fit. Figure below visualizes the fit for one combination out of four -- first group, second part of the experiment.
 
-![](./figs/al_subjects.png)
+```{r echo=FALSE, fig.alt="Grid of 15 scatter plots, one per subject from group 1 in the second part of the experiment, of response against question index with bundles of fitted regression lines; in every panel the lines slope gently downward."}
+knitr::include_graphics("./figs/al_subjects.png", dpi = NA)
+```
 
 Values of slope and intercept for the second part of our experiment suggest that our initial hypothesis about adaptation level is true. Subject's that weighted lighter object in the first part of the experiment find medium objects at the beginning of experiment's second part heavier than subjects that weighted heavier objects in the first part. In more technical terms, the intercept for the first group in the second part of the experiment is larger than the one for the second group. See the figure below for a visualization of this.
 
-![](./figs/al_diff.png)
+```{r echo=FALSE, fig.alt="Histogram of the difference between the group 1 and group 2 intercepts in the second part of the experiment; all values are positive, centered a little above 2, so group 1's intercept is larger."}
+knitr::include_graphics("./figs/al_diff.png", dpi = NA)
+```
 
 The fact that the slope for the first group is very likely to be negative (the whole 95\% HDI lies below 0) and positive for the second group (the whole 95\% HDI lies above 0) suggests that the adaptation level phenomenon fades away with time. This is visualized in the right panel of the figure below.
 
-![](./figs/al_groups.png)
+```{r echo=FALSE, fig.alt="Two line plots, Part I and Part II, of fitted response against question index for both groups; in Part II group 1 lines (blue) start high and fall while group 2 lines (red) start lower and rise, converging by question 10."}
+knitr::include_graphics("./figs/al_groups.png", dpi = NA)
+```
 
 Based on the analysis above, the hypothesis that each group formed a different adaptation level during the initial phase of the task seems to be true. Group that switches from heavy to medium weights assesses weights as lighter than they really are while for the group that switches from light to medium the weights appear heavier. With time these adaptation levels fade away and assessments converge to similar estimates of weight.
 
-# Regularization
+## Regularization
 
 A Bayesian approach can also overfit the training data, although it is less likely to do so, because it uses distributions over parameters instead of point estimates. In this section we will get familiar with two ways of incorporating regularization into Bayesian models.
 
-## Using a regularizing (skeptical) prior
+### Using a regularizing (skeptical) prior
 
 Bayesian learning combines prior knowledge with data (facts) to update model's beliefs about the data generating process. If priors are completely uninformative (e.g.,$U(-\infty, \infty)$) then updated beliefs will be based completely on the input data which can lead to overfitting. To prevent this we can put a more strict prior on model's of our parameter. This way the model will be less excited by the input data. In a way, priors make the model skeptical about the input data. Since such priors achieve the effect of regularization, we often call them regularization priors.
 
 As you already saw by now, we commonly put such priors on $\beta$ coefficients in our regression models, now you know that the main goal of this is to avoid overfitting. But be careful here, if we are too skeptical (we provide too strict priors) then our model will not pay enough attention to the input data and will underfit! If we standardize our input variables then $\beta$ coefficients should be close to 0. In our previous models we put a $N(0, 1)$ (or similar) prior on our $\beta$ coefficients. Below is a more flexible way, in this example of a multiple linear regression model we put a $N(0, \sigma_\beta)$ prior on our $\beta$ coefficients, where $\sigma_\beta$ is a hyper-parameter that we can provide as input to the model. Finding the optimal value of this parameter is usually done in the same way as with hyper-parameters in any other machine learning model -- with cross validation or some other approach to model parameter selection.
 
-```
+```stan
 data {
   int<lower=0> n;           // train set size
   int<lower=0> m;           // test set size
@@ -162,11 +180,11 @@ generated quantities {
 
 Regularizing priors are not only helpful to prevent overfitting, but can also help out the sampler by narrowing down plausible ranges of parameters, which usually results in a faster and more stable sampling process.
 
-## Using a hyper-prior
+### Using a hyper-prior
 
 By using a hyper-prior we jointly estimate the $\sigma_\beta$ parameter along with our $\beta$ coefficients. We can think of this as a hierarchical Bayesian model (more about those in one of the future lectures) where $\sigma_\beta$ is interpreted as a group-level scaling parameters that is estimated from pooled information across individual $\beta$ coefficients. In other words, $\beta$ coefficients are linked together through a shared hyper parameter $\sigma_\beta$ which can be interpreted as a "penalty" term. If some $\beta$ coefficients are close to 0, this will pull others towards 0 as well (through the $\sigma_\beta$ parameter). We will encounter this phenomena several times, it is quite common and even has its own name -- Bayesian shrinkage. So, if $\sigma_\beta$ is close to zero then all $\beta$ coefficients will be shrunk towards 0 and as $\sigma_\beta \rightarrow \infty$ our prior on $\beta$ becomes uniform.
 
-```
+```stan
 data {
   int<lower=0> n;      // train set size
   int<lower=0> m;      // test set size
@@ -206,11 +224,11 @@ generated quantities {
 
 The figure below visualizes the normal and Laplace distributions which are used as $\beta$ priors in the case of the Bayesian L1 and L2 regression. In this case the spread parameter for both was set to 1.
 
-<center>
-  ![](./figs/priors.png)
-</center>
+```{r echo=FALSE, fig.alt="Two density plots of beta priors centered at 0 with spread 1: a smooth bell-shaped normal (Bayesian L2) on top and a Laplace (Bayesian L1) below, with a sharper, taller peak at 0 and heavier tails."}
+knitr::include_graphics("./figs/priors.png", dpi = NA)
+```
 
-## Comparison
+### Comparison
 
 To compare various regularization techniques we will use multiple linear regression on an air pollution dataset (`data/ozone.csv`). We will use 300 independent variables to estimate tomorrow's ozone level (O^3^). Our dataset has 1353 observations, we used 500 of them for the training set and the rest for the test set. The split is intentionally skewed in order to emphasize the problem of overfitting.
 
@@ -235,19 +253,19 @@ On the Bayesian side our comparison implements five different Bayesian linear re
 
 The figure below visualizes results of the comparison.
 
-<center>
-  ![](./figs/regularization_comparison.png)
-</center>
+```{r echo=FALSE, fig.alt="Two-panel point plot of squared prediction error with error bars on test and train data for nine methods: lm and lmBayes have the lowest train but high test error, lmBayes[0.1] is high on both, and L1Bayes and L2Bayes are lowest on test."}
+knitr::include_graphics("./figs/regularization_comparison.png", dpi = NA)
+```
 
 We can see that when the model has many $\beta$ coefficients it will overfit if no regularization is implemented. If we are using a too strict regularizing prior (`lmBayes[0.1]`) then our model underfits (the model's prior knowledge is very strict and new facts do not change it too much). We can see that the best results were achieved when we unleashed the full power of Bayesian modeling by putting a hyper-prior distribution on the spread parameter of $\beta$ coefficients.
 
 The figure below compares absolute values of $\beta$ coefficients between all of used regression models.
 
-<center>
-  ![](./figs/regularization_coefficients.png)
-</center>
+```{r echo=FALSE, fig.alt="Grid of eight bar charts, one per method, of absolute beta coefficients for the 300 input variables on separate scales: L1 keeps only a few nonzero, lm has the largest, above 30, and lmBayes[0.1] keeps all below 0.4."}
+knitr::include_graphics("./figs/regularization_coefficients.png", dpi = NA)
+```
 
-# Recommended readings
+## Recommended readings
 
 * **Chapter 12 (Multilevel models)** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
 

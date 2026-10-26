@@ -11,11 +11,11 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
-# Summary
+## Summary
 
 Cross-validation is a widely spread technique for estimating how well our models generalize (how they fare when encountering unknown data). Since in Bayesian statistics we are always working with probability distributions we can use log-score as our go-to model evaluation measure. This allows us to resort to information theory for calculating good cross-validation approximations without actually performing the actual (often very time consuming) cross-validation. An important point to emphasize here is that cross-validation and regularization are not mutually exclusive, they go hand in hand and traditionally we use both at the same time.
 
-# Cross-validation
+## Cross-validation
 
 Cross-validation (CV) is a procedure for estimating the generalization error of our models. To evaluate model's generalization CV tests our models against unknown data in order to find out how well our model generalizes (e.g is our model overfitting, do we have selection bias...). Since you should be already familiar with the majority of CV techniques (leave-one-out cross-validation, leave-p-out cross-validation, k-fold cross-validation, holdout...) we will sift through them relatively quickly. The gist of CV is to split the dataset into two subsets -- the train set and the test set. The train set is then used for building the model and the test set is used for evaluating it. This way we are evaluating our model on data it has never seen before. Note that the same methods apply when we have to split the data into three sets (the train set, the validation set and the test set), for example for hyper parameter tuning. CV methods are split into two groups -- exhaustive and non-exhaustive.
 
@@ -27,7 +27,7 @@ Non-exhaustive CV techniques do not split the original dataset in all possible w
 
 The simplest and fastest CV method is called holdout. Here we split the data randomly into a train and a test set only once. The name holdout comes from the fact that we holdout a certain percentage of the data and do not use it for training purposes. What percentage of data goes into the test and what into the train set depends on our concrete use case and the size of the dataset, but it is recommended to holdout at least 20% of the data for testing purposes. Since with holdout we are not really doing much of CV, holdout is often treated as a separate estimator (not as a member of the CV methods family), but with some imagination we can classify it as a CV method.
 
-## Cross validation in time-sensitive data
+### Cross validation in time-sensitive data
 
 When executing any kind of cross-validation it is important to adapt it to our use case. For example, if we are using time sensitive data this needs to be taken into account. Predictions have to be made on data that was available at the point at which we are making the prediction. In the example that follows we will try to model how temperature changes through years. In other words, given a year our model will be able to predict temperature in that year. If we want to test how good the model is for making future predictions, which is what we are traditionally interested in, then we need to simulate such a scenario, e.g.,we use data before the year 1995 for training the model and after 1995 for evaluating the model. If we are interested in future temperatures then training the model on the most recent observations and then using the model to predict historical temperatures makes no sense. Since such a model is clairvoyant its results will be probably unrealistically good.
 
@@ -37,11 +37,11 @@ There are two CV techniques that we can stumble upon in the literature. The firs
 
 The nested CV approach uses a constant size of the test set and increases the training set size in each split. As the training set grows, the test sets is pushed towards newer data. The final split is similar to a holdout split -- the newest data is used for the test set and all of the remaining data is used for the training set. The problem with this approach is that our estimates of performance and uncertainty are based on models that were trained on a different amount of data. This can give us performance estimates that are lower and uncertainty estimates that are higher than they should be. The visualization below how the nested approach might look like on our hypothetical dataset.
 
-<center>
-  ![](./figs/time_cv.png){width=75%}
-</center>
+```{r echo=FALSE, out.width="75%", fig.alt="Diagram of time-series CV splits over Jan to Jun: holdout (train Jan-May, test Jun), walk-forward (3 splits, sliding 3-month train window) and nested (5 splits, growing train set), each testing the month after training."}
+knitr::include_graphics("./figs/time_cv.png", dpi = NA)
+```
 
-## Example
+### Example
 
 We will use cross-validation to try and find a good regression model for predicting temperature given a year. We will evaluate several polynomial regressions with a different order of the polynomial term:
 
@@ -59,9 +59,9 @@ $$y \; | \; x, \beta \sim N(\beta_0 + \beta_1 x^1 + \beta_2 x^2 + \beta_3 x^3 + 
 
 Source code for this experiment can be found in `/code/cross_validation.R`. The figure below visualizes how our models of varying complexity (numbers above graphs denote order of the used polynomial) fit the underlying data.
 
-<center>
-  ![](./figs/cross_validation_posterior.png)
-</center>
+```{r echo=FALSE, fig.alt="Five scatter plots of temperature by year, one per polynomial order 0 to 4, with posterior curves: order 0 is flat above most points, 1 rises, 2 is nearly flat, 3 and 4 shoot up after about 1980, overshooting the data."}
+knitr::include_graphics("./figs/cross_validation_posterior.png", dpi = NA)
+```
 
 To evaluate our models, we performed holdout cross-validation where we trained the model on temperature observations before the year 1995 and tested it on observations after the year 1995. To emphasize that CV is CV regardless of the modeling methodology (Bayesian modeling, random forests, deep neural networks...) we used mean squared error (MSE) to measure model's error. MSE was used because we are evaluating the posterior mean and the decision-theoretic optimal estimator for the posterior mean is MSE. If we were evaluating something else then a different measure would be optimal (e.g.,absolute error if we are interested in the median). So, to pick the optimal evaluation method we need to be familiar with decision theory. Bayesian modeling is again at an advantage here, since we are always working with distributions we can always use log-score to measure the quality of our fit. Indeed, log-score is the go-to measure for evaluating Bayesian models.
 
@@ -71,15 +71,15 @@ $$\text{MSE} = \frac{1}{n} \sum_{i=1}^n (y_i - y'_i)^2,$$
 
 where $n$ is the size of the dataset, equal to the size of the test set when evaluating how good the model is for predicting new values (out-of-sample evaluation) or the size of the train set when evaluating how good the models fits the training data (in-sample evaluation). $y_i$ denotes an actual observation and $y'_i$ the predicted value for that observation. We first checked how our models fit the training data, this is visualized on the figure below.
 
-<center>
-  ![](./figs/in_sample_mse.png)
-</center>
+```{r echo=FALSE, fig.alt="Horizontal violin plots of in-sample MSE for polynomial orders 0 to 4, each with a point and interval; MSE generally falls as the order grows, from just under 0.60 for order 0 to about 0.50 for order 4."}
+knitr::include_graphics("./figs/in_sample_mse.png", dpi = NA)
+```
 
 As you can see more complex models fit the data better, this is expected behavior. Complex models are more prone to overfitting and will as a rule give better in-sample results. If we increased our complexity even further we would get an even lower in-sample error. But we are traditionally interested in models that generalize well, to evaluate how our models generalize let us check the out-of-sample error:
 
-<center>
-  ![](./figs/out_of_sample_mse.png)
-</center>
+```{r echo=FALSE, fig.alt="Horizontal violin plots of out-of-sample MSE for polynomial orders 0 to 4; order 3 has the lowest MSE, while order 4 has the highest, about 5, with an interval so wide it runs off the plot past 10."}
+knitr::include_graphics("./figs/out_of_sample_mse.png", dpi = NA)
+```
 
 Indeed, it seems like the 4^th^ order polynomial regression overfits, as you can see its out-of-sample error is higher than that of the 3^rd^ order polynomial regression. In our case, 3^rd^ order polynomial regression seems to be the best model. The table below confirms this finding.
 
@@ -91,11 +91,11 @@ Indeed, it seems like the 4^th^ order polynomial regression overfits, as you can
 | 3   | 1.48 $\pm$ 0.02 | 0.67   | 3.16   |
 | 4   | 7.47 $\pm$ 0.17 | 1.00   | 20.5   |
 
-# Approximating cross-validation
+## Approximating cross-validation
 
 With really complex models or when we have large amounts of data exhausting cross-validation techniques can be too time consuming for practical use. On the other hand holdout has its own problems, since we are splitting the dataset only once our findings might be too optimistic or too pessimistic and it does not work well if our sample size is small. Luckily in Bayesian modeling we have several good alternatives that are able to approximatie cross-validation. In the next section we will take a look at some of these approximations, as you will see they are all based on information theory.
 
-## Information theory
+### Information theory
 
 Information is the reduction in uncertainty caused by learning an outcome. Uncertainty arises from frequency distributions of events. For example, the uncertainty about what the weather will be like tomorrow in Ljubljana is much higher than it is for Los Angeles (high chance of sunny weather) or Glasgow (high chance of rain). A formal way to deal with uncertainty is through information entropy ($H$). The formulation was developed by Claude Shannon in 1948, it essentially says that uncertainty in a probability distribution is the average (minus) log-probability of an event.
 
@@ -159,9 +159,9 @@ $$y \; | \; m, x, \alpha, \beta, \sigma \sim N \left(\alpha + \sum_{i=1}^m \beta
 
 where $\alpha$ is the intercept, $\beta$ are the beta coefficients, $\sigma$ the standard deviation and $m$ the parameter that determines the model's complexity. We expect to get the best results when $m = 2$ since that is the complexity of the data generating process. If we use a lower value of $m$ we expect underfitting, while with larger value we expect overfitting -- the model will also fit to predictors that are nothing but noise. The most complex model that we used had $m = 6$. The figure below visualizes in-sample and out-of-sample approximated deviance (means and 90% HDI) when models were trained and tested on 20 observations.
 
-<center>
-  ![](./figs/logscore_20.png)
-</center>
+```{r echo=FALSE, fig.alt="Two-panel dot plot of deviance against number of predictors, 0 to 6, for 20 observations: in-sample deviance generally falls, while out-of-sample is lowest at 2 and climbs, with very wide intervals, for 4 to 6."}
+knitr::include_graphics("./figs/logscore_20.png", dpi = NA)
+```
 
 On the left side of the figure, we see a similar trend as in the previous example -- more complex models have a lower in-sample deviance (error). This will always be the case, more complex models are able to (over)fit the training data better. On the right side, we can see that out-of-sample deviance is the lowest (the best) when our model uses the same complexity as the data generating model -- any other result would be a reason for alarm here. High out-of-sample deviance for complex models again tells us that these models overfit.
 
@@ -169,13 +169,13 @@ What is also important here is the fact that as model's complexity grows the in-
 
 Let us repeat the process on a larger dataset, this time around we trained and tested our models on 200 observations. Everything described above also holds here, but pay attention to the difference between the in-sample and the out-of-sample deviance. The relative difference here is much lower, if we have more observations it is harder for models to overfit and the out-of-sample error will be lower in comparison with the in-sample error.
 
-<center>
-  ![](./figs/logscore_200.png)
-</center>
+```{r echo=FALSE, fig.alt="Two-panel dot plot of deviance against number of predictors, 0 to 6, for 200 observations: both panels drop sharply at 2 predictors, after which out-of-sample deviance stays just above in-sample, with narrow intervals."}
+knitr::include_graphics("./figs/logscore_200.png", dpi = NA)
+```
 
 Findings of this toy example will play an important role in the cross-validation approximation techniques we will meet in sections that follow.
 
-## Akaike information criterion
+### Akaike information criterion
 
 Akaike information criterion (AIC) is the simplest estimator of the out-of-sample deviance. To estimate out-of-sample deviance from in-sample deviance we need to take into account the trends uncovered by our toy example. AIC does this in a very simple way:
 
@@ -188,11 +188,11 @@ where $D_{is}$ is the in-sample deviance which we estimate with log-score ($S(q)
 
 As you see, this is not a truly Bayesian approach, but nevertheless gives good results if the above conditions are met. In the figure below we used AIC (mean and 90% HDI) to compare our models from the toy example.
 
-<center>
-  ![](./figs/aic.png)
-</center>
+```{r echo=FALSE, fig.alt="Dot plot of AIC against number of predictors, 0 to 6: AIC is far higher for 0 and 1 predictors, lowest at 2 and rises only slightly from 3 to 6, with very narrow intervals."}
+knitr::include_graphics("./figs/aic.png", dpi = NA)
+```
 
-## Widely applicable information criterion
+### Widely applicable information criterion
 
 Widely applicable information criterion (WAIC, also called Watanabe-Akaike information criterion) is an out-of-sample deviance estimator that is aware of informative priors and does not require a multivariate Gaussian posterior. WAIC is calculated as
 
@@ -211,11 +211,11 @@ The effective number of parameters is calculated as:
 $$p_{\text{WAIC}} = \sum_{i=1}^n V(y_i) = \sum_{i=1}^n \underset{j \in s}{\text{var}} \left(log(p(y_i \; | \; \theta_j)) \right),$$
 where $V(y_i)$ is the variance of log-likelihood in observation $i$. To get $V(y_i)$ we calculate the variance in log-likelihood of $y_i$ for all samples ($j \in s$) from the posterior distribution. WAIC looks complicated but it is fortunately quite easy to calculate and is readily implemented in several popular R libraries for Bayesian statistics (e.g.,loo, rethinking). In the figure below we used WAIC (mean and SE) to compare our models from the toy example.
 
-<center>
-  ![](./figs/waic.png)
-</center>
+```{r echo=FALSE, fig.alt="Dot plot of WAIC (mean and SE) against number of predictors, 0 to 6: far higher for 0 and 1 predictors, lowest at 2 and nearly flat from 2 to 6, where the error bars overlap."}
+knitr::include_graphics("./figs/waic.png", dpi = NA)
+```
 
-## Leave one out information criterion
+### Leave one out information criterion
 
 Leave one out information criterion (LOOIC) is currently considered as the state-of-the-art Bayesian cross validation approximation technique. In the literature the method is sometimes called PSIS LOO, since at its core lies Pareto smoothed importance sampling (PSIS).
 
@@ -229,13 +229,13 @@ $$\text{elpd} = \sum_{i=1}^N log \left( \frac{1}{\frac{1}{s} \sum_{j=1}^s \frac{
 
 Just like in the case of WAIC, LOOIC is readily implemented in the loo R library which, as you can see in the code examples (`./code/deviance.R`), is quite easy to use. In the figure below we used LOOIC (mean and SE) to compare our models from the toy example.
 
-<center>
-  ![](./figs/looic.png)
-</center>
+```{r echo=FALSE, fig.alt="Dot plot of LOOIC (mean and SE) against number of predictors, 0 to 6, matching the WAIC pattern: far higher for 0 and 1 predictors, lowest at 2 and nearly flat up to 6, with overlapping error bars."}
+knitr::include_graphics("./figs/looic.png", dpi = NA)
+```
 
 There are several other methods for estimating out-of-sample deviance, for example the deviance information criterion (DIC) and Bayesian information criterion (BIC). Since these methods are a bit older and have been replaced by newer and better methods we decided to omit them in this document.
 
-## Model weights and averaging
+### Model weights and averaging
 
 So far we were only interested in finding out which model is the best (model selection). When making such decisions we are often faced with multiple models that all perform fairly well. In this case we can use Akaike weights to determine how decisions made by multiple models should be mixed together (averaged). The Akaike weight of model $i$ is:
 
@@ -243,17 +243,17 @@ $$w_i = \frac{e^{-\frac{1}{2} \Delta \text{WAIC}_i}}{\sum_{j=1}^m e^{-\frac{1}{2
 
 where $m$ is the number of models we are evaluating and $\Delta \text{WAIC}_i$ is the difference in WAIC between model $i$ and the best model. The equation might look a bit funky, but all it is doing is reversing the -2 multiplication followed by reversing the log transformation -- it is putting WAIC on the probability scale. In the equation above we used WAIC ($\Delta \text{WAIC}$) to calculate weights, in practice you can use any other measure as well (e.g.,$\Delta \text{AIC}$ or $\Delta \text{LOOIC}$). Akaike weights can be interpreted as estimates of the probability that a model will make the best prediction on new data conditional on the set of models considered. The figure below visualizes Akaike weights for our toy example.
 
-<center>
-  ![](./figs/weights.png)
-</center>
+```{r echo=FALSE, fig.alt="Dot plot of Akaike weights by number of predictors, 0 to 6: 2 predictors get the most, about 0.64, then 3 about 0.26, 4 about 0.08, others near zero; error bars for 2 to 6 start near 0 and top out between 0.4 and 1."}
+knitr::include_graphics("./figs/weights.png", dpi = NA)
+```
 
-# Recommended readings
+## Recommended readings
 
 * **Chapter 6 (Overfitting, Regularization and Information Criteria)** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
 
 * **Chapter 10 (Model Comparison and Hierarchical Modeling)** in Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
 
-# Additional readings
+## Additional readings
 
 * Vehtari A., Simpson D., Gelman A., Yao Y., Gnabry J. (2015). Pareto Smoothed Importance Sampling, <https://arxiv.org/abs/1507.02646>.
 

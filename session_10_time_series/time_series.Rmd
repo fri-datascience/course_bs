@@ -11,17 +11,17 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
-# Summary
+## Summary
 
 In this lecture we will learn about the basics of time-series modelling. We will first learn how to use harmonic regression to decompose a time-series into its subcomponents (trend, seasonality and remainder). By decomposing the time-series and looking at its components we can gain a better understanding of our data. Next, we will acknowledge the fact that past data can help us with predicting new data and build models that facilitate this finding. The models that do this are usually called auto-regressive and moving average models.
 
-# Time-series
+## Time-series
 
 Time-series represents a series of data points over time. When modelling time-series we have to acknowledge that (to the best of our knowledge) time flows constantly in a single direction. We already talked about this briefly during the cross-validation lecture. There we learned that when performing cross-validation we have to be careful about how we split the data, if we do not split it correctly our models become clairvoyant and give too optimistic results on test sets. There is another important thing to consider when talking about time-series -- data points that are close in time are usually also close in value. Several approaches for modelling time-series are based on this claim. Below is an example time-series that visualizes how the amount of money spent in restaurants changed through time. The data is in billions of dollars for Australia.
 
-<center>
-  ![](./figs/time_series.png)
-</center>
+```{r echo=FALSE, fig.alt="Line plot of restaurant spending in Australia, in billions of dollars, from late 2007 to 2017; spending rises steadily from about 2.2 to 3.7, with a sharp spike near the end of every year."}
+knitr::include_graphics("./figs/time_series.png", dpi = NA)
+```
 
 We use the notation $y_t$ to denote the value of the time-series at time point $t$. Time-series can be typically decomposed into three components, the trend, the seasonality and the remainder:
 
@@ -29,7 +29,7 @@ $$y_t = t_t + s_t + r_t.$$
 
 The trend component, $t_t$, represents the general long-term change of the observed value with time. The seasonality component, $s_t$, describes short-term cycles in the time-series. The last component -- the remainder, $r_t$ -- describes random variation in the signal. In the literature the remainder component is also sometimes called the error or the noise component. We believe this is not the best notation as this component is often not really noise or error, but the part of the time-series that we are unable to explain with our models. We can usually find out what components are present in our time-series by exploring their autocorrelation. Note that not all time-series are composed of all three components, we often have time-series without a trend or without seasonality, or even without both. A common term you might see in literature is stationary time-series, these are time-series whose mean, variance and autocorrelation do not change over time. Usually, this means that the time-series has no trend or seasonality.
 
-# Autocorrelation
+## Autocorrelation
 
 Autocorrelation represents the degree of similarity between a time-series and a lagged copy of the series (same series, delayed by a certain amount of time steps) over successive time intervals. Like previously mentioned autocorrelation is useful for determining whether a time-series has a trend or a seasonality component. We can use the autocorrelation function (ACF, *acf()* in R) to inspect how autocorrelation changes with lag size and a visual inspection of ACF plots gives tells us what components are present in our time-series. Autocorrelation, given some lag $k$ is calculated as:
 
@@ -50,25 +50,25 @@ $$r_t \sim N(0, 50).$$
 
 The figure below visualizes these three components separately along with a combination of all three.
 
-<center>
-  ![](./figs/components.png)
-</center>
+```{r echo=FALSE, fig.alt="Four stacked line plots of simulated y against t from 0 to 600: the combined series, a noisy wave drifting upward; noise around 0; a sine seasonality between -50 and 50; and a linear trend rising from 0 to 150."}
+knitr::include_graphics("./figs/components.png", dpi = NA)
+```
 
 To inspect how ACF's can be used for better understanding the components of our series, we combined the above series in different combinations and used R's *acf()* function to calculate and plot their ACF's. Below is a visualization of various time-series component combinations.
 
-<center>
-  ![](./figs/acf_combinations.png)
-</center>
+```{r echo=FALSE, fig.alt="Grid of six ACF plots over lags 0 to 300 for noise, seasonality, trend and their pairwise sums; noise alone is near 0 after lag 0, trend declines steadily, seasonality oscillates like a sine, and sums mix these patterns."}
+knitr::include_graphics("./figs/acf_combinations.png", dpi = NA)
+```
 
 The grey bars represent autocorrelation given a certain lag. A rule of thumb says that if the majority of autocorrelation values are close to 0 then the time-series is stationary. As we can see a time-series without the seasonality and noise components is stationary. The trend component can be observed as a steady increase or decline in the ACF as the lag increases, while the seasonality can be seen in sinus-like oscillations of ACF. If a signal is composed of multiple components then the visual properties defining them are joined together. For example the ACF visualization with both trend and seasonality components has a decline in ACF as well as a sinusoidal component.
 
-# Partial autocorrelation
+## Partial autocorrelation
 
 ACF is a simple (also called complete or total) correlation between the time-series and its copy lagged by $k$. Partial autocorrelation function (PACF) is different in one aspect as it finds the correlation of the residuals with the next lag value after removing the effects which are already explained by the earlier lags. In other words, before calculating PACF($k$), we take out the effect of all the previous lags (1, 2, ..., $k-1$) and work with residuals. So if there is any hidden information in the residual which can be modelled by the next lag, we might get a good correlation and we will keep that next lag as a feature while modelling.
 
 More formally, PACF of time series $y_t$ is the autocorrelation between $y_t$ and $y_{t+k}$ with the linear dependence of $y_t$ on $y_{t+1}$ through $y_{t+k-1}$ removed. Equivalently, it is the autocorrelation between $y_t$ and $y_{t+k}$ that is not accounted for by lags 1 through $k-1$. It is usually calculated via the Durbin-Levinson algorithm. Interested readers can find more details in additional references of this lecture.
 
-# Harmonic regression
+## Harmonic regression
 
 Harmonic regression tries to decompose a given time-series into the three components mentioned above. The trend component is modelled as a linear function, the seasonality component is modelled with a sine and cosine function, while the remainder is normally distributed around the sum of the trend and seasonality components. Formally, harmonic regression is thus defined as:
 
@@ -92,31 +92,31 @@ Above, the seasonality component is now a sum of multiple sub-components, each o
 
 Sometimes we do not know exactly what the period of seasonality in our time-series is. We can investigate the frequencies using traditional signal analysis techniques, such as FFT (fast Fourier transform) and the power spectrum plot. The power spectrum plot shows us which frequencies are dominant in our time-series and we can use this information to calculate the value of $M$. The power spectrum plot below is calculated on the average monthly temperature data in Slovenia.
 
-<center>
-  ![](./figs/fft.png)
-</center>
+```{r echo=FALSE, fig.alt="Power spectrum of monthly Slovenian temperatures as bars of power P against frequency f from 0 to 0.2; a single spike near 0.083, the yearly 1/12 frequency, reaches almost 100 while all other frequencies are near zero."}
+knitr::include_graphics("./figs/fft.png", dpi = NA)
+```
 
 As you can see the seasonality in this dataset is dominated by a single frequency ($0.08\overline{3}$), this frequency represents the yearly trend in temperature. The measurements in our dataset are monthly, so a yearly seasonality has a frequency of $\frac{1}{12} = 0.08\overline{3}$.
 
 In this example of harmonic regression we will use the restaurants spending time-series. The time-series describes how spending (in billions of dollars) changed over time in Australia. The visualization of it can be found in the top portion of the figure below. We used the harmonic regression where seasonality component has a single frequency, the period we used for the seasonality components was 12 months ($M=12$). Diagnostics show no reasons for concern, so we can proceed with our analysis. Below is a visualization of the decomposition results.
 
-<center>
-  ![](./figs/decomposition.png)
-</center>
+```{r echo=FALSE, fig.alt="Four stacked panels decomposing spending by month for five posterior draws: the data, a spiky remainder (about -0.4 to 0.4), a smaller yearly seasonal wave (about -0.1 to 0.1) and a linear trend rising from 2.1 to 3.75."}
+knitr::include_graphics("./figs/decomposition.png", dpi = NA)
+```
 
 We can see that spending has a growing trend, this means that people spend more and more money in restaurants. Note that the data is not adjusted for inflation, so the growth is probably a bit misleading and too big. We can see that the remainder component is still quite strong, meaning that this simple model is unable to explain a lot of what is going on. We can also see that the model found a well fitting yearly seasonality component. Below is a visualization of the model against the underlying data.
 
-<center>
-  ![](./figs/restaurants_harmonic.png)
-</center>
+```{r echo=FALSE, fig.alt="Line plot of monthly spending (light blue) with the harmonic regression fit (black, grey uncertainty band): a smooth yearly wave on a rising trend that misses the sharp spikes and continues as a forecast past a dashed line."}
+knitr::include_graphics("./figs/restaurants_harmonic.png", dpi = NA)
+```
 
 There are two other harmonic regression examples in the repository. The first one (*temperature.R*) uses the monthly average Slovenian temperature data. There we first use FFT to find the dominant frequency in the time-series and then execute harmonic regression to decompose it. The second one (*O2.R*}) uses a dataset about the concentration of oxygen ($O_2$) in the air. This example illustrates how you can model the seasonality component that is composed of several frequencies.
 
-# Autoregressive (AR) and moving average (MA) models
+## Autoregressive (AR) and moving average (MA) models
 
 The autoregressive (AR), moving average (MA) and their combinations or derivatives are probably the most popular models when it comes to modelling time-series. AR and MA as well as their combination (ARMA) are not suitable for modelling non-stationary time-series. When modelling such time-series you usually need to use more advanced models from this family (ARIMA, SARMA, SARIMA). An alternative approach is to first detrend and deseasonalize the data and then work on the remainder. Detrending or deseasonalizing means removing the trend and seasonality components from the time series (e.g., with harmonic regression) and then working on the remainder with a model that is suitable for that task.
 
-## The autoregressive model (AR)
+### The autoregressive model (AR)
 
 AR uses observations from previous time steps as input to a regression in order to predict the value at the next step. The $p$ parameter determines the order of the autoregressive model, the order represents the amount of time steps used in the regression. We can formally define the AR($p$) model as:
 
@@ -128,17 +128,17 @@ As you can see this is essentially a very simple regressive model that uses a si
 
 We usually determine the order ($p$) of the autoregressive model by looking at the the partial autocorrelation function (PACF). ACF is not suitable because in autoregressive processes, previous time points also have an indirect impact on the current time point, which means that even with an AR(1) process, autocorrelation will still be relatively high for lags larger than 1. PACF does not have this problem as it removes the indirect effects, which is why we can use it to determine the order of an autoregressive model. Below is the PACF plot for our time-series.
 
-<center>
-  ![](./figs/pacf.png)
-</center>
+```{r echo=FALSE, fig.alt="PACF plot of spending for lags 1 to 20 with dashed blue 95 percent bounds near plus or minus 0.18; lag 1 is about 0.9, lags 2, 3, 6, 7 and 10 also cross the bounds, and lag 13, at about -0.45, is the last that does."}
+knitr::include_graphics("./figs/pacf.png", dpi = NA)
+```
 
 Black vertical lines denote the value of PACF given some lag while the dashed blue lines denote the 95\% CI, if a line sticks out of the blue lines we can say with high confidence that PACF at that lag is different than 0. We can see that the last value for which we can confidently say is not zero is at lag 13. Note here that we usually treat $p$ as a hyper-parameter and try a couple of options for it. PACF is a good starting point to get a set of plausible options. Some alternative options worth exploring based on the visualization above could be 3, 6, 7, 10.
 
 Based on the above we set the $p$ parameter of our model to 13 and fit the model. Diagnostics show no reasons for concern. Below is a visualization of model's fit against the underlying data.
 
-<center>
-  ![](./figs/restaurants_ar.png)
-</center>
+```{r echo=FALSE, fig.alt="Line plot of monthly spending (light blue) with the AR(13) fit (black, grey uncertainty band); it tracks the data closely, but forecasts past the dashed line zigzag wildly as the band widens to roughly -5 to 16."}
+knitr::include_graphics("./figs/restaurants_ar.png", dpi = NA)
+```
 
 At a glance, the model's fit looks quite good, but we can see that it does not do a good job for forecasting future values. At least for predictions that are farther in the future. AR models have problems with non-stationary time-series so this is a somewhat expected results. An important thing to note here is also that the quality of predictions is declining and the uncertainty is growing as we move into the future. This makes sense, the farther into the future the data point we are trying to predict is, the harder the task. Another reason for this is that, the AR model is making future predictions based on past values, once past values become predictions themselves the quality of predictions usually declines heavily.
 
@@ -154,7 +154,7 @@ where $\theta_j$ is the regression coefficient for the exogenous variable $x_j$,
 
 Another upgrade to the AR model is called VAR (multivariate autoregressive model), we will only mention it here as it is relatively complex and probably out of scope for Bayesian Statistics 101 lectures. Like mentioned, there are whole courses dedicated to time series modelling while we only scratch the surface in a single lecture, so we have to stop somewhere.
 
-## The moving average model (MA)
+### The moving average model (MA)
 
 MA specifies that the output variable depends linearly on the current and various past values of a stochastic term. It accounts for very short-run autocorrelation, and is as such not suitable for time-series where ACF is high for large values of lag. We can formally define the MA($q$) model as:
 
@@ -190,19 +190,19 @@ The first week, the professor brings 15 cookies, which is equal to the $\mu$ par
 
 To define a suitable value for the $q$ parameter, we usually take a look at the the ACF plot. Suitable values are those, where we can say with high confidence that the ACF value is not significant any more. Below is the ACF plot for our time-series.
 
-<center>
-  ![](./figs/acf.png)
-</center>
+```{r echo=FALSE, fig.alt="ACF plot of spending for lags 0 to 50 with dashed blue 95 percent bounds near plus or minus 0.18; autocorrelation decays slowly from 1, stays above the bound until around lag 35, then sinks to near zero."}
+knitr::include_graphics("./figs/acf.png", dpi = NA)
+```
 
 Based on this plot a suitable value for $q$ would be around 35. Note that this number is way too high and would probably cause all kinds of problems, such as over-fitting and issues with convergence. Based on the above visualization MA model is most likely not suitable for modelling our time-series. For illustrative purposes we decided to use a value 12 for the $q$ parameter. Below is a visualization of this model's fit.
 
-<center>
-  ![](./figs/restaurants_ma.png)
-</center>
+```{r echo=FALSE, fig.alt="Line plot of monthly spending (light blue) with the MA(12) fit (black, grey uncertainty band); the jagged fit loosely follows the data, and forecasts past the dashed line keep a narrow band but end in a sharp drop to about 2.75."}
+knitr::include_graphics("./figs/restaurants_ma.png", dpi = NA)
+```
 
 At a glance, the model's fit looks quite good, we can see that the model also seems to do better at predicting future values than the AR model. This is somewhat surprising as we saw that our dataset is not the best fit for the MA model since it has a high autocorrelation even with higher lags. Note that the model would still most likely fail spectaculary if we tried to predict points that are further in the future. And to properly compare models we would have to execute CV and compare them properly.
 
-## ARMA
+### ARMA
 
 Like the name suggests ARMA (Autoregressive Moving Average Model) is a combination of the previous two approaches. Putting it all together, ARMA($p$,$q$), which is a combination of AR($p$) and MA($q$) formally looks like this:
 
@@ -226,11 +226,11 @@ $$\epsilon_t = y_t - (\beta y_{t-1} + \theta \epsilon_{t-1}).$$
 
 Essentially, the $\mu$ parameter from the MA model is replaced with the $ar_t$ component. So we use AR to model the mean and MA to model the errors. Below is a visualization of an ARMA model fit against our data. Here, we used the same values for $q$ and $p$ parameters as before, so we used an ARMA(13,12) model. Note that this model is quite complex so it took some additional effort to get it to fit properly. After setting the $p$ and $q$ parameters we had to configure various parameters (e.g., *max_treedepth* and *adapt_delta*) of the fitting process. If this still does not help, the next step is to provide better priors that would help the sampler out. Below is a visualization of this fit along with some future predictions.
 
-<center>
-  ![](./figs/restaurants_arma.png)
-</center>
+```{r echo=FALSE, fig.alt="Line plot of monthly spending (light blue) with the ARMA(13,12) fit (black, grey uncertainty band); it closely tracks the data and its yearly spikes, and forecasts past the dashed line stay around 3.2 to 3.6 as the band widens."}
+knitr::include_graphics("./figs/restaurants_arma.png", dpi = NA)
+```
 
-# More advanced models
+## More advanced models
 
 During this lecture we only scratched the surface of time-series modelling. To cover the topic thoroughly, we would probably require a whole course for it! This section provides some basic tips for possible paths to explore if you would require more advanced models.
 
@@ -238,7 +238,7 @@ As we saw AR, MA and ARMA are not suitable for modelling non-stationary time-ser
 
 There are also alternative approaches that do not fall into the category of AR or MA models. Two alternative directions worth exploring in this direction are Hidden Markov Models and Gaussian processes.
 
-# References
+## References
 
 * Esprabens J., Arango A., Kim J., (2020). Time Series for Beginners. (<https://bookdown.org/JakeEsprabens/431-Time-Series/>).
 

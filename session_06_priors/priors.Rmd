@@ -11,11 +11,11 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
-# Summary
+## Summary
 
 Defining priors is an integral part in Bayesian statistics. The main purpose of priors is to introduce prior expert knowledge about the domain into our models. As we know by now, this is not the only useful thing about priors, they are also useful for regularization and can be of help during the sampling process which can lead to stabilization of inferences in certain models. Based on the amount of information they provide priors are commonly categorized into three groups -- non-informative priors, weakly informative priors and informative priors. This document briefly explains the differences between these groups and provides some guidance about when to use certain priors. Since one of the main advantages of Bayesian statistics is its ability to facilitate existing knowledge to empower our models the second part of this document talks about approaches for eliciting relevant information from experts.
 
-# Types of priors
+## Types of priors
 
 Depending on the amount of information priors carry, we typically categorize them into three groups (from the least informative to the most informative):
 
@@ -25,13 +25,13 @@ Depending on the amount of information priors carry, we typically categorize the
 
 What qualifies as informative or weakly informative depends on the data (the likelihood). For example, N(0,1) is traditionally considered a weakly informative prior for beta coefficients of standardized predictors in GLMs, however N(0,1) is definitely not a weakly informative prior if we are modeling mean human height on a centimeter scale. When following guidelines about prior choices from the literature it is important to pay attention to the scale of the data, most often the guidelines are provided for standardized data.
 
-The figure below visualizes the three types of priors, the black line represents a U(-10, 10) non-informative prior. Blue lines are examples of weakly informative priors, the light blue represents a Cauchy(0, 2.5) prior, while the dark blue line represents a N(0, 2.5) prior. The red line represents an informative N(0, 0.5) prior.
+The figure below visualizes the three types of priors, the black line represents a U(-10, 10) non-informative prior. The light blue and purple lines are examples of weakly informative priors, the light blue line represents a Cauchy(0, 2.5) prior, while the purple line represents a N(0, 2.5) prior. The red line represents an informative Cauchy(0, 0.5) prior.
 
-<center>
-![](./figs/priors.png)
-</center>
+```{r echo=FALSE, fig.alt="Density curves of four priors over x from -10 to 10: a flat non-informative uniform line, wide weakly informative Cauchy and normal curves peaking below 0.2, and a narrow informative Cauchy spiking above 0.6 at 0."}
+knitr::include_graphics("./figs/priors.png", dpi = NA)
+```
 
-## Non-informative priors
+### Non-informative priors
 
 Non-informative priors carry almost no information. There are two reasons that scientist use non-informative prior, as you will see neither of them is particularly good.
 
@@ -43,7 +43,7 @@ Putting philosophical reasons aside, in practice non-informative priors are not 
 
 Most commonly non-informative priors are flat, improper priors (uniform over the whole real interval) or bounded uniform priors (uniform on a defined interval). When we define a uniform prior we have to be aware that we are setting hard constraints/bounds for a parameter. The two Stan code snippets below will give you the same result. In the first one we put hard constraints on a parameter and leave the prior undefined.
 
-```
+```stan
 parameters {
   real<lower=0,upper=1> theta;
 }
@@ -52,7 +52,7 @@ parameters {
 
 Since Stan defaults to flat priors this is the same as having an unconstrained parameter with an uniform prior on it.
 
-```
+```stan
 parameters {
   real theta;
 }
@@ -69,19 +69,19 @@ Some classifications of prior types also define a group of super vague, but prop
 
 A distribution that deserves a special mention in the section of non-informative priors is the beta distribution. Beta is our go-to distribution whenever we are working with probabilities. Beta distribution has two parameters $\alpha$ (number of successes) and $\beta$ (number of fails). Since higher values of both parameters mean that we have more information (e.g.,we observed more cases of a binary experiment) it is intuitive that non-informative priors should have low values of both parameters. The first and probably the most commonly used option is Beta(1, 1), also called the Bayes-Laplace prior, which results in a uniform distribution between 0 and 1:
 
-<center>
-![](./figs/beta11.png)
-</center>
+```{r echo=FALSE, fig.alt="Filled density plot of the Beta(1, 1) prior on the interval 0 to 1: a flat rectangle at density 1 everywhere, so the prior is uniform and favors no value."}
+knitr::include_graphics("./figs/beta11.png", dpi = NA)
+```
 
 The second commonly used option is the Jeffrey's prior Beta(0.5, 0.5). As values of both parameters are lower than 1 things get a bit abstract, Beta(0.5, 0.5) can be interpreted that our experiment resulted in half of a successful trial and half of an unsuccessful trial. The figure below visualizes this prior distribution:
 
-<center>
-![](./figs/beta0505.png)
-</center>
+```{r echo=FALSE, fig.alt="Filled density plot of the Beta(0.5, 0.5) prior on 0 to 1: unlike the flat Beta(1, 1), it is a symmetric U shape, low and nearly flat in the middle and rising steeply into tall spikes at 0 and 1."}
+knitr::include_graphics("./figs/beta0505.png", dpi = NA)
+```
 
 Other popular choices have even lower values of both parameters, the "neutral" prior has both parameters set to 1/3 ($\alpha = \beta = 1/3$). The most abstract and theoretical of them all is the Haldane's prior which sets both parameters of the beta distribution to 0 ($\alpha = \beta = 0$). As you might imagine, this is hard to interpret or represent in a real world scenario and is usually not suitable for a prior choice in practice since it represents an improper distribution. Beta(0,0) is an "improper prior" because its integration (from 0 to 1) fails to strictly converge to 1 due to the singularities at each end (the PDF has an infinitely high "spike" at values 0 and 1). Because of this an alternative is to use an approximation of Haldane's prior which sets both parameters to a very small value ($\alpha = \beta = \epsilon, \epsilon > 0$).
 
-## Weakly informative priors
+### Weakly informative priors
 
 As the name suggests weakly informative priors provide a little of information. As a result, if we have reasonably large amounts of data, weakly informative priors will have little influence on inferences and the data will prevail. If there are little data then weakly informative priors have a significant influence on the posterior inference. Weakly informative priors are usually our go-to choice and there are very little scenarios when we are unable to construct weakly informative priors. We often do not have much knowledge about the exact values of parameters, but we are almost always aware of the scale of these parameters and we can use this information to construct weakly informative priors. When defining priors it is a good practice to perform prior checking, this is by far the best way to examine how informative the priors are in the scale of the outcome, which is what we are interested about in the end.
 
@@ -97,7 +97,7 @@ $$y \; | \; X, \alpha, \beta, \sigma \sim \text{Cauchy}(\alpha + X \beta, \sigma
 
 Weakly informative priors also play an important role in regularization, here it is key that our priors contain enough information for regularization. The idea is that weakly informative priors should provide enough information to rule out unreasonable parameter values but not too much information which could rule out values that might make sense.
 
-## Informative priors
+### Informative priors
 
 Informative priors represent the available relevant information about the problem, known before seeing the data. As such, they are usually based either on previous research or on expert knowledge. When documenting analyses that use informative priors, it is extremely important to clearly argument each of your choices, be explicit -- write a sentence or two about each parameter's prior choice in the model.
 
@@ -105,7 +105,7 @@ There is no clearly defined way for checking how informative our priors are. As 
 
 A lot of researchers tend to lean towards priors that carry less information. This introduces some skepticism about results of prior studies, about expert knowledge or about the process of extracting (eliciting) knowledge from experts. The idea here is that the loss of information by making priors weaker is less penalizing then using informative priors that are not completely representative of the problem at hand.
 
-# Expert knowledge elicitation
+## Expert knowledge elicitation
 
 A common way to define informative priors is by eliciting knowledge from experts. As you already know the language we use for every day communication is not suitable for precise specifications of distributions and uncertainty. The only suitable language for eliciting prior information are concise definitions of probability distributions (the name of the distribution and exact values of its parameters). Since experts from several domains do not speak this language, researchers had to come up with a better solution than forcing experts to write distributions and parameter values on a piece of paper. As you might imagine this might be problematic even for experts in probability -- most of us find it hard to imagine the layout of a particular distribution just from its parameters (with the exception of the most basic distributions maybe). Like in most cases when we have to envision something, visualizations can be of tremendous assistance here.
 
@@ -123,11 +123,11 @@ Luckily researchers developed tools that solve both issues outlined above at the
 
 Once expert provide their judgment, MATCH uses the least squares procedure to fit various parametric distributions numerically. It fits 6 different distributions (normal, Student's t, scaled beta, gamma, log normal and log Student's t) and automatically denotes which one fits expert's judgment the best. For Student's t the degrees of freedom parameter is set to 3, to give a more heavy tailed alternative to the normal distribution (to get the Cauchy distribution, degrees of freedom need to equal 1). Below is a snapshot of the MATCH tool developed by Morris et al. at the University of Nottingham.
 
-<center>
-  ![](./figs/match.png)
-</center>
+```{r echo=FALSE, fig.alt="Screenshot of the MATCH web tool in roulette mode: 39 chips placed in 10 bins over 0 to 10 form a right-skewed histogram peaking in the 2 to 3 bin, with the similarly shaped best-fit gamma density shown below."}
+knitr::include_graphics("./figs/match.png", dpi = NA)
+```
 
-# Recommended readings
+## Recommended readings
 
 * Gelman A., Jakulin A., Pittau M. G., Yu-Sung Su. (2008). A weakly informative default prior distribution for logistic and other regression models. <https://projecteuclid.org/download/pdfview_1/euclid.aoas/1231424214>
 

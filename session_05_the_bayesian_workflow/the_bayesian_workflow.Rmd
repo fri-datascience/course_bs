@@ -11,17 +11,19 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
-# Summary
+## Summary
 
 Bayesian modeling is an iterative process, we start by picking an initial model and settings its priors. To investigate whether our priors have undesirable effects that contradict domain knowledge we start by performing prior checks (in the literature this is sometimes also called prior predictive checks or checking). Once we are happy with our priors, we fit the model and diagnose the fitting process (traceplot, convergence, diagnostics...). If all is good, we then execute posterior checks (or posterior predictive checks) to evaluate whether our model is suitable for answering the questions we are asking.
 
-# The Bayesian workflow
+## The Bayesian workflow
 
-![](./figs/the_bayesian_workflow.png)
+```{r echo=FALSE, fig.alt="Flowchart of the Bayesian workflow: model development, then prior checks, fitting, diagnostics and posterior checks, each with a dotted arrow back to development, then model comparison (if several models) and inferences."}
+knitr::include_graphics("./figs/the_bayesian_workflow.png", dpi = NA)
+```
 
 The Bayesian workflow denotes the steps that are traditionally involved in a Bayesian statistical analysis. A simplified version of the workflow is visualized in the figure above. Solid lines denote the typical traversal through the workflow, while dotted lines denote issues that force us to reconsider and finetune our models. Up to this point, we mainly tackled model development, model fitting, diagnostics and inferences. During this lecture, we will take a look at prior and posterior checking. While model comparison, a very important part when figuring out which model is the most suitable for our analysis, is covered in one of the future lectures.
 
-# Prior checking
+## Prior checking
 
 Prior checking generates data according to a given choice of priors to assess whether the priors we have chosen are appropriate for the task at hand. Prior checks are very useful for understanding the implications of prior choices on our model. When doing so we use data we generate ourselves, note that this data should be representative for the process we are trying to analyze. Meaning that we require at least some domain knowledge to execute this, if we are generating our own data that does not make any sense, there is a good chance that neither will our priors.
 
@@ -98,7 +100,7 @@ Priors above deserve some clarification. We will shift our predictor (weight) so
 
 Like in the previous example, we could again code everything in R, for illustrative purposes, this time around we will do it in Stan. Since we will use Stan only as a random number generator (fixed parameter sampler) we do not need the `model` block.
 
-```
+```stan
 data {
   int<lower = 0> n; // number of observations
   vector[n] x;      // weights
@@ -172,23 +174,27 @@ ggplot(df_plot, aes(x = x, y = y)) +
 
 As you can see from the figure above our priors can generate many different prior distributions, they are pretty vague and as such relatively nonrestrictive after all. Because several of generated distributions are plausible for describing human height we should be good to go here. Once we empower the model with our data it should produce a reasonable fit. Now let us try setting the intercept prior to something more restrictive, for example $\text{Cauchy}(0, 2.5)$, which was something that often appeared in our previous lectures. As you see none of the generated  distributions make sense for human height:
 
-![](./figs/prior_cauchy.png)
+```{r echo=FALSE, fig.alt="Ten stacked density plots, one per prior draw, of heights simulated with a Cauchy(0, 2.5) intercept prior; all are centered near 0 and most include negative values, so none are plausible for human height."}
+knitr::include_graphics("./figs/prior_cauchy.png", dpi = NA)
+```
 
 If results of your prior  checking do not make sense, this is a surefire sign that you should revisit your prior definitions.
 
-# Posterior  checking
+## Posterior  checking
 
 Posterior checking is analogous to prior checking but this time around used parameter draws come from the posterior distribution. If prior checking was a technique for understanding implications of priors on the model, the intent of posterior checking is to investigate how our model fits to the real data or to investigate the limitations of our model by using simulated data.
 
-## Visualizing the model's fit
+### Visualizing the model's fit
 
 Since a picture is worth more than a thousand words it is often a very good practice to plot your posterior distribution against real data and look for any discrepancies. As you saw in almost all of our previous lectures, when possible we should always prepare such a visualization. Below is a simple example that visualizes our simple linear regression model (`/model/simple_linear.stan`) for predicting the rise of average temperature in Slovenia through time against the actual data (average temperature for years 1901--2015). See `/code/posterior_linear.R` for our implementation. As you can see that at a glance the fit looks quite OK (we will try to improve it during our next session). Based on this visualization one might argue that the model has issues with capturing the seemingly increasing rise in temperature over the last couple of years, (unfortunately) this trend does not look linear, so it is completely reasonable that our model fails at capturing it. Since our model looks OK, we can can use it to do some simple analysis. Our only predictor were years and its $\beta$ coefficient is 0.013 (90\% HDI 0.01--0.016), meaning that we are very confident that temperature has been rising for the last 100 years or so.
 
-![](./figs/posterior_linear.png)
+```{r echo=FALSE, fig.alt="Scatter plot of average temperature in Slovenia by year, 1901-2015, with posterior regression lines rising from about 8 to 9.5 degrees Celsius; they follow the trend, but most points after 2000 lie above them."}
+knitr::include_graphics("./figs/posterior_linear.png", dpi = NA)
+```
 
 In more complex models (e.g.,highly dimensional posterior distributions, complicated hierarchical models...) visualizing our fits is often unfeasible. There, we can use the fit model in a generative manner to create the so-called replicate datasets. Next, we use these datasets for comparison with real data, for example through some summary statistics. But we have to be careful here since summary statistics can sometimes be misleading.
 
-## Using replicate datasets
+### Using replicate datasets
 
 Since our models are often complex and high dimensional the visual comparison is hard to execute. Therefore, the most common posterior check compares replicate datasets from the posterior distribution against the actual data. Once we fit the model, we use the posterior distribution to create several replicate datasets. To create a replicate dataset we usually draw as many samples from the posterior distribution as there are in the original dataset. Once we create several such replicate datasets we compare whether the quantities we are interested in match between replicate dataset and the real dataset. If they do then we can proceed with our analysis, if they do not we have to revisit our model. It is important to emphasize here that if we are interested only in some quantites (e.g.,means) then we are usually satisfied if our model does a good job at estimating only the quantities we are interested in.
 
@@ -277,20 +283,23 @@ ggplot(data = df_ppc, aes(x = temperature)) +
   xlab("T [°C]")
 ```
 
-### Modeling reaction times
+#### Modeling reaction times
 
 In the next example, we will try to build a model suitable for analyzing human reaction times. We will use reaction times from the Eriksen flanker test. In it participants are presented with an image of an odd number of arrows (usually five or seven). Their task is to indicate the orientation (left or right) of the middle arrow as quickly as possible whilst ignoring the flanking arrows on left and right. Traditionally, participant provide their answers by pressing one of the two buttons (one if the middle arrow is facing left and the other if it is facing right). There are two types of stimuli in the task: in the congruent condition (e.g.,‘<<<<<<<‘) both the middle arrow and the flanking arrows point in the same direction, whereas in the incongruent condition (e.g.,‘<<<><<<‘) the middle arrow points to the opposite direction of the flanking arrows. Since the incongruent case is more complicated, we would expect slower reaction times there, let us investigate this.
 
-### Is a normal model good here?
+#### Is a normal model good here?
 
 As usual we will start with a simple model and build from there. We will start with a normal model (`/models/normal.stan`). If you are interested in the R code behind this experiment you can find it in `code/posterior_flanker.R`. Below is a visualization of our posterior (black lines) against real data (blue area) for the incongruent condition.
 
-![](./figs/posterior_flanker_normal.png)
+```{r echo=FALSE, fig.alt="Density plot of reaction times: the right-skewed data (blue area) peak sharply near 0.6 s, while the posterior normal densities (black lines) are symmetric, flatter and centered near 0.8 s. A dashed line marks 1 s."}
+knitr::include_graphics("./figs/posterior_flanker_normal.png", dpi = NA)
+```
+
 We can see that our fit is not the best. Indeed, it is a well known fact that reaction times are usually not normally distributed. Reaction times are traditionally right skewed (have a long tail on the right side of the distribution), this phenomenon arises because it is much more frequent for the participant to take additional time to provide an answer than it is for her/him to respond unnaturally quickly. To upgrade our model, we need to find a distribution that can accommodate this phenomenon.
 
 A commonly used distribution for reaction times is the exponentially modified Gaussian (EMG), also called exponentially modified normal. It has three parameters: $\mu$ for the mean of the Gaussian component, $\sigma$ for standard deviation and $\lambda$ for rate of the exponential component. Mean of the distribution is calculated as $\mu + 1 / \lambda$ while its variance equals $\sigma^2 + 1 / \lambda^2$. Conveniently, this distribution is already implemented in Stan:
 
-```
+```stan
 data {
   int<lower=1> n; // total number of data points
   vector[n] y;    // dependent variable
@@ -310,7 +319,9 @@ model {
 
 Below you can see that this distribution is indeed a much better fit for reaction times.
 
-![](./figs/posterior_flanker_exp_normal.png)
+```{r echo=FALSE, fig.alt="Density plot of reaction times: posterior exponentially modified normal densities (black lines) closely match the right-skewed data (blue area), including its sharp peak near 0.6 s and long tail. A dashed line marks 1 s."}
+knitr::include_graphics("./figs/posterior_flanker_exp_normal.png", dpi = NA)
+```
 
 Like mentioned in more complex models visualizing our fits is often hard to do, in that case we resort to replicate datasets and comparison through summary statistics. In the case of reaction times, if we calculate the sample mean and compare it to means of both of our fits they are practically equal (0.78 s). By now you should know that if we are interested only in means than the normal distribution is usually a perfectly viable choice. Furthermore, if we compare variances, we also get a similar result in all cases (0.08). However, if we take a look at a more descriptive statistics, such as 90% HDI (highest density interval) of the underlying distribution, we can see that the normal model is indeed not the best fit. 90% HDI of the underlying distribution equals 0.32--1.27 s for the normal model and 0.41--1.19 s for EMG model, this is already a significant difference! If we check HDI for our sample we get 0.42--1.21 s. If for some reason we were unable to plot the fit distribution against the data, exploring HDIs would also confirm that the EMG model is indeed a better fit.
 
@@ -318,7 +329,7 @@ Like we said, if we were interested in means the normal model would suffice, but
 
 Depending on the situation and the type of time measurements some other distribution might also come in handy. See <http://lindeloev.net/shiny/rt/> for a list of suitable distributions (along with their weaknesses and strengths) and a very nice interactive visualization of all of them.
 
-### Comparing two groups and the region of practical equivalence
+#### Comparing two groups and the region of practical equivalence
 
 Finally, let us compare reaction times between incongruent and congruent conditions. In the incongruent case the mean reaction time equaled 0.78 s (90% HDI 0.77--0.79 s) and 0.62 s (90% HDI 0.61--0.63 s) in the congruent case. We are as sure as we can be ("100%") that reaction times in the congruent condition are faster than in the incongruent one.
 
@@ -326,17 +337,17 @@ Next, we will learn how we can use something called a region of practical equiva
 
 ROPE is not useful only when taking measurement error into account, but also when testing whether two groups are equal. We need some kind of tolerance in such comparisons -- heights of 183.2123125 cm and 183.2123126 cm are theoretically different but for the majority of practical purposes they are definitely equal.
 
-## Fitting our model to simulated data
+### Fitting our model to simulated data
 
 Another important technique in posterior checking is fitting our model to simulated data. The advantage of simulated data is the fact that we know all the details of the data generating process (well, we were the ones who created the process in the first place). This can be of tremendous value when investigating the strengths and weaknesses of our model. For example, we can easily find out which aspects of the process our model is struggling to reconstruct. By providing our model with extreme data, we can investigate how robust it is. When we are comparing several groups, we can inspect how sensitive our model is -- how large the difference between groups needs to be in order for our model to detect them. Or we can investigate how large our sample size needs to be, so we are able to detect a difference between two or more groups. Studies and experiments can be very expensive (e.g., clinical trials, MRI data acquisition...), so knowing what kind of a sample size we need to show the difference we expect between groups is an important piece of information. Obviously, our assumptions and expectations can be wrong and the study does not go in the direction we would like, but we have to do everything we can for that not to happen. It is very painful to find out later on that we are unable to show the difference, or an effect, simply because the sample size we acquired is too small. It is much more expensive to reacquire new data then to acquire a bit more the first time around. As you can see, just like with prior checking, exploratory analysis with simulated data has many practical usages!
 
-# Recommended readings
+## Recommended readings
 
 * Gelman A. et al. (2020). Bayesian workflow (<https://arxiv.org/abs/2011.01808>).
 
 * Lindeløv J. K. (2021). Reaction time distributions: an interactive overview  (<http://lindeloev.net/shiny/rt/>).
 
-# Additional readings
+## Additional readings
 
 * Betancourt M. (2020). Towards A Principled Bayesian Workflow (<https://betanalpha.github.io/assets/case_studies/>).
 

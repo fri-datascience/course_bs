@@ -11,18 +11,18 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
-### In preparation for this lecture
+## In preparation for this lecture
 
 * Revise the definition of probability.
 * Revise the pmf/pdf, support, parameters, mean, and variance for all univariate distributions from Principles of uncertainty (<https://fri-datascience.github.io/course_pou/distributions.html>). You should also have a rough understanding of the shapes they can take.
 
-### Summary
+## Summary
 
 *Uncertainty refers to epistemic situations involving imperfect or unknown information.* ~ Wikipedia
 
 The main goal of this handout is to illustrate how uncertainty is part of our everyday lives but in order to deal with it in a systematic way we require the rigor of probability theory. The language of probability theory allows us not only to express uncertainty but also to provide probabilistic interpretations of processes of interest, which then allows us to infer their properties from the data they generate. That is, probability theory is the very foundation of applied statistics.
 
-### Statistics is just counting
+## Statistics is just counting
 
 A very good definition of statistics states that
 
@@ -32,15 +32,15 @@ The fact that uncertainty is almost omnipresent makes statistics one of the most
 
 This concept can be explained through a simple example. Let us say that we have a bag with 3 marbles in it, the marbles are of two colors -- red or blue. We draw 2 marbles with replacement and they are both red. Our statistical task now is to figure out what is in the bag. There are 4 options:
 
-<center>
-![](./figs/marbles_options.png){width=20%}
-</center>
+```{r echo=FALSE, out.width="20%", fig.alt="Diagram of the four possible contents of a three-marble bag, one numbered row each: 3 blue; 2 blue and 1 red; 1 blue and 2 red; 3 red."}
+knitr::include_graphics("./figs/marbles_options.png", dpi = NA)
+```
 
 To get to the bottom of this, we have to simply count the number of ways each of the above bags can generate our dataset (2 red marbles). This process is visualized on the figure below.
 
-<center>
-![](./figs/marbles_outcomes.png){width=100%}
-</center>
+```{r echo=FALSE, out.width="100%", fig.alt="Four-panel tree diagram, one per bag, with each possible first draw branching to all three possible second draws; solid paths mark two-red draws: 0 for 3 blue, 1 for 2 blue and 1 red, 4 for 1 blue and 2 red, 9 for 3 red."}
+knitr::include_graphics("./figs/marbles_outcomes.png", dpi = NA)
+```
 
 So, with the first option (3 blue marbles) we cannot generate our dataset (2 red marbles). In the second case, we can generate it one way, in the third case we can generate it in 4 different ways and in the fourth case, we can generate it in 9 different ways. The fact that we can generate our dataset in the most ways with the last options makes it the most plausible. But not the only one possible! Below are probabilites about what can lie in the bag, getting the probabilities is quite simple, we divide the number of ways a given option can generate the dataset with the amount of ways that all possible bags can generate the dataset ($1 + 4 + 9 = 14$)
 
@@ -51,13 +51,13 @@ So, with the first option (3 blue marbles) we cannot generate our dataset (2 red
 
 Counting is of course unfeasible with more complex problems, but the rationale remains the same there. As you will see later on we will use Markov Chain Monte Carlo to generate plausible solutions to our problem and in the end we will do the counting on these plausible solutions.
 
-### Uncertainty in everyday life
+## Uncertainty in everyday life
 
 We begin with the results of a survey we did with 30 participants where each participant was asked to assign a percentage probability to each of several common expressions that we use to express uncertainty. Each dot in the figure below represents one participant's probability assignment and the numbers in red the average across all participants for that expression:
 
-<center>
-![](./figs/questionnaire.png){width=70%}
-</center>
+```{r echo=FALSE, out.width="70%", fig.alt="Ridgeline plot of probabilities in percent given to 13 uncertainty expressions, one dot per participant; averages fall from 95.3 for almost surely to 3.5 for unbelievable, and answers for maybe and unlikely vary widely."}
+knitr::include_graphics("./figs/questionnaire.png", dpi = NA)
+```
 
 Note that the survey was in Slovenian and some bias might have been introduced in translation, but the results are more than sufficient for the arguments we are trying to make. First, our natural language obviously already contains expressions that serve the purpose of expressing uncertainty. And there are few better indicators of the importance of something than that it is an integral part of our language.
 
@@ -69,7 +69,7 @@ Fourth and finally, the expressions in the survey are limited to yes/no question
 
 Based on the above we argue that uncertainty is part of our everyday lives. And while natural language is *good enough* for most everyday situations, it is not appropriate for precise, unambiguous, and generally applicable expression of uncertainty. And, as is always the case where such requirements are set, we have to resort to mathematics for an answer.
 
-### The language of probability
+## The language of probability
 
 Probability theory provides us with mathematical objects for describing uncertainty and with mathematical tools that allow us to manipulate these objects in a coherent way. For example, take the Bayes theorem that is at the core of all Bayesian statistics:
 
@@ -93,7 +93,7 @@ This concludes the minimum probability theory that we need to use it as a langua
 
 We can see that probability theory does not deal with the accuracy of the probabilities or if they even make sense! It only deals with the bare minimum that we need to agree on in order to understand what we are talking about. For example, it is perfectly coherent to say that the world will end tomorrow with 99.9% probability as long as you also think that the probability of the world not ending tomorrow is 0.1%.
 
-### Sources of uncertainty
+## Sources of uncertainty
 
 Before we proceed with random variables and distributions, let us for a moment turn our attention to sources of uncertainty. Due to how probability and statistics are typically introduced, through the notion of random experiments, coin flips, and die rolls, people are often under the impression that uncertainty only results from randomness. That could not be further from the truth. Parameters of statistical models are a great example. For example, when investigating the fairness of a coin we are interested in its probability $p$ of landing heads. Before we flip the coin, we do not know much about $p$. That is, there is some uncertainty regarding the value of $p$. But no one will argue that $p$ is the result of a random experiment -- it is an unknown constant.
 
@@ -109,7 +109,7 @@ In this course we will not pay much attention to the reasons behind our uncertai
 
 This is the fundamental stand of Bayesian statistics, which we will repeat a couple of times more. We use probability to describe our uncertainty, even though the object we are describing might be deterministic. And, as new evidence (data) comes along, we use it to update our uncertainty.
 
-### Expressing uncertainty with uncertain quantities and their distributions
+## Expressing uncertainty with uncertain quantities and their distributions
 
 Let's return to our example of what the weather will be like tomorrow, where we are interested in the following options $\{\text{rain},\text{snow},\text{sunny},\text{other}\}$. And let's say that we believe that all four options are equally probable. We now have all the tools to express this uncertainty formally. The above is our sample space, the events can be the power set of our sample space, and, because we are dealing with a countable sample space, it suffices to say that the probability of all singletons in the event space (all outcomes) is $\frac{1}{4}$ and via countable additivity we already uniquely determine the probability of all other events.
 
@@ -151,12 +151,12 @@ It is a very short step from formal probabilistic expression to probabilistic (s
 
 This is a relatively simple example, but from this example to the most complicated parametric models, they are all just compositions of probabilistic expression. Of course, choice of distributions will vary from analysis to analysis and often even from one iteration of the same analysis to another. Choosing a sensible probabilistic interpretation of the process we study is both science and art and the topics of modeling and model selection will receive a lot of attention throughout the course.
 
-### Recommended readings
+## Recommended readings
 
 * Kruschke, J. (2014). Doing Bayesian data analysis: A tutorial with R, JAGS, and Stan. Academic Press. (Ch02 - Credibility, Models, and Parameters; Ch04 What Is this Stuff Called Probability)
 
 * McElreath, R. (2020). Statistical rethinking: A Bayesian course with examples in R and Stan. CRC press. (Ch01 - The Golem of Prague; Ch02 - Small Worlds and Large Worlds)
 
-### Additional readings
+## Additional readings
 
 * *If you are interested in learning more about the peculiarities of peoples' reasoning with uncertainty, this paper from the nobel laureates Tversky and Kahneman is a great starting point:* Tversky, A., & Kahneman, D. (1974). Judgment under uncertainty: Heuristics and biases. Science, 185(4157), 1124-1131.

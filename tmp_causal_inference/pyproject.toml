@@ -1,0 +1,19 @@
+[project]
+name="bayes-25"
+version="0.0.1"
+dependencies = [
+    "pandas",
+    "plotly",
+    "matplotlib",
+    "scikit-learn",
+    "openpyxl",
+    "jupyterlab",
+    "cmdstanpy",
+    "arviz",
+    "pyarrow",
+    "statsmodels",
+    "seaborn>=0.13.2",
+]
+
+[tool.ruff]
+line-length = 100

@@ -111,7 +111,7 @@ for (i in 1:9) {
   colnames(df_preds) <- "x"
   df_counts <- df_preds |> count(x)
 
-  hdi50 <- hdi(df_preds$x, credMass = 0.75)
+  hdi75 <- hdi(df_preds$x, credMass = 0.75)
 
   p <- ggplot(data = df_counts, aes(x = x, y = n)) +
     geom_bar(
@@ -123,11 +123,11 @@ for (i in 1:9) {
       color = "grey50", linewidth = 2
     ) +
     geom_vline(
-      xintercept = hdi50[1], color = "grey25",
+      xintercept = hdi75[1], color = "grey25",
       linewidth = 1, linetype = "dashed"
     ) +
     geom_vline(
-      xintercept = hdi50[2], color = "grey25",
+      xintercept = hdi75[2], color = "grey25",
       linewidth = 1, linetype = "dashed"
     ) +
     scale_x_continuous("Goals",
