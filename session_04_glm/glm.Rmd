@@ -237,13 +237,13 @@ Typically linear regression models have several parameters, the number of parame
 The gist of our problem is to figure out how we should distribute our resources if we just opened a startup company, in other words we are interested it the ratio between funds spent for research, administration and marketing that is expected go generate the most profit. We will use Bayesian multiple linear regression (we use the term simple linear regression when there is only one independent variable and the term multiple linear regression if we have more than one independent variable):
 
 $$y \; | \; x_r, x_a, x_m, \alpha, \beta_r, \beta_a, \beta_m, \sigma \sim N(\alpha + \beta_r x_r + \beta_a x_a + \beta_m x_m, \sigma),$$
-$$\beta_r, \beta_a, \beta_n \sim N(0, 1).$$
+$$\beta_r, \beta_a, \beta_m \sim N(0, 1).$$
 
 ### The intercept
 
 $\alpha$ (or often $\beta_0$) represents the intercept, the value of the dependent variable ($y$) when all independent variables ($x$) are set to zero. There are cases where removing the $\alpha$ parameter might make sense, with this we would make the model less flexible by fixing the value of the dependent variable to 0 when all independent variables are 0. There is a strong argument to do this in our case since without any investments there should probably be no profit:
 
-$$y \; | \; x_r, x_a, x_m, \beta_r, \beta_a, \beta_m, \sigma \sim N(\beta_r x_r + \beta_a x_a + \beta_m x_m \sigma).$$
+$$y \; | \; x_r, x_a, x_m, \beta_r, \beta_a, \beta_m, \sigma \sim N(\beta_r x_r + \beta_a x_a + \beta_m x_m, \sigma).$$
 
 Note though, that the intercept often does make a lot of sense. For example if we were interested in explaining relationship between salaries and work experience (e.g.,years of employment) then the intercept would denote the average salary for a person without any work experience (0 years of work experience).
 
@@ -251,11 +251,11 @@ Note though, that the intercept often does make a lot of sense. For example if w
 
 The $\beta$ coefficients are the core of regression models as they describe the relationship between independent and dependent variables. The table below shows some summary data for $\beta$ coefficients in our case.
 
-| Variable  | Mean              | $q_{0.5}$ | $q_{0.95}$ |
-|-----------|-------------------|-----------|------------|
-| $\beta_r$ | 0.714 $\pm$ 0.002 | 0.603     | 0.824      |
-| $\beta_a$ | 0.329 $\pm$ 0.001 | 0.277     | 0.382      |
-| $\beta_m$ | 0.083 $\pm$ 0.001 | 0.045     | 0.121      |
+| Variable  | Mean              | $q_{0.05}$ | $q_{0.95}$ |
+|-----------|-------------------|------------|------------|
+| $\beta_r$ | 0.714 $\pm$ 0.002 | 0.603      | 0.824      |
+| $\beta_a$ | 0.329 $\pm$ 0.001 | 0.277      | 0.382      |
+| $\beta_m$ | 0.083 $\pm$ 0.001 | 0.045      | 0.121      |
 
 A positive value of a $\beta$ coefficient denotes a positive correlation between the independent while the opposite holds for a negative of a $\beta$ coefficient. For example, the value of $\beta_r$ tells us that investing in research has a positive influence on profit. Furthermore, the value of 0.714 denotes that \$1 invested in research will generate a profit of \$0.714 on average. As we can see, investing in all three aspects of a business generates profit, this makes sense as if something is not valuable for a company they most likely would not do it. When independent variables are on the same scale we can compare their effects through $\beta$ coefficients.
 
@@ -427,10 +427,10 @@ knitr::include_graphics("./figs/bernoulli_logit.png", dpi = NA)
 
 We can see that this model is much better then the previous one -- it fits the underlying data better and we no longer get probabilities below 0 or above 1. Next, let us take a look at the posterior parameters:
 
-| Variable  | Mean              | $q_{0.5}$ | $q_{0.95}$ |
-|-----------|-------------------|-----------|------------|
-| $\alpha$  | -34.9 $\pm$ 0.132 | -40.6     | -30.4      |
-| $\beta$   | 0.21 $\pm$ 0.001  | 0.180     | 0.241      |
+| Variable  | Mean              | $q_{0.05}$ | $q_{0.95}$ |
+|-----------|-------------------|------------|------------|
+| $\alpha$  | -34.9 $\pm$ 0.132 | -40.6      | -30.4      |
+| $\beta$   | 0.21 $\pm$ 0.001  | 0.180      | 0.241      |
 
 Does the above $\beta$ value mean that with a 1 cm increase in height the probability of being male increases for 0.21?
 

@@ -63,7 +63,7 @@ mcse(df_default$theta > df_special$theta)
 # 90% hdi interval
 theta_diff <- df_default$theta - df_special$theta
 mean(theta_diff)
-hdi(theta_diff, prob = 0.9)
+hdi(theta_diff, credMass = 0.9)
 
 # set rim
 df_default$Rim <- "Default"

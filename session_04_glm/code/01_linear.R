@@ -81,4 +81,4 @@ predictions <- vector()
 for (i in 1:4000) {
   predictions[i] <- df$a[i] + df$b[i] * (2100 - min_year)
 }
-hdi(predictions, prob = 0.9)
+hdi(predictions, credMass = 0.9)

@@ -447,18 +447,18 @@ We will cover some other survey methodology topics that are closely related to q
 
 * Lietz, P. (2010). Research into questionnaire design: A summary of the literature. International journal of market research, 52(2), 249-272.
 
-* Krosnick, J. A. & Presser, S.: Question and questionnaire design. *Chapter 9 of Allison, P. D., Marsden, P. V., & Wright, J. D. (2010). Handbook of survey research.*
+* Krosnick, J. A. & Presser, S.: Question and questionnaire design. *Chapter 9 of Marsden, P. V., & Wright, J. D. (Eds.). (2010). Handbook of survey research (2nd ed.). Emerald.*
 
-* Wolf, C., Joye, D., Smith, T. E., Smith, T. W., & Fu, Y. C. (Eds.). (2016). The SAGE handbook of survey methodology. Sage.
+* Wolf, C., Joye, D., Smith, T. W., & Fu, Y. C. (Eds.). (2016). The SAGE handbook of survey methodology. Sage.
   * Chapter 14 -- Billiet, J.: What does measurement mean in a survey context?
-  * Chapter 15 -- Miller, K., & Willis, G. B: Cognitive models of answering processes.
+  * Chapter 15 -- Miller, K., & Willis, G. B.: Cognitive models of answering processes.
   * Chapter 16 -- Smyth, J. D.: Designing questions and questionnaires.
-  * Chapter 17 -- Revilla, M., Zavala, D., & Saris., W: Creating a good questions: How to use cumulative experience.
+  * Chapter 17 -- Revilla, M., Zavala-Rojas, D., & Saris, W.: Creating a good question: How to use cumulative experience.
   * Chapter 24 -- Willis, G. B.: Questionnaire pretesting.
 
 * Vannette, D. L., & Krosnick, J. A. (Eds.). (2017). The Palgrave handbook of survey research. Springer.
   * Chapter 13 -- Krosnick, J. A.: Improving question design to maximize reliability and validity.
-  * Chapter 14 -- Willis, G. B.: Cognitive interviewing in survey design: State of the science and future Directions.
+  * Chapter 14 -- Willis, G. B.: Cognitive interviewing in survey design: State of the science and future directions.
   * Chapter 18 -- Tourangeau, R.: Maintaining respondent trust and protecting their data.
   * Chapter 53 -- Krosnick, J. A.: Questionnaire design.
   * Chapter 54 -- Willis, G.: Cognitive evaluation of survey instruments.

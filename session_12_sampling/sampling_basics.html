@@ -209,9 +209,9 @@ sampling frame for parts of the study population that were not selected
 at the higher level. We will discuss this in more detail in the Cluster
 sampling scheme.</p>
 <p>In practice, if resources permit, probability sampling is always
-preferred over non-probability sampling. However, even when in
-situations where we can use probability sampling, the application is
-rarely ideal. Two main issues we face are coverage and non-response:</p>
+preferred over non-probability sampling. However, even in situations
+where we can use probability sampling, the application is rarely ideal.
+Two main issues we face are coverage and non-response:</p>
 <ul>
 <li><p><strong>Coverage:</strong> Ideally, our sampling frame would
 cover the entire study population. However, in practice, the sampling
@@ -273,7 +273,7 @@ footballers (between 1 – worst and 20 – best):</p>
 ## 7      Huang Yang      111  32    176     72             6 DefensiveMidfielder
 ## 8      Xu Wanchun      110  31    184      0             3     MidfielderRight
 ## 9     Liu Quankun      111  33    186     85             6     DefenderCentral
-## 10     ZhÃ¹ Yifan      110  28    182     72             4 AttackingMidCentral</code></pre>
+## 10      Zhù Yifan      110  28    182     72             4 AttackingMidCentral</code></pre>
 <p>We will pretend that these footballers are our entire study
 population. Hence, the true mean <span class="math inline">\(\mu_0
 =\)</span> 5.05 and true standard deviation <span class="math inline">\(\sigma_0 =\)</span> 3.67 of Penalty Taking are
@@ -285,11 +285,11 @@ known. We will try to estimate this true mean via samples of fixed size
 <p>Simple random sampling is a fixed-sized sample probability sampling
 scheme with equal inclusion probabilities. In other words, we sample
 <span class="math inline">\(n\)</span> units uniformly at random.</p>
-<p>True to its name, this is the simplest probability sampling scheme
-and when interested in the mean, we can invoke the Central Limit Theorem
-that says that the sample average will converge almost surely to the
-true mean 3.67 and the error will be approximately normally distributed
-with standard deviation <span class="math inline">\(\frac{\sigma_0}{\sqrt{n}} =\)</span> 0.26.</p>
+<p>True to its name, this is the simplest probability sampling scheme.
+When interested in the mean, we can invoke the law of large numbers,
+which says that the sample average will converge almost surely to the
+true mean 5.05, and the Central Limit Theorem, which says that the error
+will be approximately normally distributed with standard deviation <span class="math inline">\(\frac{\sigma_0}{\sqrt{n}} =\)</span> 0.26.</p>
 <p>Let us simulate the process of drawing our <span class="math inline">\(n =\)</span> 200 samples 100 times to check if
 that is indeed the case:</p>
 <p><img role="img" src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
@@ -326,19 +326,20 @@ model {
 smallest sample sizes very similar to those obtained with bootstrapping
 or a simple normal asymptotic argument of taking the average and
 quantifying uncertainty with sample standard deviation divided by the
-squared root of the sample size.</p>
+square root of the sample size.</p>
 <p>We simulated 50 different samples and fit the model separately to
 each. The posterior mean of course varies from sample to sample. The
 average over all estimates is 5.05 and their standard deviation across
 simulations is 0.208. Both of these are in line with theory.</p>
 <p>In practice we typically aren’t able to simulate many samples.
-Instead, we one sample of size <span class="math inline">\(n\)</span>
-from our population. So we have to rely on t. Below is a histogram of
-the posterior means for standard deviation for our 50 simulations. We
-can see how in practice we will sometimes underestimate, sometimes
-underestimate the variance (why?), but on average, it will be close to
-the true variance. Of course, the problem gets worse with smaller sample
-sizes and better with larger sample sizes.</p>
+Instead, we have one sample of size <span class="math inline">\(n\)</span> from our population, so we have to rely
+on the uncertainty that our model estimates from that single sample.
+Below is a histogram of the posterior standard deviations of <span class="math inline">\(\mu\)</span> (our estimates of the standard error)
+for our 50 simulations. We can see how in practice we will sometimes
+underestimate and sometimes overestimate the standard error (why?), but
+on average, it will be close to the true standard error <span class="math inline">\(\frac{\sigma_0}{\sqrt{n}} =\)</span> 0.26. Of
+course, the problem gets worse with smaller sample sizes and better with
+larger sample sizes.</p>
 <p><img role="img" src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 </div>
 </div>
@@ -368,34 +369,36 @@ is, that each strata is allocated samples proportional to its size. We
 can show that proportional allocation stratified sampling will be better
 than simple random sampling in terms of error when the quantity of
 interest is very homogeneous within each strata.</p>
-<p>In the case of stratified sampling, the sample average <span class="math inline">\(\overline{x} \approx \mu_o\)</span> is replaced by
+<p>In the case of stratified sampling, the sample average <span class="math inline">\(\overline{x} \approx \mu_0\)</span> is replaced by
 the weighted average <span class="math inline">\(\overline{x}_\text{strat} = \sum_{i=1}^k
 w_i\overline{x}_i\)</span>, where <span class="math inline">\(\overline{x}_i\)</span> are strata sample
 averages. We know that the sample average is an unbiased estimator and
 by linearity of expectation, so is <span class="math inline">\(\overline{x}_\text{strat}\)</span>.</p>
 <p>The efficiency (variance) of these estimators, however, differs:</p>
 <p><span class="math display">\[Var[\overline{x}] -
-Var[\overline{x}_\text{strat}] =\sum_{i=1}^k w_i (\mu_i -
+Var[\overline{x}_\text{strat}] = \frac{1}{n}\sum_{i=1}^k w_i (\mu_i -
 \mu_0)^2,\]</span></p>
-<p>where <span class="math inline">\(\mu\)</span> is the grand mean and
-<span class="math inline">\(\mu_i\)</span> are the strata means. To
-obtain this result, we will expand the total variance. In the following,
-let <span class="math inline">\(N\)</span> be the population size, <span class="math inline">\(N_i\)</span> the total number of units in strata
-<span class="math inline">\(i\)</span>, <span class="math inline">\(x_{ij}\)</span> the <span class="math inline">\(j-\)</span>th unit in the <span class="math inline">\(i-\)</span>th strata, <span class="math inline">\(\mu\)</span> the grand (population) mean, and
-<span class="math inline">\(\mu_i\)</span> and <span class="math inline">\(\sigma_i^2\)</span> the <span class="math inline">\(i-\)</span>th strata’s mean and variance.</p>
+<p>where <span class="math inline">\(\mu_0\)</span> is the grand
+(population) mean and <span class="math inline">\(\mu_i\)</span> are the
+strata means. To obtain this result, we will expand the total
+(population) variance <span class="math inline">\(\sigma_0^2\)</span>.
+In the following, let <span class="math inline">\(N\)</span> be the
+population size, <span class="math inline">\(N_i\)</span> the total
+number of units in strata <span class="math inline">\(i\)</span>, <span class="math inline">\(x_{ij}\)</span> the <span class="math inline">\(j-\)</span>th unit in the <span class="math inline">\(i-\)</span>th strata, and <span class="math inline">\(\mu_i\)</span> and <span class="math inline">\(\sigma_i^2\)</span> the <span class="math inline">\(i-\)</span>th strata’s mean and variance.</p>
 <p><span class="math display">\[
-\sigma^2 = \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (x_{ij} - \mu)^2
-\\
+\sigma_0^2 = \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (x_{ij} -
+\mu_0)^2 \\
 = \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (x_{ij} - \mu_i + \mu_i -
-\mu)^2 \\
+\mu_0)^2 \\
 = \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (x_{ij} - \mu_i)
-^2 + \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (\mu_i - \mu)^2 \text{
+^2 + \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (\mu_i - \mu_0)^2 \text{
 (the third term is 0!)} \\
 = \sum_{i=1}^k \frac{N_i}{N}\sigma_i^2 + \sum_{i=1}^k \frac{N_i}{N}
-(\mu_i - \mu)^2
-\]</span> Ignoring finite population size (or assuming that <span class="math inline">\(n\)</span> is relatively small wrt <span class="math inline">\(N\)</span>), we can recognize the idealized <span class="math inline">\(Var[\overline{x}] = \sigma^2\)</span> and <span class="math inline">\(Var[\overline{x}_\text{strat}] =  \sum_{i=1}^k
-\frac{N_i}{N}\sigma_i^2\)</span>, with <span class="math inline">\(w_i =
-\frac{N_i}{N}\)</span>, which completes the proof.</p>
+(\mu_i - \mu_0)^2
+\]</span> Ignoring finite population size (or assuming that <span class="math inline">\(n\)</span> is relatively small wrt <span class="math inline">\(N\)</span>), we can recognize the idealized <span class="math inline">\(Var[\overline{x}] = \frac{\sigma_0^2}{n}\)</span>
+and <span class="math inline">\(Var[\overline{x}_\text{strat}] =
+\frac{1}{n}\sum_{i=1}^k \frac{N_i}{N}\sigma_i^2\)</span>, with <span class="math inline">\(w_i = \frac{N_i}{N}\)</span>, which completes the
+proof.</p>
 <p>So, unless all the strata means are exactly the same as the grand
 mean of the entire population, then the difference between the variances
 will be positive, otherwise it will be 0. This implies that proportional
@@ -437,20 +440,21 @@ estimator:</p>
 <p>We can see that the optimal allocation takes into account strata size
 and strata homogeneity. The larger the strata and the less homogeneous
 it is, the more samples we allocate to it. The more similar the strata
-are to the population in terms of variance, the smaller the difference
+standard deviations are to each other, the smaller the difference
 between proportional and optimal allocation:</p>
 <p><span class="math display">\[Var[\overline{x}_\text{strat}] -
 Var[\overline{x}_\text{opt}] = \frac{1}{n}\sum_{i=1}^k w_i (\sigma_i -
-\sigma_0)^2,\]</span></p>
-<p>where <span class="math inline">\(\sigma_0\)</span> is the grand
-standard deviation and <span class="math inline">\(\sigma_i\)</span> are
-the strata standard deviations. We state this without proof.</p>
-<p>Even though optimal location is at least as good as proportional
+\bar{\sigma})^2,\]</span></p>
+<p>where <span class="math inline">\(w_i = \frac{N_i}{N}\)</span> are
+the proportional allocation weights and <span class="math inline">\(\bar{\sigma} = \sum_{i=1}^k w_i\sigma_i\)</span>
+is the weighted average of the strata standard deviations <span class="math inline">\(\sigma_i\)</span>. We state this without
+proof.</p>
+<p>Even though optimal allocation is at least as good as proportional
 allocation in theory, we might still prefer proportional allocation in
-practice. Optimal allocation requires a good estimate of the within
-strata variability <span class="math inline">\(\sigma_i\)</span> which
-is often unknown, although it can be estimated by preliminary sampling.
-Also, if we are estimating more than one quantity, the <span class="math inline">\(\sigma_i\)</span> will be different for each
+practice. Optimal allocation requires a good estimate of the
+within-strata variability <span class="math inline">\(\sigma_i\)</span>,
+which is often unknown, although it can be estimated by preliminary
+sampling. Also, if we are estimating more than one quantity, the <span class="math inline">\(\sigma_i\)</span> will be different for each
 quantity and it will be impossible to find an allocation that is optimal
 for all quantities.</p>
 </div>
@@ -506,14 +510,14 @@ clusters, like we do in stratified sampling, we select at random only a
 subset of the clusters and then measure all units in the selected
 clusters. This is called one-stage clustering. Instead of measuring all
 units in a cluster, we can again estimate the quantity of interest for a
-cluster using only simple random sample from that cluster. This is
-called two-stage clustering. The approach can be extend to an arbitrary
-number of levels and it is called multi-stage clustering.</p>
+cluster using only a simple random sample from that cluster. This is
+called two-stage clustering. The approach can be extended to an
+arbitrary number of levels and it is called multi-stage clustering.</p>
 <p>Cluster sampling is an alternative to simple random sampling and
 stratified sampling that is used when it is difficult to construct a
 sampling frame for the entire study population. For example, it would be
 difficult to get a list of all University of Ljubljana students, but it
-is relatively easy to get a list of all Faculties and withing each
+is relatively easy to get a list of all Faculties and within each
 Faculty the list of all study programs. Once a study program is
 selected, it is easier to establish contact with all students from that
 program. Cluster sampling is also used to reduce the cost of sampling.
@@ -564,7 +568,7 @@ cluster sampling and the uncertainty due to unit sampling.</p>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>      idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>k, <span class="dv">1</span>)</span>
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>      tmp <span class="ot">&lt;-</span> x[group <span class="sc">==</span> idx]</span>
 <span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>      tot_w <span class="ot">&lt;-</span> tot_w <span class="sc">+</span> w[idx]</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>      tmp <span class="ot">&lt;-</span> <span class="fu">sample</span>(tmp, <span class="fu">length</span>(tmp), <span class="at">rep =</span> <span class="cn">TRUE</span>) <span class="co"># resample withing cluster</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>      tmp <span class="ot">&lt;-</span> <span class="fu">sample</span>(tmp, <span class="fu">length</span>(tmp), <span class="at">rep =</span> <span class="cn">TRUE</span>) <span class="co"># resample within cluster</span></span>
 <span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>      tot_x <span class="ot">&lt;-</span> tot_x <span class="sc">+</span> <span class="fu">mean</span>(tmp) <span class="sc">*</span> w[idx]</span>
 <span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    }</span>
 <span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    mus <span class="ot">&lt;-</span> <span class="fu">c</span>(mus, tot_x <span class="sc">/</span> tot_w)</span>
@@ -572,7 +576,7 @@ cluster sampling and the uncertainty due to unit sampling.</p>
 <span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mu =</span> <span class="fu">mean</span>(mus), <span class="at">SE =</span> <span class="fu">sd</span>(mus)))</span>
 <span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>}</span></code></pre></div>
 <p>Finally, we will use a Bayesian model that models the two-level
-strucure. Similarly, we will estimate the mean of each cluster
+structure. Similarly, we will estimate the mean of each cluster
 separately and the grand mean by sampling with replacement from the
 clusters:</p>
 <pre><code>data {
@@ -619,10 +623,10 @@ with a good estimate of uncertainty:</p>
 <pre><code>##        mu mu_simple se_simple   mu_boot   se_boot  mu_bayes  se_bayes 
 ## 5.0770421 4.9739500 0.2528860 5.0500687 0.5637844 5.1391097 0.5709848</code></pre>
 <p>Again, the quality of the estimate of standard error also varies. For
-some unfortunate sample of clusters and units withing those clusters, it
+some unfortunate sample of clusters and units within those clusters, it
 can be far away from the true standard error. Here is the distribution
-of posterior means of standard error for the Bayesian model across all
-iterations of the simulation:</p>
+of the Bayesian model’s standard error estimates (posterior standard
+deviations of the mean) across all iterations of the simulation:</p>
 <p><img role="img" src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 </div>
 </div>
@@ -663,11 +667,11 @@ Another way of looking at non-probability sampling is as the sampling
 approach that we use when no probability sampling approach is feasible.
 This is typically due to not being able to create a sampling frame. For
 example, it is impossible to create a sampling frame for all dung
-beetles and some subpopulations, such as drug additcs are difficult to
+beetles, and some subpopulations, such as drug addicts, are difficult to
 reach. Instead of random sampling, we select elements based on other
 criteria and assumptions regarding the study population. This gives rise
 to exclusion bias, placing limits on the representativeness of the
-sample. While the results of non-probability sample might be useful in
+sample. While the results of a non-probability sample might be useful in
 some cases, it is in most cases impossible to make any scientifically
 sound generalizations to the study population.</p>
 <div id="convenience-sampling" class="section level3">
@@ -689,24 +693,25 @@ context:</p>
 <ul>
 <li><p>If the goal is to capture the extremes of the variability of some
 property of our study units, we will select a sample that is diverse
-with respect to some other variates. That is, samples that are as
-different from eachother as possible. This is also known as maximum
+with respect to some other variates. That is, units that are as
+different from each other as possible. This is also known as maximum
 variation sampling. For example, when selecting problems for the course
 exam, we try to select problems that cover the entire subject
 matter.</p></li>
-<li><p>If the goal is to investigate how a particular property, we will
-select units that are as similar as possible in all other traits. This
-is also known as homogeneous sampling. For example, if we are interested
-in long-term effects of working with a hazardous material, we would
-select people that are as similar as possible in every other aspect
-including working with that material for a long time.</p></li>
+<li><p>If the goal is to investigate the effect of a particular
+property, we will select units that are as similar as possible in all
+other traits. This is also known as homogeneous sampling. For example,
+if we are interested in long-term effects of working with a hazardous
+material, we would select people that are as similar as possible in
+every other aspect including working with that material for a long
+time.</p></li>
 <li><p>If the goal is to investigate what is typical or atypical, we
 will select a sample of units that are most or least similar to what is
 considered typical. This is also known as typical/atypical case
-sampling. For example, if we are investigating how a typical Faculty of
-computer information student rates the study program, we would
-immediately exclude exchange students, female students, students from
-joint study programs with other faculties, etc.</p></li>
+sampling. For example, if we are investigating how a typical student of
+the Faculty of Computer and Information Science rates the study program,
+we would immediately exclude exchange students, female students,
+students from joint study programs with other faculties, etc.</p></li>
 </ul>
 </div>
 <div id="quota-sampling" class="section level3">

@@ -210,14 +210,14 @@ for (i in seq_len(nrow(df_exp_i))) {
 
 # compare
 mean_normal <- round(mean(p_slower_normal), 4) * 100
-hdi_normal <- round(hdi(p_slower_normal, credmass = 0.90), 4) * 100
+hdi_normal <- round(hdi(p_slower_normal, credMass = 0.90), 4) * 100
 cat(paste0(
   "Normal model: ", mean_normal, "% (90% HDI ",
   hdi_normal[1], "-", hdi_normal[2], "%) slower than 1 s"
 ))
 
 mean_emg <- round(mean(p_slower_exp_i), 4) * 100
-hdi_emg <- round(hdi(p_slower_exp_i, credmass = 0.90), 4) * 100
+hdi_emg <- round(hdi(p_slower_exp_i, credMass = 0.90), 4) * 100
 cat(paste0(
   "EMG model: ", mean_emg, "% (90% HDI ",
   hdi_emg[1], "-", hdi_emg[2], "%) slower than 1 s"

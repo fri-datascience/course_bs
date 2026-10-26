@@ -427,7 +427,7 @@ As you see we already developed a statistical model for the coin toss, let us wr
 
 1. Specification of the input data:
 
-   $$y_1, \ldots, y_n \qquad y_i \in {0,1}.$$
+   $$y_1, \ldots, y_n \qquad y_i \in \{0,1\}.$$
 
 1. The model:
 
@@ -798,7 +798,7 @@ The $\texttt{ess_bulk}$ estimates the bulk effective sample size using rank norm
 
 $$ESS = \frac{SS}{1 + 2 \sum{acf}},$$
 
-where $SS$ is the total sample size, if we are using 4 chains where each one of the produces 1000 samples then $SS = 4 * 1000$$, and $acf$ is the auto correlation function that measures the autocorrelation of generated samples. We will talk about $acf$ in detail in the time-series lecture.
+where $SS$ is the total sample size, if we are using 4 chains where each one of them produces 1000 samples then $SS = 4 * 1000$, and $acf$ is the auto correlation function that measures the autocorrelation of generated samples. We will talk about $acf$ in detail in the time-series lecture.
 
 The above diagnostics will be enough for the majority of our use cases, Stan also offers a function ($\texttt{cmdstan_diagnose()}$) that automatically performs some essential checks and lets you know if some things are not in order. If the name of your model fit variable is $\texttt{fit_normal}$ then running $\texttt{fit_normal\$cmdstan_diagnose()}$ woud run the basic diagnostics on it. Furthermore, you can use the $\texttt{shinystan}$ package to open up a web interface in which you can interactively explore your fits.
 
@@ -826,12 +826,12 @@ mcse(df_default$theta > df_special$theta)
 # 90% hdi interval
 theta_diff <- df_default$theta - df_special$theta
 mean(theta_diff)
-hdi(theta_diff, prob = 0.9)
+hdi(theta_diff, credMass = 0.9)
 ```
 
 Now we can compare how this basketball player fares when shooting on a default sized rim in comparison to a smaller rim (the special rim). To do this we just have to compare the model's $\texttt{theta}$ parameter between both cases. Here we are using the $\texttt{mcse}$ library because it conveniently also calculates the Monte Carlo standard error. It is important to always estimate uncertainty in our conclusions!
 
-The first comparison calculates the difference in success between the default and the special rims. We can see that the player has a 30.78% ($\pm$ 0.2%) higher success rate when shooting on the default rim. The second comparison calculates the probability with which we can claim that player's success is indeed higher when shooting on the default rim. As you can see we can claim this with ~100% ($\pm$ 0%) probability. So we are extremely confident (as confident as we can be) that shooting on a larger rim will yield better success. The code snippet below visualizes this finding.
+The first comparison calculates the difference in success between the default and the special rims. We can see that the player has a 30.64% ($\pm$ 0.2%) higher success rate when shooting on the default rim. The second comparison calculates the probability with which we can claim that player's success is indeed higher when shooting on the default rim. As you can see we can claim this with ~100% ($\pm$ 0%) probability. So we are extremely confident (as confident as we can be) that shooting on a larger rim will yield better success. The code snippet below visualizes this finding.
 
 ```{r message=FALSE}
 # label each dataframe and bind together

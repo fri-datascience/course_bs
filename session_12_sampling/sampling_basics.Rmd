@@ -27,7 +27,7 @@ The main characteristic of these two groups of approaches to sampling is that in
 
 The key component of sampling is the *sampling frame*. The sampling frame is a list of all units in the study population. In other words, it defines a set of units from which a researcher can select a sample of the study population. Without a sampling frame, probability sampling is not possible. However, in cases where our study population has a hierarchical structure, we can avoid the need for a detailed sampling frame for parts of the study population that were not selected at the higher level. We will discuss this in more detail in the Cluster sampling scheme.
 
-In practice, if resources permit, probability sampling is always preferred over non-probability sampling. However, even when in situations where we can use probability sampling, the application is rarely ideal. Two main issues we face are coverage and non-response:
+In practice, if resources permit, probability sampling is always preferred over non-probability sampling. However, even in situations where we can use probability sampling, the application is rarely ideal. Two main issues we face are coverage and non-response:
 
 * **Coverage:** Ideally, our sampling frame would cover the entire study population. However, in practice, the sampling frame often does not include all units of the study population (under-coverage) or it includes some units that are not in the study population (over-coverage). For example, if we survey University of Ljubljana (UL) students, we might, if we are not careful, include non-UL students that are only spending a semester here (over-coverage), but miss UL students that are studying abroad this semester (under-coverage).
 
@@ -50,6 +50,13 @@ n <- 200 # sample size
 m <- 100 # number of simulations
 df <- readRDS("./data/fm2017.rds")
 df <- df[complete.cases(df), ]
+# many player names are double-encoded (UTF-8 bytes read as Latin-1/Windows-1252), undo that
+for (enc in c("latin1", "CP1252")) {
+  fixed <- iconv(df$Name, "UTF-8", enc)
+  Encoding(fixed) <- "UTF-8"
+  ok <- !is.na(fixed) & validUTF8(fixed)
+  df$Name[ok] <- fixed[ok]
+}
 df$BestPosition <- names(df)[75:89][apply(df[, 75:89], 1, function(x) {
   which(x == max(x))[1]
 })]
@@ -73,7 +80,7 @@ We will pretend that these footballers are our entire study population. Hence, t
 
 Simple random sampling is a fixed-sized sample probability sampling scheme with equal inclusion probabilities. In other words, we sample $n$ units uniformly at random.
 
-True to its name, this is the simplest probability sampling scheme and when interested in the mean, we can invoke the Central Limit Theorem that says that the sample average will converge almost surely to the true mean `r round(true_sd, 2)` and the error will be approximately normally distributed with standard deviation $\frac{\sigma_0}{\sqrt{n}} =$ `r round(true_sd / sqrt(n), 3)`.
+True to its name, this is the simplest probability sampling scheme. When interested in the mean, we can invoke the law of large numbers, which says that the sample average will converge almost surely to the true mean `r round(true_mean, 2)`, and the Central Limit Theorem, which says that the error will be approximately normally distributed with standard deviation $\frac{\sigma_0}{\sqrt{n}} =$ `r round(true_sd / sqrt(n), 3)`.
 
 Let us simulate the process of drawing our $n =$ `r n` samples `r m` times to check if that is indeed the case:
 
@@ -106,7 +113,7 @@ Because of the CLT, we can, when the sample was obtained via simple random sampl
 cat(readLines("./models/simple.stan"), sep = "\n")
 ```
 
-Note that results obtained with this approach will be for all but the smallest sample sizes very similar to those obtained with bootstrapping or a simple normal asymptotic argument of taking the average and quantifying uncertainty with sample standard deviation divided by the squared root of the sample size.
+Note that results obtained with this approach will be for all but the smallest sample sizes very similar to those obtained with bootstrapping or a simple normal asymptotic argument of taking the average and quantifying uncertainty with sample standard deviation divided by the square root of the sample size.
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE, results = "hide"}
 library(cmdstanr)
@@ -132,7 +139,7 @@ if (file.exists("./saved_results/001.rds")) {
 
 We simulated 50 different samples and fit the model separately to each. The posterior mean of course varies from sample to sample. The average over all estimates is `r round(mean(res001$mu), 2)` and their standard deviation across simulations is `r round(sd(res001$mu), 3)`. Both of these are in line with theory.
 
-In practice we typically aren't able to simulate many samples. Instead, we one sample of size $n$ from our population. So we have to rely on t. Below is a histogram of the posterior means for standard deviation for our 50 simulations. We can see how in practice we will sometimes underestimate, sometimes underestimate the variance (why?), but on average, it will be close to the true variance. Of course, the problem gets worse with smaller sample sizes and better with larger sample sizes.
+In practice we typically aren't able to simulate many samples. Instead, we have one sample of size $n$ from our population, so we have to rely on the uncertainty that our model estimates from that single sample. Below is a histogram of the posterior standard deviations of $\mu$ (our estimates of the standard error) for our 50 simulations. We can see how in practice we will sometimes underestimate and sometimes overestimate the standard error (why?), but on average, it will be close to the true standard error $\frac{\sigma_0}{\sqrt{n}} =$ `r round(true_sd / sqrt(n), 3)`. Of course, the problem gets worse with smaller sample sizes and better with larger sample sizes.
 
 ```{r echo=FALSE, warning=FALSE, fig.width=3, fig.height=3}
 ggplot(res001, aes(x = sd)) +
@@ -153,22 +160,22 @@ Let $k$ be the number of strata and $N_i$, $n_i$ be the size of and the number o
 
 In *proportional allocation* we assign $n_i$ so that $w_i = \frac{N_i}{\sum_{i=1}^k N_i}$. That is, that each strata is allocated samples proportional to its size. We can show that proportional allocation stratified sampling will be better than simple random sampling in terms of error when the quantity of interest is very homogeneous within each strata.
 
-In the case of stratified sampling, the sample average $\overline{x} \approx \mu_o$ is replaced by the weighted average $\overline{x}_\text{strat} = \sum_{i=1}^k w_i\overline{x}_i$, where $\overline{x}_i$ are strata sample averages. We know that the sample average is an unbiased estimator and by linearity of expectation, so is $\overline{x}_\text{strat}$.
+In the case of stratified sampling, the sample average $\overline{x} \approx \mu_0$ is replaced by the weighted average $\overline{x}_\text{strat} = \sum_{i=1}^k w_i\overline{x}_i$, where $\overline{x}_i$ are strata sample averages. We know that the sample average is an unbiased estimator and by linearity of expectation, so is $\overline{x}_\text{strat}$.
 
 The efficiency (variance) of these estimators, however, differs:
 
-$$Var[\overline{x}] - Var[\overline{x}_\text{strat}] =\sum_{i=1}^k w_i (\mu_i - \mu_0)^2,$$
+$$Var[\overline{x}] - Var[\overline{x}_\text{strat}] = \frac{1}{n}\sum_{i=1}^k w_i (\mu_i - \mu_0)^2,$$
 
-where $\mu$ is the grand mean and $\mu_i$ are the strata means. To obtain this result, we will expand the total variance. In the following, let $N$ be the population size, $N_i$ the total number of units in strata $i$, $x_{ij}$ the $j-$th unit in the $i-$th strata, $\mu$ the grand (population) mean, and $\mu_i$ and $\sigma_i^2$ the $i-$th strata's mean and variance.
+where $\mu_0$ is the grand (population) mean and $\mu_i$ are the strata means. To obtain this result, we will expand the total (population) variance $\sigma_0^2$. In the following, let $N$ be the population size, $N_i$ the total number of units in strata $i$, $x_{ij}$ the $j-$th unit in the $i-$th strata, and $\mu_i$ and $\sigma_i^2$ the $i-$th strata's mean and variance.
 
 $$
-\sigma^2 = \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (x_{ij} - \mu)^2 \\
-= \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (x_{ij} - \mu_i + \mu_i - \mu)^2 \\
+\sigma_0^2 = \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (x_{ij} - \mu_0)^2 \\
+= \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (x_{ij} - \mu_i + \mu_i - \mu_0)^2 \\
 = \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (x_{ij} - \mu_i)
-^2 + \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (\mu_i - \mu)^2 \text{ (the third term is 0!)} \\
-= \sum_{i=1}^k \frac{N_i}{N}\sigma_i^2 + \sum_{i=1}^k \frac{N_i}{N} (\mu_i - \mu)^2
+^2 + \frac{1}{N}\sum_{i=1}^k \sum_{j = 1}^{N_i} (\mu_i - \mu_0)^2 \text{ (the third term is 0!)} \\
+= \sum_{i=1}^k \frac{N_i}{N}\sigma_i^2 + \sum_{i=1}^k \frac{N_i}{N} (\mu_i - \mu_0)^2
 $$
-Ignoring finite population size (or assuming that $n$ is relatively small wrt $N$), we can recognize the idealized $Var[\overline{x}] = \sigma^2$ and  $Var[\overline{x}_\text{strat}] =  \sum_{i=1}^k \frac{N_i}{N}\sigma_i^2$, with $w_i = \frac{N_i}{N}$, which completes the proof.
+Ignoring finite population size (or assuming that $n$ is relatively small wrt $N$), we can recognize the idealized $Var[\overline{x}] = \frac{\sigma_0^2}{n}$ and $Var[\overline{x}_\text{strat}] = \frac{1}{n}\sum_{i=1}^k \frac{N_i}{N}\sigma_i^2$, with $w_i = \frac{N_i}{N}$, which completes the proof.
 
 So, unless all the strata means are exactly the same as the grand mean of the entire population, then the difference between the variances will be positive, otherwise it will be 0. This implies that proportional stratified sampling is expected to be at least as good as simple random sampling regardless of the data or how we stratify them. This also highlights how to stratify optimally -- we need strata whose means differ as much as possible from the grand mean. In other words, we should aim for strata with low within-strata variability and high between-strata variability.
 
@@ -218,13 +225,13 @@ The average over all estimates is `r round(mean(mus002), 2)` and their standard 
 
 $$w_i = \frac{n_i}{n} = \frac{N_i\sigma_i}{\sum_{i=1}^k N_i\sigma_i}.$$
 
-We can see that the optimal allocation takes into account strata size and strata homogeneity. The larger the strata and the less homogeneous it is, the more samples we allocate to it. The more similar the strata are to the population in terms of variance, the smaller the difference between proportional and optimal allocation:
+We can see that the optimal allocation takes into account strata size and strata homogeneity. The larger the strata and the less homogeneous it is, the more samples we allocate to it. The more similar the strata standard deviations are to each other, the smaller the difference between proportional and optimal allocation:
 
-$$Var[\overline{x}_\text{strat}] - Var[\overline{x}_\text{opt}] = \frac{1}{n}\sum_{i=1}^k w_i (\sigma_i - \sigma_0)^2,$$
+$$Var[\overline{x}_\text{strat}] - Var[\overline{x}_\text{opt}] = \frac{1}{n}\sum_{i=1}^k w_i (\sigma_i - \bar{\sigma})^2,$$
 
-where $\sigma_0$ is the grand standard deviation and $\sigma_i$ are the strata standard deviations. We state this without proof.
+where $w_i = \frac{N_i}{N}$ are the proportional allocation weights and $\bar{\sigma} = \sum_{i=1}^k w_i\sigma_i$ is the weighted average of the strata standard deviations $\sigma_i$. We state this without proof.
 
-Even though optimal location is at least as good as proportional allocation in theory, we might still prefer proportional allocation in practice. Optimal allocation requires a good estimate of the within strata variability $\sigma_i$ which is often unknown, although it can be estimated by preliminary sampling. Also, if we are estimating more than one quantity, the $\sigma_i$ will be different for each quantity and it will be impossible to find an allocation that is optimal for all quantities.
+Even though optimal allocation is at least as good as proportional allocation in theory, we might still prefer proportional allocation in practice. Optimal allocation requires a good estimate of the within-strata variability $\sigma_i$, which is often unknown, although it can be estimated by preliminary sampling. Also, if we are estimating more than one quantity, the $\sigma_i$ will be different for each quantity and it will be impossible to find an allocation that is optimal for all quantities.
 
 #### Optimal allocation -- simulation
 
@@ -309,9 +316,9 @@ print(summary(res004))
 
 ### Cluster sampling
 
-The cluster sampling scheme is similar to the stratified sampling scheme in that we partition the data into non-overlapping partitions, this time called clusters. However, instead of sampling from all clusters, like we do in stratified sampling, we select at random only a subset of the clusters and then measure all units in the selected clusters. This is called one-stage clustering. Instead of measuring all units in a cluster, we can again estimate the quantity of interest for a cluster using only simple random sample from that cluster. This is called two-stage clustering. The approach can be extend to an arbitrary number of levels and it is called multi-stage clustering.
+The cluster sampling scheme is similar to the stratified sampling scheme in that we partition the data into non-overlapping partitions, this time called clusters. However, instead of sampling from all clusters, like we do in stratified sampling, we select at random only a subset of the clusters and then measure all units in the selected clusters. This is called one-stage clustering. Instead of measuring all units in a cluster, we can again estimate the quantity of interest for a cluster using only a simple random sample from that cluster. This is called two-stage clustering. The approach can be extended to an arbitrary number of levels and it is called multi-stage clustering.
 
-Cluster sampling is an alternative to simple random sampling and stratified sampling that is used when it is difficult to construct a sampling frame for the entire study population. For example, it would be difficult to get a list of all University of Ljubljana students, but it is relatively easy to get a list of all Faculties and withing each Faculty the list of all study programs. Once a study program is selected, it is easier to establish contact with all students from that program. Cluster sampling is also used to reduce the cost of sampling. For example, if our study involves units that are geographically spread out, it might be cheaper to first select at random only a few geographical locations and then sample from those locations.
+Cluster sampling is an alternative to simple random sampling and stratified sampling that is used when it is difficult to construct a sampling frame for the entire study population. For example, it would be difficult to get a list of all University of Ljubljana students, but it is relatively easy to get a list of all Faculties and within each Faculty the list of all study programs. Once a study program is selected, it is easier to establish contact with all students from that program. Cluster sampling is also used to reduce the cost of sampling. For example, if our study involves units that are geographically spread out, it might be cheaper to first select at random only a few geographical locations and then sample from those locations.
 
 Unfortunately, cluster sampling comes at a cost in efficiency. In stratified sampling we benefit from having strata with means that differ as much as possible. We achieve this by having a lot of between-strata variability but little within-strata variability. This very mechanism that benefits us in stratified sampling makes cluster sampling less effective. If we have very little within-cluster variability and a lot of between-cluster variability that will increase the uncertainty of our estimates. So, in contrast with stratified sampling, we want to have a lot of within-cluster variability and little between-cluster variability.
 
@@ -338,7 +345,7 @@ h_bootstrap <- function(x, group, w, m = 100) {
       idx <- sample(1:k, 1)
       tmp <- x[group == idx]
       tot_w <- tot_w + w[idx]
-      tmp <- sample(tmp, length(tmp), rep = TRUE) # resample withing cluster
+      tmp <- sample(tmp, length(tmp), rep = TRUE) # resample within cluster
       tot_x <- tot_x + mean(tmp) * w[idx]
     }
     mus <- c(mus, tot_x / tot_w)
@@ -347,7 +354,7 @@ h_bootstrap <- function(x, group, w, m = 100) {
 }
 ```
 
-Finally, we will use a Bayesian model that models the two-level strucure. Similarly, we will estimate the mean of each cluster separately and the grand mean by sampling with replacement from the clusters:
+Finally, we will use a Bayesian model that models the two-level structure. Similarly, we will estimate the mean of each cluster separately and the grand mean by sampling with replacement from the clusters:
 
 ```{r comment="", echo = FALSE}
 cat(readLines("./models/clustered.stan"), sep = "\n")
@@ -417,7 +424,7 @@ Looking at the averages across all iterations of the simulation, we can see that
 colMeans(res)
 ```
 
-Again, the quality of the estimate of standard error also varies. For some unfortunate sample of clusters and units withing those clusters, it can be far away from the true standard error. Here is the distribution of posterior means of standard error for the Bayesian model across all iterations of the simulation:
+Again, the quality of the estimate of standard error also varies. For some unfortunate sample of clusters and units within those clusters, it can be far away from the true standard error. Here is the distribution of the Bayesian model's standard error estimates (posterior standard deviations of the mean) across all iterations of the simulation:
 
 ```{r echo=FALSE, warning=FALSE, fig.width=4, fig.height=4}
 ggplot(res, aes(x = se_bayes)) +
@@ -438,7 +445,7 @@ While classical statistics has well-developed procedures for estimating in a fin
 
 ## Non-probability sampling schemes
 
-We have already defined non-probability sampling as a sampling approach where some elements of the population have no chance of selection or where we cannot determine the probability of selection. Another way of looking at non-probability sampling is as the sampling approach that we use when no probability sampling approach is feasible. This is typically due to not being able to create a sampling frame. For example, it is impossible to create a sampling frame for all dung beetles and some subpopulations, such as drug additcs are difficult to reach. Instead of random sampling, we select elements based on other criteria and assumptions regarding the study population. This gives rise to exclusion bias, placing limits on the representativeness of the sample. While the results of non-probability sample might be useful in some cases, it is in most cases impossible to make any scientifically sound generalizations to the study population.
+We have already defined non-probability sampling as a sampling approach where some elements of the population have no chance of selection or where we cannot determine the probability of selection. Another way of looking at non-probability sampling is as the sampling approach that we use when no probability sampling approach is feasible. This is typically due to not being able to create a sampling frame. For example, it is impossible to create a sampling frame for all dung beetles, and some subpopulations, such as drug addicts, are difficult to reach. Instead of random sampling, we select elements based on other criteria and assumptions regarding the study population. This gives rise to exclusion bias, placing limits on the representativeness of the sample. While the results of a non-probability sample might be useful in some cases, it is in most cases impossible to make any scientifically sound generalizations to the study population.
 
 ### Convenience sampling
 
@@ -448,11 +455,11 @@ Convenience sampling is also known as opportunity sampling or accidental samplin
 
 Judgement sampling is also known as purposive sampling or authoritative sampling. It is a type of non-probability sampling where the researchers choose the sample based on their expert knowledge of what would be a representative sample. The criteria we use depend on the context:
 
-* If the goal is to capture the extremes of the variability of some property of our study units, we will select a sample that is diverse with respect to some other variates. That is, samples that are as different from eachother as possible. This is also known as maximum variation sampling. For example, when selecting problems for the course exam, we try to select problems that cover the entire subject matter.
+* If the goal is to capture the extremes of the variability of some property of our study units, we will select a sample that is diverse with respect to some other variates. That is, units that are as different from each other as possible. This is also known as maximum variation sampling. For example, when selecting problems for the course exam, we try to select problems that cover the entire subject matter.
 
-* If the goal is to investigate how a particular property, we will select units that are as similar as possible in all other traits. This is also known as homogeneous sampling. For example, if we are interested in long-term effects of working with a hazardous material, we would select people that are as similar as possible in every other aspect including working with that material for a long time.
+* If the goal is to investigate the effect of a particular property, we will select units that are as similar as possible in all other traits. This is also known as homogeneous sampling. For example, if we are interested in long-term effects of working with a hazardous material, we would select people that are as similar as possible in every other aspect including working with that material for a long time.
 
-* If the goal is to investigate what is typical or atypical, we will select a sample of units that are most or least similar to what is considered typical. This is also known as typical/atypical case sampling. For example, if we are investigating how a typical Faculty of computer information student rates the study program, we would immediately exclude exchange students, female students, students from joint study programs with other faculties, etc.
+* If the goal is to investigate what is typical or atypical, we will select a sample of units that are most or least similar to what is considered typical. This is also known as typical/atypical case sampling. For example, if we are investigating how a typical student of the Faculty of Computer and Information Science rates the study program, we would immediately exclude exchange students, female students, students from joint study programs with other faculties, etc.
 
 ### Quota sampling
 

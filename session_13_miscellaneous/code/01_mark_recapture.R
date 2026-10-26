@@ -48,4 +48,4 @@ ggplot(data = df) +
 # 95% HDI
 mean(df$n)
 median(df$n)
-hdi(df$n, prob = c(0.05, 0.95))
+hdi(df$n, credMass = 0.95)
