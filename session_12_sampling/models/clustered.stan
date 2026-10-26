@@ -23,7 +23,7 @@ generated quantities {
   real tot_w = 0;
   
   for (i in 1:k) {
-     int idx = categorical_rng(w);
+     int idx = discrete_range_rng(1, k);
      tot_w += w[idx];
      mu_est += w[idx] * mu[idx];
   }

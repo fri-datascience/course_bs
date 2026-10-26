@@ -162,20 +162,20 @@ Ljubljana</h3>
     <section id="main-content">
 <div id="summary" class="section level2">
 <h2>Summary</h2>
-<p>Defining priors is an integral part in Bayesian statistics. The main
+<p>Defining priors is an integral part of Bayesian statistics. The main
 purpose of priors is to introduce prior expert knowledge about the
 domain into our models. As we know by now, this is not the only useful
 thing about priors, they are also useful for regularization and can be
 of help during the sampling process which can lead to stabilization of
 inferences in certain models. Based on the amount of information they
-provide priors are commonly categorized into three groups –
+provide, priors are commonly categorized into three groups –
 non-informative priors, weakly informative priors and informative
 priors. This document briefly explains the differences between these
 groups and provides some guidance about when to use certain priors.
 Since one of the main advantages of Bayesian statistics is its ability
-to facilitate existing knowledge to empower our models the second part
-of this document talks about approaches for eliciting relevant
-information from experts.</p>
+to use existing knowledge to empower our models, the second part of this
+document talks about approaches for eliciting relevant information from
+experts.</p>
 </div>
 <div id="types-of-priors" class="section level2">
 <h2>Types of priors</h2>
@@ -190,11 +190,11 @@ most informative):</p>
 <p>What qualifies as informative or weakly informative depends on the
 data (the likelihood). For example, N(0,1) is traditionally considered a
 weakly informative prior for beta coefficients of standardized
-predictors in GLMs, however N(0,1) is definitely not a weakly
+predictors in GLMs; however, N(0,1) is definitely not a weakly
 informative prior if we are modeling mean human height on a centimeter
-scale. When following guidelines about prior choices from the literature
-it is important to pay attention to the scale of the data, most often
-the guidelines are provided for standardized data.</p>
+scale. When following guidelines about prior choices from the
+literature, it is important to pay attention to the scale of the data,
+most often the guidelines are provided for standardized data.</p>
 <p>The figure below visualizes the three types of priors, the black line
 represents a U(-10, 10) non-informative prior. The light blue and purple
 lines are examples of weakly informative priors, the light blue line
@@ -205,7 +205,7 @@ prior.</p>
 <div id="non-informative-priors" class="section level3">
 <h3>Non-informative priors</h3>
 <p>Non-informative priors carry almost no information. There are two
-reasons that scientist use non-informative prior, as you will see
+reasons that scientists use non-informative priors, as you will see,
 neither of them is particularly good.</p>
 <p>First, non-informative (flat) priors are the default in many
 probabilistic programming languages for Bayesian statistics (including
@@ -214,24 +214,24 @@ are commonly used as a placeholder to get the analysis started. In this
 scenario, flat priors are later replaced with more appropriate ones (or
 not if the model works fine).</p>
 <p>The second reason is more philosophical. Since non-informative priors
-carry no information they are often also called objective priors.
+carry no information, they are often also called objective priors.
 Several researchers argue that statistics should be objective and using
 non-informative priors reduces the level of subjectivity in our models.
-A strong and valid counter argument is that statistical analyses are
-inherently subjective – researches are the ones that design the model or
-pick the analysis method in the first place and this is a subjective
+A strong and valid counterargument is that statistical analyses are
+inherently subjective – researchers are the ones that design the model
+or pick the analysis method in the first place and this is a subjective
 choice. As a result, objectivity in statistics is more or less merely an
 illusion.</p>
 <p>Putting philosophical reasons aside, in practice non-informative
 priors are not recommended. As we already saw a couple of times now,
 priors are not only useful because we can use them to empower our models
 with prior domain knowledge, but they can also stabilize inferences
-(this is usually not an an issue in simple model but can be in more
+(this is usually not an issue in simple models but can be in more
 complex, multidimensional ones) and prevent over-fitting through
 regularization.</p>
-<p>Most commonly non-informative priors are flat, improper priors
+<p>Most commonly, non-informative priors are flat, improper priors
 (uniform over the whole real interval) or bounded uniform priors
-(uniform on a defined interval). When we define a uniform prior we have
+(uniform on a defined interval). When we define a uniform prior, we have
 to be aware that we are setting hard constraints/bounds for a parameter.
 The two Stan code snippets below will give you the same result. In the
 first one we put hard constraints on a parameter and leave the prior
@@ -239,8 +239,8 @@ undefined.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode stan"><code class="sourceCode stan"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">parameters</span> {</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="dt">real</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>,<span class="kw">upper</span>=<span class="dv">1</span>&gt; theta;</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>}</span></code></pre></div>
-<p>Since Stan defaults to flat priors this is the same as having an
-unconstrained parameter with an uniform prior on it.</p>
+<p>Since Stan defaults to flat priors, this is the same as having an
+unconstrained parameter with a uniform prior on it.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode stan"><code class="sourceCode stan"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="kw">parameters</span> {</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="dt">real</span> theta;</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>}</span>
@@ -251,7 +251,7 @@ unconstrained parameter with an uniform prior on it.</p>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>}</span></code></pre></div>
 <p>So unless we are 100% sure that our parameter has hard constraints or
 boundaries (e.g., height is strictly positive, minimum possible
-temperature is -273.15 °C…) we should probably use priors that do not
+temperature is -273.15 °C…), we should probably use priors that do not
 set these hard constraints. For example, instead of U(0,1), we could use
 N(0.5, 0.5).</p>
 <p>Some classifications of prior types also define a group of super
@@ -260,102 +260,104 @@ carry almost no information and can be treated as non-informative. The
 only advantage they have is that they are represented by a proper
 distribution and can in some cases alleviate some of the sampling issues
 encountered with non-informative (improper, flat) priors. However, just
-like with non-informative priors usage of super vague priors is not
-recommended and we should put some additional effort and define weakly
-informative priors.</p>
-<p>A distribution that deserves a special mention in the section of
+like with non-informative priors, usage of super vague priors is not
+recommended and we should put in some additional effort and define
+weakly informative priors.</p>
+<p>A distribution that deserves a special mention in the section on
 non-informative priors is the beta distribution. Beta is our go-to
-distribution whenever we are working with probabilities. Beta
-distribution has two parameters <span class="math inline">\(\alpha\)</span> (number of successes) and <span class="math inline">\(\beta\)</span> (number of fails). Since higher
-values of both parameters mean that we have more information (e.g.,we
-observed more cases of a binary experiment) it is intuitive that
+distribution whenever we are working with probabilities. The beta
+distribution has two parameters <span class="math inline">\(\alpha\)</span> (number of successes) and <span class="math inline">\(\beta\)</span> (number of failures). Since higher
+values of both parameters mean that we have more information (e.g., we
+observed more cases of a binary experiment), it is intuitive that
 non-informative priors should have low values of both parameters. The
 first and probably the most commonly used option is Beta(1, 1), also
 called the Bayes-Laplace prior, which results in a uniform distribution
 between 0 and 1:</p>
 <p><img role="img" aria-label="Filled density plot of the Beta(1, 1) prior on the interval 0 to 1: a flat rectangle at density 1 everywhere, so the prior is uniform and favors no value." src="data:image/png;base64,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" alt="Filled density plot of the Beta(1, 1) prior on the interval 0 to 1: a flat rectangle at density 1 everywhere, so the prior is uniform and favors no value." style="display: block; margin: auto;" /></p>
-<p>The second commonly used option is the Jeffrey’s prior Beta(0.5,
-0.5). As values of both parameters are lower than 1 things get a bit
-abstract, Beta(0.5, 0.5) can be interpreted that our experiment resulted
-in half of a successful trial and half of an unsuccessful trial. The
-figure below visualizes this prior distribution:</p>
+<p>The second commonly used option is the Jeffreys prior Beta(0.5, 0.5).
+As the values of both parameters are lower than 1, things get a bit
+abstract, Beta(0.5, 0.5) can be interpreted to mean that our experiment
+resulted in half of a successful trial and half of an unsuccessful
+trial. The figure below visualizes this prior distribution:</p>
 <p><img role="img" aria-label="Filled density plot of the Beta(0.5, 0.5) prior on 0 to 1: unlike the flat Beta(1, 1), it is a symmetric U shape, low and nearly flat in the middle and rising steeply into tall spikes at 0 and 1." src="data:image/png;base64,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" alt="Filled density plot of the Beta(0.5, 0.5) prior on 0 to 1: unlike the flat Beta(1, 1), it is a symmetric U shape, low and nearly flat in the middle and rising steeply into tall spikes at 0 and 1." style="display: block; margin: auto;" /></p>
 <p>Other popular choices have even lower values of both parameters, the
 “neutral” prior has both parameters set to 1/3 (<span class="math inline">\(\alpha = \beta = 1/3\)</span>). The most abstract
-and theoretical of them all is the Haldane’s prior which sets both
+and theoretical of them all is Haldane’s prior, which sets both
 parameters of the beta distribution to 0 (<span class="math inline">\(\alpha = \beta = 0\)</span>). As you might
-imagine, this is hard to interpret or represent in a real world scenario
-and is usually not suitable for a prior choice in practice since it
+imagine, this is hard to interpret or represent in a real-world scenario
+and is usually not suitable as a prior choice in practice since it
 represents an improper distribution. Beta(0,0) is an “improper prior”
 because its integration (from 0 to 1) fails to strictly converge to 1
 due to the singularities at each end (the PDF has an infinitely high
-“spike” at values 0 and 1). Because of this an alternative is to use an
+“spike” at values 0 and 1). Because of this, an alternative is to use an
 approximation of Haldane’s prior which sets both parameters to a very
 small value (<span class="math inline">\(\alpha = \beta = \epsilon,
 \epsilon &gt; 0\)</span>).</p>
 </div>
 <div id="weakly-informative-priors" class="section level3">
 <h3>Weakly informative priors</h3>
-<p>As the name suggests weakly informative priors provide a little of
+<p>As the name suggests, weakly informative priors provide a little
 information. As a result, if we have reasonably large amounts of data,
 weakly informative priors will have little influence on inferences and
-the data will prevail. If there are little data then weakly informative
+the data will prevail. If there are little data, then weakly informative
 priors have a significant influence on the posterior inference. Weakly
-informative priors are usually our go-to choice and there are very
-little scenarios when we are unable to construct weakly informative
-priors. We often do not have much knowledge about the exact values of
-parameters, but we are almost always aware of the scale of these
-parameters and we can use this information to construct weakly
-informative priors. When defining priors it is a good practice to
-perform prior checking, this is by far the best way to examine how
-informative the priors are in the scale of the outcome, which is what we
-are interested about in the end.</p>
+informative priors are usually our go-to choice and there are very few
+scenarios when we are unable to construct weakly informative priors. We
+often do not have much knowledge about the exact values of parameters,
+but we are almost always aware of the scale of these parameters and we
+can use this information to construct weakly informative priors. When
+defining priors, it is a good practice to perform prior checking, this
+is by far the best way to examine how informative the priors are on the
+scale of the outcome, which is what we care about in the end.</p>
 <p>As shown in recent research (Sarma and Kay 2020), the term weakly
-informative priors is quite vague and the definition is not strict.
-Authors of this study asked statisticians to put weakly informative
-priors on parameters in a hypothetical study and the answered varied
+informative priors is quite vague and the definition is not strict. The
+authors of this study asked statisticians to put weakly informative
+priors on parameters in a hypothetical study and the answers varied
 significantly. However, there are some general guidelines we can follow
 when going with weakly informative priors.</p>
-<p>Cauchy distribution is probably the most frequent distribution for
-putting priors on parameters in a plethora of different models,
-including GLMs. As shown in Gelman et al. 2008 a Cauchy(0, 2.5)
+<p>The Cauchy distribution is probably the most frequent distribution
+for putting priors on parameters in a plethora of different models,
+including GLMs. As shown in Gelman et al. 2008, a Cauchy(0, 2.5)
 distribution is a good weakly informative prior for beta coefficients in
 regression models. The assumption here is that numeric predictors are
 standardized while binary predictors have the mean 0 and standard
 deviation 0.5. For example, if we have a binary predictor which has the
-value 0 in 20% of cases and the value 1 in 80% then we would assign the
+value 0 in 20% of cases and the value 1 in 80%, then we would assign the
 value of -0.2 to cases with previous value 0 and 0.8 to others. The
 Cauchy(0, 2.5) in the simplest setting is a longer-tailed version of the
 distribution attained by assuming one-half additional success and
 one-half additional failure in a logistic regression. And as shown in a
-number of practical examples works surprisingly well in most cases.</p>
-<p>In terms of priors, the main advantage of Cauchy distribution over
-the more widely used normal distribution is the fact that it was wider
-tails and is as such less restrictive – if we were to restrictive with
-our prior choice, the mistake will be much less penalized in the case of
-Cauchy distribution than in the case of a normal distribution. In other
-words, the normal distribution is not robust enough. However, in some
-cases (for example, the data are not informative enough) sampling from
-the posterior distribution can be challenging because of thick tails. A
-possible solution here is to use a Student’s t distribution, with
-Student’s t we can use the degrees of freedom parameter (<span class="math inline">\(\nu\)</span>) to tune the thickness of
-distribution’s tails, some recent studies (Ghost et al. 2018) propose
-<span class="math inline">\(3 &lt; \nu &lt; 7\)</span>. To be fair we
-are being quite pedantic here, for example the most popular library for
-Bayesian regressions <code>rstanarm</code> uses N(0, 2.5) priors as a
-default and it works perfectly fine in the vast majority of cases.
-Obviously, the library also allows users to set their own priors for the
-cases where the defaults are failing. In the literature, you will also
-commonly encounter a N(0, 1) prior on beta coefficients and more often
-than not this one also works fine. It is important though to be aware of
-the weaknesses of each choice so you are able to overcome them when they
-do appear.</p>
+number of practical examples, it works surprisingly well in most
+cases.</p>
+<p>In terms of priors, the main advantage of the Cauchy distribution
+over the more widely used normal distribution is the fact that it has
+wider tails and is as such less restrictive – if we were too restrictive
+with our prior choice, the mistake would be much less penalized in the
+case of a Cauchy distribution than in the case of a normal distribution.
+In other words, the normal distribution is not robust enough. However,
+in some cases (for example, the data are not informative enough),
+sampling from the posterior distribution can be challenging because of
+thick tails. A possible solution here is to use a Student’s t
+distribution, with Student’s t we can use the degrees of freedom
+parameter (<span class="math inline">\(\nu\)</span>) to tune the
+thickness of the distribution’s tails, some recent studies (Ghosh et
+al. 2018) propose <span class="math inline">\(3 &lt; \nu &lt;
+7\)</span>. To be fair, we are being quite pedantic here, for example,
+the most popular library for Bayesian regressions,
+<code>rstanarm</code>, uses N(0, 2.5) priors as a default and it works
+perfectly fine in the vast majority of cases. Obviously, the library
+also allows users to set their own priors for the cases where the
+defaults are failing. In the literature, you will also commonly
+encounter a N(0, 1) prior on beta coefficients and more often than not
+this one also works fine. It is important, though, to be aware of the
+weaknesses of each choice so you are able to overcome them when they do
+appear.</p>
 <p>In a similar fashion as above, the Cauchy distribution is also
 commonly used in a regression model called the robust linear regression.
 This model is called robust because it is less sensitive to outliers
-thant he traiditional normal regression. In other words, due to long
+than the traditional normal regression. In other words, due to the long
 tails of the Cauchy distribution, data points lying there will have a
-smaller effect on the mean parameter as they would in a normal
+smaller effect on the location parameter than they would in a normal
 regression model. Below is a formulation of the robust linear regression
 model:</p>
 <p><span class="math display">\[y \; | \; X, \alpha, \beta, \sigma \sim
@@ -373,24 +375,24 @@ values that might make sense.</p>
 the problem, known before seeing the data. As such, they are usually
 based either on previous research or on expert knowledge. When
 documenting analyses that use informative priors, it is extremely
-important to clearly argument each of your choices, be explicit – write
+important to clearly argue for each of your choices, be explicit – write
 a sentence or two about each parameter’s prior choice in the model.</p>
 <p>There is no clearly defined way for checking how informative our
-priors are. As usual prior checking are a good starting point. Another
-practical way to informative priors from weakly informative ones is to
-compare posterior standard deviation and prior standard deviation for
-each parameter. If the posterior standard deviation is more than 0.1
-times the prior standard deviation the prior for that particular
-parameter can be considered informative. Based on this information we
-can then revisit our prior choices and possibly reduce the amount of
-information they carry. Remember that Bayesian modeling is an iterative
-process and we usually do a couple of passes over all aspects of our
-model before we are satisfied.</p>
+priors are. As usual, prior checking is a good starting point. Another
+practical way to distinguish informative priors from weakly informative
+ones is to compare posterior standard deviation and prior standard
+deviation for each parameter. If the posterior standard deviation is
+more than 0.1 times the prior standard deviation, the prior for that
+particular parameter can be considered informative. Based on this
+information, we can then revisit our prior choices and possibly reduce
+the amount of information they carry. Remember that Bayesian modeling is
+an iterative process and we usually do a couple of passes over all
+aspects of our model before we are satisfied.</p>
 <p>A lot of researchers tend to lean towards priors that carry less
 information. This introduces some skepticism about results of prior
 studies, about expert knowledge or about the process of extracting
 (eliciting) knowledge from experts. The idea here is that the loss of
-information by making priors weaker is less penalizing then using
+information by making priors weaker is less penalizing than using
 informative priors that are not completely representative of the problem
 at hand.</p>
 </div>
@@ -398,23 +400,23 @@ at hand.</p>
 <div id="expert-knowledge-elicitation" class="section level2">
 <h2>Expert knowledge elicitation</h2>
 <p>A common way to define informative priors is by eliciting knowledge
-from experts. As you already know the language we use for every day
+from experts. As you already know, the language we use for everyday
 communication is not suitable for precise specifications of
 distributions and uncertainty. The only suitable language for eliciting
-prior information are concise definitions of probability distributions
+prior information is concise definitions of probability distributions
 (the name of the distribution and exact values of its parameters). Since
 experts from several domains do not speak this language, researchers had
 to come up with a better solution than forcing experts to write
 distributions and parameter values on a piece of paper. As you might
-imagine this might be problematic even for experts in probability – most
-of us find it hard to imagine the layout of a particular distribution
-just from its parameters (with the exception of the most basic
-distributions maybe). Like in most cases when we have to envision
+imagine, this might be problematic even for experts in probability –
+most of us find it hard to imagine the layout of a particular
+distribution just from its parameters (with the exception of the most
+basic distributions maybe). Like in most cases when we have to envision
 something, visualizations can be of tremendous assistance here.</p>
-<p>Luckily researchers developed tools that solve both issues outlined
-above at the same time – they implement easy to understand techniques
+<p>Luckily, researchers developed tools that solve both issues outlined
+above at the same time – they implement easy-to-understand techniques
 for eliciting prior knowledge from experts that are not familiar with
-distributions and they visualize resulting distributions so expert can
+distributions and they visualize resulting distributions so experts can
 check if what they described matches their knowledge. We will use the
 MATCH tool developed by Morris et al. (<a href="http://optics.eee.nottingham.ac.uk/match/uncertainty.php" class="uri">http://optics.eee.nottingham.ac.uk/match/uncertainty.php</a>)
 to elicit knowledge about parameter <span class="math inline">\(\theta\)</span> that lies on an [<span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>] interval. The MATCH tool supports
@@ -423,10 +425,10 @@ elicitation of expert knowledge through five techniques:</p>
 <li><p>Roulette – experts are provided a grid of equally sized bins
 which cover the range of possible values (from <span class="math inline">\(x_1\)</span> to <span class="math inline">\(x_2\)</span>) of the parameter in question. Next,
 the expert is asked to place chips into these bins, the more chips the
-expert places in a particular bin the more likely the true value of the
-parameter lies in that bin. This methods got its name because expert is
-asked to place a certain amount of chips into equally spaced bins – in a
-way this is similar to betting in roulette. In other words, we are
+expert places in a particular bin, the more likely the true value of the
+parameter lies in that bin. This method got its name because the expert
+is asked to place a certain number of chips into equally spaced bins –
+in a way this is similar to betting in roulette. In other words, we are
 forcing the expert to draw the histogram of the parameter in
 question.</p></li>
 <li><p>Quartile – this method uses bisection to elicit knowledge from
@@ -439,8 +441,8 @@ that this time around the expert has to set the median, followed by the
 33<sup>rd</sup> and 67<sup>th</sup> percentiles (both
 tertiles).</p></li>
 <li><p>Probability – the expert is asked to provide three probabilities
-<span class="math inline">\(P_1\)</span>, <span class="math inline">\(P_2\)</span> and <span class="math inline">\(P_3\)</span>. By default, these proabilities are –
-<span class="math inline">\(P_1 = Pr(x_1 &lt; \theta &lt; x_1 +
+<span class="math inline">\(P_1\)</span>, <span class="math inline">\(P_2\)</span> and <span class="math inline">\(P_3\)</span>. By default, these probabilities are
+– <span class="math inline">\(P_1 = Pr(x_1 &lt; \theta &lt; x_1 +
 \frac{x_2-x_1}{4})\)</span>, <span class="math inline">\(P_2 = Pr(x_1 +
 \frac{3 (x_2-x_1)}{4} &lt; \theta &lt; x_2)\)</span> and <span class="math inline">\(P_3 = Pr(0 &lt; \theta &lt; x_1 +
 \frac{x_2-x_1}{2})\)</span>. If desired, the thresholds in all three
@@ -451,12 +453,12 @@ the median, which is followed by providing two probabilities <span class="math i
 \frac{x_2-x_1}{3})\)</span> and <span class="math inline">\(P_2 = Pr(x_1
 + \frac{2 (x_2-x_1)}{3} &lt; \theta &lt; x_2)\)</span>.</p></li>
 </ul>
-<p>Once expert provide their judgment, MATCH uses the least squares
+<p>Once the expert provides their judgment, MATCH uses the least squares
 procedure to fit various parametric distributions numerically. It fits 6
 different distributions (normal, Student’s t, scaled beta, gamma, log
-normal and log Student’s t) and automatically denotes which one fits
-expert’s judgment the best. For Student’s t the degrees of freedom
-parameter is set to 3, to give a more heavy tailed alternative to the
+normal and log Student’s t) and automatically denotes which one fits the
+expert’s judgment the best. For Student’s t, the degrees of freedom
+parameter is set to 3, to give a more heavy-tailed alternative to the
 normal distribution (to get the Cauchy distribution, degrees of freedom
 need to equal 1). Below is a snapshot of the MATCH tool developed by
 Morris et al. at the University of Nottingham.</p>

@@ -9,13 +9,14 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
+set.seed(1)
 ```
 
 ## Summary
 
 * The intercept ($\alpha$ or $\beta_0$) and slope parameters ($\beta_i$) in simple linear regression are easy to interpret and can as such provide key insight into our data generating process.
 * When modeling the relationship between independent and dependent variables, simple linear regression often gives suboptimal results. We need a more powerful tool, especially so in cases where the dependent variable is not metric.
-* Generalized linear model (GLM) is a powerful tool capable of working with dependent variables of various scale types (metric, ordinal, nominal and count) and error distributions other than normal.
+* The generalized linear model (GLM) is a powerful tool capable of working with dependent variables of various scale types (metric, ordinal, nominal and count) and error distributions other than normal.
 * The simple linear model is actually the simplest of all GLMs.
 * In the GLM, beta coefficients are usually not as easy to interpret as in the case of simple linear regression. Fortunately, we only need some relatively easy math to make them understandable!
 
@@ -23,11 +24,11 @@ knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 
 ### Simple linear regression
 
-Simple linear regression traditionally denotes a linear regression model that has a single independent variable. In the following example we will use Bayesian linear regression to model temperature data through ages (the data is stored in `temperature.csv`). The dataset contains three columns, `temperature` denotes the average temperature, while `year` and `month` depict the time of the measurement. As we are interested in the yearly average temperature through ages, we will average the temperature over months. As a result, our dependent variable (`y`) will be the average yearly temperature and our independent variable (`x`) will be the year. We will use a linear normal model (or linear normal regression) to model the dependency between `x` and `y`. At the same time we will see how one would build a model for normally distributed data. Formally we can define the simple linear regression as:
+Simple linear regression traditionally denotes a linear regression model that has a single independent variable. In the following example we will use Bayesian linear regression to model temperature data through the ages (the data is stored in `temperature.csv`). The dataset contains three columns: `temperature` denotes the average temperature, while `year` and `month` depict the time of the measurement. As we are interested in the yearly average temperature through the ages, we will average the temperature over months. As a result, our dependent variable (`y`) will be the average yearly temperature and our independent variable (`x`) will be the year. We will use a linear normal model (or linear normal regression) to model the dependency between `x` and `y`. At the same time we will see how one would build a model for normally distributed data. Formally we can define the simple linear regression as:
 
 $$y | x, \alpha, \beta, \sigma \sim N(\alpha + x \beta, \sigma),$$
 
-where $y$ is the independent variable, $x$ is the dependent (exploratory) variable, $\alpha$ the intercept, $\beta$ the beta coefficient and $\sigma$ the error (spread, variance) parameter. Their detailed explanation can be found in the example that follows. This is the Stan model we will use:
+where $y$ is the dependent variable, $x$ is the independent (explanatory) variable, $\alpha$ the intercept, $\beta$ the beta coefficient and $\sigma$ the error (spread, standard deviation) parameter. Their detailed explanation can be found in the example that follows. This is the Stan model we will use:
 
 ```stan
 data {
@@ -49,7 +50,7 @@ model {
 
 ```
 
-The $\texttt{data}$ block contains three variables, `n` stores the total number of data points, `x` the values of the independent variable and `y` the values of the `dependent` variables. In the $\texttt{model}$ block you can see that we are using a normal distribution as the core building block. To model a linear dependency between `x` and `y` we replaced the `mean` ($\mu$) parameter of the normal distribution with a linear function (`a + b * x`), where `a` denotes the intercept and `b` the slope of the function. The $\texttt{parameters}$ block contains the three parameters of the model that we are interested in estimating. Below is the code that compiles the model, loads and prepares the data and fits the model.
+The $\texttt{data}$ block contains three variables: `n` stores the total number of data points, `x` the values of the independent variable and `y` the values of the dependent variable. In the $\texttt{model}$ block you can see that we are using a normal distribution as the core building block. To model a linear dependency between `x` and `y` we replaced the `mean` ($\mu$) parameter of the normal distribution with a linear function (`a + b * x`), where `a` denotes the intercept and `b` the slope of the function. The $\texttt{parameters}$ block contains the three parameters of the model that we are interested in estimating. Below is the code that compiles the model, loads and prepares the data and fits the model.
 
 ```{r message=FALSE, results="hide", fig.show="hide"}
 # load libraries
@@ -94,19 +95,19 @@ mcmc_trace(fit$draws())
 fit$summary()
 ```
 
-The `traceplot` and `summary` both show no reasons for any concerns, we will skip them here for brevity, but in practice you should always start your analysis by inspecting the outputs of these two functions. Whenever possible you should also always visually inspect how fitted distributions match the underlying data. With more complex and highly dimensional models this most likely will not be possible but here we can easily do this. Let us take a peek at the value of our model's parameters (the intercept, `a` and the slope `b`).
+The `traceplot` and `summary` both show no reasons for any concerns; we will skip them here for brevity, but in practice you should always start your analysis by inspecting the outputs of these two functions. Whenever possible you should also always visually inspect how fitted distributions match the underlying data. With more complex and high-dimensional models this most likely will not be possible but here we can easily do this. Let us take a peek at the values of our model's parameters (the intercept `a` and the slope `b`).
 
 ```{r message=FALSE}
 # params
 df <- as_draws_df(fit$draws())
 mcse(df$a)
 mcse(df$b)
-mcse(df$b > 0)
+mean(df$b > 0)
 ```
 
-The intercept ($\alpha$ or `a` in our case) denotes the value of `y` when `x` equals zero. For the purpose of numerical stability and to make life easier for Stan, we have shifted our data, this now means that `a` denotes the temperature at the minimum year in our dataset (1901). The slope parameter ($\beta$ or `b` in our case) denotes how `y` changes with `x`, in our case how temperature changes through ages. You can see that we are extremelly confident (P ≈ 1) that value of `b` is positive. This means that the temperature has been rising over the last 120 years, in fact it has been rising on average by 0.013 $\pm$ 0.0004 °C per year.
+The intercept ($\alpha$ or `a` in our case) denotes the value of `y` when `x` equals zero. For the purpose of numerical stability and to make life easier for Stan, we have shifted our data; this now means that `a` denotes the temperature at the minimum year in our dataset (1901). The slope parameter ($\beta$ or `b` in our case) denotes how `y` changes with `x`, in our case how temperature changes through the ages. You can see that we are extremely confident (P ≈ 1) that the value of `b` is positive. This means that the temperature has been rising over the last 120 years; in fact, it has been rising on average by 0.013 $\pm$ 0.00004 °C per year.
 
-```{r message=FALSE}
+```{r message=FALSE, fig.alt="Scatter plot of average yearly temperature against year, 1901 to 2015, with 100 posterior regression lines; the narrow bundle of lines, slightly wider at both ends, rises steadily from about 8 to 9.5, while the points scatter widely around it, between about 7 and 10.8."}
 # plot only 100 random regression lines
 df_100 <- sample_n(df, 100)
 
@@ -136,9 +137,9 @@ ggplot() +
 
 ### Robust linear regression
 
-A very useful modelling technique in Bayesian statistics are so called robust models. Robustness here depicts that they are less sensitive to outliers or extreme data values. In modelling, we usually achieve this by modelling errors (spread) with a distribution that has higher tails. Such a distribution will not shift the mean towards extreme values so much during the fitting process in order to assign some non-negligable likelihood to these points with extreme values. Probably the most common technique is to use the Cauchy distribution instead of a normal one. An alternative approach is to remove outliers from your data, but that process is almost always tricky as you usually need to resort to some arbitrary thresholds which classify points as outliers or not. It is often much more elegant and objective to simply use a model that is robust to these outliers. Below is a robust variant of the simple linear regression described above:
+A very useful modelling technique in Bayesian statistics is the use of so-called robust models. Robustness here means that they are less sensitive to outliers or extreme data values. In modelling, we usually achieve this by modelling errors (spread) with a distribution that has heavier tails. Such a distribution will not shift the mean towards extreme values so much during the fitting process in order to assign some non-negligible likelihood to these points with extreme values. Probably the most common technique is to use the Cauchy distribution instead of a normal one. An alternative approach is to remove outliers from your data, but that process is almost always tricky as you usually need to resort to some arbitrary thresholds which classify points as outliers or not. It is often much more elegant and objective to simply use a model that is robust to these outliers. Below is a robust variant of the simple linear regression described above:
 
-$$y | x, \alpha, \beta, \sigma \sim Cauchy(\alpha + x \beta, \sigma).$$
+$$y | x, \alpha, \beta, \sigma \sim \text{Cauchy}(\alpha + x \beta, \sigma).$$
 
 Stan code for this model can be found below.
 
@@ -152,7 +153,7 @@ data {
 parameters {
   real a;              // intercept
   real b;              // slope
-  real<lower=0> sigma; // stdev
+  real<lower=0> sigma; // scale
 }
 
 model {
@@ -162,19 +163,19 @@ model {
 
 ```
 
-The figure below sees the application of this model, in comparison with the standard linear regression on an artifical dataset with a clear cluster of outliers. The visualization nicely showcases how the robust model is not influenced by this cluster as much as the standard model.
+The figure below shows the application of this model, in comparison with the standard linear regression on an artificial dataset with a clear cluster of outliers. The visualization nicely showcases how the robust model is not influenced by this cluster as much as the standard model.
 
 ```{r echo=FALSE, fig.alt="Two scatter plots of y against x with fitted regression lines, robust model left and standard model right; a cluster of low outliers at high x pulls the standard fit down, while the robust fit follows the main trend."}
 knitr::include_graphics("./figs/linear_robust.png", dpi = NA)
 ```
 
-Note that this technique does not apply only to regression model. Probably the most commonly used Bayesian robust model is the robust t-test, where the normal distribution is again replaced with the Cauchy distribution.
+Note that this technique does not apply only to regression models. Probably the most commonly used Bayesian robust model is the robust t-test, where the normal distribution is again replaced with the Cauchy distribution.
 
 ### Simple linear regression with a variable sigma
 
-In the vast majority of our models we will investigate how the mean of some resposne variable (y) changes with exploratory variables (x). But there might be cases where mean is not the only thing that changes with x, in the example above mean is constant while variance changes with x. So in this case, we need to "linearize" the $\sigma$ in the simple linear regression above. Again, this is relatively simple to do and showcased in the model below.
+In the vast majority of our models we will investigate how the mean of some response variable (y) changes with explanatory variables (x). But there might be cases where the mean is not the only thing that changes with x; in the example below, the mean is constant while the variance changes with x. So in this case, we need to "linearize" the $\sigma$ in the simple linear regression above. Again, this is relatively simple to do and showcased in the model below.
 
-$$y | x, \beta, \sigma \sim N(\mu, x \beta).$$
+$$y | x, \mu, \beta \sim N(\mu, x \beta).$$
 
 Stan code for this model can be found below.
 
@@ -203,11 +204,11 @@ The figure below showcases this model applied to a dataset where the mean is con
 knitr::include_graphics("./figs/linear_sigma.png", dpi = NA)
 ```
 
-Note that there are some caveats to this approach. If you were to investigate y outside of the dataset's domain ([1, 10] in our example case), you might encounter the issue of negative sigmas, which obvisouly will not work. There are solutions to that, instead of a linear function for sigma, you could use a function that asymptotically approaches 0.
+Note that there are some caveats to this approach. If you were to investigate y outside of the dataset's domain ([1, 10] in our example case), you might encounter the issue of negative sigmas, which obviously will not work. There are solutions to that: instead of a linear function for sigma, you could use a function that asymptotically approaches 0.
 
 ### Multiple linear regression
 
-Multiple linear regression is a logical next step after getting to know the simple linear regression model. The only difference between the two is that multiple linear regression can handle input data that has more than one idependent variable. As a result, we can check the correlation between the dependant variable ($y$) and many idependent variables ($x_1, x_2, \ldots, x_k$) simultaneously. The upgrade is quite easy. First, we have a new entry in the input data block, where $m$ denotes the number of independent variables. Second, our input variables are now stored in a matrix ($X$), since there are many of them. And third, we have multiple $\beta$ coefficients, one for each independent variable. Below is an example of multiple linear regression as a .stan model:
+Multiple linear regression is a logical next step after getting to know the simple linear regression model. The only difference between the two is that multiple linear regression can handle input data that has more than one independent variable. As a result, we can check the correlation between the dependent variable ($y$) and many independent variables ($x_1, x_2, \ldots, x_m$) simultaneously. The upgrade is quite easy. First, we have a new entry in the input data block, where $m$ denotes the number of independent variables. Second, our input variables are now stored in a matrix ($X$), since there are many of them. And third, we have multiple $\beta$ coefficients, one for each independent variable. Below is an example of multiple linear regression as a .stan model:
 
 ```stan
 data {
@@ -232,20 +233,21 @@ model {
 
 ### Parameters of linear regression models
 
-Typically linear regression models have several parameters, the number of parameters depends on the number of independent variables and their interactions. For the purpose of this explanation let us use the 50 startups datasets that includes information about the profits of startup companies in the USA. In this example we will investigate the relationship between resources invested in research, administration and marketing and the company's profit. For simplicity sake, we will discard the location variable.
+Typically linear regression models have several parameters; the number of parameters depends on the number of independent variables and their interactions. For the purpose of this explanation let us use the 50 startups dataset that includes information about the profits of startup companies in the USA. In this example we will investigate the relationship between resources invested in research, administration and marketing and the company's profit. For simplicity's sake, we will discard the location variable.
 
-The gist of our problem is to figure out how we should distribute our resources if we just opened a startup company, in other words we are interested it the ratio between funds spent for research, administration and marketing that is expected go generate the most profit. We will use Bayesian multiple linear regression (we use the term simple linear regression when there is only one independent variable and the term multiple linear regression if we have more than one independent variable):
+The gist of our problem is to figure out how we should distribute our resources if we just opened a startup company; in other words, we are interested in the ratio between funds spent for research, administration and marketing that is expected to generate the most profit. We will use Bayesian multiple linear regression (we use the term simple linear regression when there is only one independent variable and the term multiple linear regression if we have more than one independent variable):
 
-$$y \; | \; x_r, x_a, x_m, \alpha, \beta_r, \beta_a, \beta_m, \sigma \sim N(\alpha + \beta_r x_r + \beta_a x_a + \beta_m x_m, \sigma),$$
-$$\beta_r, \beta_a, \beta_m \sim N(0, 1).$$
+$$y \; | \; x_r, x_a, x_m, \alpha, \beta_r, \beta_a, \beta_m, \sigma \sim N(\alpha + \beta_r x_r + \beta_a x_a + \beta_m x_m, \sigma).$$
+
+We do not define priors for the parameters explicitly, so Stan uses its default flat (non-informative) priors.
 
 ### The intercept
 
-$\alpha$ (or often $\beta_0$) represents the intercept, the value of the dependent variable ($y$) when all independent variables ($x$) are set to zero. There are cases where removing the $\alpha$ parameter might make sense, with this we would make the model less flexible by fixing the value of the dependent variable to 0 when all independent variables are 0. There is a strong argument to do this in our case since without any investments there should probably be no profit:
+$\alpha$ (or often $\beta_0$) represents the intercept, the value of the dependent variable ($y$) when all independent variables ($x$) are set to zero. There are cases where removing the $\alpha$ parameter might make sense; with this we would make the model less flexible by fixing the value of the dependent variable to 0 when all independent variables are 0. There is a strong argument to do this in our case since without any investments there should probably be no profit:
 
 $$y \; | \; x_r, x_a, x_m, \beta_r, \beta_a, \beta_m, \sigma \sim N(\beta_r x_r + \beta_a x_a + \beta_m x_m, \sigma).$$
 
-Note though, that the intercept often does make a lot of sense. For example if we were interested in explaining relationship between salaries and work experience (e.g.,years of employment) then the intercept would denote the average salary for a person without any work experience (0 years of work experience).
+Note, though, that the intercept often does make a lot of sense. For example, if we were interested in explaining the relationship between salaries and work experience (e.g., years of employment), then the intercept would denote the average salary for a person without any work experience (0 years of work experience).
 
 ### The $\beta$ coefficients
 
@@ -257,13 +259,13 @@ The $\beta$ coefficients are the core of regression models as they describe the 
 | $\beta_a$ | 0.329 $\pm$ 0.001 | 0.277      | 0.382      |
 | $\beta_m$ | 0.083 $\pm$ 0.001 | 0.045      | 0.121      |
 
-A positive value of a $\beta$ coefficient denotes a positive correlation between the independent while the opposite holds for a negative of a $\beta$ coefficient. For example, the value of $\beta_r$ tells us that investing in research has a positive influence on profit. Furthermore, the value of 0.714 denotes that \$1 invested in research will generate a profit of \$0.714 on average. As we can see, investing in all three aspects of a business generates profit, this makes sense as if something is not valuable for a company they most likely would not do it. When independent variables are on the same scale we can compare their effects through $\beta$ coefficients.
+A positive value of a $\beta$ coefficient denotes a positive correlation between the independent and the dependent variable, while the opposite holds for a negative value of a $\beta$ coefficient. For example, the value of $\beta_r$ tells us that investing in research has a positive influence on profit. Furthermore, the value of 0.714 denotes that \$1 invested in research will generate a profit of \$0.714 on average. As we can see, investing in all three aspects of a business generates profit; this makes sense because if something is not valuable for a company, they most likely would not do it. When independent variables are on the same scale we can compare their effects through $\beta$ coefficients.
 
-In our case all three independent variables use the same scale -- money invested in USD (\$) -- meaning that we can directly compare these coefficients. For example, $\beta_r$ is approximately 2.2 times larger than $\beta_a$, this means that resources invested in research should generate approximately 2.2 times as much profit as resources invested in administration. However, if we used another independent variable, for example happiness of employees measured on a scale from 1 to 10, its $\beta$ coefficient could not be directly comparable with the other three as it would reside on a completely different scale.
+In our case all three independent variables use the same scale -- money invested in USD (\$) -- meaning that we can directly compare these coefficients. For example, $\beta_r$ is approximately 2.2 times larger than $\beta_a$; this means that resources invested in research should generate approximately 2.2 times as much profit as resources invested in administration. However, if we used another independent variable, for example happiness of employees measured on a scale from 1 to 10, its $\beta$ coefficient could not be directly comparable with the other three as it would reside on a completely different scale.
 
-When preparing data for (G)LMs we often standardize or normalize it, when doing so we have to pay attention to the purpose of our regression. Let us illustrate this on our case by comparing results between two cases, in the first case we will use input data as is, and in the second data we will normalize each column independently:
+When preparing data for (G)LMs we often standardize or normalize it; when doing so, we have to pay attention to the purpose of our regression. Let us illustrate this on our case by comparing results between two cases; in the first case we will use input data as is, and in the second case we will normalize each column independently:
 
-$$x_i = \frac{x_i - min(x)}{max(x) - min(x)}.$$
+$$x_i = \frac{x_i - \min(x)}{\max(x) - \min(x)}.$$
 To calculate the optimal investment ratio we calculate the ratio between samples for $\beta$ coefficients. The visualization below compares this ratio between the analysis where we left the input data as is (marked as Default) and the analysis where we normalized the input data.
 
 ```{r echo=FALSE, fig.alt="Violin plots of posterior investment ratios, Default data on top and normalized below; Research stays near 0.6 in both, while Administration drops from about 0.3 to 0.2 and Marketing rises from under 0.1 to 0.2."}
@@ -278,27 +280,27 @@ If we compare findings between the two methods we can spot significant differenc
 | Marketing      | 0.075 $\pm$ 0.001 | 0.208 $\pm$ 0.001 |
 | Administration | 0.293 $\pm$ 0.001 | 0.184 $\pm$ 0.001 |
 
-What happened here? When normalizing the data we changed the ratio between research, administration and marketing investments in the input data. The reason for that lies in the fact that maximum and minimum values in columns are different! Since in the normalized case the input data does not reflect the proper ratio between spending of startup companies this input data cannot be used to get the answer we are interested in.
+What happened here? When normalizing the data we changed the ratio between research, administration and marketing investments in the input data. The reason for that lies in the fact that maximum and minimum values in columns are different! Since in the normalized case the input data does not reflect the proper ratio between spending of startup companies, this input data cannot be used to get the answer we are interested in.
 
-On the other hand, if we are interested in developing a model that is capable of estimating profits of new companies given their spending then normalization or standardization of input variables is a perfectly viable path to take. In this case we no longer care what the ratio between $\beta$ coefficients is, instead we are probably interested only in getting an estimator that is as accurate as possible. The point of this example was to emphasize that we have to be careful when performing various transformation on input data since these transformations might change the results of our analysis. Like previously mentioned, we will often regularize or standardize our input data, but as illustrated in some cases we have to be extra careful when doing this. Before we move onto GLMs let us briefly touch three additional subjects.
+On the other hand, if we are interested in developing a model that is capable of estimating profits of new companies given their spending, then normalization or standardization of input variables is a perfectly viable path to take. In this case we no longer care what the ratio between $\beta$ coefficients is; instead, we are probably interested only in getting an estimator that is as accurate as possible. The point of this example was to emphasize that we have to be careful when performing various transformations on input data since these transformations might change the results of our analysis. As previously mentioned, we will often normalize or standardize our input data, but as illustrated, in some cases we have to be extra careful when doing this. Before we move on to GLMs let us briefly touch on three additional subjects.
 
 ### Polynomial regression
 
-As you can image, we have a lot of freedom when designing our regression models. We could model our data whit this model:
+As you can imagine, we have a lot of freedom when designing our regression models. We could model our data with this model:
 
 $$y \; | \; x_r, \beta_3, \beta_2, \beta_1, \sigma \sim N(\beta_3 x_r^3 + \beta_2 x_r^2 + \beta_1 x_r, \sigma).$$
 
-This is called polynomial regression and still falls in the category of linear models, we achieved non-linearity by transforming independent variables (something we will do a lot). This could be a completely valid model and might even fit our input data better than the one we used previously. However, making sense of this model's outputs would be very hard since the $\beta$ coefficients are now much harder to interpret. It is important to always have in mind that in Bayesian analysis we are (usually) trying to devise models that provide us with useful insights about the data generating processes in question! While complex models might fit the data extremely well they are often too hard to understand and do not provide any new insights into the data generating process. In fact, in several sensible scientific fields (such as clinical medicine and trials...) regulative agencies enforce the use of interpretable models only.
+This is called polynomial regression and still falls in the category of linear models; we achieved non-linearity by transforming independent variables (something we will do a lot). This could be a completely valid model and might even fit our input data better than the one we used previously. However, making sense of this model's outputs would be very hard since the $\beta$ coefficients are now much harder to interpret. It is important to always have in mind that in Bayesian analysis we are (usually) trying to devise models that provide us with useful insights about the data generating processes in question! While complex models might fit the data extremely well, they are often too hard to understand and do not provide any new insights into the data generating process. In fact, in several sensitive scientific fields (such as clinical medicine and trials...) regulatory agencies enforce the use of interpretable models only.
 
 ### Non-additive interactions between independent variables
 
-When designing models it is also important to consider possible interactions between independent variables. So far, we used only additive interactions but we are often faced with data where more complex interactions are useful too. Consider, for example, a study where we are trying to model people's happiness by using their health and annual income. If someone has no income then they are most likely unhappy, regardless of their health status. Vice versa, if they are of extremely poor health, wealth most likely will not cheer them up. In such examples, consider adding a multiplicative interaction between independent variables:
+When designing models it is also important to consider possible interactions between independent variables. So far, we have used only additive interactions but we are often faced with data where more complex interactions are useful too. Consider, for example, a study where we are trying to model people's happiness by using their health and annual income. If someone has no income then they are most likely unhappy, regardless of their health status. Vice versa, if they are of extremely poor health, wealth most likely will not cheer them up. In such examples, consider adding a multiplicative interaction between independent variables:
 
 $$y \; | \; x_h, x_w, \alpha, \beta_h, \beta_w, \beta_{hw}, \sigma \sim N(\alpha + \beta_h x_h + \beta_w x_w + \beta_{hw} x_h x_w, \sigma).$$
 
 ### Heavily correlated independent variables
 
- We will use the multiple linear regression model (`models/linear.stan`) and a toy dataset (`data/toy.csv`) to illustrate the behavior of linear regression when independent variables are heavily correlated. The `toy.csv` dataset has a single independent variable $x$. For this demonstration we will artificially create another one that is heavily correlated with $x$:
+We will use the multiple linear regression model (`models/linear.stan`) and a toy dataset (`data/toy.csv`) to illustrate the behavior of linear regression when independent variables are heavily correlated. The `toy.csv` dataset has a single independent variable $x$. For this demonstration we will artificially create another one that is heavily correlated with $x$:
 
 ```r
 # load the data
@@ -320,7 +322,7 @@ pairs.panels(X,
 )
 ```
 
-The above code snippet create the dummy independent variable and plots the correlation between $x$ and $x2$. We can see that they are heavily correlated (anything else would be most surprising at this point).
+The above code snippet creates the dummy independent variable and plots the correlation between $x$ and $x2$. We can see that they are heavily correlated (anything else would be most surprising at this point).
 
 ```{r echo=FALSE, fig.alt="Pairs plot of x and x2 with histograms and density curves on the diagonal, a scatter plot in the lower left where points lie tightly along a straight line, and a Pearson correlation of 0.98 in the upper right."}
 knitr::include_graphics("./figs/correlation.png", dpi = NA)
@@ -334,7 +336,7 @@ Now, let us fit the model a couple of times:
 | 2   | 0.892 $\pm$ 0.53 | 0.632 $\pm$ 0.48  |
 | 3   | 1.31 $\pm$ 0.44  | 0.279 $\pm$ 0.45  |
 
-You can see that the means $\beta$ coefficients are quite unstable and have a large standard deviation. This is completely expected since there is an infinite number of ways that we can combine the $x$ and $x2$ independent variables to get a good fit. The purpose of this illustration is to show that while our model provides a good fit of the underlying data, the interpretation of $\beta$ coefficients should be taken with a pinch of salt. Making meaningful conclusions based on our results is impossible here! How do we overcome this? We usually remove one of the correlated variables, the information it stores is extremely low since the same information is also incorporated in the other variable.
+You can see that the means of the $\beta$ coefficients are quite unstable and have a large standard deviation. This is completely expected since there is an infinite number of ways that we can combine the $x$ and $x2$ independent variables to get a good fit. The purpose of this illustration is to show that while our model provides a good fit of the underlying data, the interpretation of $\beta$ coefficients should be taken with a pinch of salt. Making meaningful conclusions based on our results is impossible here! How do we overcome this? We usually remove one of the correlated variables; the information it stores is extremely low since the same information is also incorporated in the other variable.
 
 If we observe the values for each run more carefully we can see that the sum of both $\beta$ coefficients is around 1.5. If you remember from the previous session, the $\beta$ we used to generate this data equalled 1.5 and that would be the result if we removed one of the two problematic independent variables.
 
@@ -342,13 +344,13 @@ If we observe the values for each run more carefully we can see that the sum of 
 
 The generalized linear model (GLM) is an extremely powerful and flexible tool for modeling the relationship between independent variables (also called predictors or explanatory variables) and dependent variables (also called predicted variables or response variables). The GLM generalizes linear regression by allowing the linear model to be related to the response variable via a link function and by allowing the magnitude of the variance of each measurement to be a function of its predicted value.
 
-So far, we already got familiar with the simple linear regression, there we used the value of one metric variable to increase our understanding of another metric variable under the assumption that residuals (errors) are normally distributed. Now, let us try and use the same model for cracking a different nut. Say that we want to use height (in centimeters) of humans to predict their sex. See `models/simple_linear.stan` for Stan code of the model and `code/linear_binary.R` for R code behind this experiment. Since linear regression works with numbers, we had to label the female sex as 0 and the male sex as 1. The visualization below depicts 100 regression lines based on the posterior distributions of intercept and slope in our Bayesian analysis.
+So far, we have already become familiar with the simple linear regression; there we used the value of one metric variable to increase our understanding of another metric variable under the assumption that residuals (errors) are normally distributed. Now, let us try and use the same model for cracking a different nut. Say that we want to use height (in centimeters) of humans to predict their sex. See `models/simple_linear.stan` for the Stan code of the model and `code/06_linear_binary.R` for the R code behind this experiment. Since linear regression works with numbers, we had to label the female sex as 0 and the male sex as 1. The visualization below depicts 100 regression lines based on the posterior distributions of intercept and slope in our Bayesian analysis.
 
 ```{r echo=FALSE, fig.alt="Scatter plot of sex, coded 0 for female and 1 for male, against height with 100 posterior regression lines; the straight lines fit the two rows of points poorly and go below 0 and above 1 at extreme heights."}
 knitr::include_graphics("./figs/linear_binary.png", dpi = NA)
 ```
 
-We can immediately spot a couple of issues here, the most prominent one being that now all of a sudden sex can have a value that is higher than 1 or lower than 0. We can interpret values between 0 and 1 as probabilities of being male, but what are we supposed to do with values below 0 and above 1, these outliers have no reasonable meaning! Based on the above figure we can also quite confidently claim that our fit is not the best, meaning that our model does not describe the data well. What we need here is a model suitable for modeling values that range from 0 to 1, possibly with something else than a straight line. GLMs are just that! As you will see in sections that follow, they can be used with dependent variables on all scale types (metric, ordinal, nominal and count).
+We can immediately spot a couple of issues here, the most prominent one being that now all of a sudden sex can have a value that is higher than 1 or lower than 0. We can interpret values between 0 and 1 as probabilities of being male, but what are we supposed to do with values below 0 and above 1? These outliers have no reasonable meaning! Based on the above figure we can also quite confidently claim that our fit is not the best, meaning that our model does not describe the data well. What we need here is a model suitable for modeling values that range from 0 to 1, possibly with something other than a straight line. GLMs are just that! As you will see in the sections that follow, they can be used with dependent variables on all scale types (metric, ordinal, nominal and count).
 
 ### A formal expression of the GLM
 
@@ -358,9 +360,9 @@ $$y \; | \; \mu, \theta \sim \text{p}(y \; | \; \mu, \; \theta),$$
 
 $$E[y] = \mu = f^{-1}(l(X, \alpha, \beta)),$$
 $$f(\mu) = l(X, \alpha, \beta),$$
-where $X$ are independent variables combined in the linear function $l(\cdot)$ (for example $l(X, \alpha, \beta) = \alpha + X \beta$), $f(\cdot)$ is the link function and $f^{-1}(\cdot)$ its inverse. The data $y$ are distributed around the central tendency $\mu$ and possible other parameters $\theta$ in accordance to some probability density function $\text{p}(\cdot)$.
+where $X$ are independent variables combined in the linear function $l(\cdot)$ (for example $l(X, \alpha, \beta) = \alpha + X \beta$), $f(\cdot)$ is the link function and $f^{-1}(\cdot)$ its inverse. The data $y$ are distributed around the central tendency $\mu$ and possible other parameters $\theta$ in accordance with some probability density function $\text{p}(\cdot)$.
 
-The link function ($f(\cdot)$) and its inverse ($f^-1(\cdot)$) provide the relationship between the mean of the distribution function and the linear combination of independent variables. The link function should be smooth and injective. It is nice if it is also bijective, but this is not mandatory. The fact that many functions fit these limitations makes the GLM a very flexible tool. However, in practice some functions are more convenient then others. The table below lists some commonly used link functions and their inverses.
+The link function ($f(\cdot)$) and its inverse ($f^{-1}(\cdot)$) provide the relationship between the mean of the distribution function and the linear combination of independent variables. The link function should be smooth and injective. It is nice if it is also bijective, but this is not mandatory. The fact that many functions fit these limitations makes the GLM a very flexible tool. However, in practice some functions are more convenient than others. The table below lists some commonly used link functions and their inverses.
 
 ```{r echo=FALSE, fig.alt="Table of common link functions g(mu), their inverses and output ranges: identity, logarithm, inverse, root, logit, probit, log-log and complementary log-log; the inverses of the last four map real numbers into (0, 1)."}
 knitr::include_graphics("./figs/link_functions.png", dpi = NA)
@@ -368,7 +370,7 @@ knitr::include_graphics("./figs/link_functions.png", dpi = NA)
 
 ### Logistic regression
 
-Let us start our venture into GLMs by building on our previous attempt of modeling relationship between person's height and sex. In our case sex is a binary variable so it would make sense to use a suitable pdf. Bernoulli's distribution was a good fit when we modeled coin tosses so let us try building a linear model with it:
+Let us start our venture into GLMs by building on our previous attempt at modeling the relationship between a person's height and sex. In our case sex is a binary variable so it would make sense to use a suitable pmf. Bernoulli's distribution was a good fit when we modeled coin tosses so let us try building a linear model with it:
 
 $$y \; | \; \theta \sim \text{Bernoulli}(\theta),$$
 $$f(\theta) = \alpha + x \beta,$$
@@ -376,14 +378,14 @@ $$\theta = f^{-1}(\alpha + x \beta),$$
 
 $$y \; | \; x, \alpha, \beta \sim \text{Bernoulli}(f^{-1}(\alpha + x \beta)).$$
 
-So, the last missing piece of our puzzle is an appropriate link function ($f^{-1}(\cdot)$). Our independent variable ($x$) resides on the real scale, while the $\theta$ parameter of Bernoulli's distribution has to be on a [0, 1] interval. If we take a look at the common link functions table above we can see several suitable candidates. By far the most popular one is the logit function which gives the name to the method we are constructing -- the logistic regression. Thus our model becomes:
+So, the last missing piece of our puzzle is an appropriate link function ($f(\cdot)$). Our independent variable ($x$) resides on the real scale, while the $\theta$ parameter of Bernoulli's distribution has to be on a [0, 1] interval. If we take a look at the common link functions table above we can see several suitable candidates. By far the most popular one is the logit function, which gives the name to the method we are constructing -- the logistic regression. Thus our model becomes:
 
 $$\text{logit}(\theta) = \alpha + x \beta,$$
 $$\theta = \text{inv_logit}(\alpha + x \beta),$$
 $$y \; | \; x, \alpha, \beta \sim \text{Bernoulli}(\text{inv_logit}(\alpha + x \beta)),$$
 $$y \; | \; x, \alpha, \beta \sim \text{Bernoulli}(\frac{1}{1 + e^{-(\alpha + x  \beta)}}).$$
 
-Below is model's code in Stan, as you can see the Bernoulli logit regression is so common that Stan already has it implemented. Using already implemented distributions in Stan is heavily advisable as they are optimized in many ways.
+Below is the model's code in Stan. As you can see, the Bernoulli logit regression is so common that Stan already has it implemented. Using already implemented distributions in Stan is highly advisable as they are optimized in many ways.
 
 ```stan
 data {
@@ -419,47 +421,47 @@ for (i in 1:n)
 
 All of the solutions above should give practically equivalent results. However, the alternative ones are slower and less stable.
 
-Since data preparation and basic diagnostics are similar as in our previous examples we will omit them here for the sake of brevity. But do note that we executed all the steps and everything looked OK! You should never ever skip the diagnostics when doing Bayesian analysis in practice! Like already mentioned, if possible it is always good to visualize how the posterior distribution fits the underlying data:
+Since data preparation and basic diagnostics are similar to those in our previous examples, we will omit them here for the sake of brevity. But do note that we executed all the steps and everything looked OK! You should never ever skip the diagnostics when doing Bayesian analysis in practice! As already mentioned, if possible it is always good to visualize how the posterior distribution fits the underlying data:
 
 ```{r echo=FALSE, fig.alt="Scatter plot of sex (0 or 1) against height with many posterior logistic curves for p(male); the S-shaped curves rise from near 0 for the shortest people to near 1 for the tallest and stay between 0 and 1."}
 knitr::include_graphics("./figs/bernoulli_logit.png", dpi = NA)
 ```
 
-We can see that this model is much better then the previous one -- it fits the underlying data better and we no longer get probabilities below 0 or above 1. Next, let us take a look at the posterior parameters:
+We can see that this model is much better than the previous one -- it fits the underlying data better and we no longer get probabilities below 0 or above 1. Next, let us take a look at the posterior parameters:
 
 | Variable  | Mean              | $q_{0.05}$ | $q_{0.95}$ |
 |-----------|-------------------|------------|------------|
 | $\alpha$  | -34.9 $\pm$ 0.132 | -40.6      | -30.4      |
 | $\beta$   | 0.21 $\pm$ 0.001  | 0.180      | 0.241      |
 
-Does the above $\beta$ value mean that with a 1 cm increase in height the probability of being male increases for 0.21?
+Does the above $\beta$ value mean that with a 1 cm increase in height the probability of being male increases by 0.21?
 
 $$\text{Pr}(\text{male}|\text{height}=183\,\text{cm}) = \text{Pr}_{183} = \frac{1}{1 + e^{-(-34.9 + 183 \cdot 0.21)}} = 0.972$$
-$$\text{Pr}(\text{male}|\text{height}=184\,\text{cm}) = \text{Pr}_{184} = \frac{1}{1 + e^{-(-34.9 + 184 \cdot 0.21)}} = 0.978$$
+$$\text{Pr}(\text{male}|\text{height}=184\,\text{cm}) = \text{Pr}_{184} = \frac{1}{1 + e^{-(-34.9 + 184 \cdot 0.21)}} = 0.977$$
 
-The difference between the two probabilities is 0.006, which is not equal to our $\beta$. But what does $\beta$ tell us then? Things should become clear if we write down the formula for $\theta$:
+The difference between the two probabilities is 0.005, which is not equal to our $\beta$. But what does $\beta$ tell us then? Things should become clear if we write down the formula for $\theta$:
 
 $$\theta = \text{inv_logit}(\alpha + x \beta),$$
 
 $$\text{logit}(\theta) = \alpha + x \beta.$$
-The formula implies that if height ($x$) increases by 1 cm, then $\text{logit}(\theta)$ goes up by $\beta$. So, to understand $\beta$ coefficients we need to understand the logit function. In our case $\theta$ represents the probability that the person is male ($y = 1$), therefore we can write:
+The formula implies that if height ($x$) increases by 1 cm, then $\text{logit}(\theta)$ goes up by $\beta$. So, to understand $\beta$ coefficients we need to understand the logit function. In our case $\theta$ represents the probability that the person is male ($y = 1$); therefore, we can write:
 
-$$\text{logit}(\theta) = \text{logit}(\text{Pr}(y=1)) = log\left(\frac{\text{Pr}(y=1)}{1 - \text{Pr}(y=1)}\right) = log\left(\frac{\text{Pr}(y=1)}{\text{Pr}(y=0)}\right).$$
+$$\text{logit}(\theta) = \text{logit}(\text{Pr}(y=1)) = \text{log}\left(\frac{\text{Pr}(y=1)}{1 - \text{Pr}(y=1)}\right) = \text{log}\left(\frac{\text{Pr}(y=1)}{\text{Pr}(y=0)}\right).$$
 
-Since the ratio $\frac{\text{Pr}(y=1)}{\text{Pr}(y=0)}$ represents the odds of outcome 1 to outcome 0, then $\text{logit}(\theta)$ represents the log odds of outcome 1 to outcome 0. In other words, $\beta$ denotes the change in log odds if $x$ changes by 1! Note here, that a constant increase in log odds does not denote a constant increase in probability.
+Since the ratio $\frac{\text{Pr}(y=1)}{\text{Pr}(y=0)}$ represents the odds of outcome 1 to outcome 0, $\text{logit}(\theta)$ represents the log odds of outcome 1 to outcome 0. In other words, $\beta$ denotes the change in log odds if $x$ changes by 1! Note here that a constant increase in log odds does not denote a constant increase in probability.
 
 Indeed, if we take a look at the difference between log odds of $\text{Pr}_{183}$ and $\text{Pr}_{184}$:
 
-$$log\left(\frac{\text{Pr}_{184}}{1 - \text{Pr}_{184}}\right) - log\left(\frac{\text{Pr}_{183}}{1 - \text{Pr}_{183}}\right) = 0.21$$
+$$\text{log}\left(\frac{\text{Pr}_{184}}{1 - \text{Pr}_{184}}\right) - \text{log}\left(\frac{\text{Pr}_{183}}{1 - \text{Pr}_{183}}\right) = 0.21$$
 we get the value of $\beta$.
 
 ### Poisson regression
 
-Our next GLM will be the Poisson regression which assumes that the dependent variable is composed of Poisson distributed integers. We will use the logarithm as the link function which means that the inverse link function is the exponent:
+Our next GLM will be the Poisson regression, which assumes that the dependent variable is composed of Poisson distributed integers. We will use the logarithm as the link function, which means that the inverse link function is the exponential function:
 
-$$y \; | \; X, \alpha, \beta \sim \text{Poisson}(e^{\alpha + X \beta}),$$
+$$y \; | \; X, \alpha, \beta \sim \text{Poisson}(e^{\alpha + X \beta}).$$
 
-Below is Stan code for the Poisson regression, note that we use the `generated quantities` block to calculate the values of $\lambda$ and predictions on the fly:
+Below is Stan code for the Poisson regression. Note that we use the `generated quantities` block to calculate the values of $\lambda$ and predictions on the fly:
 
 ```stan
 data {
@@ -496,9 +498,9 @@ generated quantities {
 
 ```
 
-We will use this for predicting the amount of goals scored on a football match (`data/football.csv`). The dataset contains names of the home and away team, the date of the match, name of the league, home and away goals scored and parameters that describe properties of the two clashing teams. We will use the parameters that describe the play-style of the two teams to predict the number of goals scored by the home team. Complete and commented code for this example can be found in `code/poisson.R`, in this document we will touch only the most interesting parts of this analysis.
+We will use this for predicting the number of goals scored in a football match (`data/football.csv`). The dataset contains names of the home and away team, the date of the match, the name of the league, home and away goals scored and parameters that describe properties of the two clashing teams. We will use the parameters that describe the play-style of the two teams to predict the number of goals scored by the home team. Complete and commented code for this example can be found in `code/08_poisson.R`. In this document we will touch on only the most interesting parts of this analysis.
 
-When preparing the input data we decided to standardize it. This often results in a better fitting experience and results that are easier to interpret. To do this, we used R's `scale` function. The left graph shows original independent variables while the ones on the right are standardized.
+When preparing the input data we decided to standardize it. This often results in a better fitting experience and results that are easier to interpret. To do this, we used R's `scale` function. The left graph shows the original independent variables while the ones on the right are standardized.
 
 ```{r echo=FALSE, fig.alt="Box plots of the ten play-style predictors, raw (left) and standardized (right); raw variables differ widely in location and spread, with rates up to about 7, while standardized ones all centre on 0 with similar spread."}
 knitr::include_graphics("./figs/scale.png", dpi = NA)
@@ -510,46 +512,46 @@ Once we standardize our independent variables we can check their distributions a
 knitr::include_graphics("./figs/correlations.png", dpi = NA)
 ```
 
-There were no issues in the fitting process and basic diagnostics show no reasons for concern. A quick inspection of $\beta$ coefficients (see the figure below) suggests that the results make sense -- independent variables associated with the amount of goals scored by the away team (e.g.,`X_ScoringRateA` and `X_CornerRatioA`) have less influence on predictions as the variables directly associated with the amount of goals scored by the home team (e.g.,`X_ScoringRateH` and `X_CornerRatioH`). In a Bayesian setting we usually determine whether an independent variable has an influence (either positive or negative) on the dependent variable by checking whether the whole 95% HDI of its $\beta$ coefficients posterior lies above or below 0.
+There were no issues in the fitting process and basic diagnostics show no reasons for concern. A quick inspection of $\beta$ coefficients (see the figure below) suggests that the results make sense -- independent variables associated with the number of goals scored by the away team (e.g., `X_ScoreRateA` and `X_CornerRatioA`) have less influence on predictions than the variables directly associated with the number of goals scored by the home team (e.g., `X_ScoreRateH` and `X_CornerRatioH`). In a Bayesian setting we usually determine whether an independent variable has an influence (either positive or negative) on the dependent variable by checking whether the whole 95% HDI of its $\beta$ coefficient's posterior lies above or below 0.
 
 ```{r echo=FALSE, fig.alt="Violin plots of posterior betas for the ten play-style predictors; X_ScoreRateH and X_CornerRatioH are the largest positive, X_ScoreRateA the most negative, and X_ScoringAccA and X_FoulRatioA are centred on 0."}
 knitr::include_graphics("./figs/poisson_betas.png", dpi = NA)
 ```
 
-To inspect the quality of our model, we can compare how the estimated $\lambda$ compares against the actual amount of goals scored by the home team. To make the visualization clearer we added some jitter to data points, all points above the number 0 represent matches where 0 goals were scored by the home team:
+To inspect the quality of our model, we can compare how the estimated $\lambda$ compares against the actual number of goals scored by the home team. To make the visualization clearer we added some jitter to data points; all points above the number 0 represent matches where 0 goals were scored by the home team:
 
 ```{r echo=FALSE, fig.alt="Jittered scatter plot of estimated lambda against goals scored by the home team; lambda increases only slightly with goals, most matches have 0 to 2 goals, and even matches with 6 or more goals get lambdas below 4."}
 knitr::include_graphics("./figs/poisson_lambdas_goals.png", dpi = NA)
 ```
 
-This figure suggests that there is a positive correlation between the $\lambda$ parameter and the amount of goals scored by the home team. However, it seems like our model is a little conservative in its predictions -- it will rarely predict games with a lot of scored goals. As also seen on the graph above such games are quite uncommon (in the majority of games the home team scored at most 2 goals).
+This figure suggests that there is a positive correlation between the $\lambda$ parameter and the number of goals scored by the home team. However, it seems like our model is a little conservative in its predictions -- it will rarely predict games with a lot of scored goals. As also seen on the graph above, such games are quite uncommon (in the majority of games the home team scored at most 2 goals).
 
-To get a better understanding of our model let us compare a couple of predictions against the actual results of those games. To do this, we will compare the predictions and the actual amount of goals scored by the home team on the last 9 Atletico Madrid games that we have in our database.
+To get a better understanding of our model let us compare a couple of predictions against the actual results of those games. To do this, we will compare the predictions and the actual number of goals scored by the home team on the last 9 Atletico Madrid games that we have in our database.
 
 ```{r echo=FALSE, fig.alt="Nine histograms of predicted home goals, one per Atletico Madrid game, with two dashed lines marking a prediction interval and a thick line at the actual result; only the Real Madrid result (4 goals) lies outside it."}
 knitr::include_graphics("./figs/poisson_am_predictions.png", dpi = NA)
 ```
 
-The blue histogram in the background visualizes the posterior distribution of our predictions, the two dashed lines visualize the bounds of the 75% HDI of these posterior distributions and the thick solid line visualizes the actual result. We can see that in 8 out of 9 cases the actual amount of scored goals was inside this 75% HDI. Like expected, our model was way off the mark in the game where a lot of goals was scored.
+The blue histogram in the background visualizes the posterior distribution of our predictions, the two dashed lines visualize the bounds of the 75% HDI of these posterior distributions and the thick solid line visualizes the actual result. We can see that in 8 out of 9 cases the actual number of scored goals was inside this 75% HDI. As expected, our model was way off the mark in the game where a lot of goals were scored.
 
 ### Categorical regression (multinomial logistic regression)
 
-Categorical (or multinomial logistic) regression is the first choice model for nominal independent variables. It can be used for unordered and ordered nominal variables, although ordinal regression is more suitable in the latter case. The formulation of binary logistic regression as a log-linear model can be directly extended to categorical regression. In categorical regression the categorical distribution generalizes the Bernoulli and the softmax function generalizes the inverse logit:
+Categorical (or multinomial logistic) regression is the first-choice model for nominal dependent variables. It can be used for unordered and ordered categorical variables, although ordinal regression is more suitable in the latter case. The formulation of binary logistic regression as a log-linear model can be directly extended to categorical regression. In categorical regression the categorical distribution generalizes the Bernoulli and the softmax function generalizes the inverse logit:
 
 $$y \; | \; X, \beta \sim \text{categorical}(\text{softmax}(X \beta')),$$
 $$\text{softmax}(j, x_1, x_2, \ldots, x_k) = \frac{e^{x_j}}{\sum_{i=1}^{k} e^{x_i}}, j \in [1, k].$$
 
 Note here that $\beta$ is not a vector (or a scalar) but a matrix. If we have $k$ outcomes of our dependent variable $y$ and $n$ observations of $m$ independent variables, then $\beta$ will be a matrix with $k$ rows and $m$ columns.
 
-The classical categorical regression can have problems with identifiability (two or more parametrizations are observationally equivalent). Identifiablity problems arise because softmax is invariant under adding a constant to each component of its input, thus the model is typically only identified if there is a suitable prior on the coefficients. To overcome this we can use a reference category, we implicitly did a similar thing in logistic regression. There we do not have $\beta$ coefficients for both categories, $\beta$ coefficients there are related only to one category ($y = 1$) while the other is set as a reference ($y = 0$). In Stan the categorical regression model thus looks like this:
+The classical categorical regression can have problems with identifiability (two or more parametrizations are observationally equivalent). Identifiability problems arise because softmax is invariant under adding a constant to each component of its input; thus the model is typically only identified if there is a suitable prior on the coefficients. To overcome this we can use a reference category; we implicitly did a similar thing in logistic regression. There we do not have $\beta$ coefficients for both categories; $\beta$ coefficients there are related only to one category ($y = 1$) while the other is set as a reference ($y = 0$). In Stan the categorical regression model thus looks like this:
 
 ```stan
 data {
-  int<lower=0> n;               // number of observations
-  int<lower=0> m;               // number of independent variables
-  vector[m] x[n];               // independent variables
-  int<lower=0> k;               // number of outcomes
-  array int<lower=1,upper=k> y; // dependent variables
+  int<lower=0> n;                  // number of observations
+  int<lower=0> m;                  // number of independent variables
+  matrix[n, m] x;                  // independent variables
+  int<lower=0> k;                  // number of outcomes
+  array[n] int<lower=1,upper=k> y; // dependent variables
 }
 
 transformed data {
@@ -568,23 +570,24 @@ transformed parameters {
 
 model {
   // fit
+  matrix[n, k] x_beta = x * beta';
   for (i in 1:n)
-    y[i] ~ categorical_logit(beta * x[i]);
-    // or y[i] ~ categorical(softmax(beta * x[i]));
+    y[i] ~ categorical_logit(x_beta[i]');
+    // or y[i] ~ categorical(softmax(x_beta[i]'));
 }
 
 ```
 
-In this case every generated sample of the $\beta$ parameter will be a matrix with $m$ rows and $k$ columns. Each value in that matrix will denote how a particular independent variable (out of $m$ independent variables) relates to a particular outcome (out of $k$ outcomes). Our code sample (`code/categorical.R`) analyses how a basketball's players role on the field and the distance from the rim influence player's shot selection. Some of the steps in data preparation might be somewhat new to you, so let us briefly explain our rationale behind them.
+In this case every generated sample of the $\beta$ parameter will be a matrix with $k$ rows and $m$ columns. Each value in that matrix will denote how a particular independent variable (out of $m$ independent variables) relates to a particular outcome (out of $k$ outcomes). Our code sample (`code/11_categorical.R`) analyses how a basketball player's role on the field and the distance from the rim influence the player's shot selection. Some of the steps in data preparation might be somewhat new to you, so let us briefly explain our rationale behind them.
 
-We start by loading our dataset, it has 3 columns -- PlayerType, Distance, ShotType. Distance is a metric variable while player type (guard, forward or center) and shot type (above head, hook shot, layup) contain strings. Since the latter two are not strings of characters but factors (in our case both are nominal variables) we have to explicitly tell R that it should treat them as such.
+We start by loading our dataset; it has 3 columns -- PlayerType, Distance, ShotType. Distance is a metric variable while player type (guard, forward or center) and shot type (above head, hook shot, layup) contain strings. Since the latter two are not strings of characters but factors (in our case both are nominal variables), we have to explicitly tell R that it should treat them as such.
 
 ```{r}
 # load data
 data <- read.csv("./data/shot_types.csv", stringsAsFactors = TRUE)
 ```
 
-Once our variable types are properly set, we can easily prepare matrices with independent and dependent variables. The `model.matrix()` function can be used to create the so called model matrix (<https://en.wikipedia.org/wiki/Design_matrix>). In model matrices (or design matrices) each row represents an observation of our data, with the successive columns corresponding to the variables and their specific values for that object. To encode nominal variables model matrices use something called contrasts, you can think of contrasts as encoding of variables.
+Once our variable types are properly set, we can easily prepare matrices with independent and dependent variables. The `model.matrix()` function can be used to create the so-called model matrix (<https://en.wikipedia.org/wiki/Design_matrix>). In model matrices (or design matrices) each row represents an observation of our data, with the successive columns corresponding to the variables and their specific values for that observation. To encode nominal variables, model matrices use something called contrasts; you can think of contrasts as encoding of variables.
 
 ```{r, warning=FALSE, message=FALSE}
 # library needed for n_distinct
@@ -597,17 +600,17 @@ contrasts(data$PlayerType) <- contr.treatment(n_distinct(data$PlayerType))
 contrasts(data$PlayerType)
 ```
 
-When constructing the model matrix we first have to specify which independent variables we want to encode, in the snippet above we use the `contrasts()` function to encode our PlayerType variable. Once we determine which variables have to be encoded, we can use the `model.matrix()` function to create the final model matrix. This matrix represents represents our independent variable related input data.
+When constructing the model matrix we first have to specify which independent variables we want to encode; in the snippet above we use the `contrasts()` function to encode our PlayerType variable. Once we determine which variables have to be encoded, we can use the `model.matrix()` function to create the final model matrix. This matrix represents our independent variable related input data.
 
 ```{r}
-# note here that intercept is part of the model matrix (1st column always equals 1)
+# note here that the intercept is part of the model matrix (1st column always equals 1)
 design_matrix <- model.matrix(~ Distance + PlayerType, data)
 
 # show a couple of top rows to check if all is OK
 head(design_matrix)
 ```
 
-One thing worth mentioning here is the first column (`(Intercept)`), as you see its value is always 1. In practice this means that we do not need an explicit intercept ($\alpha$) in the formulation of our GLM, since the first $\beta$ coefficient will be always multiplied by 1 and will thus effectively serve as the intercept. Therefore, intercept is often labeled as $\beta_0$. To prepare the vector of dependent variables we can just use the ShotType column of our dataset. Since it is a factor it will be automatically translated into numerical variables before the fitting process.
+One thing worth mentioning here is the first column (`(Intercept)`); as you see, its value is always 1. In practice this means that we do not need an explicit intercept ($\alpha$) in the formulation of our GLM, since the first $\beta$ coefficient will always be multiplied by 1 and will thus effectively serve as the intercept. Therefore, the intercept is often labeled as $\beta_0$. To prepare the vector of dependent variables we can just use the ShotType column of our dataset. Since it is a factor it will be automatically translated into numerical variables before the fitting process.
 
 ```{r}
 # dependent variable
@@ -617,7 +620,7 @@ y <- data$ShotType
 levels(y)
 ```
 
-As you can see our dependent variable has three levels -- above head, hook shot and layup -- these will be encoded as 1, 2, 3, respectively. With this we finished the preparation of our input data, and we can start the fitting process. Since all diagnostics looked OK, we will again skip them. The next step is to extract our parameters.
+As you can see, our dependent variable has three levels -- above head, hook shot and layup -- which will be encoded as 1, 2, 3, respectively. With this we finished the preparation of our input data, and we can start the fitting process. Since all diagnostics looked OK, we will again skip them. The next step is to extract our parameters.
 
 ```r
 # extract parameters
@@ -625,7 +628,7 @@ df_betas <- as_draws_df(fit$draws("beta"))
 df_betas <- df_betas |> select(-.chain, -.iteration, -.draw)
 
 # beta matrix composed of sample means
-betas <- matrix(colMeans(df_betas), nrow = 4, ncol = 3)
+betas <- matrix(colMeans(df_betas), nrow = 3, ncol = 4)
 ```
 
 ```text
@@ -635,7 +638,7 @@ betas <- matrix(colMeans(df_betas), nrow = 4, ncol = 3)
 ## [3,]  0.000000 0.000000  0.000000  0.000000
 ```
 
-The matrix above represents mean $\beta$ coefficient values. Four columns arise from our input variables ($m=4$), while three rows arise from our outcomes ($k=3$). So, the first column represents intercepts, the second column is associated with distance, the third with players playing at the forward position and the fourth with players playing at the guard position. The first row is associated with the above head shots, the second with hook shots and the third with layups. For example, the $\beta$ value in the second row, and the third column denotes how probability of a hook shot changes if the player is a forward. Just like with other regressions, $\beta$ coefficients are all we need for our analysis. The code snippet below calculates probabilities for each shot type when a center shoots from 0.5 m distance:
+The matrix above represents mean $\beta$ coefficient values. Four columns arise from our input variables ($m=4$), while three rows arise from our outcomes ($k=3$). So, the first column represents intercepts, the second column is associated with distance, the third with players playing at the forward position and the fourth with players playing at the guard position. The first row is associated with the above head shots, the second with hook shots and the third with layups. For example, the $\beta$ value in the second row and the third column denotes how the probability of a hook shot changes if the player is a forward. Just like with other regressions, $\beta$ coefficients are all we need for our analysis. The code snippet below calculates probabilities for each shot type when a center shoots from 0.5 m distance:
 
 ```r
 # x <- c(intercept, distance, forward, guard)
@@ -656,24 +659,24 @@ When a center is shooting from 0.5 m there is a 0.2 probability of an above head
 knitr::include_graphics("./figs/shot_selection.png", dpi = NA)
 ```
 
-Note here that calculating the sample means for the beta matrix is not the true Bayesian way. The true Bayesian way would be to calculate a beta matrix for each of the samples and then work with that, this way we would have an estimate of uncertainty everywhere along the way. In this illustrative example (and some others that follow), we decided to work with means for brevity and clarity purposes.
+Note here that calculating the sample means for the beta matrix is not the true Bayesian way. The true Bayesian way would be to calculate a beta matrix for each of the samples and then work with that; this way we would have an estimate of uncertainty everywhere along the way. In this illustrative example (and some others that follow), we decided to work with means for brevity and clarity purposes.
 
-An alternative, and arguably more elegant way of calculating shot type probabilities would be to use the `generated quantities` block.
+An alternative, and arguably more elegant, way of calculating shot type probabilities would be to use the `generated quantities` block.
 
-Since the above example might be a bit overwhelming there is also a simpler one in the code examples (`code/10_categorical_simple.R`). In there were use longitude and hemishpere data to predict the probability that a given point lies on one of the continents. The interpretation of beta coefficients there is much more easy to inrepret as it is very obvious how probability of being on a certain continent changes as we move around the planet.
+Since the above example might be a bit overwhelming, there is also a simpler one in the code examples (`code/10_categorical_simple.R`). In there we use longitude and hemisphere data to predict the probability that a given point lies on one of the continents. The beta coefficients there are much easier to interpret as it is very obvious how the probability of being on a certain continent changes as we move around the planet.
 
 ### Gamma regression
 
-Gamma regression is useful when our dependent variable resides on the positive side of real numbers. However, using the gamma distribution in a GLM is a bit trickier because it's two default parameters $\nu$ (shape) and $\lambda$ (rate) do not directly represent the mean and the variance. The two parameters of the gamma distribution are traditionally called $\alpha$ and $\beta$, here we are using $\nu$ and $\lambda$ to distinguish them from the intercept and $\beta$ coefficients that will come into play later on:
+Gamma regression is useful when our dependent variable resides on the positive side of real numbers. However, using the gamma distribution in a GLM is a bit trickier because its two default parameters $\nu$ (shape) and $\lambda$ (rate) do not directly represent the mean and the variance. The two parameters of the gamma distribution are traditionally called $\alpha$ and $\beta$; here we are using $\nu$ and $\lambda$ to distinguish them from the intercept and $\beta$ coefficients that will come into play later on:
 
 $$y \; | \; \nu, \lambda \sim \text{gamma}(\nu, \lambda),$$
 $$E[y] = \mu = \frac{\nu}{\lambda},$$
 $$\text{Var}(y) = \phi = \frac{\nu}{\lambda^2}.$$
-As you can see we cannot directly map the linear predictor to a gamma parameter. Fear not, we can fix this with some simple calculus. We can reparametrize the gamma distribution to fit our needs. There are two ways this is commonly done in the literature. The first:
+As you can see, we cannot directly map the linear predictor to a gamma parameter. Fear not, we can fix this with some simple algebra. We can reparametrize the gamma distribution to fit our needs. There are two ways this is commonly done in the literature. The first:
 
 $$\mu = \frac{\nu}{\lambda},$$
 $$\nu = \mu\lambda.$$
-Now we have an expected value parameter $\mu$. Since gamma distribution resides on the positive real scale we can use a log link function. Putting everything together gets us:
+Now we have an expected value parameter $\mu$. Since the gamma distribution resides on the positive real scale we can use a log link function. Putting everything together gets us:
 
 $$y \; | \; \mu, \lambda \sim \text{gamma}(\mu\lambda, \lambda),$$
 $$\text{log}(\mu) = \beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k,$$
@@ -695,21 +698,21 @@ Based on the above, you should now be able to develop a gamma regression model i
 
 ### Ordered logistic regression
 
-Ordered logistic regression (also known as ordinal logistic regression or proportional odds model) is used for modeling variables on the ordinal scale. That is nominal variables for which there exists a meaningful ordering. The most common use case of ordered logistic regression is modeling preference (e.g.,on a five-level Likert scale, ranging from strongly disagree to strongly agree).
+Ordered logistic regression (also known as ordinal logistic regression or proportional odds model) is used for modeling variables on the ordinal scale. That is, categorical variables for which there exists a meaningful ordering. The most common use case of ordered logistic regression is modeling preference (e.g., on a five-level Likert scale, ranging from strongly disagree to strongly agree).
 
-Essentially, ordinal variable is just a categorization (multinomial prediction) problem with an additional constraint -- responses have an exact ordering. Meaning that our model has to ensure a proper ordering of outcomes. The traditional solution to this problem is to use a cumulative link function. Suppose our dependent variable $y$ has $k$ outcomes and $j \in 1, \ldots, k$, the cumulative probability of outcome $j$ thus equals:
+Essentially, modeling an ordinal variable is just a categorization (multinomial prediction) problem with an additional constraint -- responses have an exact ordering. This means that our model has to ensure a proper ordering of outcomes. The traditional solution to this problem is to use a cumulative link function. Suppose our dependent variable $y$ has $k$ outcomes and $j \in 1, \ldots, k$; the cumulative probability of outcome $j$ thus equals:
 
 $$F_y(j) = \text{Pr}(y = 1) + \text{Pr}(y = 2) + \ldots + \text{Pr}(y = j) = \text{Pr}(y \leq j).$$
-With the logit regression we worked with log odds by using a logit link function to assure that probabilities are constrained to the [0, 1] interval. We will use a similar approach in the ordered logistic regression, the main difference is that, since we are working with a cumulative link function, we also have to work with the log cumulative odds.
+With the logit regression we worked with log odds by using a logit link function to assure that probabilities are constrained to the [0, 1] interval. We will use a similar approach in the ordered logistic regression; the main difference is that, since we are working with a cumulative link function, we also have to work with the log cumulative odds.
 
-Suppose we have $n$ observations of $m$ independent variables stored in matrix $X$. Each row in $X$ represents an observation vector and has an associated response stored in vector $y$. Log cumulative odds that value of $y$ is lower or equal then the outcome $j$ are thus:
+Suppose we have $n$ observations of $m$ independent variables stored in matrix $X$. Each row in $X$ represents an observation vector and has an associated response stored in vector $y$. The log cumulative odds that the value of $y$ is lower than or equal to the outcome $j$ are thus:
 
 $$\text{logit}(\text{Pr}(y \leq j)) = \text{log}\left(\frac{\text{Pr}(y \leq j)}{1 - \text{Pr}(y \leq j)}\right) = \alpha_j - X \beta,$$
-$$\text{Pr}(y \leq j)) = \frac{1}{1 + e^{-(\alpha_j - X \beta)}},$$
+$$\text{Pr}(y \leq j) = \frac{1}{1 + e^{-(\alpha_j - X \beta)}},$$
 
-where $\alpha_j$ is a cutpoint (threshold, "intercept") unique to each possible outcome value $j$. Since outcomes are ordered $\alpha_1 < \alpha_2 < \ldots < \alpha_{k-1}$ and the cumulative log odds of the largest variable are always infinity $(\text{log}(1 / (1 - 1)))$ we do not need a parameter for it, which is why we need only $k-1$ cutpoints. In the above equation $X \beta$ is a traditional linear model.
+where $\alpha_j$ is a cutpoint (threshold, "intercept") unique to each possible outcome value $j$. Since outcomes are ordered $\alpha_1 < \alpha_2 < \ldots < \alpha_{k-1}$ and the cumulative log odds of the largest outcome are always infinity $(\text{log}(1 / (1 - 1)))$, we do not need a parameter for it, which is why we need only $k-1$ cutpoints. In the above equation $X \beta$ is a traditional linear model.
 
-Notice that we are subtracting the linear term from each cutpoint, the reason being that when we decrease the log cumulative odds of every outcome value $j$ below the maximum ($k$), this shifts probability mass upwards towards higher outcome variables, which is the desired outcome if $\beta$ coefficients are positive. Finally, the probability that the outcome of $y$ equals $j$ is calculated as:
+Notice that we are subtracting the linear term from each cutpoint, the reason being that when we decrease the log cumulative odds of every outcome value $j$ below the maximum ($k$), this shifts probability mass upwards towards higher outcome values, which is the desired outcome if $\beta$ coefficients are positive. Finally, the probability that the outcome of $y$ equals $j$ is calculated as:
 
 $$\text{Pr}(y = j) = F_y(j) - F_y(j-1) = \text{Pr}(y \leq j) - \text{Pr}(y \leq j - 1).$$
 
@@ -719,7 +722,7 @@ Fortunately, the implementation in Stan is easier. In the code below the vector 
 data {
   int n;                           // number of observations
   int m;                           // number of independent variables
-  row_vector[m] x[n];              // independent variables
+  matrix[n, m] x;                  // independent variables
   int k;                           // number of outcomes
   array[n] int<lower=1,upper=k> y; // dependent variables
 }
@@ -736,30 +739,114 @@ model {
 
 ```
 
-See `code/ordered.R` for a practical example of the ordered logistic regression. There we analyze how religion (yes/no), sex, college degree (yes/no) and country of residence (USA/Sweden) influence people's beliefs whether their country does enough to fight poverty.
+See `code/12_ordered.R` for a practical example of the ordered logistic regression. There we analyze how religion (yes/no), sex, college degree (yes/no) and country of residence (USA/Sweden) influence people's beliefs about whether their country does enough to fight poverty.
 
 ### And many more
 
-There are many more GLMs out there that might come in handy when tackling a particular problem (e.g probit regression, ordered probit regression, binomial regression, inverse Gaussian regression, exponential regression...). Luckily the core concepts are the same in all of them, so equipped with the knowledge you gained today you should not have too many issues when implementing them. Some of the mentioned GLMs are already implemented in Stan, to take a look at all readily available regression models in Stan consult <https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html>.
+There are many more GLMs out there that might come in handy when tackling a particular problem (e.g., probit regression, ordered probit regression, binomial regression, inverse Gaussian regression, exponential regression...). Luckily the core concepts are the same in all of them, so, equipped with the knowledge you gained today, you should not have too many issues when implementing them. Some of the mentioned GLMs are already implemented in Stan; to take a look at all readily available regression models in Stan, consult <https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html>.
 
 An alternative to coding your own models is an R package called `rstanarm` that emulates other R model-fitting functions but uses Stan (via the `rstan` package) for the back-end estimation. The primary target audience is people who would be open to Bayesian inference if using Bayesian software were easier but would use frequentist software otherwise.
+
+## Causal inference
+
+So far we have interpreted $\beta$ coefficients as the change in the dependent variable that comes with a one-unit change in an independent variable, for example, that \$1 invested in research generates \$0.714 of profit on average (the 50 startups example). Regression coefficients, however, only describe conditional associations. Interpreting them causally requires assumptions about the process that generated the data, for example, that no variable left out of the model (such as the size of a company) affects both research spending and profit. Randomizing the independent variable of interest (a randomized controlled experiment) guarantees this by design; with observational data, we have to state our causal assumptions explicitly. In regression, causal inference then tells us which independent variables to include in the model (adjust for) and which to leave out, so that the coefficient of interest has a causal interpretation.
+
+### Directed acyclic graphs
+
+We state causal assumptions with a directed acyclic graph (DAG). Its nodes are variables and an arrow $X \rightarrow Y$ means that $X$ directly causes $Y$. A missing arrow is an assumption as well (no direct effect), and acyclic means that there are no feedback loops. DAGs come from domain knowledge, not from the data. When using them, keep in mind that:
+
+* regression coefficients have a causal interpretation only conditional on the assumed DAG,
+* variables that we include to estimate the effect of one independent variable do not necessarily have causal coefficients themselves (interpreting all coefficients of a model causally is known as the Table 2 fallacy),
+* whether a variable belongs in the model is decided by the DAG, not by its correlation with other independent variables or by how well the model fits the data.
+
+### Common causal structures
+
+DAGs are built from three basic structures. In all three, we are interested in the effect of $X_1$ (the exposure) on $Y$ (the outcome):
+
+```{r echo=FALSE, fig.alt="Three DAGs, each with nodes X1, X2 and Y, with X2 above the other two. Confounder: X2 points to X1 and to Y. Collider: X1 and Y both point to X2. Mediator: X1 points to X2, which points to Y."}
+knitr::include_graphics("./figs/causal_structures.png", dpi = NA)
+```
+
+* **Confounder** ($X_1 \leftarrow X_2 \rightarrow Y$): a common cause creates an association between $X_1$ and $Y$, so we have to adjust for it.
+* **Collider** ($X_1 \rightarrow X_2 \leftarrow Y$): a common effect does not create an association, but adjusting for it does, so we must not adjust for it.
+* **Mediator** ($X_1 \rightarrow X_2 \rightarrow Y$): adjusting for it blocks the indirect effect, so the coefficient of $X_1$ measures only its direct effect; for the total effect, we leave the mediator out.
+
+More generally, association flows along open paths, that is, sequences of arrows that connect two variables regardless of the arrows' direction. A path is blocked if we adjust for a confounder or a mediator on it, or if it contains a collider that we do not adjust for (neither directly nor through a variable affected by the collider). To estimate the total effect of $X_1$ on $Y$, we adjust for variables that block all non-causal paths between them, but not for variables affected by $X_1$ or $Y$. For a given DAG, the `adjustmentSets()` function from the `dagitty` package finds such sets of variables (see `code/16_dags.R`).
+
+### Example: ice cream sales and shark attacks
+
+On hot days, people buy more ice cream and more people swim in the sea, which leads to more shark attacks. Emergency services intervene in shark attacks as well as in allergic reactions to ice cream. We simulate 2000 days of this process (`code/14_sharks_simulation.R`):
+
+$$T_i \sim N(25, 5),$$
+$$I_i \; | \; T_i \sim \text{Poisson}(e^{-1 + 0.1 T_i}),$$
+$$S_i \; | \; T_i \sim \text{Poisson}(e^{-2 + 0.1 T_i}),$$
+$$E_i \; | \; I_i, S_i \sim \text{Poisson}(0.5 I_i + 3 S_i),$$
+
+where $T_i$ is the temperature (in °C), and $I_i$, $S_i$ and $E_i$ are the numbers of ice creams sold, shark attacks and emergency interventions on day $i$. In the DAG of this process, temperature is a confounder of ice cream sales and shark attacks, emergency interventions are a collider, and there is no arrow from $I$ to $S$: ice cream sales have no effect on shark attacks. To estimate this (zero) effect, we have to adjust for temperature and must not adjust for emergency interventions.
+
+```{r echo=FALSE, fig.alt="DAG of the shark attacks example: temperature (T) points to ice cream sales (I) and to shark attacks (S), which both point to emergency interventions (E); there is no arrow between ice cream sales and shark attacks."}
+knitr::include_graphics("./figs/sharks_dag.png", dpi = NA)
+```
+
+Still, ice cream sales and shark attacks are clearly associated (their correlation is 0.48), because both increase with temperature:
+
+```{r echo=FALSE, fig.alt="Jittered scatter plot of daily shark attacks (0 to 11) against ice cream sales (0 to 26), colored by temperature from light orange (cold) to dark brown (hot); shark attacks rise with ice cream sales, and hotter days sit at higher values of both."}
+knitr::include_graphics("./figs/sharks_data.png", dpi = NA)
+```
+
+We fit three Poisson regression models of shark attacks, $S_i \sim \text{Poisson}(\lambda_i)$, using the Stan model from the Poisson regression example (`models/poisson.stan`; the complete code is in `code/15_sharks_models.R`):
+
+* model I: $\log \lambda_i = \alpha + \beta_I I_i$,
+* model II: $\log \lambda_i = \alpha + \beta_I I_i + \beta_T T_i$,
+* model III: $\log \lambda_i = \alpha + \beta_I I_i + \beta_T T_i + \beta_E E_i$.
+
+The diagnostics of all three fits show no reasons for concern. The table below summarizes the posteriors of the $\beta$ coefficients (means with their Monte Carlo standard errors and the 5^th^ and 95^th^ percentiles, $q_{0.05}$ and $q_{0.95}$), and the figure below it visualizes them (points are posterior medians, black lines the intervals between the 5^th^ and 95^th^ percentiles and dashed lines the true effects).
+
+| Model | Variable  | Mean                 | $q_{0.05}$ | $q_{0.95}$ | True effect |
+|-------|-----------|----------------------|------------|------------|-------------|
+| I     | $\beta_I$ | 0.092 $\pm$ 0.0001   | 0.086      | 0.098      | 0           |
+| II    | $\beta_I$ | 0.000 $\pm$ 0.0002   | -0.010     | 0.009      | 0           |
+| II    | $\beta_T$ | 0.103 $\pm$ 0.0002   | 0.095      | 0.111      | 0.1         |
+| III   | $\beta_I$ | -0.056 $\pm$ 0.0002  | -0.066     | -0.046     | 0           |
+| III   | $\beta_T$ | 0.049 $\pm$ 0.0002   | 0.041      | 0.058      | 0.1         |
+| III   | $\beta_E$ | 0.076 $\pm$ 0.00005  | 0.072      | 0.080      | 0           |
+
+```{r echo=FALSE, fig.alt="Coefficient posteriors in three panels (ice cream sales, temperature, emergency interventions) with models I to III as rows and dashed lines at the true effects 0, 0.1 and 0. Model I (first panel only) is at 0.09, model II (first two panels) on target and model III at -0.06, 0.05 and 0.08."}
+knitr::include_graphics("./figs/sharks_coefficients.png", dpi = NA)
+```
+
+* **Model I** suggests that each additional ice cream sold increases the expected number of shark attacks by about 10% ($e^{0.092} \approx 1.10$). The association is created by the confounder.
+* **Model II** adjusts for temperature, which blocks the non-causal path $I \leftarrow T \rightarrow S$ (the other non-causal path, $I \rightarrow E \leftarrow S$, is blocked by the collider). It recovers the true effects, $\beta_I \approx 0$ and $\beta_T \approx 0.1$. Note that temperature has to stay in the model although it is strongly correlated with ice cream sales (0.73), unlike $x2$ in the example with heavily correlated independent variables, which was just a noisy copy of $x$.
+* **Model III** also adjusts for the collider, which opens the path $I \rightarrow E \leftarrow S$. Among days with the same number of interventions, more ice creams sold leave fewer interventions to be explained by shark attacks, so ice cream now seems to protect us from sharks ($e^{-0.056} \approx 0.95$). Because $E$ is affected by $S$, it also carries information about the outcome itself, so the model leans on it: $\beta_E$ is clearly positive, although $E$ has no effect on $S$, and the effect of temperature is underestimated by half.
+
+Model III nevertheless fits the data best: the root mean squared error between the observed shark attacks and the posterior means of $\lambda_i$ equals 1.06, compared with 1.31 for model II and 1.46 for model I. A better fit does not imply better causal estimates. Likewise, a posterior that clearly excludes 0, our criterion in the Poisson regression example, only indicates a conditional association: this holds for $\beta_I$ in models I and III and for $\beta_E$ in model III, although neither ice cream sales nor emergency interventions affect shark attacks.
 
 ## Recommended readings
 
 * **Regression Models** in Stan User's Guide (<https://mc-stan.org/docs/2_25/stan-users-guide/regression-models.html>).
 
-* **Chapter 6 (Overfitting, Regularization and Information Criteria) and 10 (Counting and Classification)** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
+* **Chapters 6 (Overfitting, Regularization and Information Criteria) and 10 (Counting and Classification)** in McElreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
 
 * **Chapter 15 (Overview of the Generalized Linear Model)** in Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
+
+* **Chapters 5 (The Many Variables & The Spurious Waffles) and 6 (The Haunted DAG & The Causal Terror)** in McElreath R. (2020). Statistical Rethinking: A Bayesian Course with Examples in R and Stan (2nd edition). CRC Press.
 
 ## Additional readings
 
 * van Erp S., Oberski D. L., & Mulder J. (2019). Shrinkage priors for Bayesian penalized regression, Journal of Mathematical Psychology, 89, 31--50.
 
-* **Chapters 4, 7 and 9** in Mcelreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
+* **Chapters 4, 7 and 9** in McElreath R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan. CRC Press.
 
 * **Part III** of Kruschke J. K. (2015). Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (2nd edition). Academic Press.
 
 * Wiki page about the generalized linear model (<https://en.wikipedia.org/wiki/Generalized_linear_model>).
 
 * Wiki page about the linear regression (<https://en.wikipedia.org/wiki/Linear_regression>).
+
+* **Chapters 2 (Graphical Models and Their Applications) and 3 (The Effects of Interventions)** in Pearl J., Glymour M., & Jewell N. P. (2016). Causal Inference in Statistics: A Primer. Wiley.
+
+* **Chapters 6 (Graphical representation of causal effects), 7 (Confounding) and 8 (Selection bias)** in Hernán M. A., & Robins J. M. (2020). Causal Inference: What If. Chapman & Hall/CRC (<https://miguelhernan.org/whatifbook>).
+
+* Westreich D., & Greenland S. (2013). The Table 2 Fallacy: Presenting and Interpreting Confounder and Modifier Coefficients, American Journal of Epidemiology, 177, 292--298 (<https://doi.org/10.1093/aje/kws412>).
+
+* DAGitty, a browser-based environment for creating, editing and analyzing DAGs (<https://www.dagitty.net/>), also available as the `dagitty` R package (<https://cran.r-project.org/web/packages/dagitty/index.html>).

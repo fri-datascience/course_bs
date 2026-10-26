@@ -69,16 +69,16 @@ code span.ot { color: #007020; }
     <section id="main-content">
 <div id="summary" class="section level2">
 <h2>Summary</h2>
-<p>The <code>ggplot</code> R package (<a href="https://ggplot2.tidyverse.org/reference/ggplot.html">https://ggplot2.tidyverse.org/reference/ggplot.html</a>)
+<p>The <code>ggplot2</code> R package (<a href="https://ggplot2.tidyverse.org/reference/ggplot.html">https://ggplot2.tidyverse.org/reference/ggplot.html</a>)
 is arguably the most powerful visualization toolkit out there. The logic
 behind it follows the best practices of modern design and data
 visualization. As a result, the results the package produces look nice
 and usually do not contain unnecessary clutter that would make them less
 readable. By using this package properly you will be able to create
-professionally looking visualizations that convey the story you try to
-tell in an efficient manner. Mastering this skill is not important only
+professional-looking visualizations that convey the story you try to
+tell in an efficient manner. Mastering this skill is important not only
 to produce visualizations that look nice for the reports in this course,
-but also for you master’s thesis.</p>
+but also for your master’s thesis.</p>
 <p>Note that <code>ggplot</code> is now also available for Python (<a href="https://realpython.com/ggplot-python/">https://realpython.com/ggplot-python/</a>).</p>
 </div>
 <div id="exercises" class="section level2">
@@ -86,8 +86,8 @@ but also for you master’s thesis.</p>
 <div id="section" class="section level3">
 <h3>1</h3>
 <p>The <code>50_startups.csv</code> dataset contains information about
-how startup companies spent their resources, where was their location
-and what were their profits. Let us perform an exploratory analysis by
+how startup companies spent their resources, where their location was
+and what their profits were. Let us perform an exploratory analysis by
 drawing the following plots:</p>
 <ol style="list-style-type: decimal">
 <li>A bar chart that visualizes the distribution of locations.</li>
@@ -99,17 +99,17 @@ research/administration/marketing.</li>
 <p>Hints:</p>
 <ul>
 <li>For density plots, you can use the tools that are available in the
-basic <code>ggplot</code> package or you can use <code>ggdist</code>,
-which is a package that upgrades <code>ggplot</code> with additional
+basic <code>ggplot2</code> package or you can use <code>ggdist</code>,
+which is a package that upgrades <code>ggplot2</code> with additional
 tools for visualizing distributions.</li>
 <li>You should use color palettes that are friendly for those that are
 color blind (around 8% of men). See <a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">https://ggplot2.tidyverse.org/reference/scale_brewer.html</a>
 and <a href="https://colorbrewer2.org/">https://colorbrewer2.org/</a>.</li>
 <li>You can use <code>theme_minimal()</code> to make your plots even
-more minimalistic. One of the most known graphical designers of all
+more minimalistic. One of the best-known graphical designers of all
 time, Edward Tufte said that every graphical element (e.g., dot, line,
-etc.) should exist only if it conveys some information. His most known
-book, The visual display of quantitative information (<a href="https://www.edwardtufte.com/tufte/books_vdqi">https://www.edwardtufte.com/tufte/books_vdqi</a>)
+etc.) should exist only if it conveys some information. His best-known
+book, The visual display of quantitative information (<a href="https://www.edwardtufte.com/tufte/books_vdqi">https://www.edwardtufte.com/tufte/books_vdqi</a>),
 is one of the most important books on graphical design and
 visualization.</li>
 <li>One of the libraries for creating a plot grid from multiple ggplot
@@ -124,7 +124,7 @@ marketing, along with the distribution of profit in the same chart.</p>
 <p>Hint:</p>
 <ul>
 <li>Putting all the information on a single canvas will most likely not
-be the best way to do this, try using <code>facet_grid()</code> or
+be the best way to do this; try using <code>facet_grid()</code> or
 <code>facet_wrap()</code>.</li>
 </ul>
 </div>
@@ -144,16 +144,16 @@ these findings in a suitable manner.</p>
 <div id="section-3" class="section level3">
 <h3>4</h3>
 <p>The dataset <code>flanker.csv</code> contains reaction times of
-participants from the so called Flanker experiment. In this version of
+participants from the so-called Flanker experiment. In this version of
 the experiment participants had 2 buttons, one placed on their left and
 one on their right. Next, 7 arrows were displayed on the screen and the
 participant had to click the left button if the middle arrow was
 pointing to the left, or the right button if the middle arrow was
-pointing to the right. There are two conditions, in the
+pointing to the right. There are two conditions: in the
 <code>congruent</code> condition all arrows were pointing in the same
 direction (e.g., <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> or
-<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>) in the
-<code>incongruent</code> condition the middle arrow is pointing in a
+<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>); in the
+<code>incongruent</code> condition the middle arrow was pointing in a
 different direction than the other arrows (e.g.,
 <code>&lt;&lt;&lt;&gt;&lt;&lt;&lt;</code> or
 <code>&gt;&gt;&gt;&lt;&gt;&gt;&gt;</code>).</p>
@@ -162,9 +162,9 @@ different direction than the other arrows (e.g.,
 <li>Visualize the distribution of reaction times for each participant
 for each of the two conditions.</li>
 <li>Add a vertical line that denotes the mean reaction time.</li>
-<li>Add a label on top of, or next to the vertical line that shows the
+<li>Add a label on top of, or next to, the vertical line that shows the
 mean reaction time.</li>
-<li>Sort the visualization so the participant with the mean shortest
+<li>Sort the visualization so the participant with the shortest mean
 reaction time is on top and the one with the slowest is on the bottom
 (calculate the mean by using reaction times from both conditions).</li>
 </ol>
