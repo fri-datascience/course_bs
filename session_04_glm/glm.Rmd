@@ -753,52 +753,62 @@ So far we have interpreted $\beta$ coefficients as the change in the dependent v
 
 ### Directed acyclic graphs
 
-We state causal assumptions with a directed acyclic graph (DAG). Its nodes are variables and an arrow $X \rightarrow Y$ means that $X$ directly causes $Y$. A missing arrow is an assumption as well (no direct effect), and acyclic means that there are no feedback loops. DAGs come from domain knowledge, not from the data. When using them, keep in mind that:
+We state causal assumptions with a directed acyclic graph (DAG). Its nodes are variables and an arrow $X \rightarrow Y$ means that $X$ directly causes $Y$. A missing arrow is an assumption as well (no direct effect), and acyclic means that there are no feedback loops. DAGs come from domain knowledge, not from the data: drawing them requires expertise in the field in question, so they are usually constructed by domain experts (or with their help). When using them, keep in mind that:
 
 * regression coefficients have a causal interpretation only conditional on the assumed DAG,
 * variables that we include to estimate the effect of one independent variable do not necessarily have causal coefficients themselves (interpreting all coefficients of a model causally is known as the Table 2 fallacy),
 * whether a variable belongs in the model is decided by the DAG, not by its correlation with other independent variables or by how well the model fits the data.
 
+The Table 2 fallacy is named after the usual layout of epidemiological papers: Table 1 describes the sample, and Table 2 reports the coefficients of all variables from the same model side by side, which invites interpreting each of them in the same way as the coefficient of interest.
+
 ### Common causal structures
 
-DAGs are built from three basic structures. In all three, we are interested in the effect of $X_1$ (the exposure) on $Y$ (the outcome):
+DAGs are built from three basic structures. In all three, we are interested in the effect of $X_1$ (the exposure) on $Y$ (the outcome). In the examples, $X_1$ is lecture attendance and $Y$ is the exam score:
 
 ```{r echo=FALSE, fig.alt="Three DAGs, each with nodes X1, X2 and Y, with X2 above the other two. Confounder: X2 points to X1 and to Y. Collider: X1 and Y both point to X2. Mediator: X1 points to X2, which points to Y."}
 knitr::include_graphics("./figs/causal_structures.png", dpi = NA)
 ```
 
-* **Confounder** ($X_1 \leftarrow X_2 \rightarrow Y$): a common cause creates an association between $X_1$ and $Y$, so we have to adjust for it.
-* **Collider** ($X_1 \rightarrow X_2 \leftarrow Y$): a common effect does not create an association, but adjusting for it does, so we must not adjust for it.
-* **Mediator** ($X_1 \rightarrow X_2 \rightarrow Y$): adjusting for it blocks the indirect effect, so the coefficient of $X_1$ measures only its direct effect; for the total effect, we leave the mediator out.
+* **Confounder** ($X_1 \leftarrow X_2 \rightarrow Y$): a common cause creates an association between $X_1$ and $Y$, so we have to adjust for it. For example, motivated students attend more lectures and also study more at home, so attendance and exam scores would be associated even if lectures did not help at all.
+* **Collider** ($X_1 \rightarrow X_2 \leftarrow Y$): a common effect does not create an association, but adjusting for it does, so we must not adjust for it. For example, if the final grade is the sum of attendance points and exam points, then among students with the same final grade, those who attended more lectures scored fewer points on the exam, so adjusting for the final grade creates a negative association between attendance and exam scores.
+* **Mediator** ($X_1 \rightarrow X_2 \rightarrow Y$): adjusting for it blocks the indirect effect, so the coefficient of $X_1$ measures only its direct effect; for the total effect, we leave the mediator out. For example, if lectures improve exam scores only by increasing knowledge, then among students with the same knowledge, attendance makes no difference (no direct effect), although its total effect is positive.
 
 More generally, association flows along open paths, that is, sequences of arrows that connect two variables regardless of the arrows' direction. A path is blocked if we adjust for a confounder or a mediator on it, or if it contains a collider that we do not adjust for (neither directly nor through a variable affected by the collider). To estimate the total effect of $X_1$ on $Y$, we adjust for variables that block all non-causal paths between them, but not for variables affected by $X_1$ or $Y$. For a given DAG, the `adjustmentSets()` function from the `dagitty` package finds such sets of variables (see `code/16_dags.R`).
 
 ### Example: ice cream sales and shark attacks
 
-On hot days, people buy more ice cream and more people swim in the sea, which leads to more shark attacks. Emergency services intervene in shark attacks as well as in allergic reactions to ice cream. We simulate 2000 days of this process (`code/14_sharks_simulation.R`):
+On hot days, people buy more ice cream and more people swim in the sea, which leads to more shark attacks. Emergency services intervene in shark attacks as well as in allergic reactions to ice cream. We are interested in the effect of ice cream sales on shark attacks.
+
+#### Methods
+
+We simulate 2000 days of this process (`code/14_sharks_simulation.R`):
 
 $$T_i \sim N(25, 5),$$
 $$I_i \; | \; T_i \sim \text{Poisson}(e^{-1 + 0.1 T_i}),$$
 $$S_i \; | \; T_i \sim \text{Poisson}(e^{-2 + 0.1 T_i}),$$
 $$E_i \; | \; I_i, S_i \sim \text{Poisson}(0.5 I_i + 3 S_i),$$
 
-where $T_i$ is the temperature (in °C), and $I_i$, $S_i$ and $E_i$ are the numbers of ice creams sold, shark attacks and emergency interventions on day $i$. In the DAG of this process, temperature is a confounder of ice cream sales and shark attacks, emergency interventions are a collider, and there is no arrow from $I$ to $S$: ice cream sales have no effect on shark attacks. To estimate this (zero) effect, we have to adjust for temperature and must not adjust for emergency interventions.
+where $T_i$ is the temperature (in °C), and $I_i$, $S_i$ and $E_i$ are the numbers of ice creams sold, shark attacks and emergency interventions on day $i$. In the DAG of this process, temperature is a confounder of ice cream sales and shark attacks, emergency interventions are a collider, and there is no arrow from $I$ to $S$: ice cream sales have no effect on shark attacks. To estimate this (zero) effect, we have to adjust for temperature and must not adjust for emergency interventions. We know this DAG only because we simulated the data; with real data, it would have to come from domain experts.
 
 ```{r echo=FALSE, fig.alt="DAG of the shark attacks example: temperature (T) points to ice cream sales (I) and to shark attacks (S), which both point to emergency interventions (E); there is no arrow between ice cream sales and shark attacks."}
 knitr::include_graphics("./figs/sharks_dag.png", dpi = NA)
 ```
 
-Still, ice cream sales and shark attacks are clearly associated (their correlation is 0.48), because both increase with temperature:
+We fit three Poisson regression models of shark attacks, $S_i \sim \text{Poisson}(\lambda_i)$, using the Stan model from the Poisson regression example (`models/poisson.stan`, which puts flat priors on all parameters; the complete code is in `code/15_sharks_models.R`). The models adjust for different variables, so each of them makes a different causal assumption:
 
-```{r echo=FALSE, fig.alt="Jittered scatter plot of daily shark attacks (0 to 11) against ice cream sales (0 to 26), colored by temperature from light orange (cold) to dark brown (hot); shark attacks rise with ice cream sales, and hotter days sit at higher values of both."}
+* **Model I**, $\log \lambda_i = \alpha + \beta_I I_i$, adjusts for nothing, which assumes that ice cream sales and shark attacks have no common cause. In our DAG, temperature is a common cause, so the non-causal path $I \leftarrow T \rightarrow S$ stays open.
+* **Model II**, $\log \lambda_i = \alpha + \beta_I I_i + \beta_T T_i$, adjusts for temperature, which assumes that their common causes affect them only through temperature. In our DAG, temperature is their only common cause: adjusting for it blocks $I \leftarrow T \rightarrow S$, while the other non-causal path, $I \rightarrow E \leftarrow S$, stays blocked by the collider.
+* **Model III**, $\log \lambda_i = \alpha + \beta_I I_i + \beta_T T_i + \beta_E E_i$, also adjusts for emergency interventions, which assumes that they are not affected by ice cream sales or shark attacks. In our DAG, they are affected by both, so adjusting for this collider opens the path $I \rightarrow E \leftarrow S$.
+
+We compare the posteriors of the $\beta$ coefficients with the true effects and measure the fit of each model to the data with the root mean squared error (RMSE) between the observed shark attacks and the posterior means of $\lambda_i$.
+
+#### Results
+
+Although ice cream sales have no effect on shark attacks, the two are clearly associated (their correlation is 0.48), because both increase with temperature:
+
+```{r echo=FALSE, fig.alt="Jittered scatter plot of daily shark attacks (0 to 11) against ice cream sales (0 to 26), colored by temperature from blue (15 °C or less) through gray (25 °C) to red (35 °C or more); shark attacks rise with ice cream sales, cold days sit at low values of both and hot days at high values of both."}
 knitr::include_graphics("./figs/sharks_data.png", dpi = NA)
 ```
-
-We fit three Poisson regression models of shark attacks, $S_i \sim \text{Poisson}(\lambda_i)$, using the Stan model from the Poisson regression example (`models/poisson.stan`; the complete code is in `code/15_sharks_models.R`):
-
-* model I: $\log \lambda_i = \alpha + \beta_I I_i$,
-* model II: $\log \lambda_i = \alpha + \beta_I I_i + \beta_T T_i$,
-* model III: $\log \lambda_i = \alpha + \beta_I I_i + \beta_T T_i + \beta_E E_i$.
 
 The diagnostics of all three fits show no reasons for concern. The table below summarizes the posteriors of the $\beta$ coefficients (means with their Monte Carlo standard errors and the 5^th^ and 95^th^ percentiles, $q_{0.05}$ and $q_{0.95}$), and the figure below it visualizes them (points are posterior medians, black lines the intervals between the 5^th^ and 95^th^ percentiles and dashed lines the true effects).
 
@@ -816,10 +826,10 @@ knitr::include_graphics("./figs/sharks_coefficients.png", dpi = NA)
 ```
 
 * **Model I** suggests that each additional ice cream sold increases the expected number of shark attacks by about 10% ($e^{0.092} \approx 1.10$). The association is created by the confounder.
-* **Model II** adjusts for temperature, which blocks the non-causal path $I \leftarrow T \rightarrow S$ (the other non-causal path, $I \rightarrow E \leftarrow S$, is blocked by the collider). It recovers the true effects, $\beta_I \approx 0$ and $\beta_T \approx 0.1$. Note that temperature has to stay in the model although it is strongly correlated with ice cream sales (0.73), unlike $x2$ in the example with heavily correlated independent variables, which was just a noisy copy of $x$.
-* **Model III** also adjusts for the collider, which opens the path $I \rightarrow E \leftarrow S$. Among days with the same number of interventions, more ice creams sold leave fewer interventions to be explained by shark attacks, so ice cream now seems to protect us from sharks ($e^{-0.056} \approx 0.95$). Because $E$ is affected by $S$, it also carries information about the outcome itself, so the model leans on it: $\beta_E$ is clearly positive, although $E$ has no effect on $S$, and the effect of temperature is underestimated by half.
+* **Model II** recovers the true effects, $\beta_I \approx 0$ and $\beta_T \approx 0.1$. Here, $\beta_T$ is a causal effect as well, but only because ice cream sales do not affect shark attacks; otherwise, it would measure only the direct effect of temperature, and reading it as its total effect would be the Table 2 fallacy. Note that temperature has to stay in the model although it is strongly correlated with ice cream sales (0.73), unlike $x2$ in the example with heavily correlated independent variables, which was just a noisy copy of $x$.
+* **Model III** makes ice cream seem to protect us from sharks ($e^{-0.056} \approx 0.95$): among days with the same number of interventions, more ice creams sold leave fewer interventions to be explained by shark attacks. Because $E$ is affected by $S$, it also carries information about the outcome itself, so the model leans on it: $\beta_E$ is clearly positive, although $E$ has no effect on $S$, and the effect of temperature is underestimated by half.
 
-Model III nevertheless fits the data best: the root mean squared error between the observed shark attacks and the posterior means of $\lambda_i$ equals 1.06, compared with 1.31 for model II and 1.46 for model I. A better fit does not imply better causal estimates. Likewise, a posterior that clearly excludes 0, our criterion in the Poisson regression example, only indicates a conditional association: this holds for $\beta_I$ in models I and III and for $\beta_E$ in model III, although neither ice cream sales nor emergency interventions affect shark attacks.
+Model III nevertheless fits the data best: its RMSE equals 1.06, compared with 1.31 for model II and 1.46 for model I. A better fit does not imply better causal estimates. Likewise, a posterior that clearly excludes 0, our criterion in the Poisson regression example, only indicates a conditional association: this holds for $\beta_I$ in models I and III and for $\beta_E$ in model III, although neither ice cream sales nor emergency interventions affect shark attacks.
 
 ## Recommended readings
 

@@ -14,20 +14,34 @@ data <- read.csv("./session_04_glm/data/sharks.csv")
 # correlations between variables
 round(cor(data), 2)
 
-# shark attacks against ice cream sales, color denotes the temperature,
-# both variables are counts, so we jitter the points to reduce overplotting
-ggplot(data, aes(x = icecream_sales, y = shark_attacks, color = temperature)) +
+# shark attacks against ice cream sales, fill color denotes the temperature
+# on a diverging scale around the average temperature (25 °C), blue for colder
+# and red for hotter days, days below 15 °C or above 35 °C get the end colors;
+# both variables are counts, so we jitter the points and draw them with white
+# outlines to keep overlapping points apart
+ggplot(data, aes(x = icecream_sales, y = shark_attacks, fill = temperature)) +
   geom_point(
-    shape = 16,
-    alpha = 0.6,
-    position = position_jitter(width = 0.25, height = 0.25, seed = 1)
+    shape = 21,
+    size = 2,
+    stroke = 0.25,
+    color = "white",
+    position = position_jitter(width = 0.35, height = 0.35, seed = 1)
   ) +
-  scale_color_gradient(low = "#fe9068", high = "#611e01") +
+  scale_fill_gradient2(
+    low = "#2166ac",
+    mid = "grey80",
+    high = "#b2182b",
+    midpoint = 25,
+    limits = c(15, 35),
+    oob = scales::squish,
+    breaks = seq(15, 35, by = 5),
+    labels = c("≤ 15", "20", "25", "30", "≥ 35")
+  ) +
   theme_minimal() +
   labs(
     x = "Ice cream sales",
     y = "Shark attacks",
-    color = "Temperature [°C]"
+    fill = "Temperature [°C]"
   )
 
 ggsave("./session_04_glm/figs/sharks_data.png",
