@@ -135,6 +135,8 @@ df_betas |>
 
 # fit to the data: root mean squared error between the observed shark attacks
 # and the posterior means of lambda (expected shark attacks) for each day
+# note: this is a quick and dirty check, we will learn how to do this better in
+# one of the next sessions
 rmse <- function(fit) {
   lambda <- colMeans(as_draws_matrix(fit$draws("lambda")))
   sqrt(mean((data$shark_attacks - lambda)^2))
