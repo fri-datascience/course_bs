@@ -38,10 +38,8 @@ design_matrix <- model.matrix(~ longitude + hemisphere, data)
 # show a couple of top rows to check if all is OK
 head(design_matrix)
 
-# default reference is europe
+# last one is the reference continent
 continent_order <- c("africa", "asia", "europe")
-# here, we change it to africa
-# Continent order: Europe, Asia, Africa.
 
 # dependent variable (convert factor to integer levels for Stan)
 data$continent <- factor(data$continent, levels = continent_order)
