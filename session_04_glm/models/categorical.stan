@@ -3,7 +3,7 @@ data {
   int<lower=0> m;                  // number of independent variables
   matrix[n, m] x;                  // independent variables
   int<lower=0> k;                  // number of outcomes
-  array[n] int<lower=1,upper=k> y; // dependent variables
+  array[n] int<lower=1,upper=k> y; // dependent variable
 }
 
 transformed data {
