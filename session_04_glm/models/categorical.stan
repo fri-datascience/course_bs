@@ -6,18 +6,13 @@ data {
   array[n] int<lower=1,upper=k> y; // dependent variable
 }
 
-transformed data {
-  vector[m] zeros;
-  zeros = rep_vector(0, m);
-}
-
 parameters {
   matrix[k-1, m] beta_raw; // k - 1, since one category is our reference
 }
 
 transformed parameters {
-  matrix[k, m] beta;
-  beta = append_row(beta_raw, zeros'); // last category is our reference
+  // last category is our reference, its coefficients are fixed at 0
+  matrix[k, m] beta = append_row(beta_raw, rep_row_vector(0, m));
 }
 
 model {
