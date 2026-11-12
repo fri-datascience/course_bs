@@ -53,7 +53,7 @@ fit <- model$sample(
 )
 
 # diagnostics ------------------------------------------------------------------
-# traceplot for beta parameters
+# traceplots
 mcmc_trace(fit$draws("beta"))
 mcmc_trace(fit$draws("c"))
 

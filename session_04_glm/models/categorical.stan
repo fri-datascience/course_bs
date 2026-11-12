@@ -16,6 +16,9 @@ transformed parameters {
 }
 
 model {
+  // weakly informative prior
+  to_vector(beta_raw) ~ normal(0, 5);
+
   // fit
   matrix[n, k] x_beta = x * beta';
   for (i in 1:n)

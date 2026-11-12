@@ -569,6 +569,9 @@ transformed parameters {
 }
 
 model {
+  // weakly informative prior
+  to_vector(beta_raw) ~ normal(0, 5);
+
   // fit
   matrix[n, k] x_beta = x * beta';
   for (i in 1:n)
@@ -633,8 +636,8 @@ betas <- matrix(colMeans(df_betas), nrow = 3, ncol = 4)
 
 ```text
 ##           [,1]     [,2]      [,3]      [,4]
-## [1,] -3.974213 6.325504 -1.408025 -5.589200
-## [2,] -3.004120 5.516952 -1.552235 -5.939575
+## [1,] -3.033233 4.761418 -1.091965 -4.319931
+## [2,] -2.082493 3.955298 -1.242778 -4.663996
 ## [3,]  0.000000 0.000000  0.000000  0.000000
 ```
 
@@ -650,10 +653,10 @@ c_probs
 ```
 
 ```text
-## [1] 0.1995179 0.3513283 0.4491538
+## [1] 0.2150714 0.3719094 0.4130192
 ```
 
-When a center is shooting from 0.5 m there is a 0.2 probability of an above head shot, 0.35 of a hook shot and 0.45 of a layup. The visualization below shows how probabilities of a shot type for each player type change with distance from the rim.
+When a center is shooting from 0.5 m there is a 0.22 probability of an above head shot, 0.37 of a hook shot and 0.41 of a layup. The visualization below shows how probabilities of a shot type for each player type change with distance from the rim.
 
 ```{r echo=FALSE, fig.alt="Stacked area charts of shot type probability against distance for centres, forwards and guards; layups dominate near the rim and fade as above head shots take over, with hook shots in between; guards keep layups longest."}
 knitr::include_graphics("./figs/shot_selection.png", dpi = NA)
