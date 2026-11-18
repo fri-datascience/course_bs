@@ -1,17 +1,27 @@
 # libraries --------------------------------------------------------------------
-library(ggplot2)
 library(tidyverse)
 
 # load the data ----------------------------------------------------------------
-df <- read.csv("./session_06_priors/data/salaries_2025.csv")
+# full survey export, we only need column 7:
+# "Povprečna mesečna BRUTO plača v zadnjih treh mesecih."
+df_raw <- read.csv(
+  "./session_06_priors/data/salaries_2026_tmp.csv",
+  check.names = FALSE
+)
+df <- data.frame(salary = df_raw[[7]])
+
+# remove missing values (empty answers)
+df <- df %>%
+  mutate(salary = trimws(salary)) %>%
+  filter(!is.na(salary), salary != "")
 
 # unique values
 unique(df$salary)
 
-# mappings
+# mappings ---------------------------------------------------------------------
 salary_mapping <- c(
-  "1277.72€ (minimalna BRUTO plača)" = 1278,
-  "1277.73€ - 1499€" = 1388,
+  "1481,88€ (minimalna BRUTO plača)" = 1482,
+  "1481,89€ - 1499€" = 1490,
   "1500€ - 1999€" = 1750,
   "2000€ - 2499€" = 2250,
   "2500€ - 2999€" = 2750,
@@ -32,8 +42,14 @@ salary_mapping <- c(
   "več kot 10000€" = 10000
 )
 
-# apply mapping
-df$salary <- salary_mapping[df$salary]
+# check that every answer has a mapping
+unmapped <- setdiff(unique(df$salary), names(salary_mapping))
+if (length(unmapped) > 0) {
+  stop("Unmapped salary values: ", paste(unmapped, collapse = ", "))
+}
 
-# save back to the same file
-write.csv(df, "./session_06_priors/data/salaries_2025.csv", row.names = FALSE)
+# apply mapping
+df$salary <- unname(salary_mapping[df$salary])
+
+# save -------------------------------------------------------------------------
+write.csv(df, "./session_06_priors/data/salaries_2026.csv", row.names = FALSE)
