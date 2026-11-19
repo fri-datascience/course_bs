@@ -298,7 +298,7 @@ for (i in seq_len(nrow(df_exp_i))) {
   }
 }
 
-# normalize
+# results
 mcse(congruent)
 mcse(incongruent)
 mcse(equal)
