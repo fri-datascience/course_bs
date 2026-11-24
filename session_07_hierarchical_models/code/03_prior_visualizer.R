@@ -2,9 +2,27 @@
 library(ggplot2)
 library(ggdist)
 library(distributional)
-library(rmutil)
 library(tidyverse)
 library(cowplot)
+
+# laplace distribution ---------------------------------------------------------
+# ggdist finds a distribution by name through its d/p/q/r functions, base R has
+# none for the Laplace distribution, so we define them here
+dlaplace <- function(x, m = 0, s = 1) {
+  exp(-abs(x - m) / s) / (2 * s)
+}
+
+plaplace <- function(q, m = 0, s = 1) {
+  ifelse(q < m, 0.5 * exp((q - m) / s), 1 - 0.5 * exp(-(q - m) / s))
+}
+
+qlaplace <- function(p, m = 0, s = 1) {
+  m - s * sign(p - 0.5) * log(1 - 2 * abs(p - 0.5))
+}
+
+rlaplace <- function(n, m = 0, s = 1) {
+  qlaplace(runif(n), m, s)
+}
 
 # plot -------------------------------------------------------------------------
 dfl <- data.frame(dist = "laplace")
