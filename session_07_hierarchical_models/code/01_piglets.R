@@ -15,6 +15,32 @@ data_all <- read.csv("./session_07_hierarchical_models/data/piglets.csv")
 # work with farm 1 only for now
 data <- data_all |> filter(farm == 1)
 
+# eda plots --------------------------------------------------------------------
+# number of piglets per mama pig
+ggplot(data_all, aes(x = factor(mama_pig))) +
+  geom_bar(fill = "skyblue", alpha = 0.75) +
+  scale_y_continuous(breaks = function(l) seq(0, floor(l[2]), by = 1)) +
+  theme_minimal() +
+  xlab("Mama pig") +
+  ylab("Number of piglets")
+
+# piglet weights and mean weight per mama pig
+df_mama_means <- data_all |>
+  group_by(mama_pig) |>
+  summarise(mean_weight = mean(piglet_weight))
+
+ggplot(data_all, aes(x = factor(mama_pig), y = piglet_weight)) +
+  geom_hline(yintercept = mean(data_all$piglet_weight), color = "grey75") +
+  geom_jitter(width = 0.1, height = 0, color = "skyblue", alpha = 0.75) +
+  geom_point(
+    data = df_mama_means, aes(y = mean_weight),
+    shape = 18, size = 4
+  ) +
+  theme_minimal() +
+  xlab("Mama pig") +
+  ylab("Weight")
+
+
 # normal model -----------------------------------------------------------------
 model_n <- cmdstan_model("./session_07_hierarchical_models/models/normal.stan")
 
