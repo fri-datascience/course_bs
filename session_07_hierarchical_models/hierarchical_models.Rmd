@@ -19,6 +19,20 @@ In Bayesian modeling, hierarchical models (also called multilevel models) are an
 
 We will build our first hierarchical (multilevel) model from the ground up by using a practical example. Our dataset (`./data/piglets.csv`) includes the weight of little piggies at birth along with the information about who the mother of each of the piglets is and at which farm they live. To get familiar with hierarchical models, we will initially focus only on pigs from the first farm. Let us use $n$ to denote the number of piglets and $m$ to denote the number of mama pigs. For the sake of this illustrative example we will assume that weights of piglets at birth are normally distributed.
 
+Before modeling, let us take a quick look at the data. The number of piglets per mama pig varies a lot, from 12 piglets all the way down to only 2 or 3 (mama pigs #6 and #8):
+
+```{r echo=FALSE, fig.alt="Bar chart of the number of piglets for each of the 12 mama pigs; most have between 5 and 12 piglets, but mama pig 6 has only 2 and mama pig 8 only 3."}
+knitr::include_graphics("./figs/piglets_counts.png", dpi = NA)
+```
+
+Mean piglet weights also differ between mama pigs, and some of them stick out from the rest. For example, piglets of mama pig #7 are much lighter than average, while piglets of mama pig #11 are much heavier:
+
+```{r echo=FALSE, fig.alt="Jittered points of individual piglet weights for each of the 12 mama pigs with black diamonds marking each mother's mean weight and a gray line at the overall mean; mama pig 7's mean sits well below the line and mama pig 11's well above it."}
+knitr::include_graphics("./figs/piglets_weights.png", dpi = NA)
+```
+
+Keep both observations in mind, we will come back to them when interpreting our models.
+
 The simplest model we can build is the traditional normal model (`./models/normal.stan`):
 
 $$y_i \; | \; \mu, \sigma \sim N(\mu, \sigma),$$
@@ -47,11 +61,11 @@ knitr::include_graphics("./figs/normal_s.png", dpi = NA)
 
 The above model acknowledges the fact that each piglet has its own mother, but we discard the fact that they are all piglets. As a result we are now able to make comparisons between subjects (between piglets belonging to different mama pigs) but lose the capability of more general (group level) comparisons (e.g., inter-species). The figure below visualizes how this model fits the underlying data for each mama pig (subject) separately:
 
-```{r echo=FALSE, fig.alt="Grid of eight density panels, one per mama pig: blue densities of observed piglet weights with gray fitted normal curves of similar width; for mama pigs 3 and 6 the data form tall narrow spikes the curves fit poorly."}
+```{r echo=FALSE, fig.alt="Grid of eight density panels, one per mama pig: blue densities of observed piglet weights with gray fitted normal curves of similar width; for mama pigs 3 and 5 the data form tall narrow spikes the curves fit poorly."}
 knitr::include_graphics("./figs/subject_fit.png", dpi = NA)
 ```
 
-Based on this figure, one could argue that the assumption that the variance between subjects is the same is not correct. This is a valid case, since we can see that because of this constraint our model does not fit the underlying data well in some cases (e.g., mama pig #3 or #6). So, a possible model upgrade would be to also model variances on the subject level. We decided not to do that because we were interested mainly in mean weights and wanted to keep the model as simple as possible for the purpose of this illustration. Furthermore, our dataset is quite small; for getting good variance estimates we usually need more data than we have in this case.
+Based on this figure, one could argue that the assumption that the variance between subjects is the same is not correct. This is a valid case, since we can see that because of this constraint our model does not fit the underlying data well in some cases (e.g., mama pig #3 or #5). So, a possible model upgrade would be to also model variances on the subject level. We decided not to do that because we were interested mainly in mean weights and wanted to keep the model as simple as possible for the purpose of this illustration. Furthermore, our dataset is quite small; for getting good variance estimates we usually need more data than we have in this case.
 
 In Bayesian statistics we can easily have the best of both worlds through hierarchical modeling. Actually, one could easily argue that in our case such a model is the only reasonable approach since we have a very clear hierarchical structure in our data generating process. By linking subject means in a hierarchical fashion, our model becomes:
 
@@ -73,11 +87,11 @@ knitr::include_graphics("./figs/hierarchical_fit.png", dpi = NA)
 
 The figure is very similar to the one made by the previous model (the non-hierarchical model with multiple means). There are a couple of subtle but important differences between the two figures. These differences are even more prominent on the visualization below, which compares means and 90% HDI between both models and our sample means.
 
-```{r echo=FALSE, fig.alt="Grid of eight panels, one per mama pig, comparing mean weight and 90% HDI from the subject and hierarchical models with the sample mean; hierarchical means sit nearer the gray population-mean line, most clearly for pigs 3 and 7."}
+```{r echo=FALSE, fig.alt="Grid of eight panels, one per mama pig, comparing mean weight and 90% HDI from the subject and hierarchical models with the sample mean; hierarchical means sit nearer the gray population-mean line, most clearly for pigs 3, 7 and 8."}
 knitr::include_graphics("./figs/means_subject.png", dpi = NA)
 ```
 
-The most important thing to notice is the fact that mean estimates for subjects in the case of the hierarchical model are closer to the population mean (the gray horizontal line) than the mean estimates for subjects from the non-hierarchical model. This phenomenon is called Bayesian shrinkage and is a desired effect in hierarchical models (if we do not want this, then we do not use a hierarchical model). Bayesian shrinkage is the result of the model's information pooling or sharing; in hierarchical modeling, information about one subject influences inferences for all other subjects. This way subjects with very little data are empowered by all other subjects. This effect will be more prominent in outliers. If one subject sticks out from the rest then our model will be correctly skeptical about its data and will nudge the inferences about it towards other subjects. Indeed, in our case you see it best with mama pigs #3 and #7; these are the two mamas that gave birth to the fattest and the slimmest piglets, and with those two the difference in parameter estimates between the non-hierarchical and the hierarchical normal models is the most prominent.
+The most important thing to notice is the fact that mean estimates for subjects in the case of the hierarchical model are closer to the population mean (the gray horizontal line) than the mean estimates for subjects from the non-hierarchical model. This phenomenon is called Bayesian shrinkage and is a desired effect in hierarchical models (if we do not want this, then we do not use a hierarchical model). Bayesian shrinkage is the result of the model's information pooling or sharing; in hierarchical modeling, information about one subject influences inferences for all other subjects. This way subjects with very little data are empowered by all other subjects. This effect will be more prominent in outliers. If one subject sticks out from the rest then our model will be correctly skeptical about its data and will nudge the inferences about it towards other subjects. Indeed, in our case you see it best with mama pigs #3 and #7; these are the two mamas that gave birth to the fattest and the slimmest piglets, and with those two the difference in parameter estimates between the non-hierarchical and the hierarchical normal models is the most prominent. Shrinkage is also strong for mama pig #8, which has only three piglets; with so little data of its own, its estimate leans more on information from other mama pigs.
 
 Another thing you can see in the image above is that the subject level uncertainty in the case of a hierarchical normal model is lower than in the case of a non-hierarchical normal model. The reason behind this is the same: more information means less uncertainty -- in the hierarchical normal model we are using information from other subjects, while in the non-hierarchical normal model we are not doing so.
 
