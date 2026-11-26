@@ -15,7 +15,7 @@ parameters {
 model {
   // hierarchical link
   mu ~ normal(mu_mu, sigma_mu);
-  
+
   // normal model for each group
   for (i in 1:n) {
       y[i] ~ normal(mu[s[i]], sigma);

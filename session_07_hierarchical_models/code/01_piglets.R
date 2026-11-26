@@ -40,7 +40,6 @@ ggplot(data_all, aes(x = factor(mama_pig), y = piglet_weight)) +
   xlab("Mama pig") +
   ylab("Weight")
 
-
 # normal model -----------------------------------------------------------------
 model_n <- cmdstan_model("./session_07_hierarchical_models/models/normal.stan")
 
